@@ -8,6 +8,8 @@
 /storage/logs/*
 !/storage/logs/.gitkeep
 /vendor
+/bootstrap/cache/*
+!/bootstrap/cache/.gitignore
 .env
 .env.*
 !.env.example
