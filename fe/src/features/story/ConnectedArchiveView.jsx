@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { apiClient } from '../../services/api';
 import persistenceService from '../../services/persistenceService';
 import { getStoryById } from '../../data/master/storiesMaster';
 import { getCharacterById } from '../../data/master/charactersMaster';
@@ -15,10 +16,27 @@ export default function ConnectedArchiveView({ onPlayPerformance, onNavigateToCh
   const [publicWorks, setPublicWorks] = useState([]);
 
   useEffect(() => {
-    // Ambil karya publik dari persistence service
-    const all = persistenceService.getLocalWorks();
-    const publics = all.filter((w) => w.visibility === 'public');
-    setPublicWorks(publics);
+    let isMounted = true;
+    const loadPublicWorks = async () => {
+      try {
+        const res = await apiClient.get('/public/performances');
+        if (res.data?.data && Array.isArray(res.data.data) && res.data.data.length > 0) {
+          if (isMounted) setPublicWorks(res.data.data);
+          return;
+        }
+      } catch (_e) {
+        // Fallback ke local cache jika server offline
+      }
+
+      const all = persistenceService.getLocalWorks();
+      const publics = all.filter((w) => w.visibility === 'public');
+      if (isMounted) setPublicWorks(publics);
+    };
+
+    loadPublicWorks();
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   return (

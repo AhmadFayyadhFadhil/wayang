@@ -11,6 +11,23 @@ export const apiClient = axios.create({
   timeout: 5000,
 });
 
+// Request interceptor untuk menyisipkan Bearer token Sanctum secara otomatis
+apiClient.interceptors.request.use((config) => {
+  try {
+    const authData = localStorage.getItem('wayangverse_auth_user');
+    if (authData) {
+      const parsed = JSON.parse(authData);
+      const token = parsed?.token || localStorage.getItem('wayangverse_auth_token');
+      if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+      }
+    }
+  } catch (_e) {
+    // Abaikan jika JSON corrupt
+  }
+  return config;
+});
+
 /**
  * Health check handshake to Laravel backend
  * @returns {Promise<Object>} API Status response

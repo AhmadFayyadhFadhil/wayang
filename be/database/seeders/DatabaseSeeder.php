@@ -13,7 +13,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Akun resmi demo untuk pengujian juri lomba
+        // 1. Akun resmi demo untuk pengujian juri lomba
         User::updateOrCreate(
             ['email' => 'demo@wayangdigital.id'],
             [
@@ -22,5 +22,18 @@ class DatabaseSeeder extends Seeder
                 'email_verified_at' => now(),
             ]
         );
+
+        // 2. Akun demo frontend modal (Wayangverse)
+        User::updateOrCreate(
+            ['email' => 'dalang_demo@wayangverse.id'],
+            [
+                'name' => 'Ki Dalang Muda Nusantara',
+                'password' => Hash::make('dalang2026!'),
+                'email_verified_at' => now(),
+            ]
+        );
+
+        // 3. Panggil MasterDataSeeder
+        $this->call(MasterDataSeeder::class);
     }
 }
