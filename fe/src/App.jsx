@@ -1,8 +1,31 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
+import Navbar from './components/layout/Navbar';
+import HomeView from './features/home/HomeView';
+import AtlasView from './features/encyclopedia/AtlasView';
+import StageStudio from './features/stage/StageStudio';
+import ConnectedArchiveView from './features/story/ConnectedArchiveView';
+import MyWorksView from './features/stage/MyWorksView';
+import StagePreviewModal from './features/stage/StagePreviewModal';
+import AuthModal from './features/auth/AuthModal';
+import { useStageStore } from './features/stage/useStageStore';
+import persistenceService from './services/persistenceService';
 import { checkApiStatus } from './services/api';
 import './App.css';
 
 function App() {
+  const [activeTab, setActiveTab] = useState('home'); // 'home' | 'atlas' | 'stage' | 'archive' | 'my-works'
+  const [selectedPerformanceForWatch, setSelectedPerformanceForWatch] = useState(null);
+  const [showAuthModal, setShowAuthModal] = useState(false);
+  const [currentUser, setCurrentUser] = useState(() => {
+    try {
+      const saved = localStorage.getItem('wayangverse_auth_user');
+      return saved ? JSON.parse(saved) : null;
+    } catch (_e) {
+      return null;
+    }
+  });
+
+  // Status Koneksi Backend
   const [connection, setConnection] = useState({
     loading: true,
     connected: false,
@@ -10,10 +33,11 @@ function App() {
     error: null,
   });
 
+  const { addCharacterToActiveScene, exportSceneData } = useStageStore();
+
   const testConnection = async () => {
     setConnection((prev) => ({ ...prev, loading: true, error: null }));
     const result = await checkApiStatus();
-
     if (result.success) {
       setConnection({
         loading: false,
@@ -33,164 +57,139 @@ function App() {
 
   useEffect(() => {
     testConnection();
+
+    // Inisialisasi karya demo awal jika local storage masih kosong
+    const initialDemoWork = {
+      id: 'demo-1',
+      title: 'Bharatayuddha: Gugurnya Ghatotkaca',
+      description: 'Pertempuran malam hari di padang Kurusetra antara Sang Senopati Udara dengan Adipati Karna.',
+      story_id: 1,
+      visibility: 'public',
+      updated_at: new Date().toISOString(),
+      created_at: new Date().toISOString(),
+      author: 'Dalang Muda Preservasi Budaya',
+      scene_data: exportSceneData(),
+      schema_version: 1,
+    };
+    persistenceService.seedInitialDemoWorks(initialDemoWork);
   }, []);
 
+  // Handler interaksi lintas modul (Connected by Design)
+  const handlePlayCharacterOnStage = (characterId) => {
+    addCharacterToActiveScene(characterId);
+    setActiveTab('stage');
+  };
+
+  const handlePlayPerformanceFromGallery = (performance) => {
+    setSelectedPerformanceForWatch(performance);
+  };
+
   return (
-    <div className="app-container">
-      <header>
-        <span className="header-badge">LOMBA TEMA SOSIAL & KESENIAN</span>
-        <h1 className="header-title">Wayang Digital</h1>
-        <p className="header-subtitle">
-          Platform panggung interaktif modern untuk digitalisasi pewayangan: menyajikan true story,
-          peragaan wayang interaktif, visualisasi dinamis, serta atmosfer audio kontemporer untuk generasi muda.
-        </p>
-      </header>
+    <div
+      style={{
+        minHeight: '100vh',
+        background: '#0c0a10',
+        color: '#f3f4f6',
+        display: 'flex',
+        flexDirection: 'column',
+      }}
+    >
+      {/* 1. Header & Navigasi Global */}
+      <Navbar
+        activeTab={activeTab}
+        onNavigate={(tab) => {
+          setActiveTab(tab);
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }}
+        backendConnected={connection.connected}
+        currentUser={currentUser}
+        onOpenAuth={() => setShowAuthModal(true)}
+      />
 
-      {/* Status Koneksi Backend & Database */}
-      <section className="status-card">
-        <div className="status-header">
-          <div>
-            <h3>Status Integrasi API & Database</h3>
-            <p style={{ margin: '4px 0 0 0', color: '#64748b', fontSize: '13px' }}>
-              Verifikasi komunikasi antara Frontend (React) ⇄ Backend (Laravel 12) ⇄ Database (wayang)
-            </p>
-          </div>
-          <button className="btn-refresh" onClick={testConnection} disabled={connection.loading}>
-            {connection.loading ? 'Memeriksa...' : '🔄 Cek Ulang Koneksi'}
-          </button>
-        </div>
-
-        <div className="status-grid">
-          {/* Backend API */}
-          <div className="status-item">
-            <div className="status-label">Backend API (Laravel 12)</div>
-            <div className="status-indicator">
-              <span className={`dot ${connection.loading ? 'yellow' : connection.connected ? 'green' : 'red'}`}></span>
-              <span>
-                {connection.loading
-                  ? 'Menghubungkan...'
-                  : connection.connected
-                  ? 'Online (Connected)'
-                  : 'Offline / Error'}
-              </span>
-            </div>
-            <div style={{ marginTop: '8px', fontSize: '12px', color: '#64748b' }}>
-              {connection.data?.project?.framework || 'http://127.0.0.1:8000/api/status'}
-            </div>
-          </div>
-
-          {/* Database */}
-          <div className="status-item">
-            <div className="status-label">Database MySQL</div>
-            <div className="status-indicator">
-              <span
-                className={`dot ${
-                  connection.loading
-                    ? 'yellow'
-                    : connection.data?.database?.connected
-                    ? 'green'
-                    : 'red'
-                }`}
-              ></span>
-              <span>
-                {connection.loading
-                  ? 'Memeriksa...'
-                  : connection.data?.database?.connected
-                  ? `Connected: ${connection.data.database.name}`
-                  : 'Terputus'}
-              </span>
-            </div>
-            <div style={{ marginTop: '8px', fontSize: '12px', color: '#64748b' }}>
-              Target DB: <strong>wayang</strong> (MySQL Port 3306)
-            </div>
-          </div>
-
-          {/* Response Info */}
-          <div className="status-item">
-            <div className="status-label">Waktu Sinkronisasi</div>
-            <div className="status-indicator">
-              <span className="dot green"></span>
-              <span style={{ fontSize: '13px' }}>
-                {connection.data?.timestamp
-                  ? new Date(connection.data.timestamp).toLocaleTimeString()
-                  : 'Menunggu respon...'}
-              </span>
-            </div>
-            <div style={{ marginTop: '8px', fontSize: '12px', color: '#64748b' }}>
-              Handshake Status: {connection.data?.status || (connection.loading ? 'Loading' : 'Failed')}
-            </div>
-          </div>
-        </div>
-
-        {connection.error && (
-          <div
-            style={{
-              marginTop: '16px',
-              padding: '12px',
-              background: 'rgba(239, 68, 68, 0.1)',
-              border: '1px solid rgba(239, 68, 68, 0.3)',
-              borderRadius: '8px',
-              color: '#f87171',
-              fontSize: '13px',
+      {/* 2. Konten Halaman Aktif */}
+      <main style={{ flex: 1, paddingBottom: '40px' }}>
+        {activeTab === 'home' && (
+          <HomeView
+            onNavigate={(tab) => {
+              setActiveTab(tab);
+              window.scrollTo({ top: 0, behavior: 'smooth' });
             }}
-          >
-            ⚠️ <strong>Pesan Error:</strong> {connection.error}
-            <div style={{ marginTop: '4px', color: '#cbd5e1' }}>
-              Pastikan server Laravel aktif di terminal: <code>cd be &amp;&amp; php artisan serve</code>
-            </div>
-          </div>
+            connectionStatus={connection}
+            onTestConnection={testConnection}
+          />
         )}
-      </section>
 
-      {/* Arsitektur Modular Siap Pakai */}
-      <section>
-        <h3 className="section-title">Fondasi Modular (Siap Update Fitur dari Tim)</h3>
-        <div className="architecture-grid">
-          <div className="arch-box">
-            <h4>🎭 Panggung Interaktif</h4>
-            <p>Ruang manipulasi sendi &amp; siluet wayang digital di atas kelir.</p>
-            <span className="arch-path">fe/src/features/stage/</span>
+        {activeTab === 'atlas' && (
+          <AtlasView onPlayCharacterOnStage={handlePlayCharacterOnStage} />
+        )}
+
+        {activeTab === 'stage' && (
+          <StageStudio onNavigate={(tab) => setActiveTab(tab)} />
+        )}
+
+        {activeTab === 'archive' && (
+          <ConnectedArchiveView
+            onPlayPerformance={handlePlayPerformanceFromGallery}
+            onNavigateToCharacter={() => setActiveTab('atlas')}
+            onNavigateToStory={() => setActiveTab('atlas')}
+          />
+        )}
+
+        {activeTab === 'my-works' && (
+          <MyWorksView
+            onOpenStudio={() => setActiveTab('stage')}
+            onPlayPerformance={handlePlayPerformanceFromGallery}
+          />
+        )}
+      </main>
+
+      {/* 3. Global Modal Playback (Ketika tombol Nonton/Putar diklik di Galeri) */}
+      {selectedPerformanceForWatch && (
+        <StagePreviewModal
+          isOpen={Boolean(selectedPerformanceForWatch)}
+          onClose={() => setSelectedPerformanceForWatch(null)}
+          scenes={
+            (typeof selectedPerformanceForWatch.scene_data === 'string'
+              ? JSON.parse(selectedPerformanceForWatch.scene_data)
+              : selectedPerformanceForWatch.scene_data
+            )?.scenes || []
+          }
+          metadata={selectedPerformanceForWatch}
+        />
+      )}
+
+      {/* Modal Autentikasi Pengguna & Demo (PR-05) */}
+      <AuthModal
+        isOpen={showAuthModal}
+        onClose={() => setShowAuthModal(false)}
+        currentUser={currentUser}
+        onAuthSuccess={(user) => setCurrentUser(user)}
+        onLogout={() => setCurrentUser(null)}
+      />
+
+      {/* 4. Footer Bernuansa Warisan Budaya */}
+      <footer
+        style={{
+          borderTop: '1px solid #272133',
+          background: '#09080d',
+          padding: '24px 18px',
+          textAlign: 'center',
+          fontSize: '12px',
+          color: '#6b7280',
+        }}
+      >
+        <div style={{ maxWidth: '1100px', margin: '0 auto', display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', gap: '12px' }}>
+          <div>
+            <strong style={{ color: '#d4a359' }}>Wayangverse</strong> — Platform Pertunjukan Wayang 2D Virtual & Preservasi Budaya.
           </div>
-
-          <div className="arch-box">
-            <h4>📖 Story &amp; Lakon (True Story)</h4>
-            <p>Alur cerita adaptasi sosial kontemporer dan dialog adegan.</p>
-            <span className="arch-path">fe/src/features/story/</span>
-          </div>
-
-          <div className="arch-box">
-            <h4>📜 Ensiklopedia Tokoh</h4>
-            <p>Data karakter pewayangan, filosofi, watak, dan nilai moral.</p>
-            <span className="arch-path">fe/src/features/encyclopedia/</span>
-          </div>
-
-          <div className="arch-box">
-            <h4>🎵 Soundscape &amp; SFX</h4>
-            <p>Backsound gamelan modern, suluk, dan efek suara interaksi panggung.</p>
-            <span className="arch-path">fe/public/audio/</span>
-          </div>
-
-          <div className="arch-box">
-            <h4>🖼️ Visual &amp; Kelir Assets</h4>
-            <p>Komponen visual wayang (part tubuh terpisah), latar kelir, &amp; blencong.</p>
-            <span className="arch-path">fe/public/images/</span>
-          </div>
-
-          <div className="arch-box">
-            <h4>⚡ API Endpoints (Laravel 12)</h4>
-            <p>Layanan controller, autentikasi, serta data naskah &amp; karakter.</p>
-            <span className="arch-path">be/routes/api.php</span>
+          <div style={{ display: 'flex', gap: '16px' }}>
+            <span>Tema: Sosial & Kesenian</span>
+            <span>•</span>
+            <span>Prinsip: Cultural Integrity</span>
+            <span>•</span>
+            <span>Versi: MVP 1.0</span>
           </div>
         </div>
-      </section>
-
-      {/* Standby Status */}
-      <footer className="standby-banner">
-        <h4>🚀 Folder BE &amp; FE Siap Digunakan</h4>
-        <p>
-          Fondasi arsitektur, CORS, API bridge, dan koneksi database <strong>wayang</strong> telah aktif.
-          Menunggu arahan dan pembaruan spesifikasi fitur selanjutnya dari tim.
-        </p>
       </footer>
     </div>
   );
