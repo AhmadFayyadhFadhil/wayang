@@ -184,7 +184,7 @@ export default function VirtualStageCanvas({
               letterSpacing: '1px',
             }}
           >
-            <span>🌿 PALAHAN DEBOG WAYANG</span>
+            <span>PALAHAN DEBOG WAYANG</span>
             <span style={{ opacity: 0.8 }}>PANGGUNG KELIR DIGITAL</span>
           </div>
         </div>
@@ -297,7 +297,7 @@ export default function VirtualStageCanvas({
                 gap: '4px',
               }}
             >
-              🪵 Dodogan
+              Dodogan
             </button>
             <button
               onClick={() => handlePlaySfx('kepyak')}
@@ -315,7 +315,7 @@ export default function VirtualStageCanvas({
                 gap: '4px',
               }}
             >
-              🔔 Kepyak
+              Kepyak
             </button>
             <button
               onClick={() => handlePlaySfx('gong')}
@@ -333,7 +333,7 @@ export default function VirtualStageCanvas({
                 gap: '4px',
               }}
             >
-              🪐 Gong
+              Gong
             </button>
 
             {/* Volume Slider */}
@@ -373,7 +373,7 @@ export default function VirtualStageCanvas({
               border: '1px solid rgba(255,255,255,0.1)',
             }}
           >
-            💡 Klik & geser wayang untuk memindahkan posisi
+            Klik & geser wayang untuk memindahkan posisi
           </div>
         )}
       </div>
@@ -489,7 +489,7 @@ export default function VirtualStageCanvas({
             >
               {STAGE_CONFIG_MASTER.poses.map((p) => (
                 <option key={p.id} value={p.id}>
-                  {p.icon} {p.label}
+                  {p.label}
                 </option>
               ))}
             </select>

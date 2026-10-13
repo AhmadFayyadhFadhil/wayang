@@ -101,7 +101,7 @@ export default function AuthModal({ isOpen, onClose, currentUser, onAuthSuccess,
       >
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
           <h3 style={{ margin: 0, color: '#f59e0b', fontSize: '18px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <User size={18} /> {currentUser ? 'Profil Dalang Anda' : 'Autentikasi Pengguna (PR-05)'}
+            <User size={18} /> {currentUser ? 'Profil Pengguna' : 'Masuk / Daftar Akun'}
           </h3>
           <button
             onClick={onClose}
@@ -136,7 +136,7 @@ export default function AuthModal({ isOpen, onClose, currentUser, onAuthSuccess,
                     fontSize: '18px',
                   }}
                 >
-                  🎭
+                  <User size={20} color="#fef3c7" />
                 </div>
                 <div>
                   <div style={{ fontWeight: 'bold', fontSize: '15px', color: '#fef3c7' }}>{currentUser.name}</div>

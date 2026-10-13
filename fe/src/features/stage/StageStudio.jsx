@@ -108,7 +108,7 @@ export default function StageStudio({ onNavigate }) {
               fontWeight: '600',
             }}
           >
-            <Play size={14} fill="#fef3c7" /> Pratinjau Pertunjukan (FR-08)
+            <Play size={14} fill="#fef3c7" /> Pratinjau Pertunjukan
           </button>
 
           <button
@@ -122,7 +122,7 @@ export default function StageStudio({ onNavigate }) {
               boxShadow: '0 4px 15px rgba(217, 119, 6, 0.4)',
             }}
           >
-            <Save size={15} /> Simpan Karya (PR-06)
+            <Save size={15} /> Simpan Karya
           </button>
         </div>
       </div>

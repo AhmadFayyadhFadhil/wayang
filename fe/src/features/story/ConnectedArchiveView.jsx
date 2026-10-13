@@ -44,21 +44,21 @@ export default function ConnectedArchiveView({ onPlayPerformance, onNavigateToCh
       {/* Header Banner */}
       <div
         style={{
-          background: 'linear-gradient(135deg, #18222b, #10141d)',
-          border: '1px solid #1e3a5f',
+          background: 'linear-gradient(135deg, #1e1b24, #121016)',
+          border: '1px solid #3d334a',
           borderRadius: '16px',
           padding: '24px',
           marginBottom: '24px',
           boxShadow: '0 12px 30px rgba(0,0,0,0.6)',
         }}
       >
-        <div style={{ display: 'inline-block', background: '#0284c7', padding: '3px 10px', borderRadius: '12px', fontSize: '11px', fontWeight: 'bold', color: '#fff', marginBottom: '8px' }}>
-          ARSIP KREATIF TERHUBUNG (CONNECTED ARCHIVE)
+        <div style={{ display: 'inline-block', background: '#b45309', padding: '3px 10px', borderRadius: '12px', fontSize: '11px', fontWeight: 'bold', color: '#fff', marginBottom: '8px' }}>
+          ARSIP KREATIF TERHUBUNG
         </div>
-        <h1 style={{ margin: '0 0 8px 0', fontSize: '24px', color: '#f0f9ff' }}>
-          🏛️ Galeri Karya Publik & Jaringan Budaya
+        <h1 style={{ margin: '0 0 8px 0', fontSize: '24px', color: '#fef3c7' }}>
+          Galeri Karya Publik & Jaringan Budaya
         </h1>
-        <p style={{ margin: 0, fontSize: '13px', color: '#bae6fd', maxWidth: '750px', lineHeight: '1.6' }}>
+        <p style={{ margin: 0, fontSize: '13px', color: '#d1d5db', maxWidth: '750px', lineHeight: '1.6' }}>
           Saksikan interpretasi lakon wayang yang dirancang oleh generasi muda. Setiap karya terhubung langsung ke sumber naskah cerita dan watak filosofis tokoh pewayangan.
         </p>
       </div>

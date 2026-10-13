@@ -77,10 +77,10 @@ export default function MyWorksView({ onOpenStudio, onPlayPerformance }) {
       >
         <div>
           <span style={{ fontSize: '11px', color: '#f59e0b', fontWeight: 'bold' }}>
-            GALERI KARYA PRIBADI (PR-06)
+            GALERI KARYA PRIBADI
           </span>
           <h1 style={{ margin: '2px 0 0 0', fontSize: '24px', color: '#fef3c7' }}>
-            📂 Karya & Lakon Saya ({works.length})
+            Karya & Lakon Saya ({works.length})
           </h1>
           <p style={{ margin: 0, fontSize: '13px', color: '#9ca3af' }}>
             Daftar pertunjukan wayang digital yang telah Anda rancang dan simpan.
@@ -250,7 +250,7 @@ export default function MyWorksView({ onOpenStudio, onPlayPerformance }) {
 
                   <button
                     onClick={() => handleDuplicate(item)}
-                    title="Duplikasi Karya (PR-06)"
+                    title="Duplikasi Karya"
                     style={{
                       background: '#27272a',
                       border: '1px solid #3f3f46',

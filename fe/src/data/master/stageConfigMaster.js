@@ -69,12 +69,12 @@ export const STAGE_CONFIG_MASTER = {
     }
   ],
   poses: [
-    { id: 'default', label: 'Tancep (Siaga Tegak)', icon: '🧍' },
-    { id: 'sembah', label: 'Sembah (Menghormat)', icon: '🙏' },
-    { id: 'perang', label: 'Perang (Angkat Senjata)', icon: '⚔️' },
-    { id: 'terbang', label: 'Mabur (Melayang)', icon: '🦅' },
-    { id: 'memanah', label: 'Mentang Gandewa (Memanah)', icon: '🏹' },
-    { id: 'nasihat', label: 'Mendengarkan / Menasihati', icon: '🗣️' }
+    { id: 'default', label: 'Tancep (Siaga Tegak)' },
+    { id: 'sembah', label: 'Sembah (Menghormat)' },
+    { id: 'perang', label: 'Laga (Angkat Senjata)' },
+    { id: 'terbang', label: 'Melayang di Udara' },
+    { id: 'memanah', label: 'Membidik Panah' },
+    { id: 'nasihat', label: 'Dialog / Nasihat' }
   ]
 };
 

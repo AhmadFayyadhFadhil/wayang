@@ -63,7 +63,7 @@ export default function SceneComposer({
       <div style={{ marginBottom: '16px' }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px' }}>
           <span style={{ fontSize: '13px', fontWeight: 'bold', color: '#f59e0b', letterSpacing: '0.5px' }}>
-            🎞️ TIMELINE ALUR ADEGAN ({scenes.length} Adegan)
+            TIMELINE ALUR ADEGAN ({scenes.length} Adegan)
           </span>
           <button
             onClick={onAddScene}
@@ -118,7 +118,7 @@ export default function SceneComposer({
                 </div>
 
                 <div style={{ fontSize: '11px', color: '#9ca3af', marginBottom: '8px' }}>
-                  👥 {scene.characters.length} Tokoh • ⏱️ {((scene.durationMs || 5000) / 1000).toFixed(0)}d
+                  {scene.characters.length} Tokoh • {((scene.durationMs || 5000) / 1000).toFixed(0)}s
                 </div>
 
                 {/* Kontrol Aksi Per Adegan */}
@@ -378,7 +378,7 @@ export default function SceneComposer({
             }}
           >
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
-              <h4 style={{ margin: 0, color: '#f59e0b', fontSize: '16px' }}>🎭 Pilih Tokoh Wayang</h4>
+              <h4 style={{ margin: 0, color: '#f59e0b', fontSize: '16px' }}>Pilih Tokoh Wayang</h4>
               <button
                 onClick={() => setShowAddCharModal(false)}
                 style={{ background: 'none', border: 'none', color: '#9ca3af', fontSize: '16px', cursor: 'pointer' }}

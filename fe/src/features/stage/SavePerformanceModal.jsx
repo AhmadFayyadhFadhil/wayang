@@ -50,8 +50,8 @@ export default function SavePerformanceModal({
       setStatusMessage({
         type: 'success',
         text: result.syncedWithServer
-          ? '🎉 Karya berhasil disimpan ke server & database!'
-          : '💾 Karya tersimpan aman secara lokal (Offline cache).',
+          ? 'Karya berhasil disimpan ke basis data.'
+          : 'Karya tersimpan aman di penyimpanan lokal.',
       });
 
       // Efek perayaan
@@ -96,7 +96,7 @@ export default function SavePerformanceModal({
       >
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
           <h3 style={{ margin: 0, color: '#f59e0b', fontSize: '18px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-            💾 Simpan Pertunjukan Wayang
+            <Save size={18} /> Simpan Pertunjukan Wayang
           </h3>
           <button
             onClick={onClose}
@@ -151,7 +151,7 @@ export default function SavePerformanceModal({
               ))}
             </select>
             <div style={{ fontSize: '11px', color: '#9ca3af', marginTop: '4px' }}>
-              ℹ️ Menghubungkan karya ke arsip cerita menjaga integritas budaya dan atribusi tradisi.
+              Menghubungkan karya ke arsip naskah menjaga integritas budaya dan atribusi tradisi.
             </div>
           </div>
 

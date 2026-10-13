@@ -105,8 +105,8 @@ export default function StagePreviewModal({
         }}
       >
         <div>
-          <span style={{ fontSize: '11px', color: '#f59e0b', fontWeight: 'bold', letterSpacing: '1px' }}>
-            🎭 MODE PRATINJAU PANGGUNG (CLIENT-SIDE PREVIEW)
+          <span style={{ fontSize: '11px', color: '#f59e0b', fontWeight: 'bold', letterSpacing: '0.8px' }}>
+            PRATINJAU PANGGUNG VIRTUAL
           </span>
           <h2 style={{ margin: '2px 0 0 0', fontSize: '20px', color: '#fff' }}>{metadata?.title}</h2>
           <p style={{ margin: 0, fontSize: '12px', color: '#9ca3af' }}>

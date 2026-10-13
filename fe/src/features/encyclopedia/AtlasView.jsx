@@ -73,10 +73,10 @@ export default function AtlasView({ onPlayCharacterOnStage }) {
         }}
       >
         <div style={{ display: 'inline-block', background: '#b45309', padding: '3px 10px', borderRadius: '12px', fontSize: '11px', fontWeight: 'bold', color: '#fff', marginBottom: '8px' }}>
-          ENSILOPEDIA BUDAYA & ATRIBUSI
+          KATALOG BUDAYA & ATRIBUSI
         </div>
         <h1 style={{ margin: '0 0 8px 0', fontSize: '26px', color: '#fef3c7' }}>
-          📖 Story & Character Atlas
+          Story & Character Atlas
         </h1>
         <p style={{ margin: 0, fontSize: '13px', color: '#d1d5db', maxWidth: '720px', lineHeight: '1.6' }}>
           Jelajahi lakon wiracarita, filosofi luhur watak pewayangan, naskah rujukan bersejarah, serta tata suara gamelan tradisional. Semua aset terhubung dengan prinsip <em>Cultural Integrity</em> dan atribusi sumber yang jelas.
@@ -185,7 +185,7 @@ export default function AtlasView({ onPlayCharacterOnStage }) {
                 {/* Nilai Filosofis */}
                 <div style={{ background: '#27201c', borderLeft: '3px solid #f59e0b', padding: '8px 12px', borderRadius: '4px', marginBottom: '12px' }}>
                   <span style={{ fontSize: '11px', fontWeight: 'bold', color: '#fbbf24', display: 'block', marginBottom: '2px' }}>
-                    💡 Nilai Luhur & Filosofi:
+                    Nilai Luhur & Filosofi:
                   </span>
                   <p style={{ margin: 0, fontSize: '11px', color: '#e5e7eb', fontStyle: 'italic' }}>
                     "{story.philosophy}"
@@ -194,7 +194,7 @@ export default function AtlasView({ onPlayCharacterOnStage }) {
 
                 {/* Rujukan Sumber Dokumen (Provenance) */}
                 <div style={{ fontSize: '11px', color: '#9ca3af', marginBottom: '12px' }}>
-                  <strong>📚 Rujukan Naskah Asal:</strong>
+                  <strong>Rujukan Naskah Asal:</strong>
                   {story.sources.map((src, i) => (
                     <div key={i} style={{ marginTop: '2px' }}>
                       • {src.title} — {src.author} ({src.rightsNote})
@@ -274,7 +274,7 @@ export default function AtlasView({ onPlayCharacterOnStage }) {
                 </div>
 
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px' }}>
-                  <span style={{ fontSize: '10px', color: '#fbbf24' }}>⚔️ {char.weapons}</span>
+                  <span style={{ fontSize: '10px', color: '#fbbf24' }}>Pusaka: {char.weapons}</span>
                   <div style={{ display: 'flex', gap: '6px' }}>
                     <button
                       onClick={() => {
@@ -314,7 +314,7 @@ export default function AtlasView({ onPlayCharacterOnStage }) {
                         gap: '4px',
                       }}
                     >
-                      🎭 Mainkan
+                      Mainkan
                     </button>
                   </div>
                 </div>
@@ -351,7 +351,7 @@ export default function AtlasView({ onPlayCharacterOnStage }) {
                   </div>
                   <h4 style={{ margin: '0 0 4px 0', fontSize: '15px', color: '#fef3c7' }}>{audio.title}</h4>
                   <div style={{ fontSize: '11px', color: '#d1d5db', marginBottom: '4px' }}>
-                    🥁 Instrumen: {audio.instrument}
+                    Instrumen: {audio.instrument}
                   </div>
                   <div style={{ fontSize: '10px', color: '#6b7280' }}>
                     {audio.sourceNote} • {audio.licenseNote}
@@ -430,7 +430,7 @@ export default function AtlasView({ onPlayCharacterOnStage }) {
             </div>
 
             <div style={{ marginBottom: '16px' }}>
-              <h4 style={{ margin: '0 0 6px 0', fontSize: '13px', color: '#f59e0b' }}>📖 Ringkasan Lakon</h4>
+              <h4 style={{ margin: '0 0 6px 0', fontSize: '13px', color: '#f59e0b' }}>Ringkasan Lakon</h4>
               <p style={{ margin: 0, fontSize: '13px', color: '#d1d5db', lineHeight: '1.6' }}>
                 {selectedStoryModal.synopsis}
               </p>
@@ -446,7 +446,7 @@ export default function AtlasView({ onPlayCharacterOnStage }) {
               }}
             >
               <h4 style={{ margin: '0 0 4px 0', fontSize: '13px', color: '#fbbf24' }}>
-                💡 Makna Filosofis & Nilai Moral
+                Makna Filosofis & Nilai Moral
               </h4>
               <p style={{ margin: 0, fontSize: '12px', color: '#fef3c7', lineHeight: '1.5', fontStyle: 'italic' }}>
                 "{selectedStoryModal.philosophy}"
@@ -455,7 +455,7 @@ export default function AtlasView({ onPlayCharacterOnStage }) {
 
             <div style={{ marginBottom: '16px' }}>
               <h4 style={{ margin: '0 0 8px 0', fontSize: '13px', color: '#38bdf8' }}>
-                📚 Catatan Sumber & Integritas Budaya (Cultural Integrity)
+                Catatan Sumber & Integritas Budaya
               </h4>
               <div style={{ background: '#131118', padding: '12px', borderRadius: '8px', border: '1px solid #2e283b' }}>
                 {selectedStoryModal.sources.map((src, i) => (
@@ -584,12 +584,12 @@ export default function AtlasView({ onPlayCharacterOnStage }) {
               {/* Watak & Nilai Filosofis */}
               <div>
                 <div style={{ marginBottom: '12px' }}>
-                  <h4 style={{ margin: '0 0 4px 0', fontSize: '12px', color: '#f59e0b' }}>⚔️ Senjata & Pusaka</h4>
+                  <h4 style={{ margin: '0 0 4px 0', fontSize: '12px', color: '#f59e0b' }}>Senjata & Pusaka</h4>
                   <div style={{ fontSize: '12px', color: '#e5e7eb' }}>{selectedCharModal.weapons}</div>
                 </div>
 
                 <div style={{ marginBottom: '12px' }}>
-                  <h4 style={{ margin: '0 0 4px 0', fontSize: '12px', color: '#f59e0b' }}>📜 Watak & Karakteristik</h4>
+                  <h4 style={{ margin: '0 0 4px 0', fontSize: '12px', color: '#f59e0b' }}>Watak & Karakteristik</h4>
                   <p style={{ margin: 0, fontSize: '12px', color: '#d1d5db', lineHeight: '1.5' }}>
                     {selectedCharModal.description}
                   </p>
@@ -603,7 +603,7 @@ export default function AtlasView({ onPlayCharacterOnStage }) {
                     borderRadius: '6px',
                   }}
                 >
-                  <h4 style={{ margin: '0 0 2px 0', fontSize: '11px', color: '#fbbf24' }}>💡 Nilai Luhur</h4>
+                  <h4 style={{ margin: '0 0 2px 0', fontSize: '11px', color: '#fbbf24' }}>Nilai Luhur</h4>
                   <p style={{ margin: 0, fontSize: '11px', color: '#fef3c7', lineHeight: '1.4', fontStyle: 'italic' }}>
                     "{selectedCharModal.philosophy}"
                   </p>
@@ -646,7 +646,7 @@ export default function AtlasView({ onPlayCharacterOnStage }) {
                   boxShadow: '0 4px 15px rgba(217, 119, 6, 0.4)',
                 }}
               >
-                🎭 Mainkan di Virtual Stage
+                Mainkan di Virtual Stage
               </button>
             </div>
           </div>

@@ -37,50 +37,52 @@ export default function Navbar({ activeTab, onNavigate, backendConnected, curren
         >
           <div
             style={{
-              width: '36px',
-              height: '36px',
-              borderRadius: '10px',
-              background: 'linear-gradient(135deg, #f59e0b, #b45309)',
+              width: '32px',
+              height: '32px',
+              borderRadius: '8px',
+              background: 'linear-gradient(135deg, #d97706, #78350f)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              boxShadow: '0 4px 12px rgba(245, 158, 11, 0.4)',
-              fontSize: '18px',
+              fontWeight: '800',
+              color: '#fef3c7',
+              fontSize: '15px',
+              letterSpacing: '-0.5px',
             }}
           >
-            🎭
+            W
           </div>
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <span style={{ fontSize: '18px', fontWeight: '800', letterSpacing: '0.5px', color: '#fef3c7' }}>
+              <span style={{ fontSize: '16px', fontWeight: '800', letterSpacing: '0.5px', color: '#fef3c7' }}>
                 WAYANG<span style={{ color: '#f59e0b' }}>VERSE</span>
               </span>
               <span
                 style={{
                   fontSize: '9px',
-                  background: '#78350f',
-                  color: '#fef3c7',
-                  padding: '2px 6px',
+                  background: '#272033',
+                  color: '#d1d5db',
+                  padding: '2px 5px',
                   borderRadius: '4px',
-                  fontWeight: 'bold',
+                  fontWeight: '600',
                 }}
               >
-                MVP v1.0
+                v1.0
               </span>
             </div>
-            <div style={{ fontSize: '10px', color: '#9ca3af' }}>Panggung Interaktif Kebudayaan Digital</div>
+            <div style={{ fontSize: '10px', color: '#9ca3af' }}>Platform Digital Pelestarian Seni Wayang</div>
           </div>
         </div>
 
         {/* Menu Navigasi Utama */}
-        <nav style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+        <nav style={{ display: 'flex', flexWrap: 'wrap', gap: '4px' }}>
           <button
             onClick={() => onNavigate('home')}
             style={{
               ...navBtnStyle,
-              background: activeTab === 'home' ? '#2e2438' : 'transparent',
-              color: activeTab === 'home' ? '#f59e0b' : '#d1d5db',
-              borderColor: activeTab === 'home' ? '#f59e0b' : 'transparent',
+              background: activeTab === 'home' ? '#261f30' : 'transparent',
+              color: activeTab === 'home' ? '#f59e0b' : '#9ca3af',
+              borderColor: activeTab === 'home' ? '#78350f' : 'transparent',
             }}
           >
             Beranda
@@ -90,50 +92,49 @@ export default function Navbar({ activeTab, onNavigate, backendConnected, curren
             onClick={() => onNavigate('atlas')}
             style={{
               ...navBtnStyle,
-              background: activeTab === 'atlas' ? '#2e2438' : 'transparent',
-              color: activeTab === 'atlas' ? '#f59e0b' : '#d1d5db',
-              borderColor: activeTab === 'atlas' ? '#f59e0b' : 'transparent',
+              background: activeTab === 'atlas' ? '#261f30' : 'transparent',
+              color: activeTab === 'atlas' ? '#f59e0b' : '#9ca3af',
+              borderColor: activeTab === 'atlas' ? '#78350f' : 'transparent',
             }}
           >
-            <BookOpen size={14} /> Story Atlas
+            Story Atlas
           </button>
 
           <button
             onClick={() => onNavigate('stage')}
             style={{
               ...navBtnStyle,
-              background: activeTab === 'stage' ? '#b45309' : '#3d2516',
-              color: '#fff',
-              fontWeight: 'bold',
-              borderColor: '#f59e0b',
-              boxShadow: '0 2px 10px rgba(245, 158, 11, 0.3)',
+              background: activeTab === 'stage' ? '#78350f' : '#221915',
+              color: activeTab === 'stage' ? '#fef3c7' : '#fbbf24',
+              borderColor: '#b45309',
+              fontWeight: '600',
             }}
           >
-            <Film size={14} /> Virtual Stage
+            Panggung Virtual
           </button>
 
           <button
             onClick={() => onNavigate('archive')}
             style={{
               ...navBtnStyle,
-              background: activeTab === 'archive' ? '#2e2438' : 'transparent',
-              color: activeTab === 'archive' ? '#f59e0b' : '#d1d5db',
-              borderColor: activeTab === 'archive' ? '#f59e0b' : 'transparent',
+              background: activeTab === 'archive' ? '#261f30' : 'transparent',
+              color: activeTab === 'archive' ? '#f59e0b' : '#9ca3af',
+              borderColor: activeTab === 'archive' ? '#78350f' : 'transparent',
             }}
           >
-            <Globe size={14} /> Connected Archive
+            Galeri Publik
           </button>
 
           <button
             onClick={() => onNavigate('my-works')}
             style={{
               ...navBtnStyle,
-              background: activeTab === 'my-works' ? '#2e2438' : 'transparent',
-              color: activeTab === 'my-works' ? '#f59e0b' : '#d1d5db',
-              borderColor: activeTab === 'my-works' ? '#f59e0b' : 'transparent',
+              background: activeTab === 'my-works' ? '#261f30' : 'transparent',
+              color: activeTab === 'my-works' ? '#f59e0b' : '#9ca3af',
+              borderColor: activeTab === 'my-works' ? '#78350f' : 'transparent',
             }}
           >
-            <FolderHeart size={14} /> Karya Saya
+            Karya Saya
           </button>
 
           {/* Tab Khusus Administrator (CMS) */}
@@ -142,9 +143,9 @@ export default function Navbar({ activeTab, onNavigate, backendConnected, curren
               onClick={() => onNavigate('admin')}
               style={{
                 ...navBtnStyle,
-                background: activeTab === 'admin' ? '#78350f' : '#271c11',
-                color: activeTab === 'admin' ? '#fef3c7' : '#fbbf24',
-                borderColor: '#d97706',
+                background: activeTab === 'admin' ? '#78350f' : '#221915',
+                color: activeTab === 'admin' ? '#fef3c7' : '#f59e0b',
+                borderColor: '#b45309',
                 fontWeight: '600',
               }}
             >
