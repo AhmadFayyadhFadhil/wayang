@@ -49,6 +49,11 @@ export default function AuthModal({ isOpen, onClose, currentUser, onAuthSuccess,
       try {
         const res = await apiClient.post(endpoint, payload);
         userResult = res.data?.user || res.data || { name: name || email.split('@')[0], email, role: 'user' };
+        const token = res.data?.token || userResult?.token;
+        if (token) {
+          userResult.token = token;
+          localStorage.setItem('wayangverse_auth_token', token);
+        }
       } catch (apiErr) {
         // Jika server offline / 404, gunakan fallback akun demo lokal yang aman
         console.warn('API auth fallback to local session:', apiErr);

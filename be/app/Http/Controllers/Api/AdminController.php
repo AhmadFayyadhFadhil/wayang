@@ -30,6 +30,34 @@ class AdminController extends Controller
     }
 
     /**
+     * Mengambil seluruh data CMS dalam satu payload terpadu (Atomic & Cepat).
+     */
+    public function dashboardData(Request $request): JsonResponse
+    {
+        $this->authorizeAdmin($request);
+
+        return response()->json([
+            'status' => 'success',
+            'data' => [
+                'counts' => [
+                    'characters' => Character::count(),
+                    'stories' => Story::count(),
+                    'audio_assets' => AudioAsset::count(),
+                    'performances' => Performance::count(),
+                    'public_performances' => Performance::where('visibility', 'public')->count(),
+                    'private_performances' => Performance::where('visibility', 'private')->count(),
+                    'users' => User::count(),
+                ],
+                'characters' => Character::orderBy('id', 'asc')->get(),
+                'stories' => Story::with('sources')->orderBy('id', 'asc')->get(),
+                'audio_assets' => AudioAsset::orderBy('id', 'asc')->get(),
+                'performances' => Performance::with(['user:id,name,email', 'story:id,title'])->latest()->get(),
+                'users' => User::select('id', 'name', 'email', 'created_at')->orderBy('id', 'asc')->get(),
+            ],
+        ]);
+    }
+
+    /**
      * Mengambil ringkasan statistik platform untuk Dashboard CMS.
      */
     public function stats(Request $request): JsonResponse

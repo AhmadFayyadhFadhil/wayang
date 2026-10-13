@@ -56,6 +56,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // 7. Modul CMS Administrator (Master Data, Metrik & Moderasi)
     Route::prefix('admin')->group(function () {
+        Route::get('/dashboard-data', [\App\Http\Controllers\Api\AdminController::class, 'dashboardData']);
         Route::get('/stats', [\App\Http\Controllers\Api\AdminController::class, 'stats']);
         Route::get('/users', [\App\Http\Controllers\Api\AdminController::class, 'users']);
         Route::get('/performances', [\App\Http\Controllers\Api\AdminController::class, 'allPerformances']);
