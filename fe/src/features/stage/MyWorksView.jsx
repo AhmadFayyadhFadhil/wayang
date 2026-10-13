@@ -63,7 +63,7 @@ export default function MyWorksView({ onOpenStudio, onPlayPerformance }) {
   };
 
   return (
-    <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '16px', color: '#f3f4f6' }}>
+    <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '24px 20px', color: 'var(--text-main, #fbf8ee)' }}>
       {/* Header */}
       <div
         style={{
@@ -76,13 +76,13 @@ export default function MyWorksView({ onOpenStudio, onPlayPerformance }) {
         }}
       >
         <div>
-          <span style={{ fontSize: '11px', color: '#f59e0b', fontWeight: 'bold' }}>
+          <span style={{ fontSize: '11px', color: '#d4af37', fontWeight: 'bold' }}>
             GALERI KARYA PRIBADI
           </span>
-          <h1 style={{ margin: '2px 0 0 0', fontSize: '24px', color: '#fef3c7' }}>
+          <h1 style={{ margin: '2px 0 0 0', fontSize: '24px', color: '#fcf6e8' }}>
             Karya & Lakon Saya ({works.length})
           </h1>
-          <p style={{ margin: 0, fontSize: '13px', color: '#9ca3af' }}>
+          <p style={{ margin: 0, fontSize: '13px', color: '#bfae9c' }}>
             Daftar pertunjukan wayang digital yang telah Anda rancang dan simpan.
           </p>
         </div>
@@ -90,10 +90,10 @@ export default function MyWorksView({ onOpenStudio, onPlayPerformance }) {
         <button
           onClick={handleCreateNew}
           style={{
-            background: 'linear-gradient(135deg, #d97706, #b45309)',
-            border: 'none',
-            color: '#fff',
-            padding: '10px 18px',
+            background: 'linear-gradient(135deg, #8b4513, #5c2c10)',
+            border: '1px solid #d4af37',
+            color: '#fcf6e8',
+            padding: '10px 20px',
             borderRadius: '10px',
             fontWeight: 'bold',
             fontSize: '13px',
@@ -101,7 +101,7 @@ export default function MyWorksView({ onOpenStudio, onPlayPerformance }) {
             display: 'flex',
             alignItems: 'center',
             gap: '8px',
-            boxShadow: '0 4px 15px rgba(217, 119, 6, 0.4)',
+            boxShadow: '0 4px 15px rgba(139, 69, 19, 0.45)',
           }}
         >
           <Plus size={16} /> Rancang Lakon Baru

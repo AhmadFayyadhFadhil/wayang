@@ -33,7 +33,7 @@ export default function StageStudio({ onNavigate }) {
   const currentScene = scenes[activeSceneIndex] || scenes[0];
 
   return (
-    <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '16px' }}>
+    <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '20px 16px', color: '#fcfaf2' }}>
       {/* Studio Header Bar */}
       <div
         style={{
@@ -41,29 +41,30 @@ export default function StageStudio({ onNavigate }) {
           flexWrap: 'wrap',
           alignItems: 'center',
           justifyContent: 'space-between',
-          background: 'linear-gradient(135deg, #1f1b29, #13111a)',
-          border: '1px solid #3d334d',
+          background: 'linear-gradient(135deg, #1c150e, #130e09)',
+          border: '1px solid #362619',
           borderRadius: '14px',
-          padding: '12px 18px',
+          padding: '14px 20px',
           marginBottom: '16px',
           gap: '12px',
         }}
       >
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
           <button
             onClick={() => onNavigate && onNavigate('home')}
             title="Kembali ke Beranda"
             style={{
-              background: '#2b263b',
-              border: '1px solid #4a3e63',
-              color: '#d1d5db',
-              padding: '6px 10px',
+              background: '#231a13',
+              border: '1px solid #362619',
+              color: '#d4af37',
+              padding: '7px 12px',
               borderRadius: '8px',
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
-              gap: '4px',
+              gap: '6px',
               fontSize: '12px',
+              fontWeight: '600',
             }}
           >
             <ArrowLeft size={14} /> Beranda
@@ -71,15 +72,15 @@ export default function StageStudio({ onNavigate }) {
 
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <span style={{ fontSize: '11px', background: '#b45309', color: '#fff', padding: '2px 8px', borderRadius: '4px', fontWeight: 'bold' }}>
+              <span style={{ fontSize: '10px', background: 'linear-gradient(135deg, #d4af37, #8b4513)', color: '#0d0a07', padding: '2px 8px', borderRadius: '4px', fontWeight: '800', letterSpacing: '0.05em' }}>
                 STUDIO DALANG 2D
               </span>
-              <h1 style={{ margin: 0, fontSize: '18px', color: '#fef3c7', fontWeight: 'bold' }}>
+              <h1 style={{ margin: 0, fontSize: '18px', color: '#fcfaf2', fontWeight: '700' }}>
                 {metadata.title || 'Lakon Wayang Baru'}
               </h1>
             </div>
-            <div style={{ fontSize: '11px', color: '#9ca3af', marginTop: '2px' }}>
-              {scenes.length} Adegan • Status: <strong style={{ color: metadata.visibility === 'public' ? '#34d399' : '#fbbf24' }}>{metadata.visibility === 'public' ? 'Publik' : 'Privat'}</strong>
+            <div style={{ fontSize: '11px', color: '#bfae9c', marginTop: '2px' }}>
+              {scenes.length} Adegan • Status: <strong style={{ color: metadata.visibility === 'public' ? '#10b981' : '#d4af37' }}>{metadata.visibility === 'public' ? 'Publik' : 'Privat'}</strong>
             </div>
           </div>
         </div>
@@ -102,24 +103,24 @@ export default function StageStudio({ onNavigate }) {
             onClick={() => setShowPreviewModal(true)}
             style={{
               ...studioBtnStyle,
-              background: '#78350f',
-              borderColor: '#f59e0b',
-              color: '#fef3c7',
+              background: '#231a13',
+              borderColor: '#d4af37',
+              color: '#d4af37',
               fontWeight: '600',
             }}
           >
-            <Play size={14} fill="#fef3c7" /> Pratinjau Pertunjukan
+            <Play size={14} fill="#d4af37" /> Pratinjau Pertunjukan
           </button>
 
           <button
             onClick={() => setShowSaveModal(true)}
             style={{
               ...studioBtnStyle,
-              background: 'linear-gradient(135deg, #d97706, #b45309)',
+              background: 'linear-gradient(135deg, #d4af37, #8b4513)',
               border: 'none',
-              color: '#fff',
-              fontWeight: 'bold',
-              boxShadow: '0 4px 15px rgba(217, 119, 6, 0.4)',
+              color: '#0d0a07',
+              fontWeight: '700',
+              boxShadow: '0 4px 15px rgba(212, 175, 55, 0.3)',
             }}
           >
             <Save size={15} /> Simpan Karya
@@ -176,9 +177,9 @@ export default function StageStudio({ onNavigate }) {
 }
 
 const studioBtnStyle = {
-  background: '#2b263b',
-  border: '1px solid #4a3e63',
-  color: '#e5e7eb',
+  background: '#231a13',
+  border: '1px solid #362619',
+  color: '#fcfaf2',
   padding: '8px 14px',
   borderRadius: '8px',
   cursor: 'pointer',
@@ -186,4 +187,5 @@ const studioBtnStyle = {
   alignItems: 'center',
   gap: '6px',
   fontSize: '12px',
+  fontWeight: '500',
 };

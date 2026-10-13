@@ -60,25 +60,25 @@ export default function AtlasView({ onPlayCharacterOnStage }) {
   };
 
   return (
-    <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '16px', color: '#f3f4f6' }}>
+    <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '24px 20px', color: 'var(--text-main, #fbf8ee)' }}>
       {/* Header Banner Atlas */}
       <div
         style={{
-          background: 'linear-gradient(135deg, #271c14, #120e18)',
-          border: '1px solid #78350f',
+          background: 'linear-gradient(135deg, #2b1b11, #140e09)',
+          border: '1px solid #5a3b22',
           borderRadius: '16px',
-          padding: '24px',
-          marginBottom: '20px',
-          boxShadow: '0 12px 30px rgba(0,0,0,0.6)',
+          padding: '28px',
+          marginBottom: '24px',
+          boxShadow: '0 12px 35px rgba(0,0,0,0.65)',
         }}
       >
-        <div style={{ display: 'inline-block', background: '#b45309', padding: '3px 10px', borderRadius: '12px', fontSize: '11px', fontWeight: 'bold', color: '#fff', marginBottom: '8px' }}>
+        <div style={{ display: 'inline-block', background: '#8b4513', border: '1px solid #d4af37', padding: '3px 10px', borderRadius: '12px', fontSize: '11px', fontWeight: 'bold', color: '#fcf6e8', marginBottom: '8px' }}>
           KATALOG BUDAYA & ATRIBUSI
         </div>
-        <h1 style={{ margin: '0 0 8px 0', fontSize: '26px', color: '#fef3c7' }}>
+        <h1 style={{ margin: '0 0 8px 0', fontSize: '26px', color: '#fcf6e8' }}>
           Story & Character Atlas
         </h1>
-        <p style={{ margin: 0, fontSize: '13px', color: '#d1d5db', maxWidth: '720px', lineHeight: '1.6' }}>
+        <p style={{ margin: 0, fontSize: '13px', color: '#bfae9c', maxWidth: '720px', lineHeight: '1.6' }}>
           Jelajahi lakon wiracarita, filosofi luhur watak pewayangan, naskah rujukan bersejarah, serta tata suara gamelan tradisional. Semua aset terhubung dengan prinsip <em>Cultural Integrity</em> dan atribusi sumber yang jelas.
         </p>
       </div>
@@ -100,9 +100,9 @@ export default function AtlasView({ onPlayCharacterOnStage }) {
             onClick={() => setActiveTab('stories')}
             style={{
               ...tabBtnStyle,
-              background: activeTab === 'stories' ? '#b45309' : '#1e1c26',
-              color: activeTab === 'stories' ? '#fff' : '#9ca3af',
-              borderColor: activeTab === 'stories' ? '#f59e0b' : '#322d3d',
+              background: activeTab === 'stories' ? '#8b4513' : '#1a130d',
+              color: activeTab === 'stories' ? '#fcf6e8' : '#bfae9c',
+              borderColor: activeTab === 'stories' ? '#d4af37' : '#362619',
             }}
           >
             <BookOpen size={15} /> Lakon Cerita ({STORIES_MASTER.length})
@@ -111,9 +111,9 @@ export default function AtlasView({ onPlayCharacterOnStage }) {
             onClick={() => setActiveTab('characters')}
             style={{
               ...tabBtnStyle,
-              background: activeTab === 'characters' ? '#b45309' : '#1e1c26',
-              color: activeTab === 'characters' ? '#fff' : '#9ca3af',
-              borderColor: activeTab === 'characters' ? '#f59e0b' : '#322d3d',
+              background: activeTab === 'characters' ? '#8b4513' : '#1a130d',
+              color: activeTab === 'characters' ? '#fcf6e8' : '#bfae9c',
+              borderColor: activeTab === 'characters' ? '#d4af37' : '#362619',
             }}
           >
             <Users size={15} /> Tokoh Wayang ({CHARACTERS_MASTER.length})
@@ -122,9 +122,9 @@ export default function AtlasView({ onPlayCharacterOnStage }) {
             onClick={() => setActiveTab('audio')}
             style={{
               ...tabBtnStyle,
-              background: activeTab === 'audio' ? '#b45309' : '#1e1c26',
-              color: activeTab === 'audio' ? '#fff' : '#9ca3af',
-              borderColor: activeTab === 'audio' ? '#f59e0b' : '#322d3d',
+              background: activeTab === 'audio' ? '#8b4513' : '#1a130d',
+              color: activeTab === 'audio' ? '#fcf6e8' : '#bfae9c',
+              borderColor: activeTab === 'audio' ? '#d4af37' : '#362619',
             }}
           >
             <Music size={15} /> Tata Suara ({AUDIO_MASTER.length})

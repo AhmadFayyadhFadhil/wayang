@@ -225,35 +225,42 @@ export default function AdminCmsView({ onPlayPerformance }) {
   };
 
   return (
-    <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '20px 16px', color: '#f3f4f6' }}>
+    <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '24px 20px', color: '#fcfaf2' }}>
       {/* 1. Header Ringkas */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px', flexWrap: 'wrap', gap: '12px' }}>
         <div>
-          <h1 style={{ margin: 0, fontSize: '20px', fontWeight: '700', color: '#fef3c7' }}>
-            Manajemen Data (CMS)
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+            <span style={{ fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.12em', color: '#d4af37', fontWeight: '700', padding: '2px 8px', borderRadius: '4px', background: 'rgba(212, 175, 55, 0.1)', border: '1px solid rgba(212, 175, 55, 0.3)' }}>
+              Panel Administrator
+            </span>
+          </div>
+          <h1 style={{ margin: 0, fontSize: '24px', fontWeight: '700', color: '#fcfaf2' }}>
+            Manajemen Data & Master Wayang
           </h1>
-          <p style={{ margin: '4px 0 0 0', fontSize: '13px', color: '#9ca3af' }}>
-            Kelola master data tokoh, cerita, tata suara, dan moderasi karya pengguna.
+          <p style={{ margin: '4px 0 0 0', fontSize: '13px', color: '#bfae9c' }}>
+            Pusat kurasi master data tokoh, lakon wiracarita, instrumen tata suara, dan moderasi karya pagelaran dalang.
           </p>
         </div>
         <button
           onClick={loadData}
           disabled={loading}
           style={{
-            background: '#231e30',
-            border: '1px solid #3c3252',
-            color: '#d1d5db',
-            padding: '7px 12px',
+            background: '#221a13',
+            border: '1px solid #4a3826',
+            color: '#d4af37',
+            padding: '8px 16px',
             borderRadius: '8px',
             fontSize: '12px',
+            fontWeight: '600',
             cursor: loading ? 'wait' : 'pointer',
             display: 'flex',
             alignItems: 'center',
-            gap: '6px',
+            gap: '8px',
+            transition: 'all 0.2s ease',
           }}
         >
           <RefreshCw size={13} className={loading ? 'animate-spin' : ''} />
-          {loading ? 'Memuat...' : 'Refresh'}
+          {loading ? 'Menyinkronkan...' : 'Sinkronkan Data'}
         </button>
       </div>
 
@@ -261,11 +268,11 @@ export default function AdminCmsView({ onPlayPerformance }) {
       {notice && (
         <div
           style={{
-            padding: '8px 14px',
-            borderRadius: '6px',
-            marginBottom: '16px',
-            fontSize: '12px',
-            background: notice.isError ? '#450a0a' : '#064e3b',
+            padding: '10px 16px',
+            borderRadius: '8px',
+            marginBottom: '20px',
+            fontSize: '13px',
+            background: notice.isError ? 'rgba(185, 28, 28, 0.15)' : 'rgba(16, 185, 129, 0.15)',
             border: `1px solid ${notice.isError ? '#ef4444' : '#10b981'}`,
             color: notice.isError ? '#fca5a5' : '#6ee7b7',
           }}
@@ -276,26 +283,26 @@ export default function AdminCmsView({ onPlayPerformance }) {
 
       {/* 2. Ringkasan Metrik Esensial */}
       {stats && (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: '10px', marginBottom: '20px' }}>
-          <MetricBox label="Tokoh" value={stats.counts?.characters ?? characters.length} onClick={() => setActiveTab('karakter')} active={activeTab === 'karakter'} />
-          <MetricBox label="Cerita" value={stats.counts?.stories ?? stories.length} onClick={() => setActiveTab('cerita')} active={activeTab === 'cerita'} />
-          <MetricBox label="Audio" value={stats.counts?.audio_assets ?? audioAssets.length} onClick={() => setActiveTab('audio')} active={activeTab === 'audio'} />
-          <MetricBox label="Karya" value={stats.counts?.performances ?? performances.length} onClick={() => setActiveTab('karya')} active={activeTab === 'karya'} />
-          <MetricBox label="Pengguna" value={stats.counts?.users ?? usersList.length} onClick={() => setActiveTab('users')} active={activeTab === 'users'} />
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '12px', marginBottom: '24px' }}>
+          <MetricBox label="Tokoh Wayang" value={stats.counts?.characters ?? characters.length} onClick={() => setActiveTab('karakter')} active={activeTab === 'karakter'} />
+          <MetricBox label="Lakon Cerita" value={stats.counts?.stories ?? stories.length} onClick={() => setActiveTab('cerita')} active={activeTab === 'cerita'} />
+          <MetricBox label="Tata Suara / SFX" value={stats.counts?.audio_assets ?? audioAssets.length} onClick={() => setActiveTab('audio')} active={activeTab === 'audio'} />
+          <MetricBox label="Karya Pagelaran" value={stats.counts?.performances ?? performances.length} onClick={() => setActiveTab('karya')} active={activeTab === 'karya'} />
+          <MetricBox label="Pengguna Terdaftar" value={stats.counts?.users ?? usersList.length} onClick={() => setActiveTab('users')} active={activeTab === 'users'} />
         </div>
       )}
 
       {/* 3. Tab Navigasi Bersih */}
-      <div style={{ display: 'flex', borderBottom: '1px solid #2d243b', marginBottom: '16px', gap: '4px' }}>
+      <div style={{ display: 'flex', borderBottom: '1px solid #362619', marginBottom: '20px', gap: '6px', overflowX: 'auto' }}>
         <TabItem label="Tokoh Wayang" active={activeTab === 'karakter'} count={characters.length} onClick={() => setActiveTab('karakter')} />
         <TabItem label="Lakon Cerita" active={activeTab === 'cerita'} count={stories.length} onClick={() => setActiveTab('cerita')} />
         <TabItem label="Tata Suara" active={activeTab === 'audio'} count={audioAssets.length} onClick={() => setActiveTab('audio')} />
-        <TabItem label="Karya Pengguna" active={activeTab === 'karya'} count={performances.length} onClick={() => setActiveTab('karya')} />
+        <TabItem label="Karya Pagelaran" active={activeTab === 'karya'} count={performances.length} onClick={() => setActiveTab('karya')} />
         <TabItem label="Pengguna" active={activeTab === 'users'} count={usersList.length} onClick={() => setActiveTab('users')} />
       </div>
 
       {/* 4. Konten Tab */}
-      <div style={{ background: '#161220', border: '1px solid #2e263d', borderRadius: '10px', padding: '16px' }}>
+      <div style={{ background: '#17110c', border: '1px solid #362619', borderRadius: '12px', padding: '20px' }}>
 
         {/* TAB TOKOH WAYANG */}
         {activeTab === 'karakter' && (
@@ -565,22 +572,23 @@ export default function AdminCmsView({ onPlayPerformance }) {
         >
           <div
             style={{
-              background: '#191523',
-              border: '1px solid #78350f',
+              background: '#17110c',
+              border: '1px solid #d4af37',
+              boxShadow: '0 20px 45px rgba(0,0,0,0.85), 0 0 25px rgba(212, 175, 55, 0.15)',
               borderRadius: '12px',
-              padding: '20px',
-              maxWidth: '480px',
+              padding: '24px',
+              maxWidth: '500px',
               width: '100%',
-              color: '#f9fafb',
+              color: '#fcfaf2',
             }}
           >
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
-              <h3 style={{ margin: 0, fontSize: '15px', color: '#f59e0b', fontWeight: '600' }}>
-                {editingItem ? 'Edit Data' : 'Tambah Data Baru'}
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+              <h3 style={{ margin: 0, fontSize: '16px', color: '#d4af37', fontWeight: '700' }}>
+                {editingItem ? 'Perbarui Data Master' : 'Tambah Data Master Baru'}
               </h3>
               <button
                 onClick={() => setModalType(null)}
-                style={{ background: 'none', border: 'none', color: '#9ca3af', fontSize: '16px', cursor: 'pointer' }}
+                style={{ background: 'none', border: 'none', color: '#bfae9c', fontSize: '18px', cursor: 'pointer' }}
               >
                 ✕
               </button>
@@ -772,17 +780,18 @@ export default function AdminCmsView({ onPlayPerformance }) {
                 </div>
               )}
 
-              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px' }}>
+              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px', marginTop: '18px' }}>
                 <button
                   type="button"
                   onClick={() => setModalType(null)}
                   style={{
-                    background: '#272333',
-                    border: '1px solid #3c3252',
-                    color: '#9ca3af',
-                    padding: '7px 14px',
+                    background: '#221a13',
+                    border: '1px solid #4a3826',
+                    color: '#bfae9c',
+                    padding: '8px 16px',
                     borderRadius: '6px',
                     fontSize: '12px',
+                    fontWeight: '600',
                     cursor: 'pointer',
                   }}
                 >
@@ -791,17 +800,18 @@ export default function AdminCmsView({ onPlayPerformance }) {
                 <button
                   type="submit"
                   style={{
-                    background: '#b45309',
+                    background: 'linear-gradient(135deg, #d4af37, #b8860b)',
                     border: 'none',
-                    color: '#fff',
-                    padding: '7px 16px',
+                    color: '#0d0a07',
+                    padding: '8px 20px',
                     borderRadius: '6px',
                     fontSize: '12px',
-                    fontWeight: '600',
+                    fontWeight: '700',
                     cursor: 'pointer',
+                    boxShadow: '0 2px 10px rgba(212, 175, 55, 0.3)',
                   }}
                 >
-                  Simpan
+                  Simpan Perubahan
                 </button>
               </div>
             </form>
@@ -818,16 +828,17 @@ function MetricBox({ label, value, onClick, active }) {
     <div
       onClick={onClick}
       style={{
-        background: active ? '#2e1e0f' : '#161220',
-        border: `1px solid ${active ? '#d97706' : '#2e263d'}`,
+        background: active ? 'rgba(212, 175, 55, 0.12)' : '#17110c',
+        border: `1px solid ${active ? '#d4af37' : '#362619'}`,
         borderRadius: '8px',
-        padding: '10px 14px',
+        padding: '12px 14px',
         cursor: 'pointer',
-        transition: 'border-color 0.15s ease',
+        boxShadow: active ? '0 0 15px rgba(212, 175, 55, 0.12)' : 'none',
+        transition: 'all 0.2s ease',
       }}
     >
-      <div style={{ fontSize: '11px', color: '#9ca3af', marginBottom: '2px' }}>{label}</div>
-      <div style={{ fontSize: '20px', fontWeight: '700', color: active ? '#fef3c7' : '#f59e0b' }}>{value}</div>
+      <div style={{ fontSize: '11px', color: active ? '#d4af37' : '#bfae9c', marginBottom: '4px', fontWeight: '500' }}>{label}</div>
+      <div style={{ fontSize: '22px', fontWeight: '700', color: active ? '#fcfaf2' : '#d4af37' }}>{value}</div>
     </div>
   );
 }
@@ -839,19 +850,21 @@ function TabItem({ label, active, count, onClick }) {
       style={{
         background: 'transparent',
         border: 'none',
-        borderBottom: `2px solid ${active ? '#f59e0b' : 'transparent'}`,
-        color: active ? '#fef3c7' : '#9ca3af',
-        padding: '8px 14px',
+        borderBottom: `2px solid ${active ? '#d4af37' : 'transparent'}`,
+        color: active ? '#d4af37' : '#bfae9c',
+        padding: '10px 16px',
         fontSize: '13px',
-        fontWeight: active ? '600' : 'normal',
+        fontWeight: active ? '700' : '500',
         cursor: 'pointer',
         display: 'flex',
         alignItems: 'center',
         gap: '6px',
+        whiteSpace: 'nowrap',
+        transition: 'color 0.15s ease',
       }}
     >
       <span>{label}</span>
-      <span style={{ fontSize: '11px', background: '#272033', color: '#d1d5db', padding: '1px 6px', borderRadius: '10px' }}>
+      <span style={{ fontSize: '11px', background: active ? 'rgba(212, 175, 55, 0.2)' : '#231a13', color: active ? '#d4af37' : '#bfae9c', padding: '1px 7px', borderRadius: '10px', border: '1px solid #362619' }}>
         {count}
       </span>
     </button>
@@ -860,17 +873,18 @@ function TabItem({ label, active, count, onClick }) {
 
 // Styling Ringkas & Rapi
 const btnAddStyle = {
-  background: '#b45309',
+  background: 'linear-gradient(135deg, #d4af37, #b8860b)',
   border: 'none',
-  color: '#fff',
-  padding: '6px 12px',
+  color: '#0d0a07',
+  padding: '7px 14px',
   borderRadius: '6px',
   fontSize: '12px',
-  fontWeight: '600',
+  fontWeight: '700',
   cursor: 'pointer',
   display: 'flex',
   alignItems: 'center',
-  gap: '4px',
+  gap: '6px',
+  boxShadow: '0 2px 8px rgba(212, 175, 55, 0.25)',
 };
 
 const tblStyle = {
@@ -880,71 +894,79 @@ const tblStyle = {
 };
 
 const tblHeadStyle = {
-  borderBottom: '1px solid #2e263d',
+  borderBottom: '1px solid #362619',
   textAlign: 'left',
 };
 
 const thStyle = {
-  padding: '8px 10px',
-  color: '#9ca3af',
+  padding: '10px 12px',
+  color: '#d4af37',
   fontSize: '11px',
   fontWeight: '600',
+  letterSpacing: '0.04em',
+  textTransform: 'uppercase',
 };
 
 const tblRowStyle = {
-  borderBottom: '1px solid #1f1a2b',
+  borderBottom: '1px solid #231a13',
+  transition: 'background 0.15s ease',
 };
 
 const tdStyle = {
-  padding: '10px',
+  padding: '12px',
   verticalAlign: 'middle',
+  color: '#fcfaf2',
 };
 
 const badgeStyle = {
-  background: '#231e30',
-  padding: '2px 6px',
+  background: '#231a13',
+  border: '1px solid #362619',
+  padding: '3px 8px',
   borderRadius: '4px',
-  fontSize: '10px',
-  color: '#d1d5db',
+  fontSize: '11px',
+  color: '#d4af37',
   display: 'inline-block',
+  fontWeight: '500',
 };
 
 const btnEditStyle = {
-  background: '#272033',
-  border: '1px solid #3c3252',
-  color: '#e5e7eb',
-  padding: '4px 8px',
+  background: '#231a13',
+  border: '1px solid #4a3826',
+  color: '#fcfaf2',
+  padding: '5px 10px',
   borderRadius: '4px',
   fontSize: '11px',
   cursor: 'pointer',
   marginRight: '6px',
+  fontWeight: '500',
 };
 
 const btnDelStyle = {
-  background: '#450a0a',
-  border: '1px solid #ef4444',
+  background: 'rgba(185, 28, 28, 0.15)',
+  border: '1px solid rgba(239, 68, 68, 0.4)',
   color: '#fca5a5',
-  padding: '4px 8px',
+  padding: '5px 10px',
   borderRadius: '4px',
   fontSize: '11px',
   cursor: 'pointer',
+  fontWeight: '500',
 };
 
 const lblStyle = {
   display: 'block',
   fontSize: '11px',
   fontWeight: '600',
-  color: '#9ca3af',
+  color: '#bfae9c',
   marginBottom: '4px',
 };
 
 const inpStyle = {
   width: '100%',
-  padding: '7px 10px',
-  background: '#120f18',
-  border: '1px solid #3c3252',
+  padding: '8px 12px',
+  background: '#0d0a07',
+  border: '1px solid #362619',
   borderRadius: '6px',
-  color: '#f9fafb',
+  color: '#fcfaf2',
   fontSize: '12px',
   boxSizing: 'border-box',
 };

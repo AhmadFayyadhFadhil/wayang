@@ -5,9 +5,9 @@ export default function Navbar({ activeTab, onNavigate, backendConnected, curren
   return (
     <header
       style={{
-        background: 'rgba(18, 16, 24, 0.92)',
+        background: 'rgba(13, 10, 7, 0.94)',
         backdropFilter: 'blur(12px)',
-        borderBottom: '1px solid #382c40',
+        borderBottom: '1px solid #362619',
         position: 'sticky',
         top: 0,
         zIndex: 50,
@@ -40,29 +40,31 @@ export default function Navbar({ activeTab, onNavigate, backendConnected, curren
               width: '32px',
               height: '32px',
               borderRadius: '8px',
-              background: 'linear-gradient(135deg, #d97706, #78350f)',
+              background: 'linear-gradient(135deg, #d4af37, #8b4513)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               fontWeight: '800',
-              color: '#fef3c7',
+              color: '#fcf6e8',
               fontSize: '15px',
               letterSpacing: '-0.5px',
+              boxShadow: '0 2px 8px rgba(212, 175, 55, 0.25)',
             }}
           >
             W
           </div>
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <span style={{ fontSize: '16px', fontWeight: '800', letterSpacing: '0.5px', color: '#fef3c7' }}>
-                WAYANG<span style={{ color: '#f59e0b' }}>VERSE</span>
+              <span style={{ fontSize: '16px', fontWeight: '800', letterSpacing: '0.5px', color: '#fcf6e8' }}>
+                WAYANG<span style={{ color: '#d4af37' }}>VERSE</span>
               </span>
               <span
                 style={{
                   fontSize: '9px',
-                  background: '#272033',
-                  color: '#d1d5db',
-                  padding: '2px 5px',
+                  background: '#2b1e14',
+                  color: '#d4af37',
+                  border: '1px solid #5a3b22',
+                  padding: '1px 5px',
                   borderRadius: '4px',
                   fontWeight: '600',
                 }}
@@ -70,7 +72,7 @@ export default function Navbar({ activeTab, onNavigate, backendConnected, curren
                 v1.0
               </span>
             </div>
-            <div style={{ fontSize: '10px', color: '#9ca3af' }}>Platform Digital Pelestarian Seni Wayang</div>
+            <div style={{ fontSize: '10px', color: '#bfae9c' }}>Platform Digital Pelestarian Seni Wayang</div>
           </div>
         </div>
 
@@ -80,9 +82,9 @@ export default function Navbar({ activeTab, onNavigate, backendConnected, curren
             onClick={() => onNavigate('home')}
             style={{
               ...navBtnStyle,
-              background: activeTab === 'home' ? '#261f30' : 'transparent',
-              color: activeTab === 'home' ? '#f59e0b' : '#9ca3af',
-              borderColor: activeTab === 'home' ? '#78350f' : 'transparent',
+              background: activeTab === 'home' ? '#2b1e14' : 'transparent',
+              color: activeTab === 'home' ? '#e5c158' : '#bfae9c',
+              borderColor: activeTab === 'home' ? '#8b4513' : 'transparent',
             }}
           >
             Beranda
@@ -92,9 +94,9 @@ export default function Navbar({ activeTab, onNavigate, backendConnected, curren
             onClick={() => onNavigate('atlas')}
             style={{
               ...navBtnStyle,
-              background: activeTab === 'atlas' ? '#261f30' : 'transparent',
-              color: activeTab === 'atlas' ? '#f59e0b' : '#9ca3af',
-              borderColor: activeTab === 'atlas' ? '#78350f' : 'transparent',
+              background: activeTab === 'atlas' ? '#2b1e14' : 'transparent',
+              color: activeTab === 'atlas' ? '#e5c158' : '#bfae9c',
+              borderColor: activeTab === 'atlas' ? '#8b4513' : 'transparent',
             }}
           >
             Story Atlas
@@ -104,10 +106,11 @@ export default function Navbar({ activeTab, onNavigate, backendConnected, curren
             onClick={() => onNavigate('stage')}
             style={{
               ...navBtnStyle,
-              background: activeTab === 'stage' ? '#78350f' : '#221915',
-              color: activeTab === 'stage' ? '#fef3c7' : '#fbbf24',
-              borderColor: '#b45309',
+              background: activeTab === 'stage' ? 'linear-gradient(135deg, #8b4513, #5c2c10)' : '#261b12',
+              color: activeTab === 'stage' ? '#fcf6e8' : '#e5c158',
+              borderColor: '#8b4513',
               fontWeight: '600',
+              boxShadow: activeTab === 'stage' ? '0 2px 10px rgba(139, 69, 19, 0.4)' : 'none',
             }}
           >
             Panggung Virtual
@@ -117,9 +120,9 @@ export default function Navbar({ activeTab, onNavigate, backendConnected, curren
             onClick={() => onNavigate('archive')}
             style={{
               ...navBtnStyle,
-              background: activeTab === 'archive' ? '#261f30' : 'transparent',
-              color: activeTab === 'archive' ? '#f59e0b' : '#9ca3af',
-              borderColor: activeTab === 'archive' ? '#78350f' : 'transparent',
+              background: activeTab === 'archive' ? '#2b1e14' : 'transparent',
+              color: activeTab === 'archive' ? '#e5c158' : '#bfae9c',
+              borderColor: activeTab === 'archive' ? '#8b4513' : 'transparent',
             }}
           >
             Galeri Publik
@@ -129,9 +132,9 @@ export default function Navbar({ activeTab, onNavigate, backendConnected, curren
             onClick={() => onNavigate('my-works')}
             style={{
               ...navBtnStyle,
-              background: activeTab === 'my-works' ? '#261f30' : 'transparent',
-              color: activeTab === 'my-works' ? '#f59e0b' : '#9ca3af',
-              borderColor: activeTab === 'my-works' ? '#78350f' : 'transparent',
+              background: activeTab === 'my-works' ? '#2b1e14' : 'transparent',
+              color: activeTab === 'my-works' ? '#e5c158' : '#bfae9c',
+              borderColor: activeTab === 'my-works' ? '#8b4513' : 'transparent',
             }}
           >
             Karya Saya
@@ -143,9 +146,9 @@ export default function Navbar({ activeTab, onNavigate, backendConnected, curren
               onClick={() => onNavigate('admin')}
               style={{
                 ...navBtnStyle,
-                background: activeTab === 'admin' ? '#78350f' : '#221915',
-                color: activeTab === 'admin' ? '#fef3c7' : '#f59e0b',
-                borderColor: '#b45309',
+                background: activeTab === 'admin' ? 'linear-gradient(135deg, #8b4513, #5c2c10)' : '#261b12',
+                color: activeTab === 'admin' ? '#fcf6e8' : '#e5c158',
+                borderColor: '#8b4513',
                 fontWeight: '600',
               }}
             >

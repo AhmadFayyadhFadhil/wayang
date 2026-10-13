@@ -40,34 +40,34 @@ export default function ConnectedArchiveView({ onPlayPerformance, onNavigateToCh
   }, []);
 
   return (
-    <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '16px', color: '#f3f4f6' }}>
+    <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '24px 20px', color: 'var(--text-main, #fbf8ee)' }}>
       {/* Header Banner */}
       <div
         style={{
-          background: 'linear-gradient(135deg, #1e1b24, #121016)',
-          border: '1px solid #3d334a',
+          background: 'linear-gradient(135deg, #2b1b11, #140e09)',
+          border: '1px solid #5a3b22',
           borderRadius: '16px',
-          padding: '24px',
+          padding: '28px',
           marginBottom: '24px',
-          boxShadow: '0 12px 30px rgba(0,0,0,0.6)',
+          boxShadow: '0 12px 35px rgba(0,0,0,0.65)',
         }}
       >
-        <div style={{ display: 'inline-block', background: '#b45309', padding: '3px 10px', borderRadius: '12px', fontSize: '11px', fontWeight: 'bold', color: '#fff', marginBottom: '8px' }}>
+        <div style={{ display: 'inline-block', background: '#8b4513', border: '1px solid #d4af37', padding: '3px 10px', borderRadius: '12px', fontSize: '11px', fontWeight: 'bold', color: '#fcf6e8', marginBottom: '8px' }}>
           ARSIP KREATIF TERHUBUNG
         </div>
-        <h1 style={{ margin: '0 0 8px 0', fontSize: '24px', color: '#fef3c7' }}>
+        <h1 style={{ margin: '0 0 8px 0', fontSize: '24px', color: '#fcf6e8' }}>
           Galeri Karya Publik & Jaringan Budaya
         </h1>
-        <p style={{ margin: 0, fontSize: '13px', color: '#d1d5db', maxWidth: '750px', lineHeight: '1.6' }}>
+        <p style={{ margin: 0, fontSize: '13px', color: '#bfae9c', maxWidth: '750px', lineHeight: '1.6' }}>
           Saksikan interpretasi lakon wayang yang dirancang oleh generasi muda. Setiap karya terhubung langsung ke sumber naskah cerita dan watak filosofis tokoh pewayangan.
         </p>
       </div>
 
       {publicWorks.length === 0 ? (
-        <div style={{ textAlign: 'center', padding: '50px 20px', background: '#131922', borderRadius: '16px', border: '1px solid #202b3a' }}>
-          <Globe size={40} color="#38bdf8" style={{ marginBottom: '10px' }} />
-          <h3 style={{ margin: '0 0 6px 0', color: '#f0f9ff' }}>Belum Ada Karya Publik</h3>
-          <p style={{ margin: 0, fontSize: '13px', color: '#94a3b8' }}>
+        <div style={{ textAlign: 'center', padding: '50px 20px', background: '#16110c', borderRadius: '16px', border: '1px solid #362619' }}>
+          <Globe size={40} color="#d4af37" style={{ marginBottom: '10px' }} />
+          <h3 style={{ margin: '0 0 6px 0', color: '#fcf6e8' }}>Belum Ada Karya Publik</h3>
+          <p style={{ margin: 0, fontSize: '13px', color: '#bfae9c' }}>
             Simpan lakon Anda dengan visibilitas "Publik" agar tampil di galeri ini.
           </p>
         </div>
@@ -89,8 +89,8 @@ export default function ConnectedArchiveView({ onPlayPerformance, onNavigateToCh
               <div
                 key={work.id}
                 style={{
-                  background: '#151b26',
-                  border: '1px solid #253347',
+                  background: '#16110c',
+                  border: '1px solid #362619',
                   borderRadius: '16px',
                   padding: '20px',
                   display: 'flex',

@@ -89,8 +89,8 @@ function App() {
     <div
       style={{
         minHeight: '100vh',
-        background: '#0c0a10',
-        color: '#f3f4f6',
+        background: 'var(--bg-deep, #0d0a07)',
+        color: 'var(--text-main, #fbf8ee)',
         display: 'flex',
         flexDirection: 'column',
       }}
@@ -185,19 +185,19 @@ function App() {
       {/* 4. Footer Bernuansa Warisan Budaya */}
       <footer
         style={{
-          borderTop: '1px solid #272133',
-          background: '#09080d',
+          borderTop: '1px solid #362619',
+          background: '#090705',
           padding: '24px 18px',
           textAlign: 'center',
           fontSize: '12px',
-          color: '#6b7280',
+          color: '#a39280',
         }}
       >
-        <div style={{ maxWidth: '1100px', margin: '0 auto', display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', gap: '12px' }}>
+        <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', gap: '12px' }}>
           <div>
-            <strong style={{ color: '#d4a359' }}>Wayangverse</strong> — Platform Pertunjukan Wayang 2D Virtual & Preservasi Budaya.
+            <strong style={{ color: '#d4af37' }}>Wayangverse</strong> — Platform Pertunjukan Wayang 2D Virtual & Preservasi Budaya.
           </div>
-          <div style={{ display: 'flex', gap: '16px' }}>
+          <div style={{ display: 'flex', gap: '16px', color: '#8f7e6c' }}>
             <span>Tema: Sosial & Kesenian</span>
             <span>•</span>
             <span>Prinsip: Cultural Integrity</span>

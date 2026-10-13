@@ -51,34 +51,35 @@ export default function SceneComposer({
     <div
       className="scene-composer-container"
       style={{
-        background: '#16151a',
-        border: '1px solid #382d22',
+        background: '#17110c',
+        border: '1px solid #362619',
         borderRadius: '14px',
         padding: '16px',
-        color: '#f3f4f6',
+        color: '#fcfaf2',
         marginTop: '16px',
       }}
     >
       {/* 1. TIMELINE STRIP ADEGAN */}
       <div style={{ marginBottom: '16px' }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px' }}>
-          <span style={{ fontSize: '13px', fontWeight: 'bold', color: '#f59e0b', letterSpacing: '0.5px' }}>
+          <span style={{ fontSize: '13px', fontWeight: 'bold', color: '#d4af37', letterSpacing: '0.5px' }}>
             TIMELINE ALUR ADEGAN ({scenes.length} Adegan)
           </span>
           <button
             onClick={onAddScene}
             style={{
-              background: '#b45309',
-              color: '#fff',
+              background: 'linear-gradient(135deg, #d4af37, #8b4513)',
+              color: '#0d0a07',
               border: 'none',
-              padding: '6px 12px',
+              padding: '6px 14px',
               borderRadius: '8px',
               fontSize: '12px',
-              fontWeight: '600',
+              fontWeight: '700',
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
-              gap: '4px',
+              gap: '6px',
+              boxShadow: '0 2px 8px rgba(212, 175, 55, 0.25)',
             }}
           >
             <Plus size={14} /> Tambah Adegan
@@ -104,15 +105,16 @@ export default function SceneComposer({
                   minWidth: '160px',
                   padding: '10px',
                   borderRadius: '10px',
-                  background: isActive ? 'linear-gradient(145deg, #2e1d0f, #1c140c)' : '#211f26',
-                  border: isActive ? '2px solid #f59e0b' : '1px solid #332f3f',
+                  background: isActive ? 'linear-gradient(145deg, #2e1d0f, #1c140c)' : '#221a13',
+                  border: isActive ? '2px solid #d4af37' : '1px solid #362619',
                   cursor: 'pointer',
                   transition: 'all 0.15s ease',
                   position: 'relative',
+                  boxShadow: isActive ? '0 0 15px rgba(212, 175, 55, 0.15)' : 'none',
                 }}
               >
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
-                  <span style={{ fontSize: '12px', fontWeight: 'bold', color: isActive ? '#fbbf24' : '#d1d5db' }}>
+                  <span style={{ fontSize: '12px', fontWeight: 'bold', color: isActive ? '#fcfaf2' : '#bfae9c' }}>
                     #{idx + 1} {scene.title}
                   </span>
                 </div>
@@ -184,10 +186,10 @@ export default function SceneComposer({
           display: 'grid',
           gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
           gap: '16px',
-          background: '#1d1a24',
-          padding: '14px',
+          background: '#1f1710',
+          padding: '16px',
           borderRadius: '10px',
-          border: '1px solid #2e2a3a',
+          border: '1px solid #362619',
         }}
       >
         {/* Kolom 1: Konfigurasi Panggung & Audio */}
@@ -369,25 +371,26 @@ export default function SceneComposer({
         >
           <div
             style={{
-              background: '#1e1c24',
-              border: '2px solid #78350f',
+              background: '#17110c',
+              border: '2px solid #d4af37',
               borderRadius: '16px',
-              padding: '20px',
-              maxWidth: '460px',
+              padding: '24px',
+              maxWidth: '480px',
               width: '90%',
+              boxShadow: '0 20px 45px rgba(0,0,0,0.85), 0 0 25px rgba(212, 175, 55, 0.15)',
             }}
           >
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
-              <h4 style={{ margin: 0, color: '#f59e0b', fontSize: '16px' }}>Pilih Tokoh Wayang</h4>
+              <h4 style={{ margin: 0, color: '#d4af37', fontSize: '16px', fontWeight: '700' }}>Pilih Tokoh Wayang</h4>
               <button
                 onClick={() => setShowAddCharModal(false)}
-                style={{ background: 'none', border: 'none', color: '#9ca3af', fontSize: '16px', cursor: 'pointer' }}
+                style={{ background: 'none', border: 'none', color: '#bfae9c', fontSize: '18px', cursor: 'pointer' }}
               >
                 ✕
               </button>
             </div>
-            <p style={{ margin: '0 0 16px 0', fontSize: '12px', color: '#9ca3af' }}>
-              Pilih karakter yang ingin ditampilkan di atas kelir panggung untuk adegan ini.
+            <p style={{ margin: '0 0 16px 0', fontSize: '12px', color: '#bfae9c' }}>
+              Pilih karakter wayang kulit yang ingin ditampilkan di atas kelir panggung untuk adegan ini.
             </p>
 
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
@@ -402,18 +405,18 @@ export default function SceneComposer({
                     display: 'flex',
                     flexDirection: 'column',
                     alignItems: 'flex-start',
-                    background: '#272430',
-                    border: '1px solid #433d52',
+                    background: '#231a13',
+                    border: '1px solid #362619',
                     borderRadius: '10px',
-                    padding: '10px',
+                    padding: '12px',
                     cursor: 'pointer',
-                    color: '#f3f4f6',
+                    color: '#fcfaf2',
                     textAlign: 'left',
                     transition: 'all 0.15s ease',
                   }}
                 >
                   <span style={{ fontSize: '12px', fontWeight: 'bold', color: char.accentColor }}>{char.name}</span>
-                  <span style={{ fontSize: '10px', color: '#9ca3af' }}>{char.typeName}</span>
+                  <span style={{ fontSize: '10px', color: '#bfae9c', marginTop: '2px' }}>{char.typeName}</span>
                 </button>
               ))}
             </div>
@@ -430,26 +433,26 @@ const labelStyle = {
   gap: '6px',
   fontSize: '11px',
   fontWeight: '600',
-  color: '#d1d5db',
+  color: '#d4af37',
   marginBottom: '4px',
 };
 
 const inputStyle = {
   width: '100%',
-  padding: '6px 10px',
-  background: '#16141c',
-  border: '1px solid #373347',
+  padding: '8px 12px',
+  background: '#0d0a07',
+  border: '1px solid #362619',
   borderRadius: '8px',
-  color: '#f9fafb',
+  color: '#fcfaf2',
   fontSize: '12px',
   boxSizing: 'border-box',
 };
 
 const miniIconBtnStyle = {
-  background: '#2b2738',
-  border: 'none',
-  color: '#d1d5db',
-  padding: '3px 6px',
+  background: '#231a13',
+  border: '1px solid #362619',
+  color: '#bfae9c',
+  padding: '4px 7px',
   borderRadius: '4px',
   cursor: 'pointer',
   display: 'flex',

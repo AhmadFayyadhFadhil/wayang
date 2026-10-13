@@ -4,19 +4,24 @@
   --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-display: 'Cinzel', serif;
   
-  --bg-deep: #0c0a10;
-  --bg-surface: #16141d;
-  --bg-elevated: #201b2a;
+  --bg-deep: #0d0a07;
+  --bg-surface: #17110c;
+  --bg-elevated: #221a13;
   
-  --gold-primary: #f59e0b;
-  --gold-glow: #d97706;
-  --gold-warm: #fef3c7;
+  --gold-primary: #d4af37;
+  --gold-glow: #b48a28;
+  --gold-warm: #fcf6e8;
+  --gold-accent: #f59e0b;
   
-  --border-subtle: #2d2638;
+  --soga-brown: #8b4513;
+  --soga-deep: #5c2c10;
+  --terracotta: #a0522d;
+  
+  --border-subtle: #362619;
   --border-gold: #78350f;
   
-  --text-main: #f3f4f6;
-  --text-muted: #9ca3af;
+  --text-main: #fbf8ee;
+  --text-muted: #bfae9c;
 }
 
 * {
@@ -52,14 +57,14 @@ h1, h2, h3, h4 {
   height: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: #110e17;
+  background: #120e0a;
 }
 ::-webkit-scrollbar-thumb {
-  background: #382c44;
+  background: #4a3422;
   border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #f59e0b;
+  background: #d4af37;
 }
 
 /* Animasi Denyut Blencong (Minyak Kelir Wayang) */
