@@ -207,111 +207,82 @@ export default function HomeView({ onNavigate, connectionStatus, onTestConnectio
         </div>
       </section>
 
-      {/* 2. KONTEN LANJUTAN: PILAR & STATUS (Terpusat, MaxWidth 1200px) */}
-      <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '48px 24px 24px 24px' }}>
-        {/* FITUR UNGGULAN & PRINSIP PRODUK */}
-        <section style={{ marginBottom: '40px' }}>
-          <h2 style={{ fontSize: '20px', fontWeight: '800', color: '#fcfaf2', marginBottom: '20px' }}>
-            Pilar & Keunggulan Platform
-          </h2>
+      {/* 2. KONTEN LANJUTAN: EMPAT PILAR KEUNGGULAN (Terpusat, MaxWidth 1200px) */}
+      <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '56px 24px 40px 24px' }}>
+        <section style={{ marginBottom: '32px' }}>
+          <div style={{ textAlign: 'center', marginBottom: '36px' }}>
+            <span style={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.14em', color: '#d4af37', fontWeight: '700', padding: '3px 10px', background: 'rgba(212, 175, 55, 0.1)', borderRadius: '20px', border: '1px solid rgba(212, 175, 55, 0.25)' }}>
+              Filosofi & Keunggulan
+            </span>
+            <h2 style={{ fontSize: '26px', fontWeight: '800', color: '#fcfaf2', margin: '10px 0 8px 0', letterSpacing: '-0.3px' }}>
+              Empat Pilar Pelestarian Digital
+            </h2>
+            <p style={{ fontSize: '14px', color: '#bfae9c', maxWidth: '620px', margin: '0 auto', lineHeight: '1.6' }}>
+              Memadukan estetika adiluhung seni pedalangan klasik dengan teknologi komputasi interaktif web modern.
+            </p>
+          </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '18px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '20px' }}>
             <div style={featureCardStyle}>
-              <div style={{ ...featureIconBox, background: '#451a03', color: '#e5c158' }}>
+              <div style={{ ...featureIconBox, background: 'rgba(212, 175, 55, 0.12)', border: '1px solid rgba(212, 175, 55, 0.3)', color: '#d4af37' }}>
                 <Zap size={18} />
               </div>
-              <h3 style={featureTitleStyle}>Experience First</h3>
+              <h3 style={featureTitleStyle}>Cipta Karsa Interaktif</h3>
               <p style={featureDescStyle}>
-                Bukan sekadar membaca teks. Pengguna mengendalikan posisi tokoh wayang, pose laga, dan dialog secara langsung di atas kelir digital.
+                Bukan sekadar membaca. Pengguna memegang kendali penuh atas gerak, tancep, laga, dan dialog tokoh wayang di atas kelir digital.
               </p>
             </div>
 
             <div style={featureCardStyle}>
-              <div style={{ ...featureIconBox, background: '#1c281e', color: '#6ee7b7' }}>
+              <div style={{ ...featureIconBox, background: 'rgba(139, 69, 19, 0.25)', border: '1px solid rgba(212, 175, 55, 0.25)', color: '#e5c158' }}>
                 <ShieldCheck size={18} />
               </div>
-              <h3 style={featureTitleStyle}>Cultural Integrity</h3>
+              <h3 style={featureTitleStyle}>Integritas Pakem Tradisi</h3>
               <p style={featureDescStyle}>
-                Menjaga keaslian pakem tradisi melalui naskah rujukan budaya yang terkurasi dan transparan bagi setiap lakon wiracarita.
+                Menjunjung tinggi keaslian sanad naskah rujukan bersejarah (seperti Kakawin Bharatayuddha dan Serat Purwa) yang terkurasi transparan.
               </p>
             </div>
 
             <div style={featureCardStyle}>
-              <div style={{ ...featureIconBox, background: '#182635', color: '#7dd3fc' }}>
+              <div style={{ ...featureIconBox, background: 'rgba(160, 82, 45, 0.22)', border: '1px solid rgba(160, 82, 45, 0.4)', color: '#d97706' }}>
                 <Layers size={18} />
               </div>
-              <h3 style={featureTitleStyle}>Connected by Design</h3>
+              <h3 style={featureTitleStyle}>Jalinan Makna & Filosofi</h3>
               <p style={featureDescStyle}>
-                Setiap pertunjukan yang tersimpan menautkan tokoh dan cerita sumber, sehingga pengunjung dapat menelusuri filosofi di balik adegan.
+                Setiap karya pagelaran bertaut langsung dengan filosofi watak tokoh dan lakon induk sumbernya (*Connected by Design*).
               </p>
             </div>
 
             <div style={featureCardStyle}>
-              <div style={{ ...featureIconBox, background: '#351829', color: '#f472b6' }}>
+              <div style={{ ...featureIconBox, background: 'rgba(212, 175, 55, 0.12)', border: '1px solid rgba(212, 175, 55, 0.3)', color: '#d4af37' }}>
                 <Music size={18} />
               </div>
-              <h3 style={featureTitleStyle}>Soundscape Realtime</h3>
+              <h3 style={featureTitleStyle}>Tata Suara Gamelan Asli</h3>
               <p style={featureDescStyle}>
-                Gamelan laras slendro, efek dodogan cempala dalang, kepyak logam, dan gong ageng disintesis langsung di peramban web tanpa delay.
+                Laras slendro, dodogan cempala dalang, kepyak logam, dan gong ageng disintesis langsung di peramban tanpa latensi.
               </p>
             </div>
           </div>
         </section>
 
-        {/* STATUS KONEKSI BACKEND & DATABASE */}
-        <section
+        {/* Aksara Jawa & Kutipan Luhur */}
+        <div
           style={{
-            background: '#15100c',
+            background: 'linear-gradient(135deg, #1c140d, #120e0a)',
             border: '1px solid #362619',
             borderRadius: '16px',
-            padding: '18px 24px',
-            marginBottom: '20px',
+            padding: '24px',
+            textAlign: 'center',
+            boxShadow: '0 8px 24px rgba(0,0,0,0.5)',
           }}
         >
-          <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', gap: '14px' }}>
-            <div>
-              <h4 style={{ margin: '0 0 4px 0', fontSize: '14px', fontWeight: '700', color: '#fcfaf2' }}>
-                Integrasi REST API & Database
-              </h4>
-              <p style={{ margin: 0, fontSize: '12px', color: '#bfae9c' }}>
-                Backend Laravel 12 & MySQL aktif. Frontend mendukung mekanisme cache lokal secara otomatis.
-              </p>
-            </div>
-
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-              <span
-                style={{
-                  fontSize: '11px',
-                  padding: '4px 12px',
-                  borderRadius: '20px',
-                  background: connectionStatus?.connected ? '#1c281e' : '#261b12',
-                  color: connectionStatus?.connected ? '#6ee7b7' : '#d4af37',
-                  border: `1px solid ${connectionStatus?.connected ? '#2d5a37' : '#5a3b22'}`,
-                  fontWeight: '600',
-                }}
-              >
-                {connectionStatus?.connected ? 'Backend Terhubung' : 'Mode Offline Aktif'}
-              </span>
-
-              <button
-                onClick={onTestConnection}
-                style={{
-                  background: '#261b12',
-                  border: '1px solid #5a3b22',
-                  color: '#fcfaf2',
-                  padding: '6px 14px',
-                  borderRadius: '8px',
-                  fontSize: '11px',
-                  fontWeight: '600',
-                  cursor: 'pointer',
-                  transition: 'all 0.15s ease',
-                }}
-              >
-                Cek Ulang
-              </button>
-            </div>
+          <div style={{ fontSize: '13px', color: '#d4af37', fontWeight: '700', fontStyle: 'italic', letterSpacing: '0.04em', marginBottom: '6px' }}>
+            "Memayu Hayuning Bawana, Ambrasta Dur Hangkara"
           </div>
-        </section>
+          <p style={{ margin: 0, fontSize: '12px', color: '#bfae9c' }}>
+            Memperindah kelestarian semesta dan menundukkan angkara murka melalui keluhuran seni budaya Nusantara.
+          </p>
+        </div>
       </div>
     </div>
   );

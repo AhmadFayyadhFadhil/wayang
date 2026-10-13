@@ -18,7 +18,7 @@ export const CHARACTERS_MASTER = [
     defaultScale: 1.0,
     availablePoses: ['default', 'sembah', 'perang', 'terbang'],
     status: 'published',
-    accentColor: '#eab308',
+    accentColor: '#d4af37',
     silhouetteSvg: 'gatotkaca'
   },
   {
@@ -35,7 +35,7 @@ export const CHARACTERS_MASTER = [
     defaultScale: 0.95,
     availablePoses: ['default', 'sembah', 'perang', 'memanah'],
     status: 'published',
-    accentColor: '#38bdf8',
+    accentColor: '#e5c158',
     silhouetteSvg: 'arjuna'
   },
   {
@@ -52,7 +52,7 @@ export const CHARACTERS_MASTER = [
     defaultScale: 0.98,
     availablePoses: ['default', 'sembah', 'perang', 'memanah'],
     status: 'published',
-    accentColor: '#f97316',
+    accentColor: '#d97706',
     silhouetteSvg: 'karna'
   },
   {
@@ -69,7 +69,7 @@ export const CHARACTERS_MASTER = [
     defaultScale: 1.15,
     availablePoses: ['default', 'sembah', 'perang', 'tinju'],
     status: 'published',
-    accentColor: '#a855f7',
+    accentColor: '#c59b27',
     silhouetteSvg: 'bima'
   },
   {
@@ -86,7 +86,7 @@ export const CHARACTERS_MASTER = [
     defaultScale: 0.85,
     availablePoses: ['default', 'sembah', 'nasihat'],
     status: 'published',
-    accentColor: '#10b981',
+    accentColor: '#bfae9c',
     silhouetteSvg: 'semar'
   },
   {
@@ -103,7 +103,7 @@ export const CHARACTERS_MASTER = [
     defaultScale: 1.18,
     availablePoses: ['default', 'perang', 'tertawa'],
     status: 'published',
-    accentColor: '#ef4444',
+    accentColor: '#991b1b',
     silhouetteSvg: 'rahwana'
   }
 ];

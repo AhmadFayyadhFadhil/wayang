@@ -133,19 +133,19 @@ export default function AtlasView({ onPlayCharacterOnStage }) {
 
         {/* Input Search */}
         <div style={{ position: 'relative', width: '280px' }}>
-          <Search size={15} style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', color: '#9ca3af' }} />
+          <Search size={15} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: '#bfae9c' }} />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Cari cerita, tokoh, atau instrumen..."
+            placeholder="Cari lakon, tokoh, pusaka..."
             style={{
               width: '100%',
-              padding: '8px 12px 8px 32px',
-              background: '#1a1822',
-              border: '1px solid #373347',
+              padding: '9px 14px 9px 36px',
+              background: '#17110c',
+              border: '1px solid #362619',
               borderRadius: '20px',
-              color: '#fff',
+              color: '#fcfaf2',
               fontSize: '12px',
               boxSizing: 'border-box',
             }}
@@ -153,74 +153,79 @@ export default function AtlasView({ onPlayCharacterOnStage }) {
         </div>
       </div>
 
-      {/* KONTEN TAB: 1. CERITA (LAKON) */}
+      {/* KONTEN TAB: 1. CERITA (LAKON) - PROGRESSIVE DISCLOSURE */}
       {activeTab === 'stories' && (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '16px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))', gap: '20px' }}>
           {filteredStories.map((story) => (
             <div
               key={story.id}
               style={{
-                background: '#1b1824',
-                border: '1px solid #3d3247',
-                borderRadius: '14px',
-                padding: '18px',
+                background: '#17110c',
+                border: '1px solid #362619',
+                borderRadius: '16px',
+                padding: '22px',
                 display: 'flex',
                 flexDirection: 'column',
                 justifyContent: 'space-between',
-                transition: 'all 0.2s',
+                boxShadow: '0 8px 24px rgba(0,0,0,0.5)',
               }}
             >
               <div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
-                  <span style={{ fontSize: '11px', color: '#f59e0b', fontWeight: 'bold' }}>{story.tradition}</span>
-                  <span style={{ fontSize: '10px', color: '#9ca3af', background: '#272333', padding: '2px 8px', borderRadius: '8px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
+                  <span style={{ fontSize: '11px', color: '#d4af37', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                    {story.tradition}
+                  </span>
+                  <span style={{ fontSize: '10px', color: '#bfae9c', background: '#231a13', border: '1px solid #362619', padding: '2px 8px', borderRadius: '12px' }}>
                     {story.versionLabel}
                   </span>
                 </div>
-                <h3 style={{ margin: '0 0 10px 0', fontSize: '18px', color: '#fef3c7' }}>{story.title}</h3>
-                <p style={{ fontSize: '12px', color: '#d1d5db', lineHeight: '1.5', marginBottom: '12px' }}>
+
+                <h3 style={{ margin: '0 0 10px 0', fontSize: '19px', color: '#fcfaf2', fontWeight: '700' }}>
+                  {story.title}
+                </h3>
+
+                <p style={{ fontSize: '13px', color: '#bfae9c', lineHeight: '1.6', marginBottom: '14px', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
                   {story.synopsis}
                 </p>
 
-                {/* Nilai Filosofis */}
-                <div style={{ background: '#27201c', borderLeft: '3px solid #f59e0b', padding: '8px 12px', borderRadius: '4px', marginBottom: '12px' }}>
-                  <span style={{ fontSize: '11px', fontWeight: 'bold', color: '#fbbf24', display: 'block', marginBottom: '2px' }}>
-                    Nilai Luhur & Filosofi:
-                  </span>
-                  <p style={{ margin: 0, fontSize: '11px', color: '#e5e7eb', fontStyle: 'italic' }}>
+                {/* Nilai Filosofis Ringkas */}
+                <div style={{ background: '#221a13', borderLeft: '3px solid #d4af37', padding: '10px 14px', borderRadius: '6px', marginBottom: '16px' }}>
+                  <div style={{ fontSize: '10px', fontWeight: '700', color: '#d4af37', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '2px' }}>
+                    Intisari Filosofi:
+                  </div>
+                  <div style={{ fontSize: '12px', color: '#fcfaf2', fontStyle: 'italic', lineHeight: '1.4', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
                     "{story.philosophy}"
-                  </p>
+                  </div>
                 </div>
+              </div>
 
-                {/* Rujukan Sumber Dokumen (Provenance) */}
-                <div style={{ fontSize: '11px', color: '#9ca3af', marginBottom: '12px' }}>
-                  <strong>Rujukan Naskah Asal:</strong>
-                  {story.sources.map((src, i) => (
-                    <div key={i} style={{ marginTop: '2px' }}>
-                      • {src.title} — {src.author} ({src.rightsNote})
-                    </div>
-                  ))}
+              {/* Footer Kartu & Tombol Baca Lengkap */}
+              <div>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: '11px', color: '#bfae9c', paddingBottom: '12px', borderBottom: '1px solid #231a13', marginBottom: '12px' }}>
+                  <span>{story.sources.length} Naskah Kuno Terkurasi</span>
+                  <span style={{ color: '#d4af37' }}>{story.theme_song || 'Gamelan Klasik'}</span>
                 </div>
 
                 <button
                   onClick={() => setSelectedStoryModal(story)}
                   style={{
                     width: '100%',
-                    background: '#231e2e',
-                    border: '1px solid #4a3e61',
-                    color: '#fef3c7',
-                    padding: '6px 12px',
+                    background: '#221a13',
+                    border: '1px solid #4a3826',
+                    color: '#d4af37',
+                    padding: '9px 14px',
                     borderRadius: '8px',
-                    fontSize: '11px',
-                    fontWeight: 'bold',
+                    fontSize: '12px',
+                    fontWeight: '700',
                     cursor: 'pointer',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
                     gap: '6px',
+                    transition: 'all 0.15s ease',
                   }}
                 >
-                  <Info size={13} color="#f59e0b" /> Baca Lengkap, Karakter & Naskah Rujukan
+                  <BookOpen size={14} /> Baca Naskah & Filosofi Lengkap
                 </button>
               </div>
             </div>
@@ -230,93 +235,96 @@ export default function AtlasView({ onPlayCharacterOnStage }) {
 
       {/* KONTEN TAB: 2. TOKOH WAYANG (CHARACTERS) */}
       {activeTab === 'characters' && (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '16px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))', gap: '20px' }}>
           {filteredCharacters.map((char) => (
             <div
               key={char.id}
               style={{
-                background: '#1b1824',
-                border: '1px solid #3d3247',
-                borderRadius: '14px',
-                padding: '16px',
+                background: '#17110c',
+                border: '1px solid #362619',
+                borderRadius: '16px',
+                padding: '18px',
                 display: 'flex',
-                gap: '14px',
+                gap: '16px',
                 alignItems: 'center',
-                transition: 'all 0.2s',
+                boxShadow: '0 8px 24px rgba(0,0,0,0.5)',
               }}
             >
               {/* Siluet Wayang Mini Preview */}
               <div
                 style={{
-                  width: '90px',
-                  height: '130px',
-                  background: 'radial-gradient(circle, #3d2b1a 0%, #15111e 80%)',
-                  borderRadius: '10px',
+                  width: '95px',
+                  height: '140px',
+                  background: 'radial-gradient(circle, #2a1d13 0%, #120e0a 80%)',
+                  borderRadius: '12px',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  border: `1px solid ${char.accentColor || '#78350f'}`,
+                  border: `1px solid ${char.accentColor || '#d4af37'}`,
                   flexShrink: 0,
                 }}
               >
-                <WayangFigureSvg slug={char.slug} scale={0.42} width={80} height={120} accentColor={char.accentColor} />
+                <WayangFigureSvg slug={char.slug} scale={0.46} width={85} height={125} accentColor={char.accentColor} />
               </div>
 
               {/* Detail Karakter */}
-              <div style={{ flex: 1 }}>
-                <span style={{ fontSize: '10px', color: char.accentColor, fontWeight: 'bold', textTransform: 'uppercase' }}>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <span style={{ fontSize: '10px', color: char.accentColor, fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
                   {char.typeName}
                 </span>
-                <h3 style={{ margin: '2px 0 2px 0', fontSize: '16px', color: '#fff' }}>{char.name}</h3>
-                <div style={{ fontSize: '11px', color: '#9ca3af', marginBottom: '6px' }}>{char.alias}</div>
-                <div style={{ fontSize: '11px', color: '#d1d5db', lineHeight: '1.4', marginBottom: '8px' }}>
+                <h3 style={{ margin: '2px 0 2px 0', fontSize: '17px', color: '#fcfaf2', fontWeight: '700' }}>{char.name}</h3>
+                <div style={{ fontSize: '11px', color: '#bfae9c', marginBottom: '6px' }}>{char.alias}</div>
+                <div style={{ fontSize: '12px', color: '#e5dec9', lineHeight: '1.4', marginBottom: '10px', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
                   {char.description}
                 </div>
 
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px' }}>
-                  <span style={{ fontSize: '10px', color: '#fbbf24' }}>Pusaka: {char.weapons}</span>
-                  <div style={{ display: 'flex', gap: '6px' }}>
-                    <button
-                      onClick={() => {
-                        setSelectedCharModal(char);
-                        setPreviewPose('default');
-                      }}
-                      title="Lihat profil mendalam & uji pose"
-                      style={{
-                        background: '#231e2e',
-                        border: '1px solid #4a3e61',
-                        color: '#d1d5db',
-                        padding: '4px 8px',
-                        borderRadius: '8px',
-                        fontSize: '11px',
-                        fontWeight: 'bold',
-                        cursor: 'pointer',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '3px',
-                      }}
-                    >
-                      <Info size={12} color="#f59e0b" /> Profil & Pose
-                    </button>
-                    <button
-                      onClick={() => onPlayCharacterOnStage && onPlayCharacterOnStage(char.id)}
-                      style={{
-                        background: '#78350f',
-                        border: '1px solid #d97706',
-                        color: '#fef3c7',
-                        padding: '4px 10px',
-                        borderRadius: '8px',
-                        fontSize: '11px',
-                        fontWeight: 'bold',
-                        cursor: 'pointer',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '4px',
-                      }}
-                    >
-                      Mainkan
-                    </button>
-                  </div>
+                <div style={{ fontSize: '11px', color: '#d4af37', marginBottom: '10px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                  <strong>Pusaka:</strong> {char.weapons}
+                </div>
+
+                <div style={{ display: 'flex', gap: '8px' }}>
+                  <button
+                    onClick={() => {
+                      setSelectedCharModal(char);
+                      setPreviewPose('default');
+                    }}
+                    title="Lihat profil mendalam & uji pose"
+                    style={{
+                      flex: 1,
+                      background: '#221a13',
+                      border: '1px solid #4a3826',
+                      color: '#d4af37',
+                      padding: '6px 10px',
+                      borderRadius: '6px',
+                      fontSize: '11px',
+                      fontWeight: '700',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '4px',
+                    }}
+                  >
+                    <Info size={12} color="#d4af37" /> Profil & Pose
+                  </button>
+                  <button
+                    onClick={() => onPlayCharacterOnStage && onPlayCharacterOnStage(char.id)}
+                    style={{
+                      background: 'linear-gradient(135deg, #d4af37, #8b4513)',
+                      border: 'none',
+                      color: '#0d0a07',
+                      padding: '6px 12px',
+                      borderRadius: '6px',
+                      fontSize: '11px',
+                      fontWeight: '800',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '4px',
+                    }}
+                  >
+                    Mainkan
+                  </button>
                 </div>
               </div>
             </div>
@@ -326,34 +334,35 @@ export default function AtlasView({ onPlayCharacterOnStage }) {
 
       {/* KONTEN TAB: 3. TATA SUARA & SFX */}
       {activeTab === 'audio' && (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '16px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '18px' }}>
           {filteredAudio.map((audio) => {
             const isPlaying = playingAudioId === audio.id;
             return (
               <div
                 key={audio.id}
                 style={{
-                  background: '#1b1824',
-                  border: '1px solid #3d3247',
+                  background: '#17110c',
+                  border: '1px solid #362619',
                   borderRadius: '14px',
-                  padding: '16px',
+                  padding: '18px',
                   display: 'flex',
                   justifyContent: 'space-between',
                   alignItems: 'center',
+                  boxShadow: '0 8px 20px rgba(0,0,0,0.4)',
                 }}
               >
                 <div>
-                  <div style={{ display: 'flex', gap: '6px', alignItems: 'center', marginBottom: '4px' }}>
-                    <span style={{ fontSize: '10px', background: audio.category === 'bgm' ? '#065f46' : '#78350f', color: '#fff', padding: '2px 6px', borderRadius: '6px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '4px' }}>
+                    <span style={{ fontSize: '10px', background: '#221a13', border: '1px solid #362619', color: '#d4af37', padding: '2px 8px', borderRadius: '4px', fontWeight: '700' }}>
                       {audio.category.toUpperCase()}
                     </span>
-                    <span style={{ fontSize: '11px', color: '#9ca3af' }}>{audio.tempo}</span>
+                    <span style={{ fontSize: '11px', color: '#bfae9c' }}>{audio.tempo}</span>
                   </div>
-                  <h4 style={{ margin: '0 0 4px 0', fontSize: '15px', color: '#fef3c7' }}>{audio.title}</h4>
-                  <div style={{ fontSize: '11px', color: '#d1d5db', marginBottom: '4px' }}>
+                  <h4 style={{ margin: '0 0 4px 0', fontSize: '16px', color: '#fcfaf2', fontWeight: '700' }}>{audio.title}</h4>
+                  <div style={{ fontSize: '12px', color: '#bfae9c', marginBottom: '4px' }}>
                     Instrumen: {audio.instrument}
                   </div>
-                  <div style={{ fontSize: '10px', color: '#6b7280' }}>
+                  <div style={{ fontSize: '11px', color: '#8c7d6e' }}>
                     {audio.sourceNote} • {audio.licenseNote}
                   </div>
                 </div>
@@ -361,18 +370,19 @@ export default function AtlasView({ onPlayCharacterOnStage }) {
                 <button
                   onClick={() => handleToggleAudio(audio)}
                   style={{
-                    background: isPlaying ? '#ef4444' : '#b45309',
+                    background: isPlaying ? '#991b1b' : 'linear-gradient(135deg, #d4af37, #8b4513)',
                     border: 'none',
-                    color: '#fff',
-                    width: '42px',
-                    height: '42px',
+                    color: isPlaying ? '#fff' : '#0d0a07',
+                    width: '44px',
+                    height: '44px',
                     borderRadius: '50%',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
                     cursor: 'pointer',
-                    boxShadow: '0 4px 12px rgba(245, 158, 11, 0.3)',
+                    boxShadow: isPlaying ? '0 4px 15px rgba(153, 27, 27, 0.4)' : '0 4px 15px rgba(212, 175, 55, 0.3)',
                     flexShrink: 0,
+                    fontWeight: 'bold',
                   }}
                 >
                   {isPlaying ? <Square size={16} /> : <Play size={16} />}
@@ -400,69 +410,69 @@ export default function AtlasView({ onPlayCharacterOnStage }) {
         >
           <div
             style={{
-              background: '#1a1824',
-              border: '2px solid #78350f',
+              background: '#17110c',
+              border: '1px solid #d4af37',
               borderRadius: '16px',
               maxWidth: '650px',
               width: '100%',
               maxHeight: '90vh',
               overflowY: 'auto',
               padding: '24px',
-              color: '#f9fafb',
-              boxShadow: '0 25px 60px rgba(0,0,0,0.9)',
+              color: '#fcfaf2',
+              boxShadow: '0 25px 60px rgba(0,0,0,0.9), 0 0 30px rgba(212, 175, 55, 0.15)',
             }}
           >
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
               <div>
-                <span style={{ fontSize: '11px', color: '#f59e0b', fontWeight: 'bold' }}>
+                <span style={{ fontSize: '11px', color: '#d4af37', fontWeight: 'bold', textTransform: 'uppercase' }}>
                   {selectedStoryModal.tradition} • {selectedStoryModal.versionLabel}
                 </span>
-                <h2 style={{ margin: '4px 0 0 0', fontSize: '22px', color: '#fef3c7' }}>
+                <h2 style={{ margin: '4px 0 0 0', fontSize: '22px', color: '#fcfaf2', fontWeight: '700' }}>
                   {selectedStoryModal.title}
                 </h2>
               </div>
               <button
                 onClick={() => setSelectedStoryModal(null)}
-                style={{ background: 'none', border: 'none', color: '#9ca3af', fontSize: '20px', cursor: 'pointer' }}
+                style={{ background: 'none', border: 'none', color: '#bfae9c', fontSize: '20px', cursor: 'pointer' }}
               >
                 ✕
               </button>
             </div>
 
             <div style={{ marginBottom: '16px' }}>
-              <h4 style={{ margin: '0 0 6px 0', fontSize: '13px', color: '#f59e0b' }}>Ringkasan Lakon</h4>
-              <p style={{ margin: 0, fontSize: '13px', color: '#d1d5db', lineHeight: '1.6' }}>
+              <h4 style={{ margin: '0 0 6px 0', fontSize: '13px', color: '#d4af37', fontWeight: '700' }}>Ringkasan Lakon</h4>
+              <p style={{ margin: 0, fontSize: '13px', color: '#e5dec9', lineHeight: '1.6' }}>
                 {selectedStoryModal.synopsis}
               </p>
             </div>
 
             <div
               style={{
-                background: '#261c14',
-                borderLeft: '4px solid #f59e0b',
+                background: '#221a13',
+                borderLeft: '4px solid #d4af37',
                 padding: '12px 16px',
                 borderRadius: '8px',
                 marginBottom: '16px',
               }}
             >
-              <h4 style={{ margin: '0 0 4px 0', fontSize: '13px', color: '#fbbf24' }}>
+              <h4 style={{ margin: '0 0 4px 0', fontSize: '13px', color: '#d4af37' }}>
                 Makna Filosofis & Nilai Moral
               </h4>
-              <p style={{ margin: 0, fontSize: '12px', color: '#fef3c7', lineHeight: '1.5', fontStyle: 'italic' }}>
+              <p style={{ margin: 0, fontSize: '12px', color: '#fcfaf2', lineHeight: '1.5', fontStyle: 'italic' }}>
                 "{selectedStoryModal.philosophy}"
               </p>
             </div>
 
             <div style={{ marginBottom: '16px' }}>
-              <h4 style={{ margin: '0 0 8px 0', fontSize: '13px', color: '#38bdf8' }}>
+              <h4 style={{ margin: '0 0 8px 0', fontSize: '13px', color: '#d4af37', fontWeight: '700' }}>
                 Catatan Sumber & Integritas Budaya
               </h4>
-              <div style={{ background: '#131118', padding: '12px', borderRadius: '8px', border: '1px solid #2e283b' }}>
+              <div style={{ background: '#120e0a', padding: '14px', borderRadius: '8px', border: '1px solid #362619' }}>
                 {selectedStoryModal.sources.map((src, i) => (
                   <div key={i} style={{ marginBottom: i < selectedStoryModal.sources.length - 1 ? '10px' : 0, fontSize: '12px' }}>
-                    <div style={{ fontWeight: 'bold', color: '#e0f2fe' }}>{src.title}</div>
-                    <div style={{ color: '#94a3b8' }}>Pengarang / Penerbit: {src.author}</div>
-                    <div style={{ color: '#64748b', fontSize: '11px' }}>Rujukan: {src.reference} • Hak Cipta: {src.rightsNote}</div>
+                    <div style={{ fontWeight: 'bold', color: '#fcfaf2' }}>{src.title}</div>
+                    <div style={{ color: '#bfae9c' }}>Pengarang / Penerbit: {src.author}</div>
+                    <div style={{ color: '#8c7d6e', fontSize: '11px' }}>Rujukan: {src.reference} • Hak Cipta: {src.rightsNote}</div>
                   </div>
                 ))}
               </div>
@@ -472,13 +482,14 @@ export default function AtlasView({ onPlayCharacterOnStage }) {
               <button
                 onClick={() => setSelectedStoryModal(null)}
                 style={{
-                  background: '#27272a',
-                  border: '1px solid #3f3f46',
-                  color: '#e4e4e7',
+                  background: '#221a13',
+                  border: '1px solid #4a3826',
+                  color: '#fcfaf2',
                   padding: '8px 20px',
                   borderRadius: '8px',
                   cursor: 'pointer',
                   fontSize: '13px',
+                  fontWeight: '600',
                 }}
               >
                 Tutup
@@ -505,16 +516,16 @@ export default function AtlasView({ onPlayCharacterOnStage }) {
         >
           <div
             style={{
-              background: '#1a1824',
-              border: '2px solid #78350f',
+              background: '#17110c',
+              border: '1px solid #d4af37',
               borderRadius: '16px',
               maxWidth: '680px',
               width: '100%',
               maxHeight: '90vh',
               overflowY: 'auto',
               padding: '24px',
-              color: '#f9fafb',
-              boxShadow: '0 25px 60px rgba(0,0,0,0.9)',
+              color: '#fcfaf2',
+              boxShadow: '0 25px 60px rgba(0,0,0,0.9), 0 0 30px rgba(212, 175, 55, 0.15)',
             }}
           >
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
@@ -522,14 +533,14 @@ export default function AtlasView({ onPlayCharacterOnStage }) {
                 <span style={{ fontSize: '11px', color: selectedCharModal.accentColor, fontWeight: 'bold', textTransform: 'uppercase' }}>
                   {selectedCharModal.typeName}
                 </span>
-                <h2 style={{ margin: '4px 0 0 0', fontSize: '22px', color: '#fef3c7' }}>
+                <h2 style={{ margin: '4px 0 0 0', fontSize: '22px', color: '#fcfaf2', fontWeight: '700' }}>
                   {selectedCharModal.name}
                 </h2>
-                <div style={{ fontSize: '12px', color: '#9ca3af' }}>{selectedCharModal.alias}</div>
+                <div style={{ fontSize: '12px', color: '#bfae9c' }}>{selectedCharModal.alias}</div>
               </div>
               <button
                 onClick={() => setSelectedCharModal(null)}
-                style={{ background: 'none', border: 'none', color: '#9ca3af', fontSize: '20px', cursor: 'pointer' }}
+                style={{ background: 'none', border: 'none', color: '#bfae9c', fontSize: '20px', cursor: 'pointer' }}
               >
                 ✕
               </button>
@@ -539,10 +550,10 @@ export default function AtlasView({ onPlayCharacterOnStage }) {
               {/* Kanvas Interactive Pose Preview */}
               <div
                 style={{
-                  background: 'radial-gradient(circle at 50% 40%, rgba(245, 158, 11, 0.2) 0%, #110e17 75%)',
+                  background: 'radial-gradient(circle at 50% 40%, rgba(212, 175, 55, 0.18) 0%, #120e0a 75%)',
                   borderRadius: '12px',
                   padding: '20px',
-                  border: `1px solid ${selectedCharModal.accentColor || '#78350f'}`,
+                  border: `1px solid ${selectedCharModal.accentColor || '#d4af37'}`,
                   textAlign: 'center',
                 }}
               >
@@ -554,7 +565,7 @@ export default function AtlasView({ onPlayCharacterOnStage }) {
                   height={200}
                   accentColor={selectedCharModal.accentColor}
                 />
-                <div style={{ fontSize: '11px', color: '#d1d5db', marginTop: '8px' }}>
+                <div style={{ fontSize: '11px', color: '#bfae9c', marginTop: '8px' }}>
                   Pose Aktif: <strong style={{ color: selectedCharModal.accentColor }}>{previewPose.toUpperCase()}</strong>
                 </div>
 
@@ -565,12 +576,13 @@ export default function AtlasView({ onPlayCharacterOnStage }) {
                       key={p}
                       onClick={() => setPreviewPose(p)}
                       style={{
-                        background: previewPose === p ? '#b45309' : '#272333',
-                        border: `1px solid ${previewPose === p ? '#f59e0b' : '#3f384f'}`,
-                        color: '#fef3c7',
-                        padding: '3px 8px',
+                        background: previewPose === p ? 'linear-gradient(135deg, #d4af37, #8b4513)' : '#221a13',
+                        border: `1px solid ${previewPose === p ? '#d4af37' : '#362619'}`,
+                        color: previewPose === p ? '#0d0a07' : '#fcfaf2',
+                        fontWeight: previewPose === p ? '700' : '500',
+                        padding: '4px 10px',
                         borderRadius: '6px',
-                        fontSize: '10px',
+                        fontSize: '11px',
                         cursor: 'pointer',
                         textTransform: 'capitalize',
                       }}
@@ -584,40 +596,40 @@ export default function AtlasView({ onPlayCharacterOnStage }) {
               {/* Watak & Nilai Filosofis */}
               <div>
                 <div style={{ marginBottom: '12px' }}>
-                  <h4 style={{ margin: '0 0 4px 0', fontSize: '12px', color: '#f59e0b' }}>Senjata & Pusaka</h4>
-                  <div style={{ fontSize: '12px', color: '#e5e7eb' }}>{selectedCharModal.weapons}</div>
+                  <h4 style={{ margin: '0 0 4px 0', fontSize: '12px', color: '#d4af37' }}>Senjata & Pusaka</h4>
+                  <div style={{ fontSize: '12px', color: '#fcfaf2' }}>{selectedCharModal.weapons}</div>
                 </div>
 
                 <div style={{ marginBottom: '12px' }}>
-                  <h4 style={{ margin: '0 0 4px 0', fontSize: '12px', color: '#f59e0b' }}>Watak & Karakteristik</h4>
-                  <p style={{ margin: 0, fontSize: '12px', color: '#d1d5db', lineHeight: '1.5' }}>
+                  <h4 style={{ margin: '0 0 4px 0', fontSize: '12px', color: '#d4af37' }}>Watak & Karakteristik</h4>
+                  <p style={{ margin: 0, fontSize: '12px', color: '#e5dec9', lineHeight: '1.5' }}>
                     {selectedCharModal.description}
                   </p>
                 </div>
 
                 <div
                   style={{
-                    background: '#261c14',
-                    borderLeft: '3px solid #f59e0b',
-                    padding: '8px 12px',
+                    background: '#221a13',
+                    borderLeft: '3px solid #d4af37',
+                    padding: '10px 14px',
                     borderRadius: '6px',
                   }}
                 >
-                  <h4 style={{ margin: '0 0 2px 0', fontSize: '11px', color: '#fbbf24' }}>Nilai Luhur</h4>
-                  <p style={{ margin: 0, fontSize: '11px', color: '#fef3c7', lineHeight: '1.4', fontStyle: 'italic' }}>
+                  <h4 style={{ margin: '0 0 2px 0', fontSize: '11px', color: '#d4af37' }}>Nilai Luhur</h4>
+                  <p style={{ margin: 0, fontSize: '11px', color: '#fcfaf2', lineHeight: '1.4', fontStyle: 'italic' }}>
                     "{selectedCharModal.philosophy}"
                   </p>
                 </div>
               </div>
             </div>
 
-            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px', borderTop: '1px solid #2e283b', paddingTop: '16px' }}>
+            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px', borderTop: '1px solid #362619', paddingTop: '16px' }}>
               <button
                 onClick={() => setSelectedCharModal(null)}
                 style={{
-                  background: '#27272a',
-                  border: '1px solid #3f3f46',
-                  color: '#e4e4e7',
+                  background: '#221a13',
+                  border: '1px solid #4a3826',
+                  color: '#fcfaf2',
                   padding: '8px 16px',
                   borderRadius: '8px',
                   cursor: 'pointer',
@@ -632,18 +644,18 @@ export default function AtlasView({ onPlayCharacterOnStage }) {
                   setSelectedCharModal(null);
                 }}
                 style={{
-                  background: 'linear-gradient(135deg, #d97706, #b45309)',
+                  background: 'linear-gradient(135deg, #d4af37, #8b4513)',
                   border: 'none',
-                  color: '#fff',
-                  padding: '8px 18px',
+                  color: '#0d0a07',
+                  padding: '8px 20px',
                   borderRadius: '8px',
-                  fontWeight: 'bold',
+                  fontWeight: '700',
                   cursor: 'pointer',
                   fontSize: '13px',
                   display: 'flex',
                   alignItems: 'center',
                   gap: '6px',
-                  boxShadow: '0 4px 15px rgba(217, 119, 6, 0.4)',
+                  boxShadow: '0 4px 15px rgba(212, 175, 55, 0.3)',
                 }}
               >
                 Mainkan di Virtual Stage

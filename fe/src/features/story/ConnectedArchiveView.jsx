@@ -106,21 +106,22 @@ export default function ConnectedArchiveView({ onPlayPerformance, onNavigateToCh
                       display: 'flex',
                       alignItems: 'center',
                       gap: '6px',
-                      background: 'rgba(56, 189, 248, 0.1)',
-                      border: '1px solid rgba(56, 189, 248, 0.3)',
-                      color: '#38bdf8',
-                      padding: '4px 8px',
+                      background: 'rgba(212, 175, 55, 0.1)',
+                      border: '1px solid rgba(212, 175, 55, 0.3)',
+                      color: '#d4af37',
+                      padding: '4px 10px',
                       borderRadius: '6px',
                       fontSize: '10px',
-                      fontWeight: 'bold',
-                      marginBottom: '10px',
+                      fontWeight: '700',
+                      letterSpacing: '0.04em',
+                      marginBottom: '12px',
                     }}
                   >
                     <ShieldCheck size={13} /> INTERPRETASI KREATIF PENGGUNA
                   </div>
 
-                  <h3 style={{ margin: '0 0 8px 0', fontSize: '18px', color: '#f0f9ff' }}>{work.title}</h3>
-                  <p style={{ margin: '0 0 14px 0', fontSize: '12px', color: '#94a3b8', lineHeight: '1.5' }}>
+                  <h3 style={{ margin: '0 0 8px 0', fontSize: '19px', color: '#fcfaf2', fontWeight: '700' }}>{work.title}</h3>
+                  <p style={{ margin: '0 0 14px 0', fontSize: '13px', color: '#bfae9c', lineHeight: '1.5' }}>
                     {work.description || 'Pertunjukan kreasi wayang digital virtual.'}
                   </p>
 
@@ -129,12 +130,13 @@ export default function ConnectedArchiveView({ onPlayPerformance, onNavigateToCh
                     <div
                       onClick={() => onNavigateToStory && onNavigateToStory(refStory.slug)}
                       style={{
-                        background: '#1d2737',
-                        padding: '8px 12px',
+                        background: '#221a13',
+                        border: '1px solid #362619',
+                        padding: '10px 14px',
                         borderRadius: '8px',
-                        marginBottom: '12px',
-                        fontSize: '11px',
-                        color: '#bae6fd',
+                        marginBottom: '14px',
+                        fontSize: '12px',
+                        color: '#fcfaf2',
                         cursor: 'pointer',
                         display: 'flex',
                         justifyContent: 'space-between',
@@ -142,40 +144,41 @@ export default function ConnectedArchiveView({ onPlayPerformance, onNavigateToCh
                       }}
                     >
                       <div>
-                        <div style={{ fontWeight: 'bold', color: '#38bdf8', marginBottom: '2px', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                          <BookOpen size={12} /> Cerita Rujukan:
+                        <div style={{ fontWeight: '700', color: '#d4af37', marginBottom: '2px', display: 'flex', alignItems: 'center', gap: '5px' }}>
+                          <BookOpen size={13} /> Lakon Rujukan:
                         </div>
-                        <div>{refStory.title} ({refStory.tradition})</div>
+                        <div style={{ color: '#fcfaf2' }}>{refStory.title} ({refStory.tradition})</div>
                       </div>
-                      <ExternalLink size={12} color="#38bdf8" />
+                      <ExternalLink size={13} color="#d4af37" />
                     </div>
                   )}
 
                   {/* Relasi Tokoh yang Digunakan (FR-15 - Navigasi Relasi) */}
-                  <div style={{ marginBottom: '16px' }}>
-                    <div style={{ fontSize: '11px', fontWeight: 'bold', color: '#cbd5e1', marginBottom: '6px', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                      <Users size={12} color="#f59e0b" /> Tokoh Terhubung ({usedCharacters.length}):
+                  <div style={{ marginBottom: '18px' }}>
+                    <div style={{ fontSize: '11px', fontWeight: '700', color: '#bfae9c', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '5px' }}>
+                      <Users size={13} color="#d4af37" /> Tokoh Terhubung ({usedCharacters.length}):
                     </div>
                     <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
                       {usedCharacters.map((char) => (
                         <button
                           key={char.id}
                           onClick={() => onNavigateToCharacter && onNavigateToCharacter(char.slug)}
-                          title={`Buka filosofi ${char.name}`}
+                          title={`Buka profil ${char.name}`}
                           style={{
-                            background: '#243247',
-                            border: `1px solid ${char.accentColor || '#38bdf8'}`,
-                            color: '#f8fafc',
-                            padding: '3px 8px',
+                            background: '#221a13',
+                            border: `1px solid ${char.accentColor || '#362619'}`,
+                            color: '#fcfaf2',
+                            padding: '4px 10px',
                             borderRadius: '12px',
-                            fontSize: '10px',
+                            fontSize: '11px',
+                            fontWeight: '500',
                             cursor: 'pointer',
                             display: 'flex',
                             alignItems: 'center',
-                            gap: '3px',
+                            gap: '4px',
                           }}
                         >
-                          {char.name} <ExternalLink size={9} />
+                          {char.name} <ExternalLink size={10} color={char.accentColor || '#d4af37'} />
                         </button>
                       ))}
                     </div>
@@ -187,22 +190,23 @@ export default function ConnectedArchiveView({ onPlayPerformance, onNavigateToCh
                   onClick={() => onPlayPerformance && onPlayPerformance(work)}
                   style={{
                     width: '100%',
-                    background: 'linear-gradient(135deg, #0284c7, #0369a1)',
+                    background: 'linear-gradient(135deg, #d4af37, #8b4513)',
                     border: 'none',
-                    color: '#fff',
-                    padding: '10px',
+                    color: '#0d0a07',
+                    padding: '11px',
                     borderRadius: '10px',
                     fontSize: '13px',
-                    fontWeight: 'bold',
+                    fontWeight: '700',
                     cursor: 'pointer',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
                     gap: '6px',
-                    boxShadow: '0 4px 15px rgba(2, 132, 199, 0.3)',
+                    boxShadow: '0 4px 15px rgba(212, 175, 55, 0.3)',
+                    transition: 'all 0.15s ease',
                   }}
                 >
-                  <Play size={15} fill="#fff" /> Tonton Pertunjukan ({scenes.length} Adegan)
+                  <Play size={15} fill="#0d0a07" /> Tonton Pertunjukan ({scenes.length} Adegan)
                 </button>
               </div>
             );

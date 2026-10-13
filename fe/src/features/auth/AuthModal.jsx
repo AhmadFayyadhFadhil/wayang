@@ -94,23 +94,23 @@ export default function AuthModal({ isOpen, onClose, currentUser, onAuthSuccess,
     >
       <div
         style={{
-          background: '#191622',
-          border: '2px solid #78350f',
+          background: '#17110c',
+          border: '1px solid #d4af37',
           borderRadius: '16px',
           padding: '24px',
           maxWidth: '440px',
           width: '90%',
-          color: '#f9fafb',
-          boxShadow: '0 25px 60px rgba(0,0,0,0.9)',
+          color: '#fcfaf2',
+          boxShadow: '0 25px 60px rgba(0,0,0,0.9), 0 0 30px rgba(212, 175, 55, 0.15)',
         }}
       >
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-          <h3 style={{ margin: 0, color: '#f59e0b', fontSize: '18px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <h3 style={{ margin: 0, color: '#d4af37', fontSize: '18px', fontWeight: '700', display: 'flex', alignItems: 'center', gap: '8px' }}>
             <User size={18} /> {currentUser ? 'Profil Pengguna' : 'Masuk / Daftar Akun'}
           </h3>
           <button
             onClick={onClose}
-            style={{ background: 'none', border: 'none', color: '#9ca3af', fontSize: '18px', cursor: 'pointer' }}
+            style={{ background: 'none', border: 'none', color: '#bfae9c', fontSize: '18px', cursor: 'pointer' }}
           >
             ✕
           </button>
@@ -121,34 +121,36 @@ export default function AuthModal({ isOpen, onClose, currentUser, onAuthSuccess,
           <div>
             <div
               style={{
-                background: '#231e30',
+                background: '#221a13',
                 padding: '16px',
                 borderRadius: '12px',
                 marginBottom: '18px',
-                border: '1px solid #3c3252',
+                border: '1px solid #362619',
               }}
             >
-              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '10px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '10px' }}>
                 <div
                   style={{
                     width: '42px',
                     height: '42px',
                     borderRadius: '50%',
-                    background: '#b45309',
+                    background: 'linear-gradient(135deg, #d4af37, #8b4513)',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
                     fontSize: '18px',
+                    color: '#0d0a07',
+                    fontWeight: '800',
                   }}
                 >
-                  <User size={20} color="#fef3c7" />
+                  <User size={20} color="#0d0a07" />
                 </div>
                 <div>
-                  <div style={{ fontWeight: 'bold', fontSize: '15px', color: '#fef3c7' }}>{currentUser.name}</div>
-                  <div style={{ fontSize: '12px', color: '#9ca3af' }}>{currentUser.email}</div>
+                  <div style={{ fontWeight: '700', fontSize: '15px', color: '#fcfaf2' }}>{currentUser.name}</div>
+                  <div style={{ fontSize: '12px', color: '#bfae9c' }}>{currentUser.email}</div>
                 </div>
               </div>
-              <div style={{ fontSize: '11px', color: '#34d399', display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <div style={{ fontSize: '11px', color: '#d4af37', display: 'flex', alignItems: 'center', gap: '6px' }}>
                 <ShieldCheck size={14} /> Peran: <strong>{currentUser.role?.toUpperCase() || 'USER (DALANG KREATOR)'}</strong>
               </div>
             </div>
@@ -161,12 +163,12 @@ export default function AuthModal({ isOpen, onClose, currentUser, onAuthSuccess,
               }}
               style={{
                 width: '100%',
-                background: '#7f1d1d',
-                border: '1px solid #ef4444',
-                color: '#fee2e2',
+                background: 'rgba(153, 27, 27, 0.2)',
+                border: '1px solid rgba(239, 68, 68, 0.4)',
+                color: '#fca5a5',
                 padding: '10px',
                 borderRadius: '10px',
-                fontWeight: 'bold',
+                fontWeight: '700',
                 cursor: 'pointer',
                 display: 'flex',
                 alignItems: 'center',
@@ -188,9 +190,9 @@ export default function AuthModal({ isOpen, onClose, currentUser, onAuthSuccess,
                 onClick={() => setTab('login')}
                 style={{
                   ...authTabBtnStyle,
-                  background: tab === 'login' ? '#78350f' : '#231e30',
-                  color: tab === 'login' ? '#fef3c7' : '#9ca3af',
-                  borderColor: tab === 'login' ? '#f59e0b' : '#3c3252',
+                  background: tab === 'login' ? 'rgba(212, 175, 55, 0.15)' : '#221a13',
+                  color: tab === 'login' ? '#d4af37' : '#bfae9c',
+                  borderColor: tab === 'login' ? '#d4af37' : '#362619',
                 }}
               >
                 <LogIn size={14} /> Masuk (Login)
@@ -200,9 +202,9 @@ export default function AuthModal({ isOpen, onClose, currentUser, onAuthSuccess,
                 onClick={() => setTab('register')}
                 style={{
                   ...authTabBtnStyle,
-                  background: tab === 'register' ? '#78350f' : '#231e30',
-                  color: tab === 'register' ? '#fef3c7' : '#9ca3af',
-                  borderColor: tab === 'register' ? '#f59e0b' : '#3c3252',
+                  background: tab === 'register' ? 'rgba(212, 175, 55, 0.15)' : '#221a13',
+                  color: tab === 'register' ? '#d4af37' : '#bfae9c',
+                  borderColor: tab === 'register' ? '#d4af37' : '#362619',
                 }}
               >
                 <UserPlus size={14} /> Daftar Akun
@@ -215,13 +217,13 @@ export default function AuthModal({ isOpen, onClose, currentUser, onAuthSuccess,
                 type="button"
                 onClick={handleFillDemoAccount}
                 style={{
-                  background: 'rgba(245, 158, 11, 0.1)',
-                  border: '1px solid #78350f',
-                  color: '#fbbf24',
-                  padding: '7px 8px',
+                  background: 'rgba(212, 175, 55, 0.1)',
+                  border: '1px solid rgba(212, 175, 55, 0.3)',
+                  color: '#d4af37',
+                  padding: '8px',
                   borderRadius: '6px',
                   fontSize: '11px',
-                  fontWeight: '600',
+                  fontWeight: '700',
                   cursor: 'pointer',
                   textAlign: 'center',
                 }}
@@ -232,13 +234,13 @@ export default function AuthModal({ isOpen, onClose, currentUser, onAuthSuccess,
                 type="button"
                 onClick={handleFillAdminAccount}
                 style={{
-                  background: 'rgba(217, 119, 6, 0.15)',
-                  border: '1px solid #b45309',
-                  color: '#fef3c7',
-                  padding: '7px 8px',
+                  background: 'rgba(139, 69, 19, 0.2)',
+                  border: '1px solid #8b4513',
+                  color: '#fcfaf2',
+                  padding: '8px',
                   borderRadius: '6px',
                   fontSize: '11px',
-                  fontWeight: '600',
+                  fontWeight: '700',
                   cursor: 'pointer',
                   textAlign: 'center',
                 }}
@@ -287,13 +289,13 @@ export default function AuthModal({ isOpen, onClose, currentUser, onAuthSuccess,
               </div>
 
               {errorMsg && (
-                <div style={{ padding: '8px 12px', background: '#450a0a', border: '1px solid #ef4444', color: '#fca5a5', borderRadius: '8px', fontSize: '11px', marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <div style={{ padding: '8px 12px', background: 'rgba(153, 27, 27, 0.2)', border: '1px solid rgba(239, 68, 68, 0.4)', color: '#fca5a5', borderRadius: '8px', fontSize: '11px', marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '6px' }}>
                   <AlertCircle size={14} /> {errorMsg}
                 </div>
               )}
 
               {successMsg && (
-                <div style={{ padding: '8px 12px', background: '#064e3b', border: '1px solid #10b981', color: '#6ee7b7', borderRadius: '8px', fontSize: '11px', marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <div style={{ padding: '8px 12px', background: 'rgba(16, 185, 129, 0.2)', border: '1px solid #10b981', color: '#6ee7b7', borderRadius: '8px', fontSize: '11px', marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '6px' }}>
                   <CheckCircle size={14} /> {successMsg}
                 </div>
               )}
@@ -303,15 +305,16 @@ export default function AuthModal({ isOpen, onClose, currentUser, onAuthSuccess,
                 disabled={loading}
                 style={{
                   width: '100%',
-                  background: 'linear-gradient(135deg, #d97706, #b45309)',
+                  background: 'linear-gradient(135deg, #d4af37, #8b4513)',
                   border: 'none',
-                  color: '#fff',
-                  padding: '10px',
+                  color: '#0d0a07',
+                  padding: '11px',
                   borderRadius: '10px',
                   fontSize: '13px',
-                  fontWeight: 'bold',
+                  fontWeight: '700',
                   cursor: loading ? 'wait' : 'pointer',
-                  boxShadow: '0 4px 15px rgba(217, 119, 6, 0.4)',
+                  boxShadow: '0 4px 15px rgba(212, 175, 55, 0.3)',
+                  transition: 'all 0.15s ease',
                 }}
               >
                 {loading ? 'Memproses...' : tab === 'login' ? 'Masuk Sekarang' : 'Daftarkan Akun'}
@@ -342,17 +345,17 @@ const authLabelStyle = {
   display: 'block',
   fontSize: '11px',
   fontWeight: '600',
-  color: '#d1d5db',
+  color: '#bfae9c',
   marginBottom: '4px',
 };
 
 const authInputStyle = {
   width: '100%',
   padding: '8px 12px',
-  background: '#120f18',
-  border: '1px solid #3c3252',
+  background: '#0d0a07',
+  border: '1px solid #362619',
   borderRadius: '8px',
-  color: '#f9fafb',
+  color: '#fcfaf2',
   fontSize: '12px',
   boxSizing: 'border-box',
 };

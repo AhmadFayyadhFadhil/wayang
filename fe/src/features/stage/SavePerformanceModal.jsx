@@ -84,23 +84,23 @@ export default function SavePerformanceModal({
     >
       <div
         style={{
-          background: '#1a1822',
-          border: '2px solid #78350f',
+          background: '#17110c',
+          border: '1px solid #d4af37',
           borderRadius: '16px',
           padding: '24px',
           maxWidth: '520px',
           width: '90%',
-          color: '#f9fafb',
-          boxShadow: '0 25px 60px rgba(0,0,0,0.9)',
+          color: '#fcfaf2',
+          boxShadow: '0 25px 60px rgba(0,0,0,0.9), 0 0 30px rgba(212, 175, 55, 0.15)',
         }}
       >
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-          <h3 style={{ margin: 0, color: '#f59e0b', fontSize: '18px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <h3 style={{ margin: 0, color: '#d4af37', fontSize: '18px', fontWeight: '700', display: 'flex', alignItems: 'center', gap: '8px' }}>
             <Save size={18} /> Simpan Pertunjukan Wayang
           </h3>
           <button
             onClick={onClose}
-            style={{ background: 'none', border: 'none', color: '#9ca3af', fontSize: '18px', cursor: 'pointer' }}
+            style={{ background: 'none', border: 'none', color: '#bfae9c', fontSize: '18px', cursor: 'pointer' }}
           >
             ✕
           </button>
@@ -150,7 +150,7 @@ export default function SavePerformanceModal({
                 </option>
               ))}
             </select>
-            <div style={{ fontSize: '11px', color: '#9ca3af', marginTop: '4px' }}>
+            <div style={{ fontSize: '11px', color: '#bfae9c', marginTop: '4px' }}>
               Menghubungkan karya ke arsip naskah menjaga integritas budaya dan atribusi tradisi.
             </div>
           </div>
@@ -164,14 +164,14 @@ export default function SavePerformanceModal({
                 onClick={() => setVisibility('public')}
                 style={{
                   ...optionBtnStyle,
-                  borderColor: visibility === 'public' ? '#10b981' : '#374151',
-                  background: visibility === 'public' ? '#064e3b' : '#27272a',
+                  borderColor: visibility === 'public' ? '#10b981' : '#362619',
+                  background: visibility === 'public' ? 'rgba(16, 185, 129, 0.15)' : '#221a13',
                 }}
               >
-                <Globe size={16} color={visibility === 'public' ? '#34d399' : '#9ca3af'} />
+                <Globe size={16} color={visibility === 'public' ? '#6ee7b7' : '#bfae9c'} />
                 <div>
                   <div style={{ fontWeight: 'bold', fontSize: '12px' }}>Publik (Galeri)</div>
-                  <div style={{ fontSize: '10px', color: '#9ca3af' }}>Dapat ditonton di Connected Archive</div>
+                  <div style={{ fontSize: '10px', color: '#bfae9c' }}>Dapat ditonton di Arsip Terhubung</div>
                 </div>
               </button>
 
@@ -180,14 +180,14 @@ export default function SavePerformanceModal({
                 onClick={() => setVisibility('private')}
                 style={{
                   ...optionBtnStyle,
-                  borderColor: visibility === 'private' ? '#f59e0b' : '#374151',
-                  background: visibility === 'private' ? '#451a03' : '#27272a',
+                  borderColor: visibility === 'private' ? '#d4af37' : '#362619',
+                  background: visibility === 'private' ? 'rgba(212, 175, 55, 0.12)' : '#221a13',
                 }}
               >
-                <Lock size={16} color={visibility === 'private' ? '#fbbf24' : '#9ca3af'} />
+                <Lock size={16} color={visibility === 'private' ? '#d4af37' : '#bfae9c'} />
                 <div>
                   <div style={{ fontWeight: 'bold', fontSize: '12px' }}>Privat (Pribadi)</div>
-                  <div style={{ fontSize: '10px', color: '#9ca3af' }}>Hanya Anda yang dapat membuka</div>
+                  <div style={{ fontSize: '10px', color: '#bfae9c' }}>Hanya Anda yang dapat membuka</div>
                 </div>
               </button>
             </div>
@@ -204,8 +204,8 @@ export default function SavePerformanceModal({
                 display: 'flex',
                 alignItems: 'center',
                 gap: '8px',
-                background: statusMessage.type === 'success' ? '#064e3b' : '#450a0a',
-                color: statusMessage.type === 'success' ? '#34d399' : '#f87171',
+                background: statusMessage.type === 'success' ? 'rgba(16, 185, 129, 0.15)' : 'rgba(153, 27, 27, 0.2)',
+                color: statusMessage.type === 'success' ? '#6ee7b7' : '#fca5a5',
                 border: `1px solid ${statusMessage.type === 'success' ? '#10b981' : '#ef4444'}`,
               }}
             >
@@ -220,9 +220,9 @@ export default function SavePerformanceModal({
               type="button"
               onClick={onClose}
               style={{
-                background: '#27272a',
-                border: '1px solid #3f3f46',
-                color: '#d4d4d8',
+                background: '#221a13',
+                border: '1px solid #4a3826',
+                color: '#fcfaf2',
                 padding: '8px 16px',
                 borderRadius: '8px',
                 cursor: 'pointer',
@@ -235,18 +235,18 @@ export default function SavePerformanceModal({
               type="submit"
               disabled={saving}
               style={{
-                background: '#b45309',
+                background: 'linear-gradient(135deg, #d4af37, #8b4513)',
                 border: 'none',
-                color: '#fff',
-                padding: '8px 20px',
+                color: '#0d0a07',
+                padding: '8px 22px',
                 borderRadius: '8px',
-                fontWeight: 'bold',
+                fontWeight: '700',
                 cursor: saving ? 'wait' : 'pointer',
                 display: 'flex',
                 alignItems: 'center',
                 gap: '6px',
                 fontSize: '13px',
-                boxShadow: '0 4px 15px rgba(245, 158, 11, 0.4)',
+                boxShadow: '0 4px 15px rgba(212, 175, 55, 0.3)',
               }}
             >
               <Save size={16} /> {saving ? 'Menyimpan...' : 'Simpan Sekarang'}
@@ -264,17 +264,17 @@ const labelStyle = {
   gap: '6px',
   fontSize: '12px',
   fontWeight: '600',
-  color: '#e5e7eb',
+  color: '#bfae9c',
   marginBottom: '6px',
 };
 
 const inputStyle = {
   width: '100%',
   padding: '8px 12px',
-  background: '#121118',
-  border: '1px solid #3a3648',
+  background: '#0d0a07',
+  border: '1px solid #362619',
   borderRadius: '8px',
-  color: '#f9fafb',
+  color: '#fcfaf2',
   fontSize: '13px',
   boxSizing: 'border-box',
 };

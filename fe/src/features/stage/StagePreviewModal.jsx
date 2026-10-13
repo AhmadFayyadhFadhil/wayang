@@ -84,12 +84,12 @@ export default function StagePreviewModal({
         position: 'fixed',
         inset: 0,
         zIndex: 9999,
-        background: '#09080d',
+        background: '#0d0a07',
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'space-between',
         padding: '16px',
-        color: '#f9fafb',
+        color: '#fcfaf2',
       }}
     >
       {/* Header Teater / Bioskop Kelir */}
@@ -105,11 +105,11 @@ export default function StagePreviewModal({
         }}
       >
         <div>
-          <span style={{ fontSize: '11px', color: '#f59e0b', fontWeight: 'bold', letterSpacing: '0.8px' }}>
-            PRATINJAU PANGGUNG VIRTUAL
+          <span style={{ fontSize: '11px', color: '#d4af37', fontWeight: 'bold', letterSpacing: '0.8px', textTransform: 'uppercase' }}>
+            PRATINJAU PANGGUNG KELIR VIRTUAL
           </span>
-          <h2 style={{ margin: '2px 0 0 0', fontSize: '20px', color: '#fff' }}>{metadata?.title}</h2>
-          <p style={{ margin: 0, fontSize: '12px', color: '#9ca3af' }}>
+          <h2 style={{ margin: '2px 0 0 0', fontSize: '20px', color: '#fcfaf2', fontWeight: '700' }}>{metadata?.title}</h2>
+          <p style={{ margin: 0, fontSize: '12px', color: '#bfae9c' }}>
             Adegan {currentSceneIdx + 1} dari {totalScenes}: {activeScene?.title}
           </p>
         </div>
@@ -120,9 +120,9 @@ export default function StagePreviewModal({
             onClose();
           }}
           style={{
-            background: '#27272a',
-            border: '1px solid #3f3f46',
-            color: '#e4e4e7',
+            background: '#221a13',
+            border: '1px solid #4a3826',
+            color: '#fcfaf2',
             padding: '8px 16px',
             borderRadius: '10px',
             cursor: 'pointer',
@@ -130,6 +130,7 @@ export default function StagePreviewModal({
             alignItems: 'center',
             gap: '6px',
             fontSize: '13px',
+            fontWeight: '600',
           }}
         >
           <X size={16} /> Tutup Preview
@@ -154,20 +155,20 @@ export default function StagePreviewModal({
           maxWidth: '800px',
           width: '100%',
           margin: '12px auto 0 auto',
-          background: 'rgba(24, 24, 27, 0.9)',
+          background: 'rgba(23, 17, 12, 0.95)',
           backdropFilter: 'blur(10px)',
-          border: '1px solid #3f3f46',
+          border: '1px solid #362619',
           borderRadius: '14px',
           padding: '12px 20px',
         }}
       >
         {/* Progress Bar Adegan */}
-        <div style={{ width: '100%', height: '5px', background: '#3f3f46', borderRadius: '3px', overflow: 'hidden', marginBottom: '10px' }}>
+        <div style={{ width: '100%', height: '5px', background: '#362619', borderRadius: '3px', overflow: 'hidden', marginBottom: '10px' }}>
           <div
             style={{
               height: '100%',
               width: `${progress}%`,
-              background: 'linear-gradient(90deg, #f59e0b, #ef4444)',
+              background: 'linear-gradient(90deg, #d4af37, #8b4513)',
               transition: 'width 0.1s linear',
             }}
           />
@@ -189,21 +190,21 @@ export default function StagePreviewModal({
           <button
             onClick={() => setIsPlaying(!isPlaying)}
             style={{
-              background: '#b45309',
+              background: 'linear-gradient(135deg, #d4af37, #8b4513)',
               border: 'none',
-              color: '#fff',
-              padding: '8px 24px',
+              color: '#0d0a07',
+              padding: '9px 26px',
               borderRadius: '24px',
               fontSize: '14px',
-              fontWeight: 'bold',
+              fontWeight: '700',
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
               gap: '8px',
-              boxShadow: '0 4px 15px rgba(245, 158, 11, 0.3)',
+              boxShadow: '0 4px 15px rgba(212, 175, 55, 0.3)',
             }}
           >
-            {isPlaying ? <Pause size={18} /> : <Play size={18} />}
+            {isPlaying ? <Pause size={18} /> : <Play size={18} fill="#0d0a07" />}
             {isPlaying ? 'Jeda' : 'Lanjutkan'}
           </button>
 
@@ -224,9 +225,9 @@ export default function StagePreviewModal({
 }
 
 const ctrlBtnStyle = {
-  background: '#27272a',
-  border: '1px solid #3f3f46',
-  color: '#e4e4e7',
+  background: '#221a13',
+  border: '1px solid #362619',
+  color: '#fcfaf2',
   padding: '6px 14px',
   borderRadius: '8px',
   cursor: 'pointer',
