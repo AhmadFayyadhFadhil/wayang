@@ -195,7 +195,13 @@ npm run dev
 | **CORS Error di Console Browser** | Port frontend berbeda dari konfigurasi `be/.env`. | Pastikan `FRONTEND_URL=http://localhost:5173` di `be/.env` atau tambahkan port Anda ke `CORS_ALLOWED_ORIGINS`. |
 | **Port 8000 / 5173 Bentrok** | Port sedang dipakai proses background lain. | Jalankan backend di port lain: `php artisan serve --port=8080`, lalu sesuaikan `VITE_API_URL` di `fe/.env`. |
 | **`No application encryption key has been specified`** | File `.env` belum memiliki `APP_KEY`. | Jalankan `cd be && php artisan key:generate`. |
-| **MySQL Connection Refused (3306)** | Layanan MySQL di XAMPP belum aktif. | Buka XAMPP Control Panel, pastikan tombol **Start** pada MySQL sudah menyala hijau. |
+---
+
+## 📚 Dokumentasi & Spesifikasi Lengkap
+- 📄 **[Product Requirements Document (PRD)](docs/PRD.md):** Visi produk, persona pengguna, cakupan fitur, dan metrik keberhasilan.
+- 📋 **[Software Requirements Specification (SRS)](docs/SRS.md):** Spesifikasi fungsional (FR-01 s/d FR-18), non-fungsional, skema database, kontrak API, dan acceptance tests.
+- 🏛️ **[Panduan Backend & Arsitektur API](docs/LAPORAN_DAN_PANDUAN_BACKEND.md):** Panduan teknis Laravel 12, routing, dan Sanctum.
+- 📜 **[Master Data Panduan Budaya](docs/MASTER_DATA_BACKEND_GUIDE.md):** Sanad naskah kakawin, watak tokoh, dan audio gamelan.
 
 ---
 
