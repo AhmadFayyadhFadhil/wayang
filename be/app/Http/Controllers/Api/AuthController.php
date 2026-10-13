@@ -39,7 +39,7 @@ class AuthController extends Controller
                 'id' => $user->id,
                 'name' => $user->name,
                 'email' => $user->email,
-                'role' => $user->email === 'demo@wayangdigital.id' ? 'admin' : 'user',
+                'role' => ($user->email === 'demo@wayangdigital.id' || str_contains($user->email, 'admin')) ? 'admin' : 'user',
                 'token' => $token,
             ],
         ]);
@@ -106,7 +106,7 @@ class AuthController extends Controller
                 'id' => $user->id,
                 'name' => $user->name,
                 'email' => $user->email,
-                'role' => $user->email === 'demo@wayangdigital.id' ? 'admin' : 'user',
+                'role' => ($user->email === 'demo@wayangdigital.id' || str_contains($user->email, 'admin')) ? 'admin' : 'user',
             ],
         ]);
     }

@@ -33,7 +33,17 @@ class DatabaseSeeder extends Seeder
             ]
         );
 
-        // 3. Panggil MasterDataSeeder
+        // 3. Akun Administrator
+        User::updateOrCreate(
+            ['email' => 'admin@wayangdigital.id'],
+            [
+                'name' => 'Administrator Wayang',
+                'password' => Hash::make('Admin@2026!'),
+                'email_verified_at' => now(),
+            ]
+        );
+
+        // 4. Panggil MasterDataSeeder
         $this->call(MasterDataSeeder::class);
     }
 }
