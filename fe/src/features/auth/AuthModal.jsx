@@ -210,41 +210,35 @@ export default function AuthModal({ isOpen, onClose, currentUser, onAuthSuccess,
                 type="button"
                 onClick={handleFillDemoAccount}
                 style={{
-                  background: 'rgba(245, 158, 11, 0.12)',
-                  border: '1px dashed #d97706',
+                  background: 'rgba(245, 158, 11, 0.1)',
+                  border: '1px solid #78350f',
                   color: '#fbbf24',
-                  padding: '8px 6px',
-                  borderRadius: '8px',
+                  padding: '7px 8px',
+                  borderRadius: '6px',
                   fontSize: '11px',
-                  fontWeight: 'bold',
+                  fontWeight: '600',
                   cursor: 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: '4px',
+                  textAlign: 'center',
                 }}
               >
-                <Sparkles size={12} /> Dalang Demo (1-Klik)
+                Isi Akun Dalang
               </button>
               <button
                 type="button"
                 onClick={handleFillAdminAccount}
                 style={{
-                  background: 'rgba(217, 119, 6, 0.22)',
-                  border: '1px dashed #f59e0b',
+                  background: 'rgba(217, 119, 6, 0.15)',
+                  border: '1px solid #b45309',
                   color: '#fef3c7',
-                  padding: '8px 6px',
-                  borderRadius: '8px',
+                  padding: '7px 8px',
+                  borderRadius: '6px',
                   fontSize: '11px',
-                  fontWeight: 'bold',
+                  fontWeight: '600',
                   cursor: 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: '4px',
+                  textAlign: 'center',
                 }}
               >
-                👑 Admin CMS (1-Klik)
+                Isi Akun Admin
               </button>
             </div>
 
