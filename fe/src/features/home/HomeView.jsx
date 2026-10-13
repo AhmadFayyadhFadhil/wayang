@@ -171,14 +171,14 @@ export default function HomeView({ onNavigate, connectionStatus, onTestConnectio
               }}
             >
               <div style={{ textAlign: 'center' }}>
-                <WayangFigureSvg slug="gatotkaca" scale={0.85} width={135} height={200} accentColor="#e5c158" />
+                <WayangFigureSvg slug="gatotkaca" scale={0.92} width={150} height={220} accentColor="#e5c158" />
                 <div style={{ fontSize: '11px', color: '#e5c158', fontWeight: '700', marginTop: '6px' }}>
                   Raden Gatotkaca
                 </div>
               </div>
 
               <div style={{ textAlign: 'center' }}>
-                <WayangFigureSvg slug="karna" pose="perang" facing="left" scale={0.85} width={135} height={200} accentColor="#f97316" />
+                <WayangFigureSvg slug="karna" pose="perang" facing="left" scale={0.92} width={150} height={220} accentColor="#f97316" />
                 <div style={{ fontSize: '11px', color: '#fb923c', fontWeight: '700', marginTop: '6px' }}>
                   Adipati Karna
                 </div>
@@ -191,16 +191,18 @@ export default function HomeView({ onNavigate, connectionStatus, onTestConnectio
                   bottom: '12px',
                   left: '50%',
                   transform: 'translateX(-50%)',
-                  background: 'rgba(13, 10, 7, 0.85)',
-                  border: '1px solid rgba(212, 175, 55, 0.3)',
+                  background: 'rgba(13, 10, 7, 0.88)',
+                  border: '1px solid rgba(212, 175, 55, 0.35)',
                   padding: '4px 14px',
                   borderRadius: '12px',
                   fontSize: '11px',
-                  color: '#bfae9c',
+                  color: '#e5c158',
+                  fontWeight: '600',
+                  letterSpacing: '0.04em',
                   whiteSpace: 'nowrap',
                 }}
               >
-                Kelir 2D Vektor • Interaktif di Studio
+                Kelir Pakem Tatah Sungging • Solah Gerak Hidup
               </div>
             </div>
           </div>
