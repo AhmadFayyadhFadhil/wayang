@@ -15,14 +15,13 @@ export default function Navbar({ activeTab, onNavigate, backendConnected, curren
     >
       <div
         style={{
-          maxWidth: '1180px',
+          maxWidth: '1200px',
           margin: '0 auto',
-          padding: '12px 18px',
+          padding: '10px 18px',
           display: 'flex',
-          flexWrap: 'wrap',
           alignItems: 'center',
           justifyContent: 'space-between',
-          gap: '12px',
+          gap: '16px',
         }}
       >
         {/* Logo & Brand */}
@@ -33,6 +32,7 @@ export default function Navbar({ activeTab, onNavigate, backendConnected, curren
             alignItems: 'center',
             gap: '10px',
             cursor: 'pointer',
+            flexShrink: 0,
           }}
         >
           <div
@@ -75,7 +75,7 @@ export default function Navbar({ activeTab, onNavigate, backendConnected, curren
         </div>
 
         {/* Menu Navigasi Utama */}
-        <nav style={{ display: 'flex', flexWrap: 'wrap', gap: '4px' }}>
+        <nav style={{ display: 'flex', alignItems: 'center', gap: '4px', overflowX: 'auto' }}>
           <button
             onClick={() => onNavigate('home')}
             style={{
@@ -154,52 +154,60 @@ export default function Navbar({ activeTab, onNavigate, backendConnected, curren
           )}
         </nav>
 
-        {/* Indikator Backend Sync */}
-        <div
-          title={backendConnected ? 'Backend Laravel Terhubung' : 'Mode Offline-First (Local Cache Aktif)'}
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '6px',
-            fontSize: '11px',
-            padding: '4px 10px',
-            borderRadius: '16px',
-            background: backendConnected ? '#064e3b' : '#27272a',
-            color: backendConnected ? '#34d399' : '#9ca3af',
-            border: `1px solid ${backendConnected ? '#10b981' : '#3f3f46'}`,
-          }}
-        >
-          <span
-            style={{
-              width: '8px',
-              height: '8px',
-              borderRadius: '50%',
-              background: backendConnected ? '#10b981' : '#f59e0b',
-              display: 'inline-block',
-            }}
-          />
-          <span>{backendConnected ? 'API Online' : 'Local Ready'}</span>
-        </div>
-
-        {/* Tombol Akun / Autentikasi (PR-05) */}
+        {/* Info Pengguna & Akun */}
         <button
           onClick={onOpenAuth}
+          title={currentUser ? `Akun: ${currentUser.email} (${currentUser.role || 'dalang'})` : 'Masuk atau daftarkan akun'}
           style={{
-            background: currentUser?.role === 'admin' ? '#78350f' : currentUser ? '#451a03' : '#272333',
-            border: `1px solid ${currentUser?.role === 'admin' ? '#fbbf24' : currentUser ? '#f59e0b' : '#453a54'}`,
-            color: currentUser ? '#fef3c7' : '#d1d5db',
-            padding: '5px 12px',
-            borderRadius: '10px',
+            background: currentUser?.role === 'admin' ? 'rgba(120, 53, 15, 0.45)' : currentUser ? 'rgba(39, 34, 51, 0.7)' : '#211d2b',
+            border: `1px solid ${currentUser?.role === 'admin' ? '#b45309' : currentUser ? '#4a3d60' : '#393247'}`,
+            color: '#fef3c7',
+            padding: '4px 12px 4px 6px',
+            borderRadius: '24px',
             fontSize: '12px',
             fontWeight: '600',
             cursor: 'pointer',
             display: 'flex',
             alignItems: 'center',
-            gap: '6px',
+            gap: '8px',
+            transition: 'all 0.15s ease',
+            flexShrink: 0,
           }}
         >
-          <User size={14} color={currentUser?.role === 'admin' ? '#fde68a' : currentUser ? '#f59e0b' : '#9ca3af'} />
-          {currentUser ? (currentUser.role === 'admin' ? `${currentUser.name} (Admin)` : currentUser.name) : 'Masuk / Akun'}
+          <div
+            style={{
+              width: '26px',
+              height: '26px',
+              borderRadius: '50%',
+              background: currentUser?.role === 'admin' ? 'linear-gradient(135deg, #d97706, #78350f)' : currentUser ? '#b45309' : '#3730a3',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: '#fff',
+            }}
+          >
+            <User size={13} />
+          </div>
+          <span style={{ maxWidth: '160px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+            {currentUser ? currentUser.name : 'Masuk / Akun'}
+          </span>
+          {currentUser?.role === 'admin' && (
+            <span
+              style={{
+                fontSize: '9px',
+                background: '#78350f',
+                border: '1px solid #d97706',
+                color: '#fef3c7',
+                padding: '1px 6px',
+                borderRadius: '10px',
+                fontWeight: '700',
+                letterSpacing: '0.4px',
+                textTransform: 'uppercase',
+              }}
+            >
+              Admin
+            </span>
+          )}
         </button>
       </div>
     </header>
