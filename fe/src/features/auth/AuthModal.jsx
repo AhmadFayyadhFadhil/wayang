@@ -20,6 +20,13 @@ export default function AuthModal({ isOpen, onClose, currentUser, onAuthSuccess,
     setErrorMsg(null);
   };
 
+  const handleFillAdminAccount = () => {
+    setEmail('admin@wayangdigital.id');
+    setPassword('Admin@2026!');
+    setName('Administrator Wayang');
+    setErrorMsg(null);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -197,29 +204,49 @@ export default function AuthModal({ isOpen, onClose, currentUser, onAuthSuccess,
               </button>
             </div>
 
-            {/* Tombol Isi Otomatis Akun Demo Lomba */}
-            <button
-              type="button"
-              onClick={handleFillDemoAccount}
-              style={{
-                width: '100%',
-                background: 'rgba(245, 158, 11, 0.12)',
-                border: '1px dashed #d97706',
-                color: '#fbbf24',
-                padding: '8px',
-                borderRadius: '8px',
-                fontSize: '11px',
-                fontWeight: 'bold',
-                cursor: 'pointer',
-                marginBottom: '16px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: '6px',
-              }}
-            >
-              <Sparkles size={13} /> Gunakan Akun Demo Juri / Penilai (1-Klik)
-            </button>
+            {/* Tombol Cepat Akun Demo Lomba & Admin */}
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', marginBottom: '16px' }}>
+              <button
+                type="button"
+                onClick={handleFillDemoAccount}
+                style={{
+                  background: 'rgba(245, 158, 11, 0.12)',
+                  border: '1px dashed #d97706',
+                  color: '#fbbf24',
+                  padding: '8px 6px',
+                  borderRadius: '8px',
+                  fontSize: '11px',
+                  fontWeight: 'bold',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '4px',
+                }}
+              >
+                <Sparkles size={12} /> Dalang Demo (1-Klik)
+              </button>
+              <button
+                type="button"
+                onClick={handleFillAdminAccount}
+                style={{
+                  background: 'rgba(217, 119, 6, 0.22)',
+                  border: '1px dashed #f59e0b',
+                  color: '#fef3c7',
+                  padding: '8px 6px',
+                  borderRadius: '8px',
+                  fontSize: '11px',
+                  fontWeight: 'bold',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '4px',
+                }}
+              >
+                👑 Admin CMS (1-Klik)
+              </button>
+            </div>
 
             <form onSubmit={handleSubmit}>
               {tab === 'register' && (

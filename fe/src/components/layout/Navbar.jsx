@@ -135,6 +135,23 @@ export default function Navbar({ activeTab, onNavigate, backendConnected, curren
           >
             <FolderHeart size={14} /> Karya Saya
           </button>
+
+          {/* Tab Khusus Administrator (CMS) */}
+          {currentUser?.role === 'admin' && (
+            <button
+              onClick={() => onNavigate('admin')}
+              style={{
+                ...navBtnStyle,
+                background: activeTab === 'admin' ? '#78350f' : '#271c11',
+                color: activeTab === 'admin' ? '#fef3c7' : '#fbbf24',
+                borderColor: '#d97706',
+                fontWeight: 'bold',
+                boxShadow: '0 0 12px rgba(217, 119, 6, 0.35)',
+              }}
+            >
+              👑 Admin CMS
+            </button>
+          )}
         </nav>
 
         {/* Indikator Backend Sync */}
@@ -168,8 +185,8 @@ export default function Navbar({ activeTab, onNavigate, backendConnected, curren
         <button
           onClick={onOpenAuth}
           style={{
-            background: currentUser ? '#451a03' : '#272333',
-            border: `1px solid ${currentUser ? '#f59e0b' : '#453a54'}`,
+            background: currentUser?.role === 'admin' ? '#78350f' : currentUser ? '#451a03' : '#272333',
+            border: `1px solid ${currentUser?.role === 'admin' ? '#fbbf24' : currentUser ? '#f59e0b' : '#453a54'}`,
             color: currentUser ? '#fef3c7' : '#d1d5db',
             padding: '5px 12px',
             borderRadius: '10px',
@@ -179,10 +196,11 @@ export default function Navbar({ activeTab, onNavigate, backendConnected, curren
             display: 'flex',
             alignItems: 'center',
             gap: '6px',
+            boxShadow: currentUser?.role === 'admin' ? '0 0 10px rgba(251, 191, 36, 0.3)' : 'none',
           }}
         >
-          <User size={14} color={currentUser ? '#f59e0b' : '#9ca3af'} />
-          {currentUser ? currentUser.name : 'Masuk / Akun'}
+          <User size={14} color={currentUser?.role === 'admin' ? '#fde68a' : currentUser ? '#f59e0b' : '#9ca3af'} />
+          {currentUser ? (currentUser.role === 'admin' ? `👑 ${currentUser.name} (Admin)` : currentUser.name) : 'Masuk / Akun'}
         </button>
       </div>
     </header>

@@ -5,6 +5,7 @@ import AtlasView from './features/encyclopedia/AtlasView';
 import StageStudio from './features/stage/StageStudio';
 import ConnectedArchiveView from './features/story/ConnectedArchiveView';
 import MyWorksView from './features/stage/MyWorksView';
+import AdminCmsView from './features/admin/AdminCmsView';
 import StagePreviewModal from './features/stage/StagePreviewModal';
 import AuthModal from './features/auth/AuthModal';
 import { useStageStore } from './features/stage/useStageStore';
@@ -141,6 +142,10 @@ function App() {
             onPlayPerformance={handlePlayPerformanceFromGallery}
           />
         )}
+
+        {activeTab === 'admin' && (
+          <AdminCmsView onPlayPerformance={handlePlayPerformanceFromGallery} />
+        )}
       </main>
 
       {/* 3. Global Modal Playback (Ketika tombol Nonton/Putar diklik di Galeri) */}
@@ -163,8 +168,18 @@ function App() {
         isOpen={showAuthModal}
         onClose={() => setShowAuthModal(false)}
         currentUser={currentUser}
-        onAuthSuccess={(user) => setCurrentUser(user)}
-        onLogout={() => setCurrentUser(null)}
+        onAuthSuccess={(user) => {
+          setCurrentUser(user);
+          if (user?.role === 'admin') {
+            setActiveTab('admin');
+          }
+        }}
+        onLogout={() => {
+          setCurrentUser(null);
+          if (activeTab === 'admin') {
+            setActiveTab('home');
+          }
+        }}
       />
 
       {/* 4. Footer Bernuansa Warisan Budaya */}
