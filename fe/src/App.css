@@ -343,8 +343,46 @@
   .wayang-anim-elbow-back,
   .wayang-anim-combat-shoulder,
   .wayang-anim-combat-elbow,
-  .wayang-anim-tudhing {
+  .wayang-anim-tudhing,
+  .wayang-living-sway-left,
+  .wayang-living-sway-right {
     animation: none !important;
   }
 }
+
+/* Ayunan Solah Bernafas Wayang Kulit Otentik di Kelir */
+@keyframes wayangLivingSwayLeft {
+  0% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-6px) rotate(-1.4deg);
+  }
+  100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+}
+
+@keyframes wayangLivingSwayRight {
+  0% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-5px) rotate(1.4deg);
+  }
+  100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+}
+
+.wayang-living-sway-left {
+  animation: wayangLivingSwayLeft 3.6s ease-in-out infinite;
+  transform-origin: 50% 92%;
+}
+
+.wayang-living-sway-right {
+  animation: wayangLivingSwayRight 3.2s ease-in-out infinite 0.4s;
+  transform-origin: 50% 92%;
+}
+
 

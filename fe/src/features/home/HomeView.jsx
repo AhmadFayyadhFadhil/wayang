@@ -1,6 +1,9 @@
 import React from 'react';
 import { Film, BookOpen, Music, ShieldCheck, Zap, Layers } from 'lucide-react';
 import WayangFigureSvg from '../../components/stage/WayangFigureSvg';
+import kelirGununganImg from '../../assets/kelir_gunungan_stage.png';
+import gatotkacaOtentikImg from '../../assets/gatotkaca_otentik_cutout.png';
+import arjunaOtentikImg from '../../assets/arjuna_otentik_cutout.png';
 
 export default function HomeView({ onNavigate, connectionStatus, onTestConnection }) {
   return (
@@ -155,54 +158,124 @@ export default function HomeView({ onNavigate, connectionStatus, onTestConnectio
               </div>
             </div>
 
-            {/* Right Column: Interactive Kelir Stage Preview */}
+            {/* Right Column: Authentic Wayang Kulit Kelir Stage Preview */}
             <div
               style={{
-                background: 'radial-gradient(ellipse at 50% 35%, rgba(212, 175, 55, 0.22) 0%, rgba(21, 16, 12, 0.96) 72%)',
-                border: '1px solid #8b4513',
-                borderRadius: '20px',
-                padding: '24px 20px 16px 20px',
                 position: 'relative',
-                boxShadow: '0 20px 60px rgba(0,0,0,0.85), 0 0 35px rgba(212, 175, 55, 0.18)',
+                borderRadius: '20px',
+                overflow: 'hidden',
+                border: '1.5px solid rgba(212, 175, 55, 0.65)',
+                boxShadow: '0 25px 60px rgba(0,0,0,0.92), 0 0 40px rgba(212, 175, 55, 0.28)',
+                minHeight: '320px',
                 display: 'flex',
-                justifyContent: 'space-around',
+                justifyContent: 'center',
                 alignItems: 'flex-end',
-                minHeight: '280px',
+                background: '#120e0a',
               }}
             >
-              <div style={{ textAlign: 'center' }}>
-                <WayangFigureSvg slug="gatotkaca" scale={0.92} width={150} height={220} accentColor="#e5c158" />
-                <div style={{ fontSize: '11px', color: '#e5c158', fontWeight: '700', marginTop: '6px' }}>
-                  Raden Gatotkaca
-                </div>
-              </div>
+              {/* Layer 1: Gunungan Kelir Stage Background (Foto Asli Gunungan Tradisi dari User) */}
+              <img
+                src={kelirGununganImg}
+                alt="Kelir Gunungan Tradisi"
+                style={{
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'cover',
+                  opacity: 0.92,
+                  filter: 'contrast(1.08) brightness(0.92)',
+                }}
+              />
 
-              <div style={{ textAlign: 'center' }}>
-                <WayangFigureSvg slug="karna" pose="perang" facing="left" scale={0.92} width={150} height={220} accentColor="#f97316" />
-                <div style={{ fontSize: '11px', color: '#fb923c', fontWeight: '700', marginTop: '6px' }}>
-                  Adipati Karna
-                </div>
-              </div>
-
-              {/* Tag Penjelas Kelir */}
+              {/* Layer 2: Blencong Warm Light Radial Vignette Overlay */}
               <div
                 style={{
                   position: 'absolute',
-                  bottom: '12px',
-                  left: '50%',
-                  transform: 'translateX(-50%)',
-                  background: 'rgba(13, 10, 7, 0.88)',
-                  border: '1px solid rgba(212, 175, 55, 0.35)',
-                  padding: '4px 14px',
-                  borderRadius: '12px',
-                  fontSize: '11px',
-                  color: '#e5c158',
-                  fontWeight: '600',
-                  letterSpacing: '0.04em',
-                  whiteSpace: 'nowrap',
+                  inset: 0,
+                  background: 'radial-gradient(ellipse at 50% 30%, rgba(212, 175, 55, 0.32) 0%, rgba(13, 10, 7, 0.58) 82%)',
+                  pointerEvents: 'none',
+                }}
+              />
+
+              {/* Layer 3: Tokoh Wayang Kulit Otentik (Gambar Asli Tatah Sungging Beranimasi Hidup) */}
+              <div
+                style={{
+                  position: 'relative',
+                  zIndex: 2,
+                  display: 'flex',
+                  alignItems: 'flex-end',
+                  justifyContent: 'space-between',
+                  width: '100%',
+                  padding: '0 20px 22px 20px',
                 }}
               >
-                Kelir Pakem Tatah Sungging • Solah Gerak Hidup
+                {/* Raden Gatotkaca Asli */}
+                <div style={{ textAlign: 'center', flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                  <img
+                    src={gatotkacaOtentikImg}
+                    alt="Raden Gatotkaca Asli"
+                    className="wayang-living-sway-left"
+                    style={{
+                      maxHeight: '235px',
+                      width: 'auto',
+                      objectFit: 'contain',
+                      filter: 'drop-shadow(0 12px 18px rgba(0,0,0,0.9)) drop-shadow(0 0 10px rgba(212, 175, 55, 0.25))',
+                      cursor: 'pointer',
+                      transition: 'transform 0.2s ease',
+                    }}
+                    title="Raden Gatotkaca — Satria Pringgandani"
+                  />
+                  <div style={{ fontSize: '11px', color: '#e5c158', fontWeight: '700', marginTop: '6px', textShadow: '0 2px 4px rgba(0,0,0,0.95)' }}>
+                    Raden Gatotkaca
+                  </div>
+                </div>
+
+                {/* Raden Arjuna & Adipati Karna Asli */}
+                <div style={{ textAlign: 'center', flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                  <img
+                    src={arjunaOtentikImg}
+                    alt="Raden Arjuna Asli"
+                    className="wayang-living-sway-right"
+                    style={{
+                      maxHeight: '235px',
+                      width: 'auto',
+                      objectFit: 'contain',
+                      filter: 'drop-shadow(0 12px 18px rgba(0,0,0,0.9)) drop-shadow(0 0 10px rgba(212, 175, 55, 0.25))',
+                      cursor: 'pointer',
+                      transition: 'transform 0.2s ease',
+                    }}
+                    title="Raden Arjuna & Adipati Karna — Satria Pinilih"
+                  />
+                  <div style={{ fontSize: '11px', color: '#fb923c', fontWeight: '700', marginTop: '6px', textShadow: '0 2px 4px rgba(0,0,0,0.95)' }}>
+                    Raden Arjuna & Karna
+                  </div>
+                </div>
+              </div>
+
+              {/* Layer 4: Tag Penjelas Kelir Otentik */}
+              <div
+                style={{
+                  position: 'absolute',
+                  bottom: '10px',
+                  left: '50%',
+                  transform: 'translateX(-50%)',
+                  zIndex: 5,
+                  background: 'rgba(13, 10, 7, 0.88)',
+                  backdropFilter: 'blur(8px)',
+                  border: '1px solid rgba(212, 175, 55, 0.45)',
+                  padding: '4px 16px',
+                  borderRadius: '20px',
+                  fontSize: '11px',
+                  color: '#e5c158',
+                  fontWeight: '700',
+                  letterSpacing: '0.04em',
+                  whiteSpace: 'nowrap',
+                  boxShadow: '0 4px 14px rgba(0,0,0,0.7)',
+                }}
+              >
+                Kelir Purwa Otentik • Tatah Sungging Asli
               </div>
             </div>
           </div>
