@@ -1,230 +1,265 @@
-import React from 'react';
-import { BookOpen, Film, Globe, FolderHeart, User } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
 
 export default function Navbar({ activeTab, onNavigate, backendConnected, currentUser, onOpenAuth }) {
+  const [isLightMode, setIsLightMode] = useState(false);
+
+  useEffect(() => {
+    let ticking = false;
+    const handleScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          // Cari semua section bertema terang secara dinamis dan menyeluruh
+          const lightElements = document.querySelectorAll(
+            '[data-light-section="true"], #home-light-sections, #atlas-light-sections, #my-works-light-sections, #template-lakon-section'
+          );
+          let inLight = false;
+          const navbarTop = 20;
+          const navbarBottom = 75;
+
+          for (let i = 0; i < lightElements.length; i++) {
+            const rect = lightElements[i].getBoundingClientRect();
+            // Cek apakah navbar (posisi vertikal 20px-75px) berada di atas area terang
+            if (rect.top <= navbarBottom && rect.bottom >= navbarTop) {
+              inLight = true;
+              break;
+            }
+          }
+
+          setIsLightMode(inLight);
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    window.addEventListener('resize', handleScroll, { passive: true });
+    handleScroll();
+    const timer = setTimeout(handleScroll, 80);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('resize', handleScroll);
+      clearTimeout(timer);
+    };
+  }, [activeTab]);
+
+  const navItems = [
+    { id: 'home', label: 'Beranda' },
+    { id: 'atlas', label: 'Story Atlas' },
+    { id: 'stage', label: 'Panggung Virtual' },
+    { id: 'archive', label: 'Galeri Publik' },
+    { id: 'my-works', label: 'Karya Saya' },
+  ];
+
+  if (currentUser?.role === 'admin') {
+    navItems.push({ id: 'admin', label: 'Admin CMS' });
+  }
+
   return (
     <header
       style={{
-        background: 'rgba(13, 10, 7, 0.94)',
-        backdropFilter: 'blur(12px)',
-        borderBottom: '1px solid #362619',
-        position: 'sticky',
-        top: 0,
-        zIndex: 50,
+        position: 'fixed',
+        top: '20px',
+        left: 0,
+        right: 0,
+        zIndex: 100,
+        width: '100%',
+        padding: '0 24px',
+        pointerEvents: 'none',
       }}
     >
       <div
         style={{
-          maxWidth: '1200px',
+          maxWidth: '1180px',
           margin: '0 auto',
-          padding: '10px 18px',
+          // Latar belakang kaca halus hangat: di area terang menggunakan warm parchment glass yang lembut menyatu dengan #f5f0e4, tidak kontras putih pekat
+          background: isLightMode ? 'rgba(248, 243, 233, 0.88)' : 'rgba(20, 14, 9, 0.68)',
+          backdropFilter: 'blur(16px)',
+          WebkitBackdropFilter: 'blur(16px)',
+          border: isLightMode
+            ? '1px solid rgba(212, 175, 55, 0.28)'
+            : '1px solid rgba(212, 175, 55, 0.22)',
+          borderRadius: '9999px',
+          padding: '10px 14px 10px 26px',
+          boxShadow: isLightMode
+            ? '0 8px 24px rgba(40, 28, 16, 0.06), 0 1px 4px rgba(212, 175, 55, 0.06)'
+            : '0 8px 28px rgba(0, 0, 0, 0.30)',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          gap: '16px',
+          gap: '24px',
+          pointerEvents: 'auto',
+          transition: 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
         }}
       >
-        {/* Logo & Brand */}
+        {/* 1. Brand Logo (Kiri) - Tipografi Elegan Minimalis Alami */}
         <div
           onClick={() => onNavigate('home')}
           style={{
             display: 'flex',
             alignItems: 'center',
-            gap: '10px',
+            gap: '8px',
             cursor: 'pointer',
+            userSelect: 'none',
             flexShrink: 0,
           }}
         >
-          <div
+          <span
             style={{
-              width: '32px',
-              height: '32px',
-              borderRadius: '8px',
-              background: 'linear-gradient(135deg, #d4af37, #8b4513)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontWeight: '800',
-              color: '#fcf6e8',
-              fontSize: '15px',
-              letterSpacing: '-0.5px',
-              boxShadow: '0 2px 8px rgba(212, 175, 55, 0.25)',
+              fontSize: '18.5px',
+              fontWeight: '850',
+              letterSpacing: '-0.4px',
+              color: isLightMode ? '#1a140e' : '#fcfaf2',
+              fontFamily: 'var(--font-sans)',
+              transition: 'color 0.25s ease',
             }}
           >
-            W
-          </div>
-          <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <span style={{ fontSize: '16px', fontWeight: '800', letterSpacing: '0.5px', color: '#fcf6e8' }}>
-                WAYANG<span style={{ color: '#d4af37' }}>VERSE</span>
-              </span>
-              <span
-                style={{
-                  fontSize: '9px',
-                  background: '#2b1e14',
-                  color: '#d4af37',
-                  border: '1px solid #5a3b22',
-                  padding: '1px 5px',
-                  borderRadius: '4px',
-                  fontWeight: '600',
-                }}
-              >
-                v1.0
-              </span>
-            </div>
-            <div style={{ fontSize: '10px', color: '#bfae9c' }}>Platform Digital Pelestarian Seni Wayang</div>
-          </div>
+            Wayang<span style={{ color: isLightMode ? '#c27827' : '#e8bb5c' }}>verse.</span>
+          </span>
         </div>
 
-        {/* Menu Navigasi Utama */}
-        <nav style={{ display: 'flex', alignItems: 'center', gap: '4px', overflowX: 'auto' }}>
-          <button
-            onClick={() => onNavigate('home')}
-            style={{
-              ...navBtnStyle,
-              background: activeTab === 'home' ? '#2b1e14' : 'transparent',
-              color: activeTab === 'home' ? '#e5c158' : '#bfae9c',
-              borderColor: activeTab === 'home' ? '#8b4513' : 'transparent',
-            }}
-          >
-            Beranda
-          </button>
-
-          <button
-            onClick={() => onNavigate('atlas')}
-            style={{
-              ...navBtnStyle,
-              background: activeTab === 'atlas' ? '#2b1e14' : 'transparent',
-              color: activeTab === 'atlas' ? '#e5c158' : '#bfae9c',
-              borderColor: activeTab === 'atlas' ? '#8b4513' : 'transparent',
-            }}
-          >
-            Story Atlas
-          </button>
-
-          <button
-            onClick={() => onNavigate('stage')}
-            style={{
-              ...navBtnStyle,
-              background: activeTab === 'stage' ? 'linear-gradient(135deg, #8b4513, #5c2c10)' : '#261b12',
-              color: activeTab === 'stage' ? '#fcf6e8' : '#e5c158',
-              borderColor: '#8b4513',
-              fontWeight: '600',
-              boxShadow: activeTab === 'stage' ? '0 2px 10px rgba(139, 69, 19, 0.4)' : 'none',
-            }}
-          >
-            Panggung Virtual
-          </button>
-
-          <button
-            onClick={() => onNavigate('archive')}
-            style={{
-              ...navBtnStyle,
-              background: activeTab === 'archive' ? '#2b1e14' : 'transparent',
-              color: activeTab === 'archive' ? '#e5c158' : '#bfae9c',
-              borderColor: activeTab === 'archive' ? '#8b4513' : 'transparent',
-            }}
-          >
-            Galeri Publik
-          </button>
-
-          <button
-            onClick={() => onNavigate('my-works')}
-            style={{
-              ...navBtnStyle,
-              background: activeTab === 'my-works' ? '#2b1e14' : 'transparent',
-              color: activeTab === 'my-works' ? '#e5c158' : '#bfae9c',
-              borderColor: activeTab === 'my-works' ? '#8b4513' : 'transparent',
-            }}
-          >
-            Karya Saya
-          </button>
-
-          {/* Tab Khusus Administrator (CMS) */}
-          {currentUser?.role === 'admin' && (
-            <button
-              onClick={() => onNavigate('admin')}
-              style={{
-                ...navBtnStyle,
-                background: activeTab === 'admin' ? 'linear-gradient(135deg, #8b4513, #5c2c10)' : '#261b12',
-                color: activeTab === 'admin' ? '#fcf6e8' : '#e5c158',
-                borderColor: '#8b4513',
-                fontWeight: '600',
-              }}
-            >
-              Admin CMS
-            </button>
-          )}
-        </nav>
-
-        {/* Info Pengguna & Akun */}
-        <button
-          onClick={onOpenAuth}
-          title={currentUser ? `Akun: ${currentUser.email} (${currentUser.role || 'dalang'})` : 'Masuk atau daftarkan akun'}
+        {/* 2. Menu Navigasi Tengah - Sederhana, Elegan, & Bebas Kontras Berlebihan */}
+        <nav
           style={{
-            background: currentUser?.role === 'admin' ? 'rgba(120, 53, 15, 0.45)' : currentUser ? 'rgba(39, 34, 51, 0.7)' : '#211d2b',
-            border: `1px solid ${currentUser?.role === 'admin' ? '#b45309' : currentUser ? '#4a3d60' : '#393247'}`,
-            color: '#fef3c7',
-            padding: '4px 12px 4px 6px',
-            borderRadius: '24px',
-            fontSize: '12px',
-            fontWeight: '600',
-            cursor: 'pointer',
             display: 'flex',
             alignItems: 'center',
-            gap: '8px',
-            transition: 'all 0.15s ease',
-            flexShrink: 0,
+            gap: '6px',
+            overflowX: 'auto',
+            scrollbarWidth: 'none',
           }}
         >
-          <div
-            style={{
-              width: '26px',
-              height: '26px',
-              borderRadius: '50%',
-              background: currentUser?.role === 'admin' ? 'linear-gradient(135deg, #d97706, #78350f)' : currentUser ? '#b45309' : '#3730a3',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              color: '#fff',
-            }}
-          >
-            <User size={13} />
-          </div>
-          <span style={{ maxWidth: '160px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-            {currentUser ? currentUser.name : 'Masuk / Akun'}
-          </span>
-          {currentUser?.role === 'admin' && (
-            <span
+          {navItems.map((item) => {
+            const isActive = activeTab === item.id;
+            const activeColor = isLightMode ? '#8b5a1b' : '#e8bb5c';
+            const inactiveColor = isLightMode ? '#5e5042' : '#d6c8b8';
+            const activeBg = isLightMode ? 'rgba(212, 175, 55, 0.14)' : 'rgba(232, 187, 92, 0.14)';
+            const activeBorder = isLightMode ? 'rgba(212, 175, 55, 0.35)' : 'rgba(212, 175, 55, 0.30)';
+
+            return (
+              <button
+                key={item.id}
+                onClick={() => onNavigate(item.id)}
+                style={{
+                  background: isActive ? activeBg : 'transparent',
+                  border: isActive ? `1px solid ${activeBorder}` : '1px solid transparent',
+                  color: isActive ? activeColor : inactiveColor,
+                  padding: '7px 16px',
+                  borderRadius: '9999px',
+                  fontSize: '13.5px',
+                  fontWeight: isActive ? '750' : '600',
+                  cursor: 'pointer',
+                  whiteSpace: 'nowrap',
+                  transition: 'all 0.18s ease',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                }}
+                onMouseEnter={(e) => {
+                  if (!isActive) {
+                    e.currentTarget.style.color = isLightMode ? '#1a140e' : '#fcfaf2';
+                    e.currentTarget.style.background = isLightMode
+                      ? 'rgba(212, 175, 55, 0.10)'
+                      : 'rgba(255, 255, 255, 0.08)';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (!isActive) {
+                    e.currentTarget.style.color = inactiveColor;
+                    e.currentTarget.style.background = 'transparent';
+                  }
+                }}
+              >
+                {item.label}
+              </button>
+            );
+          })}
+        </nav>
+
+        {/* 3. Action Button (Kanan) - Clean Pill Button */}
+        <div style={{ display: 'flex', alignItems: 'center', flexShrink: 0 }}>
+          {currentUser ? (
+            /* Jika Pengguna Sudah Login: Pill Profil Dalang Elegan */
+            <button
+              onClick={onOpenAuth}
+              title={`Akun: ${currentUser.email} (${currentUser.role || 'dalang'})`}
               style={{
-                fontSize: '9px',
-                background: '#78350f',
-                border: '1px solid #d97706',
-                color: '#fef3c7',
-                padding: '1px 6px',
-                borderRadius: '10px',
-                fontWeight: '700',
-                letterSpacing: '0.4px',
-                textTransform: 'uppercase',
+                background: isLightMode ? 'rgba(212, 175, 55, 0.12)' : 'rgba(232, 187, 92, 0.14)',
+                backdropFilter: 'blur(10px)',
+                WebkitBackdropFilter: 'blur(10px)',
+                border: isLightMode
+                  ? '1px solid rgba(212, 175, 55, 0.32)'
+                  : '1px solid rgba(212, 175, 55, 0.35)',
+                color: isLightMode ? '#1a140e' : '#fcfaf2',
+                padding: '8px 20px',
+                borderRadius: '20px',
+                fontSize: '13px',
+                fontWeight: '750',
+                cursor: 'pointer',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '8px',
+                boxShadow: isLightMode
+                  ? '0 2px 6px rgba(40, 28, 16, 0.04)'
+                  : '0 2px 10px rgba(0, 0, 0, 0.2)',
+                transition: 'all 0.2s cubic-bezier(0.16, 1, 0.3, 1)',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = isLightMode
+                  ? 'rgba(212, 175, 55, 0.20)'
+                  : 'rgba(232, 187, 92, 0.26)';
+                e.currentTarget.style.transform = 'translateY(-1px)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = isLightMode
+                  ? 'rgba(212, 175, 55, 0.12)'
+                  : 'rgba(232, 187, 92, 0.14)';
+                e.currentTarget.style.transform = 'translateY(0)';
               }}
             >
-              Admin
-            </span>
+              <span
+                style={{
+                  width: '7px',
+                  height: '7px',
+                  borderRadius: '50%',
+                  background: '#10b981',
+                  display: 'inline-block',
+                }}
+              />
+              <span style={{ maxWidth: '120px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                {currentUser.name || 'Dalang'}
+              </span>
+            </button>
+          ) : (
+            /* Jika Belum Login: Clean Pill Button */
+            <button
+              onClick={onOpenAuth}
+              style={{
+                background: isLightMode ? '#c27827' : '#e8bb5c',
+                border: 'none',
+                color: isLightMode ? '#ffffff' : '#0d0a07',
+                padding: '8px 22px',
+                borderRadius: '20px',
+                fontSize: '13.5px',
+                fontWeight: '750',
+                cursor: 'pointer',
+                display: 'inline-flex',
+                alignItems: 'center',
+                boxShadow: 'none',
+                transition: 'all 0.2s ease',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = isLightMode ? '#ad671d' : '#dcae4d';
+                e.currentTarget.style.transform = 'translateY(-1px)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = isLightMode ? '#c27827' : '#e8bb5c';
+                e.currentTarget.style.transform = 'translateY(0)';
+              }}
+            >
+              Masuk Akun
+            </button>
           )}
-        </button>
+        </div>
       </div>
     </header>
   );
 }
-
-const navBtnStyle = {
-  border: '1px solid transparent',
-  padding: '6px 12px',
-  borderRadius: '8px',
-  fontSize: '12px',
-  cursor: 'pointer',
-  display: 'flex',
-  alignItems: 'center',
-  gap: '6px',
-  transition: 'all 0.15s ease',
-};

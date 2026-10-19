@@ -4,8 +4,6 @@ import VirtualStageCanvas from './VirtualStageCanvas';
 import SceneComposer from './SceneComposer';
 import StagePreviewModal from './StagePreviewModal';
 import SavePerformanceModal from './SavePerformanceModal';
-import { Play, Save, RotateCcw, ArrowLeft } from 'lucide-react';
-
 export default function StageStudio({ onNavigate }) {
   const {
     metadata,
@@ -41,7 +39,7 @@ export default function StageStudio({ onNavigate }) {
           flexWrap: 'wrap',
           alignItems: 'center',
           justifyContent: 'space-between',
-          background: 'linear-gradient(135deg, #1c150e, #130e09)',
+          background: '#16100a',
           border: '1px solid #362619',
           borderRadius: '14px',
           padding: '14px 20px',
@@ -55,32 +53,28 @@ export default function StageStudio({ onNavigate }) {
             title="Kembali ke Beranda"
             style={{
               background: '#231a13',
-              border: '1px solid #362619',
-              color: '#d4af37',
-              padding: '7px 12px',
-              borderRadius: '8px',
+              border: '1px solid rgba(212, 175, 55, 0.3)',
+              color: '#e8bb5c',
+              padding: '8px 18px',
+              borderRadius: '20px',
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
-              gap: '6px',
+              justifyContent: 'center',
               fontSize: '12px',
-              fontWeight: '600',
+              fontWeight: '650',
+              transition: 'all 0.2s ease',
             }}
           >
-            <ArrowLeft size={14} /> Beranda
+            Beranda
           </button>
 
           <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <span style={{ fontSize: '10px', background: 'linear-gradient(135deg, #d4af37, #8b4513)', color: '#0d0a07', padding: '2px 8px', borderRadius: '4px', fontWeight: '800', letterSpacing: '0.05em' }}>
-                STUDIO DALANG 2D
-              </span>
-              <h1 style={{ margin: 0, fontSize: '18px', color: '#fcfaf2', fontWeight: '700' }}>
-                {metadata.title || 'Lakon Wayang Baru'}
-              </h1>
-            </div>
+            <h1 style={{ margin: 0, fontSize: '18px', color: '#fcfaf2', fontWeight: '700' }}>
+              {metadata.title || 'Lakon Wayang Baru'}
+            </h1>
             <div style={{ fontSize: '11px', color: '#bfae9c', marginTop: '2px' }}>
-              {scenes.length} Adegan • Status: <strong style={{ color: metadata.visibility === 'public' ? '#10b981' : '#d4af37' }}>{metadata.visibility === 'public' ? 'Publik' : 'Privat'}</strong>
+              {scenes.length} Adegan • Status: <strong style={{ color: metadata.visibility === 'public' ? '#10b981' : '#e8bb5c' }}>{metadata.visibility === 'public' ? 'Publik' : 'Privat'}</strong>
             </div>
           </div>
         </div>
@@ -96,7 +90,7 @@ export default function StageStudio({ onNavigate }) {
             title="Reset Panggung ke Adegan Awal"
             style={studioBtnStyle}
           >
-            <RotateCcw size={14} /> Reset
+            Reset
           </button>
 
           <button
@@ -104,26 +98,32 @@ export default function StageStudio({ onNavigate }) {
             style={{
               ...studioBtnStyle,
               background: '#231a13',
-              borderColor: '#d4af37',
-              color: '#d4af37',
-              fontWeight: '600',
+              borderColor: '#e8bb5c',
+              color: '#e8bb5c',
+              fontWeight: '650',
             }}
           >
-            <Play size={14} fill="#d4af37" /> Pratinjau Pertunjukan
+            Pratinjau Pertunjukan
           </button>
 
           <button
             onClick={() => setShowSaveModal(true)}
             style={{
               ...studioBtnStyle,
-              background: 'linear-gradient(135deg, #d4af37, #8b4513)',
+              background: '#e8bb5c',
               border: 'none',
               color: '#0d0a07',
-              fontWeight: '700',
-              boxShadow: '0 4px 15px rgba(212, 175, 55, 0.3)',
+              fontWeight: '750',
+              padding: '9px 20px',
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = '#dcae4d';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = '#e8bb5c';
             }}
           >
-            <Save size={15} /> Simpan Karya
+            Simpan Karya
           </button>
         </div>
       </div>
@@ -180,12 +180,13 @@ const studioBtnStyle = {
   background: '#231a13',
   border: '1px solid #362619',
   color: '#fcfaf2',
-  padding: '8px 14px',
-  borderRadius: '8px',
+  padding: '8px 16px',
+  borderRadius: '20px',
   cursor: 'pointer',
   display: 'flex',
   alignItems: 'center',
   gap: '6px',
   fontSize: '12px',
-  fontWeight: '500',
+  fontWeight: '600',
+  transition: 'all 0.2s ease',
 };

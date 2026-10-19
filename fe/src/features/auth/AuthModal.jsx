@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { apiClient } from '../../services/api';
-import { User, LogIn, UserPlus, LogOut, ShieldCheck, AlertCircle, CheckCircle, Sparkles } from 'lucide-react';
+import { User, ShieldCheck, AlertCircle, CheckCircle } from 'lucide-react';
 
 export default function AuthModal({ isOpen, onClose, currentUser, onAuthSuccess, onLogout }) {
   const [tab, setTab] = useState('login'); // 'login' | 'register'
@@ -84,8 +84,8 @@ export default function AuthModal({ isOpen, onClose, currentUser, onAuthSuccess,
       style={{
         position: 'fixed',
         inset: 0,
-        background: 'rgba(0,0,0,0.8)',
-        backdropFilter: 'blur(6px)',
+        background: 'rgba(0,0,0,0.82)',
+        backdropFilter: 'blur(8px)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -95,22 +95,22 @@ export default function AuthModal({ isOpen, onClose, currentUser, onAuthSuccess,
       <div
         style={{
           background: '#17110c',
-          border: '1px solid #d4af37',
-          borderRadius: '16px',
-          padding: '24px',
+          border: '1px solid rgba(212, 175, 55, 0.22)',
+          borderRadius: '20px',
+          padding: '28px',
           maxWidth: '440px',
           width: '90%',
           color: '#fcfaf2',
-          boxShadow: '0 25px 60px rgba(0,0,0,0.9), 0 0 30px rgba(212, 175, 55, 0.15)',
+          boxShadow: '0 16px 40px rgba(0, 0, 0, 0.5)',
         }}
       >
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-          <h3 style={{ margin: 0, color: '#d4af37', fontSize: '18px', fontWeight: '700', display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <User size={18} /> {currentUser ? 'Profil Pengguna' : 'Masuk / Daftar Akun'}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '18px' }}>
+          <h3 style={{ margin: 0, color: '#fcfaf2', fontSize: '18px', fontWeight: '800' }}>
+            {currentUser ? 'Profil Pengguna' : 'Masuk / Daftar Akun'}
           </h3>
           <button
             onClick={onClose}
-            style={{ background: 'none', border: 'none', color: '#bfae9c', fontSize: '18px', cursor: 'pointer' }}
+            style={{ background: 'none', border: 'none', color: '#bfae9c', fontSize: '18px', cursor: 'pointer', padding: '4px' }}
           >
             ✕
           </button>
@@ -134,7 +134,7 @@ export default function AuthModal({ isOpen, onClose, currentUser, onAuthSuccess,
                     width: '42px',
                     height: '42px',
                     borderRadius: '50%',
-                    background: 'linear-gradient(135deg, #d4af37, #8b4513)',
+                    background: '#d4af37',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
@@ -166,18 +166,17 @@ export default function AuthModal({ isOpen, onClose, currentUser, onAuthSuccess,
                 background: 'rgba(153, 27, 27, 0.2)',
                 border: '1px solid rgba(239, 68, 68, 0.4)',
                 color: '#fca5a5',
-                padding: '10px',
-                borderRadius: '10px',
+                padding: '11px',
+                borderRadius: '20px',
                 fontWeight: '700',
                 cursor: 'pointer',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                gap: '8px',
                 fontSize: '13px',
               }}
             >
-              <LogOut size={16} /> Keluar (Logout)
+              Keluar (Logout)
             </button>
           </div>
         ) : (
@@ -190,24 +189,24 @@ export default function AuthModal({ isOpen, onClose, currentUser, onAuthSuccess,
                 onClick={() => setTab('login')}
                 style={{
                   ...authTabBtnStyle,
-                  background: tab === 'login' ? 'rgba(212, 175, 55, 0.15)' : '#221a13',
+                  background: tab === 'login' ? 'rgba(212, 175, 55, 0.18)' : 'transparent',
                   color: tab === 'login' ? '#d4af37' : '#bfae9c',
-                  borderColor: tab === 'login' ? '#d4af37' : '#362619',
+                  borderColor: tab === 'login' ? 'rgba(212, 175, 55, 0.45)' : 'rgba(212, 175, 55, 0.15)',
                 }}
               >
-                <LogIn size={14} /> Masuk (Login)
+                Masuk (Login)
               </button>
               <button
                 type="button"
                 onClick={() => setTab('register')}
                 style={{
                   ...authTabBtnStyle,
-                  background: tab === 'register' ? 'rgba(212, 175, 55, 0.15)' : '#221a13',
+                  background: tab === 'register' ? 'rgba(212, 175, 55, 0.18)' : 'transparent',
                   color: tab === 'register' ? '#d4af37' : '#bfae9c',
-                  borderColor: tab === 'register' ? '#d4af37' : '#362619',
+                  borderColor: tab === 'register' ? 'rgba(212, 175, 55, 0.45)' : 'rgba(212, 175, 55, 0.15)',
                 }}
               >
-                <UserPlus size={14} /> Daftar Akun
+                Daftar Akun
               </button>
             </div>
 
@@ -220,8 +219,8 @@ export default function AuthModal({ isOpen, onClose, currentUser, onAuthSuccess,
                   background: 'rgba(212, 175, 55, 0.1)',
                   border: '1px solid rgba(212, 175, 55, 0.3)',
                   color: '#d4af37',
-                  padding: '8px',
-                  borderRadius: '6px',
+                  padding: '7px 12px',
+                  borderRadius: '20px',
                   fontSize: '11px',
                   fontWeight: '700',
                   cursor: 'pointer',
@@ -235,10 +234,10 @@ export default function AuthModal({ isOpen, onClose, currentUser, onAuthSuccess,
                 onClick={handleFillAdminAccount}
                 style={{
                   background: 'rgba(139, 69, 19, 0.2)',
-                  border: '1px solid #8b4513',
+                  border: '1px solid rgba(212, 175, 55, 0.3)',
                   color: '#fcfaf2',
-                  padding: '8px',
-                  borderRadius: '6px',
+                  padding: '7px 12px',
+                  borderRadius: '20px',
                   fontSize: '11px',
                   fontWeight: '700',
                   cursor: 'pointer',
@@ -305,16 +304,22 @@ export default function AuthModal({ isOpen, onClose, currentUser, onAuthSuccess,
                 disabled={loading}
                 style={{
                   width: '100%',
-                  background: 'linear-gradient(135deg, #d4af37, #8b4513)',
+                  background: '#e8bb5c',
                   border: 'none',
                   color: '#0d0a07',
-                  padding: '11px',
-                  borderRadius: '10px',
-                  fontSize: '13px',
-                  fontWeight: '700',
+                  padding: '12px 24px',
+                  borderRadius: '20px',
+                  fontSize: '14px',
+                  fontWeight: '750',
                   cursor: loading ? 'wait' : 'pointer',
-                  boxShadow: '0 4px 15px rgba(212, 175, 55, 0.3)',
-                  transition: 'all 0.15s ease',
+                  boxShadow: 'none',
+                  transition: 'all 0.2s ease',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = '#dcae4d';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = '#e8bb5c';
                 }}
               >
                 {loading ? 'Memproses...' : tab === 'login' ? 'Masuk Sekarang' : 'Daftarkan Akun'}
@@ -330,15 +335,15 @@ export default function AuthModal({ isOpen, onClose, currentUser, onAuthSuccess,
 const authTabBtnStyle = {
   borderWidth: '1px',
   borderStyle: 'solid',
-  padding: '8px',
-  borderRadius: '8px',
-  fontSize: '12px',
-  fontWeight: '600',
+  padding: '9px 16px',
+  borderRadius: '20px',
+  fontSize: '13px',
+  fontWeight: '700',
   cursor: 'pointer',
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
-  gap: '6px',
+  transition: 'all 0.18s ease',
 };
 
 const authLabelStyle = {

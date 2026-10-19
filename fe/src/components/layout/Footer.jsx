@@ -1,0 +1,656 @@
+import React, { useState } from 'react';
+import { X } from 'lucide-react';
+import batikPattern from '../../assets/atlas_gold_motif_strip.jpg';
+
+// ============================================================
+// IKON SOSIAL MEDIA VEKTOR
+// ============================================================
+const YoutubeIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
+  </svg>
+);
+
+const FacebookIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+  </svg>
+);
+
+const TwitterIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.936 9.936 0 0024 4.59z" />
+  </svg>
+);
+
+const InstagramIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+    <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+    <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+    <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+  </svg>
+);
+
+// ============================================================
+// KOMPONEN UTAMA FOOTER
+// ============================================================
+export default function Footer({ onNavigate }) {
+  const currentYear = new Date().getFullYear();
+  const [modalData, setModalData] = useState(null);
+
+  const socialLinks = [
+    { name: 'YouTube', icon: <YoutubeIcon />, href: 'https://youtube.com', title: 'Wayangverse YouTube' },
+    { name: 'Facebook', icon: <FacebookIcon />, href: 'https://facebook.com', title: 'Wayangverse Facebook' },
+    { name: 'Twitter', icon: <TwitterIcon />, href: 'https://twitter.com', title: 'Wayangverse Twitter' },
+    { name: 'Instagram', icon: <InstagramIcon />, href: 'https://instagram.com', title: 'Wayangverse Instagram' },
+  ];
+
+  return (
+    <footer
+      style={{
+        width: '100%',
+        background: '#0d0906',
+        color: '#fcfaf2',
+        borderTop: 'none',
+        position: 'relative',
+        overflow: 'hidden',
+        boxSizing: 'border-box',
+      }}
+    >
+      {/* ============================================================
+          1. LAPISAN DASAR: WATERMARK HALUS SELURUH LATAR (NON-KONTRAS)
+          ============================================================ */}
+      <div
+        aria-hidden="true"
+        style={{
+          position: 'absolute',
+          inset: 0,
+          zIndex: 1,
+          pointerEvents: 'none',
+          overflow: 'hidden',
+          opacity: 0.08,
+          mixBlendMode: 'luminosity',
+        }}
+      >
+        <img
+          src={batikPattern}
+          alt=""
+          style={{
+            width: '100%',
+            height: '100%',
+            objectFit: 'cover',
+            filter: 'contrast(1.15) brightness(0.85)',
+          }}
+        />
+        {/* Lapisan Pelindung Tengah untuk Keterbacaan Teks Maksimal */}
+        <div
+          style={{
+            position: 'absolute',
+            inset: 0,
+            background: 'radial-gradient(ellipse at 50% 50%, rgba(13, 9, 6, 0.96) 0%, rgba(13, 9, 6, 0.75) 75%, transparent 100%)',
+          }}
+        />
+      </div>
+
+      {/* ============================================================
+          2. MOTIF BATIK PINGGIR KIRI (BERVARIASI & FADE KE TENGAH)
+          ============================================================ */}
+      <div
+        aria-hidden="true"
+        style={{
+          position: 'absolute',
+          top: 0,
+          bottom: 0,
+          left: 0,
+          width: '340px',
+          maxWidth: '30vw',
+          pointerEvents: 'none',
+          zIndex: 2,
+          overflow: 'hidden',
+          opacity: 0.42,
+          maskImage: 'linear-gradient(to right, rgba(0,0,0,1) 0%, rgba(0,0,0,0.55) 45%, rgba(0,0,0,0) 100%)',
+          WebkitMaskImage: 'linear-gradient(to right, rgba(0,0,0,1) 0%, rgba(0,0,0,0.55) 45%, rgba(0,0,0,0) 100%)',
+        }}
+      >
+        <img
+          src={batikPattern}
+          alt=""
+          style={{
+            width: '100%',
+            height: '100%',
+            objectFit: 'cover',
+            objectPosition: 'left 15%',
+            transform: 'scale(1.15)',
+            filter: 'contrast(1.25) saturate(1.3) brightness(0.95)',
+          }}
+        />
+      </div>
+
+      {/* ============================================================
+          3. MOTIF BATIK PINGGIR KANAN (ASIMETRIS & BERBEDA DENGAN KIRI)
+          ============================================================ */}
+      <div
+        aria-hidden="true"
+        style={{
+          position: 'absolute',
+          top: 0,
+          bottom: 0,
+          right: 0,
+          width: '340px',
+          maxWidth: '30vw',
+          pointerEvents: 'none',
+          zIndex: 2,
+          overflow: 'hidden',
+          opacity: 0.44,
+          maskImage: 'linear-gradient(to left, rgba(0,0,0,1) 0%, rgba(0,0,0,0.55) 45%, rgba(0,0,0,0) 100%)',
+          WebkitMaskImage: 'linear-gradient(to left, rgba(0,0,0,1) 0%, rgba(0,0,0,0.55) 45%, rgba(0,0,0,0) 100%)',
+        }}
+      >
+        <img
+          src={batikPattern}
+          alt=""
+          style={{
+            width: '100%',
+            height: '100%',
+            objectFit: 'cover',
+            objectPosition: 'right 82%',
+            transform: 'scaleX(-1) scale(1.22)',
+            filter: 'contrast(1.3) saturate(1.35) brightness(0.9)',
+          }}
+        />
+      </div>
+
+      {/* ============================================================
+          4. KONTEN UTAMA (Z-INDEX 3 / DI ATAS MOTIF / TIDAK TERTUTUP)
+          ============================================================ */}
+      <div
+        style={{
+          maxWidth: '1280px',
+          margin: '0 auto',
+          padding: '64px 24px 36px 24px',
+          position: 'relative',
+          zIndex: 3,
+        }}
+      >
+        {/* MAIN 4-PART CONTENT (LAYOUT SCREENSHOT PERSIS) */}
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'flex-start',
+            flexWrap: 'wrap',
+            gap: '56px 40px',
+          }}
+        >
+          {/* SISI KIRI: BRAND, ALAMAT, DAN 4 IKON SOSIAL */}
+          <div style={{ flex: '1 1 340px', maxWidth: '420px' }}>
+            {/* Brand Title: Jangkor. -> Wayangverse. */}
+            <div
+              onClick={() => onNavigate && onNavigate('home')}
+              style={{
+                cursor: 'pointer',
+                display: 'inline-block',
+                marginBottom: '16px',
+                userSelect: 'none',
+              }}
+            >
+              <h3
+                style={{
+                  margin: 0,
+                  fontSize: '32px',
+                  fontWeight: '850',
+                  color: '#fcfaf2',
+                  letterSpacing: '-0.6px',
+                  fontFamily: 'var(--font-sans)',
+                  lineHeight: '1.2',
+                }}
+              >
+                Wayangverse<span style={{ color: '#e8bb5c' }}>.</span>
+              </h3>
+            </div>
+
+            {/* Address Lines */}
+            <div
+              style={{
+                fontSize: '14.5px',
+                lineHeight: '1.7',
+                color: '#c4b5a5',
+                marginBottom: '44px',
+                fontWeight: '450',
+              }}
+            >
+              <div>Jl. Pondok Leungsir Street</div>
+              <div>No 491 Village Park</div>
+            </div>
+
+            {/* 4 Ikon Media Sosial Melingkar (Bulat Kapsul dengan Border Emas) */}
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '14px',
+              }}
+            >
+              {socialLinks.map((item) => (
+                <a
+                  key={item.name}
+                  href={item.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  title={item.title}
+                  style={{
+                    width: '42px',
+                    height: '42px',
+                    borderRadius: '50%',
+                    background: 'rgba(28, 20, 13, 0.8)',
+                    border: '1px solid rgba(212, 175, 55, 0.18)',
+                    color: '#e8bb5c',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    textDecoration: 'none',
+                    transition: 'all 0.2s cubic-bezier(0.16, 1, 0.3, 1)',
+                    boxShadow: 'none',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = '#e8bb5c';
+                    e.currentTarget.style.color = '#0d0a07';
+                    e.currentTarget.style.borderColor = '#e8bb5c';
+                    e.currentTarget.style.transform = 'translateY(-2px)';
+                    e.currentTarget.style.boxShadow = '0 6px 18px rgba(232, 187, 92, 0.4)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = 'rgba(28, 20, 13, 0.9)';
+                    e.currentTarget.style.color = '#e8bb5c';
+                    e.currentTarget.style.borderColor = 'rgba(212, 175, 55, 0.3)';
+                    e.currentTarget.style.transform = 'translateY(0)';
+                    e.currentTarget.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.4)';
+                  }}
+                >
+                  {item.icon}
+                </a>
+              ))}
+            </div>
+          </div>
+
+          {/* SISI KANAN: 3 KOLOM TAUTAN (COMPANY, PRODUCT, LEGAL) */}
+          <div
+            style={{
+              flex: '2 1 520px',
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))',
+              gap: '40px 32px',
+            }}
+          >
+            {/* Kolom 1: Company */}
+            <div>
+              <h4
+                style={{
+                  fontSize: '15.5px',
+                  fontWeight: '750',
+                  color: '#f5ebd9',
+                  letterSpacing: '-0.2px',
+                  margin: '0 0 20px 0',
+                }}
+              >
+                Company
+              </h4>
+              <ul style={footerListStyle}>
+                <li>
+                  <button
+                    onClick={() =>
+                      setModalData({
+                        title: 'Tentang Wayangverse',
+                        subtitle: 'Pusat Pelestarian Warisan Pedalangan Digital',
+                        content:
+                          'Wayangverse adalah platform digital terintegrasi yang menjembatani naskah pakem klasik pedalangan Nusantara dengan kanvas panggung kelir interaktif dua dimensi dan tata suara gamelan real-time.',
+                      })
+                    }
+                    style={footerLinkBtnStyle}
+                    onMouseEnter={handleLinkMouseEnter}
+                    onMouseLeave={handleLinkMouseLeave}
+                  >
+                    About
+                  </button>
+                </li>
+                <li>
+                  <button
+                    onClick={() =>
+                      setModalData({
+                        title: 'Kontak Redaksi & Komunitas',
+                        subtitle: 'Hubungi Tim Pengembang & Dalang',
+                        content:
+                          'Surel: redaksi@wayangverse.id\nWhatsApp: +62 812-3456-7890\nStudio: Jl. Pondok Leungsir No. 491, Village Park, Surakarta.',
+                      })
+                    }
+                    style={footerLinkBtnStyle}
+                    onMouseEnter={handleLinkMouseEnter}
+                    onMouseLeave={handleLinkMouseLeave}
+                  >
+                    Contact
+                  </button>
+                </li>
+                <li>
+                  <button
+                    onClick={() =>
+                      setModalData({
+                        title: 'Pusat Dukungan Dalang & Edukasi',
+                        subtitle: 'Bantuan Pengoperasian Studio & Ensiklopedia',
+                        content:
+                          'Dapatkan panduan lengkap cara menggerakkan wayang di panggung 2D, memilih gending laras slendro, dan menyusun urutan babak lakon pementasan.',
+                      })
+                    }
+                    style={footerLinkBtnStyle}
+                    onMouseEnter={handleLinkMouseEnter}
+                    onMouseLeave={handleLinkMouseLeave}
+                  >
+                    Support
+                  </button>
+                </li>
+                <li>
+                  <button
+                    onClick={() =>
+                      setModalData({
+                        title: 'Karier & Kontributor Budaya',
+                        subtitle: 'Bergabung Bersama Melestarikan Budaya',
+                        content:
+                          'Kami membuka kesempatan bagi para dalang, pengrawit, peneliti naskah serat purwa, seniman ilustrasi wayang, dan pengembang web untuk berkontribusi melestarikan budaya bangsa.',
+                      })
+                    }
+                    style={footerLinkBtnStyle}
+                    onMouseEnter={handleLinkMouseEnter}
+                    onMouseLeave={handleLinkMouseLeave}
+                  >
+                    Career
+                  </button>
+                </li>
+              </ul>
+            </div>
+
+            {/* Kolom 2: Product */}
+            <div>
+              <h4
+                style={{
+                  fontSize: '15.5px',
+                  fontWeight: '750',
+                  color: '#f5ebd9',
+                  letterSpacing: '-0.2px',
+                  margin: '0 0 20px 0',
+                }}
+              >
+                Product
+              </h4>
+              <ul style={footerListStyle}>
+                <li>
+                  <button
+                    onClick={() => onNavigate && onNavigate('stage')}
+                    title="Panggung Virtual 2D Studio Dalang"
+                    style={footerLinkBtnStyle}
+                    onMouseEnter={handleLinkMouseEnter}
+                    onMouseLeave={handleLinkMouseLeave}
+                  >
+                    New product
+                  </button>
+                </li>
+                <li>
+                  <button
+                    onClick={() => onNavigate && onNavigate('atlas')}
+                    title="Story & Character Atlas Wayang"
+                    style={footerLinkBtnStyle}
+                    onMouseEnter={handleLinkMouseEnter}
+                    onMouseLeave={handleLinkMouseLeave}
+                  >
+                    Custom card
+                  </button>
+                </li>
+                <li>
+                  <button
+                    onClick={() => onNavigate && onNavigate('stage')}
+                    title="Audio Gamelan Slendro Real-time & Naskah"
+                    style={footerLinkBtnStyle}
+                    onMouseEnter={handleLinkMouseEnter}
+                    onMouseLeave={handleLinkMouseLeave}
+                  >
+                    Printing needs
+                  </button>
+                </li>
+                <li>
+                  <button
+                    onClick={() => onNavigate && onNavigate('archive')}
+                    title="Galeri Karya & Komunitas Wayang"
+                    style={footerLinkBtnStyle}
+                    onMouseEnter={handleLinkMouseEnter}
+                    onMouseLeave={handleLinkMouseLeave}
+                  >
+                    Interest
+                  </button>
+                </li>
+              </ul>
+            </div>
+
+            {/* Kolom 3: Legal */}
+            <div>
+              <h4
+                style={{
+                  fontSize: '15.5px',
+                  fontWeight: '750',
+                  color: '#f5ebd9',
+                  letterSpacing: '-0.2px',
+                  margin: '0 0 20px 0',
+                }}
+              >
+                Legal
+              </h4>
+              <ul style={footerListStyle}>
+                <li>
+                  <button
+                    onClick={() =>
+                      setModalData({
+                        title: 'Syarat & Ketentuan (Terms & Conditions)',
+                        subtitle: 'Prinsip Integritas Kultural Wayangverse',
+                        content:
+                          'Semua visual karakter wayang, naskah serat purwa, dan audio gending pada platform ini dilindungi oleh prinsip Cultural Integrity dan hak cipta keterbukaan pelestarian budaya Nusantara.',
+                      })
+                    }
+                    style={footerLinkBtnStyle}
+                    onMouseEnter={handleLinkMouseEnter}
+                    onMouseLeave={handleLinkMouseLeave}
+                  >
+                    Terms & Conditions
+                  </button>
+                </li>
+                <li>
+                  <button
+                    onClick={() =>
+                      setModalData({
+                        title: 'Kebijakan Privasi (Privacy Policy)',
+                        subtitle: 'Perlindungan Data Kreator & Pengguna',
+                        content:
+                          'Wayangverse menghormati dan melindungi data privasi pengguna serta hak cipta atas rekaman pementasan yang dibuat melalui Studio Dalang 2D.',
+                      })
+                    }
+                    style={footerLinkBtnStyle}
+                    onMouseEnter={handleLinkMouseEnter}
+                    onMouseLeave={handleLinkMouseLeave}
+                  >
+                    Privacy policy
+                  </button>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        {/* BILAH HAK CIPTA BAWAH */}
+        <div
+          style={{
+            borderTop: '1px solid rgba(212, 175, 55, 0.16)',
+            marginTop: '56px',
+            paddingTop: '24px',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            flexWrap: 'wrap',
+            gap: '12px',
+            fontSize: '12.5px',
+            color: '#9e8c79',
+          }}
+        >
+          <div>
+            © {currentYear} <strong style={{ color: '#fcfaf2' }}>Wayangverse</strong>. Dilindungi Hak Cipta. Dedikasi Pelestarian Seni Pedalangan Nusantara.
+          </div>
+          <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
+            <span>Pondok Leungsir Park</span>
+            <span>•</span>
+            <span style={{ color: '#e8bb5c', fontWeight: '600' }}>Memayu Hayuning Bawana</span>
+          </div>
+        </div>
+      </div>
+
+      {/* MODAL DIALOG INFORMASI TAUTAN */}
+      {modalData && (
+        <div
+          style={{
+            position: 'fixed',
+            inset: 0,
+            zIndex: 9999,
+            background: 'rgba(12, 9, 6, 0.75)',
+            backdropFilter: 'blur(5px)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '20px',
+          }}
+          onClick={() => setModalData(null)}
+        >
+          <div
+            style={{
+              background: '#18120c',
+              border: '1px solid rgba(212, 175, 55, 0.35)',
+              borderRadius: '20px',
+              maxWidth: '520px',
+              width: '100%',
+              padding: '28px',
+              boxShadow: '0 20px 50px rgba(0, 0, 0, 0.55)',
+              position: 'relative',
+              boxSizing: 'border-box',
+              color: '#fcfaf2',
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'flex-start',
+                marginBottom: '16px',
+              }}
+            >
+              <div>
+                <h3
+                  style={{
+                    margin: '0 0 6px 0',
+                    fontSize: '19px',
+                    fontWeight: '800',
+                    color: '#fcfaf2',
+                  }}
+                >
+                  {modalData.title}
+                </h3>
+                <div style={{ fontSize: '13px', color: '#e8bb5c', fontWeight: '600' }}>
+                  {modalData.subtitle}
+                </div>
+              </div>
+              <button
+                onClick={() => setModalData(null)}
+                style={{
+                  background: 'rgba(212, 175, 55, 0.12)',
+                  border: '1px solid rgba(212, 175, 55, 0.25)',
+                  borderRadius: '50%',
+                  width: '32px',
+                  height: '32px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  cursor: 'pointer',
+                  color: '#e8bb5c',
+                }}
+              >
+                <X size={16} />
+              </button>
+            </div>
+
+            <p
+              style={{
+                fontSize: '14px',
+                lineHeight: '1.7',
+                color: '#bfae9c',
+                margin: '0 0 24px 0',
+                whiteSpace: 'pre-line',
+              }}
+            >
+              {modalData.content}
+            </p>
+
+            <div style={{ textAlign: 'right' }}>
+              <button
+                onClick={() => setModalData(null)}
+                style={{
+                  background: '#e8bb5c',
+                  border: 'none',
+                  color: '#0d0a07',
+                  padding: '9px 26px',
+                  borderRadius: '20px',
+                  fontSize: '13.5px',
+                  fontWeight: '750',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s ease',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = '#dcae4d';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = '#e8bb5c';
+                }}
+              >
+                Tutup
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </footer>
+  );
+}
+
+const footerListStyle = {
+  listStyle: 'none',
+  padding: 0,
+  margin: 0,
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '12px',
+};
+
+const footerLinkBtnStyle = {
+  background: 'none',
+  border: 'none',
+  padding: '2px 0',
+  color: '#bfae9c',
+  fontSize: '14px',
+  cursor: 'pointer',
+  textAlign: 'left',
+  transition: 'all 0.18s ease',
+  fontFamily: 'inherit',
+  display: 'inline-block',
+};
+
+const handleLinkMouseEnter = (e) => {
+  e.currentTarget.style.color = '#e8bb5c';
+  e.currentTarget.style.transform = 'translateX(2px)';
+};
+
+const handleLinkMouseLeave = (e) => {
+  e.currentTarget.style.color = '#bfae9c';
+  e.currentTarget.style.transform = 'translateX(0)';
+};

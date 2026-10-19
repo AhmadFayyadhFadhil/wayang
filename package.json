@@ -1,0 +1,13 @@
+{
+  "name": "wayang-digital-monorepo",
+  "private": true,
+  "description": "Root workspace scripts for Wayang Digital monorepo",
+  "scripts": {
+    "dev": "npm --prefix fe run dev",
+    "dev:fe": "npm --prefix fe run dev",
+    "dev:be": "npm --prefix be run dev",
+    "build": "npm --prefix fe run build",
+    "build:fe": "npm --prefix fe run build",
+    "build:be": "npm --prefix be run build"
+  }
+}

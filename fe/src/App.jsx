@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Navbar from './components/layout/Navbar';
+import Footer from './components/layout/Footer';
 import HomeView from './features/home/HomeView';
 import AtlasView from './features/encyclopedia/AtlasView';
 import StageStudio from './features/stage/StageStudio';
@@ -108,7 +109,13 @@ function App() {
       />
 
       {/* 2. Konten Halaman Aktif */}
-      <main style={{ flex: 1, paddingBottom: '40px' }}>
+      <main
+        style={{
+          flex: 1,
+          paddingTop: activeTab === 'home' || activeTab === 'atlas' || activeTab === 'my-works' ? '0' : '112px',
+          paddingBottom: '0',
+        }}
+      >
         {activeTab === 'home' && (
           <HomeView
             onNavigate={(tab) => {
@@ -182,30 +189,13 @@ function App() {
         }}
       />
 
-      {/* 4. Footer Bernuansa Warisan Budaya */}
-      <footer
-        style={{
-          borderTop: '1px solid #362619',
-          background: '#090705',
-          padding: '24px 18px',
-          textAlign: 'center',
-          fontSize: '12px',
-          color: '#a39280',
+      {/* 4. Footer Resmi Wayangverse (Ditampilkan Seragam di Semua Halaman) */}
+      <Footer
+        onNavigate={(tab) => {
+          setActiveTab(tab);
+          window.scrollTo({ top: 0, behavior: 'smooth' });
         }}
-      >
-        <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', gap: '12px' }}>
-          <div>
-            <strong style={{ color: '#d4af37' }}>Wayangverse</strong> — Platform Pertunjukan Wayang 2D Virtual & Preservasi Budaya.
-          </div>
-          <div style={{ display: 'flex', gap: '16px', color: '#8f7e6c' }}>
-            <span>Tema: Sosial & Kesenian</span>
-            <span>•</span>
-            <span>Prinsip: Cultural Integrity</span>
-            <span>•</span>
-            <span>Versi: MVP 1.0</span>
-          </div>
-        </div>
-      </footer>
+      />
     </div>
   );
 }

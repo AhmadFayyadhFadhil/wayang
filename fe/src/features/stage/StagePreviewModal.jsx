@@ -3,7 +3,7 @@ import VirtualStageCanvas from './VirtualStageCanvas';
 import soundEngine from '../../services/soundscape';
 import { AUDIO_MASTER } from '../../data/master/audioMaster';
 import confetti from 'canvas-confetti';
-import { Play, Pause, SkipForward, SkipBack, X } from 'lucide-react';
+import { X } from 'lucide-react';
 
 export default function StagePreviewModal({
   isOpen,
@@ -123,14 +123,15 @@ export default function StagePreviewModal({
             background: '#221a13',
             border: '1px solid #4a3826',
             color: '#fcfaf2',
-            padding: '8px 16px',
-            borderRadius: '10px',
+            padding: '8px 18px',
+            borderRadius: '20px',
             cursor: 'pointer',
             display: 'flex',
             alignItems: 'center',
             gap: '6px',
             fontSize: '13px',
             fontWeight: '600',
+            transition: 'all 0.2s ease',
           }}
         >
           <X size={16} /> Tutup Preview
@@ -168,7 +169,7 @@ export default function StagePreviewModal({
             style={{
               height: '100%',
               width: `${progress}%`,
-              background: 'linear-gradient(90deg, #d4af37, #8b4513)',
+              background: '#e8bb5c',
               transition: 'width 0.1s linear',
             }}
           />
@@ -181,30 +182,35 @@ export default function StagePreviewModal({
               if (currentSceneIdx > 0) setCurrentSceneIdx((c) => c - 1);
             }}
             disabled={currentSceneIdx === 0}
-            style={{ ...ctrlBtnStyle, opacity: currentSceneIdx === 0 ? 0.4 : 1 }}
+            style={{ ...ctrlBtnStyle, opacity: currentSceneIdx === 0 ? 0.4 : 1, justifyContent: 'center' }}
           >
-            <SkipBack size={16} /> Adegan Lalu
+            Adegan Lalu
           </button>
 
           {/* Tombol Play / Pause */}
           <button
             onClick={() => setIsPlaying(!isPlaying)}
             style={{
-              background: 'linear-gradient(135deg, #d4af37, #8b4513)',
+              background: '#e8bb5c',
               border: 'none',
               color: '#0d0a07',
-              padding: '9px 26px',
-              borderRadius: '24px',
+              padding: '9px 28px',
+              borderRadius: '20px',
               fontSize: '14px',
-              fontWeight: '700',
+              fontWeight: '750',
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
-              gap: '8px',
-              boxShadow: '0 4px 15px rgba(212, 175, 55, 0.3)',
+              justifyContent: 'center',
+              transition: 'all 0.2s ease',
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = '#dcae4d';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = '#e8bb5c';
             }}
           >
-            {isPlaying ? <Pause size={18} /> : <Play size={18} fill="#0d0a07" />}
             {isPlaying ? 'Jeda' : 'Lanjutkan'}
           </button>
 
@@ -214,9 +220,9 @@ export default function StagePreviewModal({
               if (currentSceneIdx < totalScenes - 1) setCurrentSceneIdx((c) => c + 1);
             }}
             disabled={currentSceneIdx === totalScenes - 1}
-            style={{ ...ctrlBtnStyle, opacity: currentSceneIdx === totalScenes - 1 ? 0.4 : 1 }}
+            style={{ ...ctrlBtnStyle, opacity: currentSceneIdx === totalScenes - 1 ? 0.4 : 1, justifyContent: 'center' }}
           >
-            Adegan Lanjut <SkipForward size={16} />
+            Adegan Lanjut
           </button>
         </div>
       </div>
@@ -228,11 +234,13 @@ const ctrlBtnStyle = {
   background: '#221a13',
   border: '1px solid #362619',
   color: '#fcfaf2',
-  padding: '6px 14px',
-  borderRadius: '8px',
+  padding: '7px 16px',
+  borderRadius: '20px',
   cursor: 'pointer',
   display: 'flex',
   alignItems: 'center',
   gap: '6px',
   fontSize: '12px',
+  fontWeight: '600',
+  transition: 'all 0.2s ease',
 };

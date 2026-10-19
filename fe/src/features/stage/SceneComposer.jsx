@@ -4,7 +4,6 @@ import { STAGE_CONFIG_MASTER } from '../../data/master/stageConfigMaster';
 import { AUDIO_MASTER } from '../../data/master/audioMaster';
 import soundEngine from '../../services/soundscape';
 import {
-  Plus,
   Copy,
   Trash2,
   ChevronLeft,
@@ -12,9 +11,6 @@ import {
   Music,
   Image,
   Clock,
-  UserPlus,
-  Play,
-  Square,
   MessageSquare,
 } from 'lucide-react';
 
@@ -68,21 +64,28 @@ export default function SceneComposer({
           <button
             onClick={onAddScene}
             style={{
-              background: 'linear-gradient(135deg, #d4af37, #8b4513)',
+              background: '#e8bb5c',
               color: '#0d0a07',
               border: 'none',
-              padding: '6px 14px',
-              borderRadius: '8px',
+              padding: '7px 20px',
+              borderRadius: '20px',
               fontSize: '12px',
-              fontWeight: '700',
+              fontWeight: '750',
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
-              gap: '6px',
-              boxShadow: '0 2px 8px rgba(212, 175, 55, 0.25)',
+              justifyContent: 'center',
+              boxShadow: 'none',
+              transition: 'all 0.2s ease',
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = '#dcae4d';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = '#e8bb5c';
             }}
           >
-            <Plus size={14} /> Tambah Adegan
+            Tambah Adegan
           </button>
         </div>
 
@@ -105,12 +108,11 @@ export default function SceneComposer({
                   minWidth: '160px',
                   padding: '10px',
                   borderRadius: '10px',
-                  background: isActive ? 'linear-gradient(145deg, #2e1d0f, #1c140c)' : '#221a13',
+                  background: isActive ? '#2d1e12' : '#221a13',
                   border: isActive ? '2px solid #d4af37' : '1px solid #362619',
                   cursor: 'pointer',
                   transition: 'all 0.15s ease',
                   position: 'relative',
-                  boxShadow: isActive ? '0 0 15px rgba(212, 175, 55, 0.15)' : 'none',
                 }}
               >
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
@@ -262,16 +264,16 @@ export default function SceneComposer({
                   background: isAudioPlaying ? '#ef4444' : '#451a03',
                   border: '1px solid #78350f',
                   color: '#fff',
-                  borderRadius: '8px',
-                  padding: '0 12px',
+                  borderRadius: '20px',
+                  padding: '0 14px',
                   cursor: 'pointer',
                   display: 'flex',
                   alignItems: 'center',
-                  gap: '4px',
+                  justifyContent: 'center',
                   fontSize: '11px',
+                  fontWeight: '600',
                 }}
               >
-                {isAudioPlaying ? <Square size={13} /> : <Play size={13} />}
                 {isAudioPlaying ? 'Stop' : 'Cek'}
               </button>
             </div>
@@ -287,19 +289,27 @@ export default function SceneComposer({
             <button
               onClick={() => setShowAddCharModal(true)}
               style={{
-                background: '#374151',
-                border: '1px solid #4b5563',
-                color: '#fef3c7',
-                padding: '3px 8px',
-                borderRadius: '6px',
+                background: '#e8bb5c',
+                border: 'none',
+                color: '#0d0a07',
+                padding: '4px 14px',
+                borderRadius: '20px',
                 fontSize: '11px',
+                fontWeight: '750',
                 cursor: 'pointer',
                 display: 'flex',
                 alignItems: 'center',
-                gap: '4px',
+                justifyContent: 'center',
+                transition: 'all 0.2s ease',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = '#dcae4d';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = '#e8bb5c';
               }}
             >
-              <UserPlus size={12} /> + Tokoh
+              Tambah Tokoh
             </button>
           </div>
 
@@ -372,12 +382,12 @@ export default function SceneComposer({
           <div
             style={{
               background: '#17110c',
-              border: '2px solid #d4af37',
+              border: '1px solid rgba(212, 175, 55, 0.25)',
               borderRadius: '16px',
               padding: '24px',
               maxWidth: '480px',
               width: '90%',
-              boxShadow: '0 20px 45px rgba(0,0,0,0.85), 0 0 25px rgba(212, 175, 55, 0.15)',
+              boxShadow: '0 16px 40px rgba(0, 0, 0, 0.5)',
             }}
           >
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>

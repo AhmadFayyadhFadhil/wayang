@@ -2,7 +2,7 @@ import React, { useRef, useState, useEffect } from 'react';
 import WayangFigureSvg from '../../components/stage/WayangFigureSvg';
 import { getBackgroundById, STAGE_CONFIG_MASTER } from '../../data/master/stageConfigMaster';
 import soundEngine from '../../services/soundscape';
-import { FlipHorizontal, ZoomIn, ZoomOut, Trash2, Volume2, ArrowLeft, ArrowRight, ArrowUp, ArrowDown } from 'lucide-react';
+import { ZoomIn, ZoomOut, Trash2, Volume2, ArrowLeft, ArrowRight, ArrowUp, ArrowDown } from 'lucide-react';
 
 export default function VirtualStageCanvas({
   scene,
@@ -121,8 +121,8 @@ export default function VirtualStageCanvas({
         userSelect: 'none',
         borderRadius: '16px',
         overflow: 'hidden',
-        boxShadow: '0 20px 50px rgba(0,0,0,0.8), 0 0 30px rgba(217, 119, 6, 0.2)',
-        border: '3px solid #78350f',
+        boxShadow: '0 12px 36px rgba(0, 0, 0, 0.45)',
+        border: '1px solid #362619',
         backgroundColor: bgConfig.bgColor,
       }}
     >
@@ -413,7 +413,7 @@ export default function VirtualStageCanvas({
               title="Balik Arah Hadap (Kiri/Kanan)"
               style={actionBtnStyle}
             >
-              <FlipHorizontal size={14} /> Hadap {selectedChar.facing === 'left' ? 'Kiri' : 'Kanan'}
+              Hadap {selectedChar.facing === 'left' ? 'Kiri' : 'Kanan'}
             </button>
 
             {/* Ubah Ukuran (Scale) */}

@@ -4,7 +4,6 @@ import { CHARACTERS_MASTER } from '../../data/master/charactersMaster';
 import { STORIES_MASTER } from '../../data/master/storiesMaster';
 import { AUDIO_MASTER } from '../../data/master/audioMaster';
 import persistenceService from '../../services/persistenceService';
-import { RefreshCw, Plus, Edit2, Trash2, Play } from 'lucide-react';
 
 export default function AdminCmsView({ onPlayPerformance }) {
   const [activeTab, setActiveTab] = useState('karakter'); // 'karakter' | 'cerita' | 'audio' | 'karya' | 'users'
@@ -229,11 +228,6 @@ export default function AdminCmsView({ onPlayPerformance }) {
       {/* 1. Header Ringkas */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px', flexWrap: 'wrap', gap: '12px' }}>
         <div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
-            <span style={{ fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.12em', color: '#d4af37', fontWeight: '700', padding: '2px 8px', borderRadius: '4px', background: 'rgba(212, 175, 55, 0.1)', border: '1px solid rgba(212, 175, 55, 0.3)' }}>
-              Panel Administrator
-            </span>
-          </div>
           <h1 style={{ margin: 0, fontSize: '24px', fontWeight: '700', color: '#fcfaf2' }}>
             Manajemen Data & Master Wayang
           </h1>
@@ -246,20 +240,19 @@ export default function AdminCmsView({ onPlayPerformance }) {
           disabled={loading}
           style={{
             background: '#221a13',
-            border: '1px solid #4a3826',
-            color: '#d4af37',
-            padding: '8px 16px',
-            borderRadius: '8px',
+            border: '1px solid rgba(212, 175, 55, 0.3)',
+            color: '#e8bb5c',
+            padding: '8px 18px',
+            borderRadius: '20px',
             fontSize: '12px',
-            fontWeight: '600',
+            fontWeight: '650',
             cursor: loading ? 'wait' : 'pointer',
             display: 'flex',
             alignItems: 'center',
-            gap: '8px',
+            justifyContent: 'center',
             transition: 'all 0.2s ease',
           }}
         >
-          <RefreshCw size={13} className={loading ? 'animate-spin' : ''} />
           {loading ? 'Menyinkronkan...' : 'Sinkronkan Data'}
         </button>
       </div>
@@ -310,7 +303,7 @@ export default function AdminCmsView({ onPlayPerformance }) {
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
               <span style={{ fontSize: '13px', fontWeight: '600', color: '#e5e7eb' }}>Daftar Tokoh Wayang</span>
               <button onClick={() => openModal('character')} style={btnAddStyle}>
-                <Plus size={13} /> Tambah Tokoh
+                Tambah Tokoh
               </button>
             </div>
             <div style={{ overflowX: 'auto' }}>
@@ -356,7 +349,7 @@ export default function AdminCmsView({ onPlayPerformance }) {
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
               <span style={{ fontSize: '13px', fontWeight: '600', color: '#e5e7eb' }}>Daftar Lakon Wiracarita</span>
               <button onClick={() => openModal('story')} style={btnAddStyle}>
-                <Plus size={13} /> Tambah Lakon
+                Tambah Lakon
               </button>
             </div>
             <div style={{ overflowX: 'auto' }}>
@@ -402,7 +395,7 @@ export default function AdminCmsView({ onPlayPerformance }) {
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
               <span style={{ fontSize: '13px', fontWeight: '600', color: '#e5e7eb' }}>Daftar Tata Suara & SFX</span>
               <button onClick={() => openModal('audio')} style={btnAddStyle}>
-                <Plus size={13} /> Tambah Audio
+                Tambah Audio
               </button>
             </div>
             <div style={{ overflowX: 'auto' }}>
@@ -573,8 +566,8 @@ export default function AdminCmsView({ onPlayPerformance }) {
           <div
             style={{
               background: '#17110c',
-              border: '1px solid #d4af37',
-              boxShadow: '0 20px 45px rgba(0,0,0,0.85), 0 0 25px rgba(212, 175, 55, 0.15)',
+              border: '1px solid rgba(212, 175, 55, 0.22)',
+              boxShadow: '0 16px 40px rgba(0, 0, 0, 0.5)',
               borderRadius: '12px',
               padding: '24px',
               maxWidth: '500px',
@@ -788,11 +781,12 @@ export default function AdminCmsView({ onPlayPerformance }) {
                     background: '#221a13',
                     border: '1px solid #4a3826',
                     color: '#bfae9c',
-                    padding: '8px 16px',
-                    borderRadius: '6px',
+                    padding: '8px 18px',
+                    borderRadius: '20px',
                     fontSize: '12px',
                     fontWeight: '600',
                     cursor: 'pointer',
+                    transition: 'all 0.2s ease',
                   }}
                 >
                   Batal
@@ -800,15 +794,22 @@ export default function AdminCmsView({ onPlayPerformance }) {
                 <button
                   type="submit"
                   style={{
-                    background: 'linear-gradient(135deg, #d4af37, #b8860b)',
+                    background: '#e8bb5c',
                     border: 'none',
                     color: '#0d0a07',
-                    padding: '8px 20px',
-                    borderRadius: '6px',
+                    padding: '8px 22px',
+                    borderRadius: '20px',
                     fontSize: '12px',
-                    fontWeight: '700',
+                    fontWeight: '750',
                     cursor: 'pointer',
-                    boxShadow: '0 2px 10px rgba(212, 175, 55, 0.3)',
+                    boxShadow: 'none',
+                    transition: 'all 0.2s ease',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = '#dcae4d';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = '#e8bb5c';
                   }}
                 >
                   Simpan Perubahan
@@ -873,18 +874,19 @@ function TabItem({ label, active, count, onClick }) {
 
 // Styling Ringkas & Rapi
 const btnAddStyle = {
-  background: 'linear-gradient(135deg, #d4af37, #b8860b)',
+  background: '#e8bb5c',
   border: 'none',
   color: '#0d0a07',
-  padding: '7px 14px',
-  borderRadius: '6px',
+  padding: '8px 20px',
+  borderRadius: '20px',
   fontSize: '12px',
-  fontWeight: '700',
+  fontWeight: '750',
   cursor: 'pointer',
   display: 'flex',
   alignItems: 'center',
-  gap: '6px',
-  boxShadow: '0 2px 8px rgba(212, 175, 55, 0.25)',
+  justifyContent: 'center',
+  boxShadow: 'none',
+  transition: 'all 0.2s ease',
 };
 
 const tblStyle = {

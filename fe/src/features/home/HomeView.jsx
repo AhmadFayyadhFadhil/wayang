@@ -1,398 +1,1271 @@
-import React from 'react';
-import { Film, BookOpen, Music, ShieldCheck, Zap, Layers } from 'lucide-react';
-import WayangFigureSvg from '../../components/stage/WayangFigureSvg';
-import kelirGununganImg from '../../assets/kelir_gunungan_stage.png';
-import gatotkacaOtentikImg from '../../assets/gatotkaca_otentik_cutout.png';
-import arjunaOtentikImg from '../../assets/arjuna_otentik_cutout.png';
+import React, { useState, useEffect, useRef } from 'react';
+import { BookOpen, Landmark, Music, Film, ArrowUpRight, ArrowRight } from 'lucide-react';
+import AnimatedCounter from '../../components/ui/AnimatedCounter';
+
+// Assets
+import heroParchmentWideBg from '../../assets/hero_parchment_clouds_widescreen_hd.jpg';
+import gununganHd from '../../assets/gunungan_kayon_hd.png';
+import avatarGatotkaca from '../../assets/avatar_gatotkaca.png';
+import avatarArjuna from '../../assets/avatar_arjuna.png';
+import avatarShinta from '../../assets/avatar_shinta.png';
+import avatarBima from '../../assets/avatar_bima.png';
+
+// Gambar Museum Otentik High-Definition untuk Kartu Tokoh Wayang & Lakon
+import wayangCardGatotkaca from '../../assets/wayang_card_gatotkaca.jpg';
+import wayangCardArjuna from '../../assets/wayang_card_arjuna.jpg';
+import wayangCardShinta from '../../assets/wayang_card_shinta.jpg';
+import wayangCardBima from '../../assets/wayang_card_bima.jpg';
+import galleryCoverGatotkaca from '../../assets/gallery_cover_gatotkaca.jpg';
+import dalangPerformanceHeritage from '../../assets/dalang_performance_heritage.jpg';
+import tatahSunggingCraft from '../../assets/tatah_sungging_craft.jpg';
+import gamelanOrchestraHeritage from '../../assets/gamelan_orchestra_heritage.jpg';
+import ctaGununganGoldenBg from '../../assets/cta_gunungan_golden_bg.jpg';
+import lakonCoverDewaRuci from '../../assets/lakon_cover_dewa_ruci.jpg';
+import lakonCoverShintaObong from '../../assets/lakon_cover_shinta_obong.jpg';
+
+// Master Data Sesuai PRD & SRS
+import { STORIES_MASTER } from '../../data/master/storiesMaster';
+import { CHARACTERS_MASTER } from '../../data/master/charactersMaster';
+
+// 4 Pementasan Unggulan Terpopuler Sesuai Format Leaderboard Top 4
+// 4 Pementasan Unggulan Terpopuler Sesuai Format Leaderboard Top 4
+const HOME_TOP_4_PERFORMANCES = [
+  {
+    id: 'top-1',
+    rank: '01.',
+    title: 'Gugurnya Ghatotkaca',
+    description: 'Pertempuran malam hari di Kurusetra antara Senopati Udara Raden Gatotkaca melawan Adipati Karna.',
+    coverImg: galleryCoverGatotkaca,
+  },
+  {
+    id: 'top-2',
+    rank: '02.',
+    title: 'Karno Tanding',
+    description: 'Puncak duel takdir dua ksatria bersaudara seibu di padang Kurusetra bersenjatakan panah Pasopati dan Kunta.',
+    coverImg: dalangPerformanceHeritage,
+  },
+  {
+    id: 'top-3',
+    rank: '03.',
+    title: 'Anoman Obong',
+    description: 'Aksi kepahlawanan duta kera putih Hanoman membakar benteng angkara murka Alengka dengan api suci.',
+    coverImg: tatahSunggingCraft,
+  },
+  {
+    id: 'top-4',
+    rank: '04.',
+    title: 'Dewa Ruci',
+    description: 'Perjalanan kontemplasi spiritual Bima mengarungi samudra raya demi menemukan hakikat kasampurnan urip.',
+    coverImg: gamelanOrchestraHeritage,
+  },
+];
 
 export default function HomeView({ onNavigate, connectionStatus, onTestConnection }) {
+  // State animasi countdown & kemunculan bergiliran untuk cardbox floating numerik
+  const [statsInView, setStatsInView] = useState(false);
+  const statsSectionRef = useRef(null);
+
+  useEffect(() => {
+    const el = statsSectionRef.current;
+    if (!el) {
+      setStatsInView(true);
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          setStatsInView(true);
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    observer.observe(el);
+
+    // Timeout cadangan otomatis: saat beranda dibuka langsung jalan tanpa menunggu scroll
+    const fallbackTimer = setTimeout(() => {
+      setStatsInView(true);
+    }, 350);
+
+    return () => {
+      observer.disconnect();
+      clearTimeout(fallbackTimer);
+    };
+  }, []);
+
+  // State hover interaktif untuk pilar fondasi (default null: semua button outline pada kondisi resting)
+  const [hoveredPillar, setHoveredPillar] = useState(null);
+  // 4 Lakon terkurasi utama untuk showcase sesuai spesifikasi Bento Grid
+  const featuredStories = [
+    {
+      id: 1,
+      slug: 'gugurnya-ghatotkaca',
+      title: 'Gugurnya Ghatotkaca',
+      category: 'Bharatayuddha',
+      shortDesc: 'Pengorbanan suci ksatria Pringgandani di palagan Kurusetra demi melindungi dharma dan pertiwi.',
+      coverImg: galleryCoverGatotkaca,
+      cardClass: 'lakon-bento-card-tall',
+    },
+    {
+      id: 2,
+      slug: 'dewa-ruci',
+      title: 'Dewa Ruci',
+      category: 'Filsafat Batin',
+      shortDesc: 'Pencarian spiritual hakikat manusia mengarungi samudra raya demi mencapai kasampurnan urip.',
+      coverImg: lakonCoverDewaRuci,
+      cardClass: 'lakon-bento-card-top-mid',
+    },
+    {
+      id: 3,
+      slug: 'shinta-obong',
+      title: 'Shinta Obong',
+      category: 'Epos Ramayana',
+      shortDesc: 'Ujian keteguhan cinta dan kemurnian moral Dewi Shinta melalui kobaran api suci.',
+      coverImg: lakonCoverShintaObong,
+      cardClass: 'lakon-bento-card-top-right',
+    },
+    {
+      id: 4,
+      slug: 'karno-tanding',
+      title: 'Karno Tanding',
+      category: 'Puncak Wiracarita',
+      shortDesc: 'Puncak duel takdir dua ksatria bersaudara kandung seibu di atas kereta kencana perang Kurusetra.',
+      coverImg: dalangPerformanceHeritage,
+      cardClass: 'lakon-bento-card-bottom-wide',
+    },
+  ];
+  // State kartu accordion tokoh wayang (kartu aktif melebar, kartu lainnya ramping seperti di referensi)
+  const [activeCharId, setActiveCharId] = useState(1);
+  // State kartu leaderboard top 4 (default 'top-2' aktif sesuai referensi screenshot)
+  const [activeLeaderboardId, setActiveLeaderboardId] = useState('top-2');
+
+  // 4 Karakter utama dengan data kultural otentik sesuai PRD & SRS
+  const featuredCharacters = [
+    {
+      id: 1,
+      slug: 'gatotkaca',
+      name: 'Raden Gatotkaca',
+      alias: 'Satria Pringgandani • Senopati Udara',
+      subheading: 'Ksatria Gagah Perkasa',
+      weapons: 'Kotang Antakusuma & Brajamusti',
+      description:
+        'Putra Werkudara berjuluk otot kawat balung wesi yang mampu melesat di angkasa. Simbol kerelaan berkorban demi keutuhan bangsa dan loyalitas prajurit sejati.',
+      philosophy: 'Dedikasi & Kerelaan Berkorban',
+      tradition: 'Gaya Surakarta & Yogyakarta',
+      avatarImg: avatarGatotkaca,
+      cardImg: wayangCardGatotkaca,
+    },
+    {
+      id: 2,
+      slug: 'arjuna',
+      name: 'Raden Arjuna',
+      alias: 'Janaka • Dananjaya • Permadi',
+      subheading: 'Ksatria Halus & Utama',
+      weapons: 'Panah Pasopati & Gandewa',
+      description:
+        'Penengah Pandawa berparas rupawan dan ahli memanah nomor satu dengan pusaka Pasopati. Mewakili ketajaman konsentrasi batin (cipta wening) dan kepatuhan dharma.',
+      philosophy: 'Cipta Wening & Ketenangan Batin',
+      tradition: 'Gaya Surakarta & Yogyakarta',
+      avatarImg: avatarArjuna,
+      cardImg: wayangCardArjuna,
+    },
+    {
+      id: 101,
+      slug: 'shinta',
+      name: 'Dewi Shinta',
+      alias: 'Putri Janaka • Putri Mithila',
+      subheading: 'Perlambang Kesucian',
+      weapons: 'Kemurnian Kasih & Janji Suci',
+      description:
+        'Titisan Batari Sri Widowati dalam wiracarita klasik Ramayana. Lambang kesucian cinta sejati, keteguhan hati menghadapi cobaan angkara, serta kemurnian moral.',
+      philosophy: 'Kesetiaan & Kemurnian Moral',
+      tradition: 'Tradisi Ramayana (Balai Pustaka)',
+      avatarImg: avatarShinta,
+      cardImg: wayangCardShinta,
+    },
+    {
+      id: 4,
+      slug: 'bima',
+      name: 'Raden Werkudara',
+      alias: 'Bimasena • Bayusuta • Bratasena',
+      subheading: 'Ksatria Gagah Lugas',
+      weapons: 'Kuku Pancanaka & Gada Rujakpala',
+      description:
+        'Pandawa kedua berbadan perkasa berwatak jujur tanpa pamrih dengan pusaka Kuku Pancanaka. Lambang ketegasan hukum dan pencari kasampurnan urip.',
+      philosophy: 'Kejujuran & Ketegasan Hukum',
+      tradition: 'Serat Dewa Ruci (Radyapustaka)',
+      avatarImg: avatarBima,
+      cardImg: wayangCardBima,
+    },
+  ];
+
   return (
-    <div style={{ width: '100%', color: 'var(--text-main, #fbf8ee)' }}>
-      {/* 1. HERO SECTION FULL LAYAR (Edge-to-Edge) */}
+    <div
+      style={{
+        width: '100%',
+        color: '#1a140e',
+        background: '#fcfaf5',
+        overflowX: 'hidden',
+        fontFamily: 'var(--font-sans)',
+      }}
+    >
+      {/* ============================================================
+          1. HERO SECTION (PRD 5.1: LANDING & PROPOSISI NILAI WAYANGVERSE)
+          ============================================================ */}
       <section
         style={{
           width: '100%',
-          minHeight: 'calc(100vh - 65px)',
+          minHeight: '100vh',
           display: 'flex',
+          flexDirection: 'column',
           alignItems: 'center',
+          justifyContent: 'center',
           position: 'relative',
-          background: 'radial-gradient(ellipse at 70% 35%, rgba(212, 175, 55, 0.16) 0%, rgba(139, 69, 19, 0.12) 40%, #0d0a07 80%)',
-          borderBottom: '1px solid #362619',
-          boxShadow: '0 20px 50px rgba(0, 0, 0, 0.7)',
+          padding: '120px 24px 80px 24px',
           overflow: 'hidden',
-          padding: '60px 0',
+          background: '#0d0a07',
+          boxSizing: 'border-box',
+          boxShadow: '0 12px 36px rgba(0, 0, 0, 0.45)',
         }}
       >
-        {/* Blencong Glow Effect Background */}
-        <div
+        {/* Layer Background: Latar Perkamen Awan Tradisional Warm Bronze HD (Harmonis dengan Gunungan) */}
+        <img
+          src={heroParchmentWideBg}
+          alt="Latar Perkamen Awan Tradisional Horizontal HD"
           style={{
             position: 'absolute',
-            top: '10%',
-            right: '15%',
-            width: '450px',
-            height: '450px',
-            background: 'radial-gradient(circle, rgba(212, 175, 55, 0.22) 0%, rgba(139, 69, 19, 0.08) 50%, transparent 70%)',
-            filter: 'blur(50px)',
-            pointerEvents: 'none',
+            inset: 0,
+            width: '100%',
+            height: '100%',
+            objectFit: 'cover',
+            objectPosition: 'bottom center',
+            zIndex: 1,
+            filter: 'contrast(1.0) brightness(0.88)',
           }}
         />
 
-        {/* Content Container (Center, generous max width) */}
+        {/* 1. Top Shadow Gradient: Menyelaraskan latar belakang dengan Navbar agar tidak kontras/tabrakan */}
         <div
           style={{
-            maxWidth: '1280px',
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            height: '200px',
+            background:
+              'linear-gradient(to bottom, rgba(13, 10, 7, 0.92) 0%, rgba(13, 10, 7, 0.60) 90px, transparent 100%)',
+            pointerEvents: 'none',
+            zIndex: 2,
+          }}
+        />
+
+        {/* 2. Harmonious Center Ambient Overlay: Meneduhkan area tengah agar teks terbaca jernih tanpa silau */}
+        <div
+          style={{
+            position: 'absolute',
+            inset: 0,
+            background:
+              'radial-gradient(ellipse 75% 70% at 50% 48%, rgba(16, 11, 7, 0.62) 0%, rgba(18, 12, 8, 0.40) 60%, rgba(10, 7, 5, 0.65) 100%)',
+            pointerEvents: 'none',
+            zIndex: 2,
+          }}
+        />
+
+        {/* 3. Bottom Gradient: Transisi lembut ke bagian bawah hero */}
+        <div
+          style={{
+            position: 'absolute',
+            bottom: 0,
+            left: 0,
+            right: 0,
+            height: '140px',
+            background:
+              'linear-gradient(to top, rgba(13, 10, 7, 0.85) 0%, rgba(13, 10, 7, 0.35) 60%, transparent 100%)',
+            pointerEvents: 'none',
+            zIndex: 2,
+          }}
+        />
+
+        {/* Ornamen Gunungan HD di Kiri & Kanan (Halus, Mengipas Perlahan & Menyatu dengan Latar) */}
+        <div
+          className="hero-gunungan-frame-left"
+          style={{
+            position: 'absolute',
+            left: '-15px',
+            bottom: '0',
+            height: '530px',
+            width: '330px',
+            zIndex: 3,
+            opacity: 0.78,
+            pointerEvents: 'none',
+            filter: 'none',
+          }}
+        >
+          <img
+            src={gununganHd}
+            alt="Gunungan Kelir Kiri HD"
+            style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+          />
+        </div>
+
+        <div
+          className="hero-gunungan-frame-right"
+          style={{
+            position: 'absolute',
+            right: '-15px',
+            bottom: '0',
+            height: '530px',
+            width: '330px',
+            zIndex: 3,
+            opacity: 0.78,
+            pointerEvents: 'none',
+            filter: 'none',
+          }}
+        >
+          <img
+            src={gununganHd}
+            alt="Gunungan Kelir Kanan HD"
+            style={{ width: '100%', height: '100%', objectFit: 'contain', transform: 'scaleX(-1)' }}
+          />
+        </div>
+
+        {/* Center Hero Content */}
+        <div
+          style={{
+            maxWidth: '920px',
             width: '100%',
             margin: '0 auto',
-            padding: '0 24px',
+            textAlign: 'center',
             position: 'relative',
             zIndex: 10,
           }}
         >
-          <div
+          {/* Main Headline (Warna Alami Bersih Tanpa Shadow/Stroke) */}
+          <h1
             style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(360px, 1fr))',
-              gap: '40px',
-              alignItems: 'center',
+              margin: '0 0 22px 0',
+              fontSize: 'clamp(34px, 5.2vw, 56px)',
+              fontWeight: '850',
+              color: '#fcfaf2',
+              lineHeight: '1.22',
+              letterSpacing: '-0.6px',
             }}
           >
-            {/* Left Column: Typography & CTAs */}
-            <div>
-              <div
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '6px',
-                  background: 'rgba(212, 175, 55, 0.12)',
-                  border: '1px solid rgba(212, 175, 55, 0.35)',
-                  padding: '5px 14px',
-                  borderRadius: '20px',
-                  fontSize: '11px',
-                  fontWeight: '700',
-                  color: '#e5c158',
-                  letterSpacing: '0.5px',
-                  marginBottom: '18px',
-                  boxShadow: '0 2px 8px rgba(0,0,0,0.3)',
-                }}
-              >
-                PLATFORM DIGITALISASI SENI & FILOSOFI WAYANG
-              </div>
+            Satu Panggung untuk Memainkan{' '}
+            <span style={{ color: '#d4af37' }}>Seni Wayang</span>{' '}
+            dan Karakter Luhur
+          </h1>
 
-              <h1
-                style={{
-                  margin: '0 0 16px 0',
-                  fontSize: 'clamp(32px, 4.2vw, 50px)',
-                  fontWeight: '800',
-                  color: '#fcfaf2',
-                  lineHeight: '1.2',
-                  letterSpacing: '-0.5px',
-                }}
-              >
-                Ubah Penonton Menjadi{' '}
-                <span
-                  style={{
-                    background: 'linear-gradient(135deg, #fce588, #d4af37, #b48a28)',
-                    WebkitBackgroundClip: 'text',
-                    WebkitTextFillColor: 'transparent',
-                    display: 'inline-block',
-                  }}
-                >
-                  Dalang Digital
-                </span>
-              </h1>
+          {/* Subtitle Sesuai PRD 1.2 Proposisi Nilai */}
+          <p
+            style={{
+              margin: '0 auto 36px auto',
+              fontSize: '16.5px',
+              color: '#f0e6d8',
+              lineHeight: '1.75',
+              maxWidth: '720px',
+            }}
+          >
+            Wayangverse menghadirkan panggung wayang digital interaktif dua dimensi berbasis kelir dengan visual tatah-sungging otentik, animasi solah dalang, tata suara gamelan real-time, dan relasi data ke naskah pakem bersejarah.
+          </p>
 
-              <p
-                style={{
-                  margin: '0 0 28px 0',
-                  fontSize: '15px',
-                  color: '#bfae9c',
-                  lineHeight: '1.7',
-                  maxWidth: '540px',
-                }}
-              >
-                <strong style={{ color: '#e5c158' }}>Wayangverse</strong> menghadirkan kearifan pewayangan ke ruang modern. Rancang adegan di atas kelir 2D interaktif, kendalikan iringan gamelan dinamis, serta hubungkan karya kreatif dengan pakem dan naskah tradisi.
-              </p>
-
-              {/* Call-to-Action Buttons */}
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '14px' }}>
-                <button
-                  onClick={() => onNavigate('stage')}
-                  style={{
-                    background: 'linear-gradient(135deg, #8b4513, #5c2c10)',
-                    border: '1px solid #d4af37',
-                    color: '#fcf6e8',
-                    padding: '13px 28px',
-                    borderRadius: '12px',
-                    fontSize: '13px',
-                    fontWeight: '700',
-                    cursor: 'pointer',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '8px',
-                    boxShadow: '0 6px 20px rgba(139, 69, 19, 0.45)',
-                    transition: 'all 0.15s ease',
-                  }}
-                >
-                  <Film size={16} /> Buka Panggung Virtual
-                </button>
-
-                <button
-                  onClick={() => onNavigate('atlas')}
-                  style={{
-                    background: 'rgba(34, 26, 19, 0.85)',
-                    border: '1px solid #5a3b22',
-                    color: '#fcf6e8',
-                    padding: '13px 24px',
-                    borderRadius: '12px',
-                    fontSize: '13px',
-                    fontWeight: '600',
-                    cursor: 'pointer',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '8px',
-                    transition: 'all 0.15s ease',
-                  }}
-                >
-                  <BookOpen size={16} /> Jelajahi Story Atlas
-                </button>
-              </div>
-            </div>
-
-            {/* Right Column: Authentic Wayang Kulit Kelir Stage Preview */}
-            <div
+          {/* Dual Action Buttons (Warna Solid Alami Bersih Tanpa Shadow/Stroke Berlebih) */}
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              gap: '14px',
+              flexWrap: 'wrap',
+              marginBottom: '0',
+            }}
+          >
+            {/* Primary Capsule Button -> Panggung Virtual */}
+            <button
+              onClick={() => onNavigate('stage')}
               style={{
-                position: 'relative',
+                background: '#e8bb5c',
+                border: 'none',
+                color: '#0d0a07',
+                padding: '12px 28px',
                 borderRadius: '20px',
-                overflow: 'hidden',
-                border: '1.5px solid rgba(212, 175, 55, 0.65)',
-                boxShadow: '0 25px 60px rgba(0,0,0,0.92), 0 0 40px rgba(212, 175, 55, 0.28)',
-                minHeight: '320px',
-                display: 'flex',
+                fontSize: '14px',
+                fontWeight: '750',
+                cursor: 'pointer',
+                display: 'inline-flex',
+                alignItems: 'center',
                 justifyContent: 'center',
-                alignItems: 'flex-end',
-                background: '#120e0a',
+                boxShadow: 'none',
+                transition: 'all 0.2s ease',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = 'translateY(-1px)';
+                e.currentTarget.style.background = '#dcae4d';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = 'translateY(0)';
+                e.currentTarget.style.background = '#e8bb5c';
               }}
             >
-              {/* Layer 1: Gunungan Kelir Stage Background (Foto Asli Gunungan Tradisi dari User) */}
-              <img
-                src={kelirGununganImg}
-                alt="Kelir Gunungan Tradisi"
-                style={{
-                  position: 'absolute',
-                  top: 0,
-                  left: 0,
-                  width: '100%',
-                  height: '100%',
-                  objectFit: 'cover',
-                  opacity: 0.92,
-                  filter: 'contrast(1.08) brightness(0.92)',
-                }}
-              />
+              Buka Panggung Virtual
+            </button>
 
-              {/* Layer 2: Blencong Warm Light Radial Vignette Overlay */}
-              <div
-                style={{
-                  position: 'absolute',
-                  inset: 0,
-                  background: 'radial-gradient(ellipse at 50% 30%, rgba(212, 175, 55, 0.32) 0%, rgba(13, 10, 7, 0.58) 82%)',
-                  pointerEvents: 'none',
-                }}
-              />
-
-              {/* Layer 3: Tokoh Wayang Kulit Otentik (Gambar Asli Tatah Sungging Beranimasi Hidup) */}
-              <div
-                style={{
-                  position: 'relative',
-                  zIndex: 2,
-                  display: 'flex',
-                  alignItems: 'flex-end',
-                  justifyContent: 'space-between',
-                  width: '100%',
-                  padding: '0 20px 22px 20px',
-                }}
-              >
-                {/* Raden Gatotkaca Asli */}
-                <div style={{ textAlign: 'center', flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                  <img
-                    src={gatotkacaOtentikImg}
-                    alt="Raden Gatotkaca Asli"
-                    className="wayang-living-sway-left"
-                    style={{
-                      maxHeight: '235px',
-                      width: 'auto',
-                      objectFit: 'contain',
-                      filter: 'drop-shadow(0 12px 18px rgba(0,0,0,0.9)) drop-shadow(0 0 10px rgba(212, 175, 55, 0.25))',
-                      cursor: 'pointer',
-                      transition: 'transform 0.2s ease',
-                    }}
-                    title="Raden Gatotkaca — Satria Pringgandani"
-                  />
-                  <div style={{ fontSize: '11px', color: '#e5c158', fontWeight: '700', marginTop: '6px', textShadow: '0 2px 4px rgba(0,0,0,0.95)' }}>
-                    Raden Gatotkaca
-                  </div>
-                </div>
-
-                {/* Raden Arjuna & Adipati Karna Asli */}
-                <div style={{ textAlign: 'center', flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                  <img
-                    src={arjunaOtentikImg}
-                    alt="Raden Arjuna Asli"
-                    className="wayang-living-sway-right"
-                    style={{
-                      maxHeight: '235px',
-                      width: 'auto',
-                      objectFit: 'contain',
-                      filter: 'drop-shadow(0 12px 18px rgba(0,0,0,0.9)) drop-shadow(0 0 10px rgba(212, 175, 55, 0.25))',
-                      cursor: 'pointer',
-                      transition: 'transform 0.2s ease',
-                    }}
-                    title="Raden Arjuna & Adipati Karna — Satria Pinilih"
-                  />
-                  <div style={{ fontSize: '11px', color: '#fb923c', fontWeight: '700', marginTop: '6px', textShadow: '0 2px 4px rgba(0,0,0,0.95)' }}>
-                    Raden Arjuna & Karna
-                  </div>
-                </div>
-              </div>
-
-              {/* Layer 4: Tag Penjelas Kelir Otentik */}
-              <div
-                style={{
-                  position: 'absolute',
-                  bottom: '10px',
-                  left: '50%',
-                  transform: 'translateX(-50%)',
-                  zIndex: 5,
-                  background: 'rgba(13, 10, 7, 0.88)',
-                  backdropFilter: 'blur(8px)',
-                  border: '1px solid rgba(212, 175, 55, 0.45)',
-                  padding: '4px 16px',
-                  borderRadius: '20px',
-                  fontSize: '11px',
-                  color: '#e5c158',
-                  fontWeight: '700',
-                  letterSpacing: '0.04em',
-                  whiteSpace: 'nowrap',
-                  boxShadow: '0 4px 14px rgba(0,0,0,0.7)',
-                }}
-              >
-                Kelir Purwa Otentik • Tatah Sungging Asli
-              </div>
-            </div>
+            {/* Secondary Capsule Button -> Story Atlas */}
+            <button
+              onClick={() => onNavigate('atlas')}
+              style={{
+                background: '#1c140d',
+                border: '1px solid rgba(212, 175, 55, 0.3)',
+                color: '#fcfaf2',
+                padding: '13px 28px',
+                borderRadius: '20px',
+                fontSize: '14px',
+                fontWeight: '650',
+                cursor: 'pointer',
+                display: 'inline-flex',
+                alignItems: 'center',
+                transition: 'all 0.2s ease',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = 'translateY(-2px)';
+                e.currentTarget.style.background = '#281c12';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = 'translateY(0)';
+                e.currentTarget.style.background = '#1c140d';
+              }}
+            >
+              Jelajahi Story Atlas
+            </button>
           </div>
         </div>
       </section>
 
-      {/* 2. KONTEN LANJUTAN: EMPAT PILAR KEUNGGULAN (Terpusat, MaxWidth 1200px) */}
-      <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '56px 24px 40px 24px' }}>
-        <section style={{ marginBottom: '32px' }}>
-          <div style={{ textAlign: 'center', marginBottom: '36px' }}>
-            <span style={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.14em', color: '#d4af37', fontWeight: '700', padding: '3px 10px', background: 'rgba(212, 175, 55, 0.1)', borderRadius: '20px', border: '1px solid rgba(212, 175, 55, 0.25)' }}>
-              Filosofi & Keunggulan
-            </span>
-            <h2 style={{ fontSize: '26px', fontWeight: '800', color: '#fcfaf2', margin: '10px 0 8px 0', letterSpacing: '-0.3px' }}>
-              Empat Pilar Pelestarian Digital
+      {/* ============================================================
+          CARDBOX NUMERIK FLOATING (3 METRIK UTAMA SESUAI PERMINTAAN)
+          Mengambang di perbatasan hero & konten, diposisikan lebih ke atas agar
+          langsung tampak jelas saat membuka halaman beranda
+          ============================================================ */}
+      <div className="hero-floating-card-wrapper" ref={statsSectionRef}>
+        <div className="hero-floating-card">
+          {/* Metrik 1: Panggung 2D & Skenario (Countdown Serentak dari 3.000 ke 2.400+) */}
+          <div
+            className={`hero-floating-stat-item ${statsInView ? 'stat-item-active' : ''}`}
+            style={{
+              transition: 'transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.5s ease',
+              opacity: statsInView ? 1 : 0.4,
+              transform: statsInView ? 'translateY(0)' : 'translateY(-12px)',
+            }}
+          >
+            <div style={statNumberStyle}>
+              <AnimatedCounter
+                start={3000}
+                target={2400}
+                suffix="+"
+                duration={1200}
+                delay={120}
+                shouldStart={statsInView}
+              />
+            </div>
+            <div style={statLabelStyle}>Pementasan Diciptakan</div>
+            <div style={statSubStyle}>Karya dalang & generasi muda</div>
+          </div>
+
+          {/* Metrik 2: Tokoh Tatah-Sungging (FR-03) (Countdown Serentak dari 50 ke 15+) */}
+          <div
+            className={`hero-floating-stat-item ${statsInView ? 'stat-item-active' : ''}`}
+            style={{
+              transition: 'transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.5s ease',
+              opacity: statsInView ? 1 : 0.4,
+              transform: statsInView ? 'translateY(0)' : 'translateY(-12px)',
+            }}
+          >
+            <div style={statNumberStyle}>
+              <AnimatedCounter
+                start={50}
+                target={15}
+                suffix="+"
+                duration={1200}
+                delay={120}
+                shouldStart={statsInView}
+              />
+            </div>
+            <div style={statLabelStyle}>Tokoh Wayang Klasik</div>
+            <div style={statSubStyle}>Tatah-sungging otentik HD</div>
+          </div>
+
+          {/* Metrik 3: Naskah Rujukan Terkurasi (FR-01) (Countdown Serentak dari 150% ke 100%) */}
+          <div
+            className={`hero-floating-stat-item ${statsInView ? 'stat-item-active' : ''}`}
+            style={{
+              transition: 'transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.5s ease',
+              opacity: statsInView ? 1 : 0.4,
+              transform: statsInView ? 'translateY(0)' : 'translateY(-12px)',
+            }}
+          >
+            <div style={statNumberStyle}>
+              <AnimatedCounter
+                start={150}
+                target={100}
+                suffix="%"
+                duration={1200}
+                delay={120}
+                shouldStart={statsInView}
+              />
+            </div>
+            <div style={statLabelStyle}>Sanad Pakem Tradisi</div>
+            <div style={statSubStyle}>Kakawin & Serat Purwa terkurasi</div>
+          </div>
+        </div>
+      </div>
+
+      {/* ============================================================
+          2. TIGA PILAR UTAMA SESUAI PRD (PR-01, PR-02, PR-04)
+          ============================================================ */}
+      <div id="home-light-sections">
+      <section
+        style={{
+          width: '100%',
+          minHeight: '100vh',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+          boxSizing: 'border-box',
+          padding: '110px 24px 100px 24px',
+        }}
+      >
+        <div style={{ maxWidth: '1280px', width: '100%', margin: '0 auto' }}>
+          {/* Header Bagian: Judul Utama & Subjudul Tanpa Tag dan Garis */}
+          <div style={{ textAlign: 'center', marginBottom: '44px' }}>
+            <h2
+              style={{
+                fontSize: 'clamp(28px, 3.5vw, 40px)',
+                fontWeight: '850',
+                color: '#1a140e',
+                letterSpacing: '-0.6px',
+                margin: '0 0 14px 0',
+              }}
+            >
+              Fondasi Ekosistem <span style={{ color: '#d4af37' }}>Wayangverse</span>
             </h2>
-            <p style={{ fontSize: '14px', color: '#bfae9c', maxWidth: '620px', margin: '0 auto', lineHeight: '1.6' }}>
-              Memadukan estetika adiluhung seni pedalangan klasik dengan teknologi komputasi interaktif web modern.
+
+            <p
+              style={{
+                fontSize: '14.5px',
+                color: '#6e5e4d',
+                maxWidth: '650px',
+                margin: '0 auto',
+                lineHeight: '1.65',
+              }}
+            >
+              Tiga pilar fungsional yang menghubungkan aksi panggung, sastra klasik, dan tata suara budaya dalam satu kesatuan sistem terpadu.
             </p>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '20px' }}>
-            <div style={featureCardStyle}>
-              <div style={{ ...featureIconBox, background: 'rgba(212, 175, 55, 0.12)', border: '1px solid rgba(212, 175, 55, 0.3)', color: '#d4af37' }}>
-                <Zap size={18} />
-              </div>
-              <h3 style={featureTitleStyle}>Cipta Karsa Interaktif</h3>
-              <p style={featureDescStyle}>
-                Bukan sekadar membaca. Pengguna memegang kendali penuh atas gerak, tancep, laga, dan dialog tokoh wayang di atas kelir digital.
-              </p>
-            </div>
+          {/* Grid 3 Pilar Cardbox dengan Gradien Cantik Sesuai Referensi Desain Wayangverse */}
+          <div className="fondasi-ecosystem-grid">
+            {[
+              {
+                id: 'pilar-1',
+                nav: 'stage',
+                icon: <Film size={26} color="#8b4513" />,
+                title: 'Panggung Virtual 2D (PR-02)',
+                desc: 'Kanvas kelir interaktif untuk menempatkan tokoh wayang, menggerakkan lengan tudhing, memilih pose perang/sembah, serta menyusun urutan babak multi-scene.',
+                btnLabel: 'Buka Studio',
+              },
+              {
+                id: 'pilar-2',
+                nav: 'atlas',
+                icon: <BookOpen size={26} color="#8b4513" />,
+                title: 'Story Atlas & Pakem (PR-01)',
+                desc: 'Ensiklopedia terkurasi yang memuat sinopsis naskah, falsafah watak tokoh, silsilah keturunan, serta pencatatan sumber naskah bersejarah.',
+                btnLabel: 'Telusuri Atlas',
+              },
+              {
+                id: 'pilar-3',
+                nav: 'stage',
+                icon: <Music size={26} color="#8b4513" />,
+                title: 'Audio Gamelan Slendro (PR-04)',
+                desc: 'Sintesis audio peramban real-time untuk gending laras slendro (srepeg, sampak, ayak-ayak) serta efek suara pedalangan dodogan cempala dan kepyak.',
+                btnLabel: 'Eksplorasi Audio',
+              },
+            ].map((pilar, idx) => {
+              const isHovered = hoveredPillar === idx;
 
-            <div style={featureCardStyle}>
-              <div style={{ ...featureIconBox, background: 'rgba(139, 69, 19, 0.25)', border: '1px solid rgba(212, 175, 55, 0.25)', color: '#e5c158' }}>
-                <ShieldCheck size={18} />
-              </div>
-              <h3 style={featureTitleStyle}>Integritas Pakem Tradisi</h3>
-              <p style={featureDescStyle}>
-                Menjunjung tinggi keaslian sanad naskah rujukan bersejarah (seperti Kakawin Bharatayuddha dan Serat Purwa) yang terkurasi transparan.
-              </p>
-            </div>
+              return (
+                <div
+                  key={pilar.id}
+                  className="fondasi-ecosystem-card"
+                  onMouseEnter={() => setHoveredPillar(idx)}
+                  onMouseLeave={() => setHoveredPillar(null)}
+                  onClick={() => onNavigate(pilar.nav)}
+                >
+                  {/* Lingkaran Ikon di Sudut Kiri Atas Sesuai Desain */}
+                  <div className="fondasi-card-icon-wrap">
+                    {pilar.icon}
+                  </div>
 
-            <div style={featureCardStyle}>
-              <div style={{ ...featureIconBox, background: 'rgba(160, 82, 45, 0.22)', border: '1px solid rgba(160, 82, 45, 0.4)', color: '#d97706' }}>
-                <Layers size={18} />
-              </div>
-              <h3 style={featureTitleStyle}>Jalinan Makna & Filosofi</h3>
-              <p style={featureDescStyle}>
-                Setiap karya pagelaran bertaut langsung dengan filosofi watak tokoh dan lakon induk sumbernya (*Connected by Design*).
-              </p>
-            </div>
+                  {/* Judul Pilar (Kiri Rata) */}
+                  <h3 className="fondasi-card-title">
+                    {pilar.title}
+                  </h3>
 
-            <div style={featureCardStyle}>
-              <div style={{ ...featureIconBox, background: 'rgba(212, 175, 55, 0.12)', border: '1px solid rgba(212, 175, 55, 0.3)', color: '#d4af37' }}>
-                <Music size={18} />
-              </div>
-              <h3 style={featureTitleStyle}>Tata Suara Gamelan Asli</h3>
-              <p style={featureDescStyle}>
-                Laras slendro, dodogan cempala dalang, kepyak logam, dan gong ageng disintesis langsung di peramban tanpa latensi.
-              </p>
-            </div>
+                  {/* Deskripsi Pilar */}
+                  <p className="fondasi-card-desc">
+                    {pilar.desc}
+                  </p>
+
+                  {/* Tombol Solid Pill Bernuansa Emas Wayangverse Sesuai Screenshot */}
+                  <button
+                    className="fondasi-card-btn"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onNavigate(pilar.nav);
+                    }}
+                  >
+                    <span>{pilar.btnLabel}</span>
+                    <ArrowRight size={14} />
+                  </button>
+                </div>
+              );
+            })}
           </div>
-        </section>
-
-        {/* Aksara Jawa & Kutipan Luhur */}
-        <div
-          style={{
-            background: 'linear-gradient(135deg, #1c140d, #120e0a)',
-            border: '1px solid #362619',
-            borderRadius: '16px',
-            padding: '24px',
-            textAlign: 'center',
-            boxShadow: '0 8px 24px rgba(0,0,0,0.5)',
-          }}
-        >
-          <div style={{ fontSize: '13px', color: '#d4af37', fontWeight: '700', fontStyle: 'italic', letterSpacing: '0.04em', marginBottom: '6px' }}>
-            "Memayu Hayuning Bawana, Ambrasta Dur Hangkara"
-          </div>
-          <p style={{ margin: 0, fontSize: '12px', color: '#bfae9c' }}>
-            Memperindah kelestarian semesta dan menundukkan angkara murka melalui keluhuran seni budaya Nusantara.
-          </p>
         </div>
+      </section>
+
+      {/* ============================================================
+          4. KURASI LAKON NASKAH RUJUKAN (PRD PR-01 & SRS FR-01, FR-02)
+          ============================================================ */}
+      <section
+        style={{
+          width: '100%',
+          minHeight: '100vh',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+          boxSizing: 'border-box',
+          background: '#f5f0e4',
+          border: 'none',
+          padding: '100px 24px',
+        }}
+      >
+        <div style={{ maxWidth: '1280px', width: '100%', margin: '0 auto' }}>
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              marginBottom: '38px',
+              flexWrap: 'wrap',
+              gap: '20px',
+            }}
+          >
+            <div style={{ maxWidth: '780px' }}>
+              <h2 style={{ ...sectionHeadingStyle, margin: '0 0 8px 0' }}>
+                Lakon Wayang <span style={{ color: '#d4af37' }}>Pilihan</span>
+              </h2>
+              <p style={{ ...sectionSubtitleStyle, margin: 0, maxWidth: '720px' }}>
+                Pilih naskah pakem bersejarah dan langsung mainkan adegannya di panggung virtual kelir.
+              </p>
+            </div>
+
+            <button
+              onClick={() => onNavigate('atlas')}
+              style={selengkapnyaBtnStyle}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = '#dcae4d';
+                e.currentTarget.style.transform = 'translateY(-2px)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = '#e8bb5c';
+                e.currentTarget.style.transform = 'translateY(0)';
+              }}
+            >
+              Selengkapnya
+            </button>
+          </div>
+
+          {/* Bento Grid 4 Lakon Terkurasi Sesuai Layout Referensi Modern Glass */}
+          <div className="lakon-bento-grid">
+            {featuredStories.map((story) => (
+              <div
+                key={story.id}
+                className={`lakon-bento-card ${story.cardClass}`}
+                onClick={() => onNavigate('atlas')}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    onNavigate('atlas');
+                  }
+                }}
+              >
+                {/* Background Image Otentik Full Card */}
+                <img
+                  src={story.coverImg}
+                  alt={story.title}
+                  className="lakon-bento-bg-img"
+                  loading="lazy"
+                />
+
+                {/* Ambient Scrim Gradient agar teks & image menyatu harmonis tanpa kontras tajam */}
+                <div className="lakon-bento-ambient-gradient" />
+
+                {/* Label Kategori di Pojok Kiri Atas */}
+                <div className="lakon-bento-category-badge">
+                  {story.category}
+                </div>
+
+                {/* Floating Frosted Glass Panel di Bagian Bawah */}
+                <div className="lakon-bento-glass-panel">
+                  <h3 className="lakon-bento-title">
+                    {story.title}
+                  </h3>
+                  <p className="lakon-bento-desc">
+                    {story.shortDesc}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ============================================================
+          5. KOLEKSI TOKOH WAYANG KLASIK (PRD PR-01 & SRS FR-03)
+          Tata letak terinspirasi dari referensi desain: Tag slash,
+          headline besar, paragraf kanan dengan kontrol slider (← [bar] →),
+          dan kartu modern dengan satu kartu aktif berlatar gelap.
+          ============================================================ */}
+      <section
+        style={{
+          width: '100%',
+          minHeight: '100vh',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+          boxSizing: 'border-box',
+          padding: '110px 24px',
+          background: '#fcfaf5',
+        }}
+      >
+        <div style={{ maxWidth: '1280px', width: '100%', margin: '0 auto' }}>
+          {/* Header Bagian: Kiri (Headline Besar Tanpa Teks Tag), Kanan (Deskripsi PRD Tanpa Arrow) */}
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'flex-end',
+              marginBottom: '48px',
+              flexWrap: 'wrap',
+              gap: '32px',
+            }}
+          >
+            {/* Sisi Kiri: Headline Utama Tanpa Teks di Atasnya */}
+            <div style={{ maxWidth: '640px' }}>
+              <h2
+                style={{
+                  fontSize: 'clamp(32px, 4.2vw, 46px)',
+                  fontWeight: '850',
+                  color: '#1a140e',
+                  letterSpacing: '-0.6px',
+                  lineHeight: '1.2',
+                  margin: 0,
+                }}
+              >
+                Karakter Wayang Otentik<br />dengan <span style={{ color: '#d4af37' }}>Falsafah Luhur</span>
+              </h2>
+            </div>
+
+            {/* Sisi Kanan: Paragraf Pendukung PRD (Tanpa Icon Arrow/Slider Sesuai Permintaan) */}
+            <div style={{ maxWidth: '480px', width: '100%' }}>
+              <p
+                style={{
+                  fontSize: '15px',
+                  lineHeight: '1.7',
+                  color: '#6e5e4d',
+                  margin: 0,
+                }}
+              >
+                Di Wayangverse, setiap tokoh dirancang berdasar naskah pakem bersejarah dan tatah-sungging otentik. Pelajari wanda, falsafah watak luhur, pusaka sakti, serta mainkan langsung karakternya di panggung kelir virtual.
+              </p>
+            </div>
+          </div>
+
+          {/* Accordion Carousel Tokoh Wayang (Sesuai Referensi SS: 1 Kartu Melebar & Kartu Lainnya Persegi Ramping) */}
+          <div className="wayang-accordion-container">
+            {featuredCharacters.map((char) => {
+              const isActive = activeCharId === char.id;
+
+              return (
+                <div
+                  key={char.id}
+                  onClick={() => setActiveCharId(char.id)}
+                  onMouseEnter={() => setActiveCharId(char.id)}
+                  className={`wayang-accordion-card ${isActive ? 'active' : 'inactive'}`}
+                  role="button"
+                  tabIndex={0}
+                  aria-expanded={isActive}
+                  aria-label={char.name}
+                >
+                  {/* Gambar Karakter Full-Bleed High Definition */}
+                  <img
+                    src={char.cardImg}
+                    alt={char.name}
+                    className="wayang-accordion-img"
+                  />
+
+                  {/* Lapisan Gradien Bayangan Gelap dari Bawah (Mencegah Kontras/Tabrakan Teks & Gambar) */}
+                  <div className="wayang-accordion-gradient" />
+
+                  {/* KONDISI 1: Kartu Aktif Melebar (Menampilkan Judul Karakter, Kategori, & Tombol Aksi Bulat Sesuai Screenshot) */}
+                  {isActive ? (
+                    <div className="wayang-accordion-active-content">
+                      <div style={{ maxWidth: '80%' }}>
+                        <span className="wayang-accordion-tag">
+                          {char.subheading}
+                        </span>
+                        <h3 className="wayang-accordion-title">
+                          {char.name}
+                        </h3>
+                        <p className="wayang-accordion-alias">
+                          {char.alias}
+                        </p>
+                        <p className="wayang-accordion-desc">
+                          {char.description}
+                        </p>
+                      </div>
+
+                      {/* Tombol Aksi Lingkaran Panah di Pojok Kanan Bawah Sesuai Screenshot */}
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onNavigate('stage');
+                        }}
+                        title="Mainkan di Panggung Kelir"
+                        className="wayang-accordion-circle-btn"
+                        aria-label={`Mainkan ${char.name} di panggung virtual`}
+                      >
+                        <ArrowUpRight size={22} />
+                      </button>
+                    </div>
+                  ) : (
+                    /* KONDISI 2: Kartu Tidak Aktif (Persegi Ramping dengan Judul Vertikal Sesuai Screenshot) */
+                    <div className="wayang-accordion-vertical-content">
+                      <h4 className="wayang-accordion-vertical-title">
+                        {char.name}
+                      </h4>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Tombol Selengkapnya di Bawah 4 Cardbox (Berada di Tengah-Tengah, Style & Responsif Sesuai Navbar) */}
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              marginTop: '44px',
+            }}
+          >
+            <button
+              onClick={() => onNavigate('atlas')}
+              style={{
+                background: '#e8bb5c',
+                border: 'none',
+                color: '#0d0a07',
+                padding: '10px 28px',
+                borderRadius: '20px',
+                fontSize: '13.5px',
+                fontWeight: '750',
+                cursor: 'pointer',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '8px',
+                boxShadow: 'none',
+                transition: 'all 0.2s ease',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = '#dcae4d';
+                e.currentTarget.style.transform = 'translateY(-1px)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = '#e8bb5c';
+                e.currentTarget.style.transform = 'translateY(0)';
+              }}
+            >
+              Selengkapnya
+              <ArrowRight size={15} />
+            </button>
+          </div>
+        </div>
+      </section>
+
+      {/* ============================================================
+          5. GALERI KARYA PUBLIK / LEADERBOARD TOP 4 PEMENTASAN WAYANG
+          ============================================================ */}
+      <section
+        style={{
+          width: '100%',
+          minHeight: '100vh',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+          boxSizing: 'border-box',
+          background: '#f5f0e4',
+          border: 'none',
+          padding: '100px 24px',
+        }}
+      >
+        <div style={{ maxWidth: '1240px', width: '100%', margin: '0 auto' }}>
+          {/* Header Section */}
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              marginBottom: '38px',
+              flexWrap: 'wrap',
+              gap: '20px',
+            }}
+          >
+            <div style={{ maxWidth: '780px' }}>
+              <h2
+                style={{
+                  ...sectionHeadingStyle,
+                  margin: '0 0 8px 0',
+                }}
+              >
+                Leaderboard Top 4 <span style={{ color: '#d4af37' }}>Pementasan Wayang</span>
+              </h2>
+              <p
+                style={{
+                  ...sectionSubtitleStyle,
+                  margin: 0,
+                  maxWidth: '720px',
+                }}
+              >
+                Karya pementasan pengguna terpopuler yang terhubung langsung ke lakon naskah pakem dan karakter pewayangan otentik.
+              </p>
+            </div>
+
+            <button
+              onClick={() => onNavigate('archive')}
+              style={selengkapnyaBtnStyle}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = '#dcae4d';
+                e.currentTarget.style.transform = 'translateY(-2px)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = '#e8bb5c';
+                e.currentTarget.style.transform = 'translateY(0)';
+              }}
+            >
+              Selengkapnya
+            </button>
+          </div>
+
+          {/* Leaderboard Top 4 Interactive Accordion Sesuai Screenshot */}
+          <div className="leaderboard-accordion-container">
+            {HOME_TOP_4_PERFORMANCES.map((item) => {
+              const isActive = activeLeaderboardId === item.id;
+
+              return (
+                <div
+                  key={item.id}
+                  onClick={() => setActiveLeaderboardId(item.id)}
+                  onMouseEnter={() => setActiveLeaderboardId(item.id)}
+                  className={`leaderboard-accordion-card ${isActive ? 'active' : 'inactive'}`}
+                  role="button"
+                  tabIndex={0}
+                  aria-expanded={isActive}
+                  aria-label={item.title}
+                >
+                  {/* Visual Image - Tampil di Semua Cardbox (Termasuk Saat Lonjong) */}
+                  <div className="leaderboard-card-img-wrap">
+                    <img
+                      src={item.coverImg}
+                      alt={item.title}
+                      className="leaderboard-card-img"
+                      loading="lazy"
+                    />
+                  </div>
+
+                  {/* Body Konten Cardbox */}
+                  <div className="leaderboard-card-body">
+                    {/* Nomor Urut Palet Wayangverse (Prada Emas Heritage) */}
+                    <div className="leaderboard-rank-number">
+                      {item.rank}
+                    </div>
+
+                    {/* Judul Pementasan */}
+                    <h3 className={`leaderboard-card-title ${isActive ? 'active-title' : 'inactive-title'}`}>
+                      {item.title}
+                    </h3>
+
+                    {/* Deskripsi Singkat Padat Jelas */}
+                    <p className={`leaderboard-card-desc ${isActive ? 'active-desc' : 'inactive-desc'}`}>
+                      {item.description}
+                    </p>
+
+                    {/* 2 Tombol Aksi Horizontal - Selalu Tampil Langsung di Card Aktif Tanpa Hover */}
+                    {isActive && (
+                      <div className="leaderboard-btn-row">
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            onNavigate('archive');
+                          }}
+                          className="leaderboard-btn-primary"
+                        >
+                          Tonton Pertunjukan
+                        </button>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            onNavigate('atlas');
+                          }}
+                          className="leaderboard-btn-secondary"
+                        >
+                          Naskah Pakem
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
       </div>
+
+      {/* ============================================================
+          6. FALSAFAH KULTURAL & CALL TO ACTION PENUTUP (PRD 1.1)
+          ============================================================ */}
+      <section
+        style={{
+          width: '100%',
+          minHeight: '100vh',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+          alignItems: 'center',
+          boxSizing: 'border-box',
+          padding: '100px 24px',
+        }}
+      >
+        <div style={{ maxWidth: '1240px', width: '100%', margin: '0 auto' }}>
+          <div
+            style={{
+              position: 'relative',
+              borderRadius: '24px',
+              overflow: 'hidden',
+              border: 'none',
+              boxShadow: '0 8px 30px rgba(0, 0, 0, 0.2)',
+              minHeight: '450px',
+              width: '100%',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              padding: '72px 28px',
+              textAlign: 'center',
+              background: '#0a0704',
+              boxSizing: 'border-box',
+            }}
+          >
+            {/* Latar Belakang Gambar Wayang Gunungan Emas Panorama Widescreen - Utuh Tanpa Zoom */}
+            <img
+              src={ctaGununganGoldenBg}
+              alt="Latar Panggung Wayang Gunungan Kembar"
+              style={{
+                position: 'absolute',
+                inset: 0,
+                width: '100%',
+                height: '100%',
+                objectFit: 'cover',
+                objectPosition: 'center',
+                zIndex: 1,
+              }}
+            />
+
+            {/* Ambient Overlay: Halus agar keindahan ukiran wayang gunungan emas dan awan megamendung tampil terang & jernih */}
+            <div
+              style={{
+                position: 'absolute',
+                inset: 0,
+                background:
+                  'linear-gradient(180deg, rgba(16, 11, 7, 0.15) 0%, rgba(14, 9, 6, 0.30) 50%, rgba(16, 11, 7, 0.20) 100%)',
+                zIndex: 2,
+              }}
+            />
+            <div
+              style={{
+                position: 'absolute',
+                inset: 0,
+                background:
+                  'radial-gradient(ellipse at 50% 50%, rgba(16, 11, 7, 0.05) 0%, rgba(10, 7, 4, 0.38) 100%)',
+                zIndex: 2,
+              }}
+            />
+
+            {/* Konten Teks & Tombol CTA di Ruang Pendaran Cahaya Tengah Antara Dua Gunungan */}
+            <div
+              style={{
+                position: 'relative',
+                zIndex: 10,
+                maxWidth: '680px',
+                width: '100%',
+                margin: '0 auto',
+              }}
+            >
+              <h2
+                style={{
+                  margin: '0 0 16px 0',
+                  fontSize: 'clamp(26px, 3.8vw, 42px)',
+                  fontWeight: '850',
+                  color: '#ffffff',
+                  letterSpacing: '-0.5px',
+                  lineHeight: '1.25',
+                }}
+              >
+                Siap Menjadi Dalang di <span style={{ color: '#e8bb5c' }}>Panggung Virtual?</span>
+              </h2>
+
+              <p
+                style={{
+                  margin: '0 auto 30px auto',
+                  fontSize: 'clamp(14px, 1.5vw, 16px)',
+                  color: '#fcfaf2',
+                  lineHeight: '1.7',
+                  maxWidth: '620px',
+                }}
+              >
+                Wujudkan pementasan lakon wayang impian Anda bersama Wayangverse. Eksplorasi watak ksatria, olah suara gamelan slendro, dan rangkai babak kelir dengan kebebasan digital.
+              </p>
+
+              <button
+                onClick={() => onNavigate('stage')}
+                style={{
+                  background: '#e8bb5c',
+                  border: 'none',
+                  color: '#0d0a07',
+                  padding: '13px 36px',
+                  borderRadius: '9999px',
+                  fontSize: '14.5px',
+                  fontWeight: '750',
+                  cursor: 'pointer',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  boxShadow: 'none',
+                  transition: 'all 0.2s ease',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = 'translateY(-2px)';
+                  e.currentTarget.style.background = '#dcae4d';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = 'translateY(0)';
+                  e.currentTarget.style.background = '#e8bb5c';
+                }}
+              >
+                Mulai Menjadi Dalang
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
   );
 }
 
-const featureCardStyle = {
-  background: '#15100c',
-  border: '1px solid #362619',
-  borderRadius: '16px',
-  padding: '22px',
-  display: 'flex',
-  flexDirection: 'column',
-  gap: '12px',
-  boxShadow: '0 4px 15px rgba(0,0,0,0.3)',
+// ============================================================
+// STYLES TOKENS & UTILITIES
+// ============================================================
+
+const statItemStyle = {
+  textAlign: 'center',
+  padding: '8px 16px',
 };
 
-const featureIconBox = {
-  width: '40px',
-  height: '40px',
-  borderRadius: '10px',
-  display: 'flex',
+const statNumberStyle = {
+  fontSize: '34px',
+  fontWeight: '850',
+  color: '#e8bb5c',
+  letterSpacing: '-0.8px',
+  lineHeight: '1.1',
+  marginBottom: '5px',
+};
+
+const statLabelStyle = {
+  fontSize: '14px',
+  fontWeight: '800',
+  color: '#fcfaf2',
+  marginBottom: '4px',
+  letterSpacing: '-0.2px',
+};
+
+const statSubStyle = {
+  fontSize: '12px',
+  color: '#bfae9b',
+  fontWeight: '450',
+};
+
+const sectionHeadingStyle = {
+  fontSize: 'clamp(26px, 3.2vw, 36px)',
+  fontWeight: '850',
+  color: '#1a140e',
+  letterSpacing: '-0.5px',
+  margin: '0 0 10px 0',
+};
+
+const sectionSubtitleStyle = {
+  fontSize: '14.5px',
+  color: '#6e5e4d',
+  maxWidth: '640px',
+  margin: '0 auto',
+  lineHeight: '1.65',
+};
+
+const selengkapnyaBtnStyle = {
+  background: '#e8bb5c',
+  border: 'none',
+  color: '#0d0a07',
+  borderRadius: '20px',
+  padding: '13px 32px',
+  fontSize: '15px',
+  fontWeight: '650',
+  cursor: 'pointer',
+  display: 'inline-flex',
   alignItems: 'center',
   justifyContent: 'center',
+  transition: 'all 0.2s ease',
+  flexShrink: 0,
 };
 
-const featureTitleStyle = {
-  margin: 0,
-  fontSize: '15px',
-  fontWeight: '700',
-  color: '#fcfaf2',
+// Feature Cards
+const featureCardStyle = {
+  background: '#ffffff',
+  borderRadius: '20px',
+  padding: '30px 26px',
+  border: 'none',
+  boxShadow: '0 6px 20px rgba(0, 0, 0, 0.04)',
+  transition: 'all 0.2s ease',
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: 'space-between',
+  gap: '12px',
+  cursor: 'pointer',
 };
 
-const featureDescStyle = {
-  margin: 0,
-  fontSize: '12px',
-  color: '#bfae9c',
-  lineHeight: '1.6',
-};
+
+
+
+
+

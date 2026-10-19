@@ -2,8 +2,7 @@ import React, { useState } from 'react';
 import { STORIES_MASTER } from '../../data/master/storiesMaster';
 import persistenceService from '../../services/persistenceService';
 import soundEngine from '../../services/soundscape';
-import confetti from 'canvas-confetti';
-import { Save, CheckCircle, AlertCircle, Globe, Lock, BookOpen } from 'lucide-react';
+import { CheckCircle, AlertCircle, Globe, Lock, BookOpen, Save } from 'lucide-react';
 
 export default function SavePerformanceModal({
   isOpen,
@@ -85,13 +84,13 @@ export default function SavePerformanceModal({
       <div
         style={{
           background: '#17110c',
-          border: '1px solid #d4af37',
+          border: '1px solid rgba(212, 175, 55, 0.22)',
           borderRadius: '16px',
           padding: '24px',
           maxWidth: '520px',
           width: '90%',
           color: '#fcfaf2',
-          boxShadow: '0 25px 60px rgba(0,0,0,0.9), 0 0 30px rgba(212, 175, 55, 0.15)',
+          boxShadow: '0 16px 40px rgba(0, 0, 0, 0.5)',
         }}
       >
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
@@ -223,10 +222,12 @@ export default function SavePerformanceModal({
                 background: '#221a13',
                 border: '1px solid #4a3826',
                 color: '#fcfaf2',
-                padding: '8px 16px',
-                borderRadius: '8px',
+                padding: '9px 20px',
+                borderRadius: '20px',
                 cursor: 'pointer',
                 fontSize: '13px',
+                fontWeight: '600',
+                transition: 'all 0.2s ease',
               }}
             >
               Batal
@@ -235,21 +236,28 @@ export default function SavePerformanceModal({
               type="submit"
               disabled={saving}
               style={{
-                background: 'linear-gradient(135deg, #d4af37, #8b4513)',
+                background: '#e8bb5c',
                 border: 'none',
                 color: '#0d0a07',
-                padding: '8px 22px',
-                borderRadius: '8px',
-                fontWeight: '700',
+                padding: '9px 24px',
+                borderRadius: '20px',
+                fontWeight: '750',
                 cursor: saving ? 'wait' : 'pointer',
                 display: 'flex',
                 alignItems: 'center',
-                gap: '6px',
+                justifyContent: 'center',
                 fontSize: '13px',
-                boxShadow: '0 4px 15px rgba(212, 175, 55, 0.3)',
+                boxShadow: 'none',
+                transition: 'all 0.2s ease',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = '#dcae4d';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = '#e8bb5c';
               }}
             >
-              <Save size={16} /> {saving ? 'Menyimpan...' : 'Simpan Sekarang'}
+              {saving ? 'Menyimpan...' : 'Simpan Sekarang'}
             </button>
           </div>
         </form>
