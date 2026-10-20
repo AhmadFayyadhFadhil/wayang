@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { BookOpen, Landmark, Music, Film, ArrowUpRight, ArrowRight } from 'lucide-react';
+import { BookOpen, Music, Film, ArrowUpRight, ArrowRight, Sparkles } from 'lucide-react';
 import AnimatedCounter from '../../components/ui/AnimatedCounter';
+import JavaneseCloudBackground from '../../components/ui/JavaneseCloudBackground';
 
 // Assets
 import heroParchmentWideBg from '../../assets/hero_parchment_clouds_widescreen_hd.jpg';
@@ -23,39 +24,54 @@ import ctaGununganGoldenBg from '../../assets/cta_gunungan_golden_bg.jpg';
 import lakonCoverDewaRuci from '../../assets/lakon_cover_dewa_ruci.jpg';
 import lakonCoverShintaObong from '../../assets/lakon_cover_shinta_obong.jpg';
 
-// Master Data Sesuai PRD & SRS
-import { STORIES_MASTER } from '../../data/master/storiesMaster';
-import { CHARACTERS_MASTER } from '../../data/master/charactersMaster';
-
-// 4 Pementasan Unggulan Terpopuler Sesuai Format Leaderboard Top 4
 // 4 Pementasan Unggulan Terpopuler Sesuai Format Leaderboard Top 4
 const HOME_TOP_4_PERFORMANCES = [
   {
     id: 'top-1',
-    rank: '01.',
+    rank: '01',
     title: 'Gugurnya Ghatotkaca',
-    description: 'Pertempuran malam hari di Kurusetra antara Senopati Udara Raden Gatotkaca melawan Adipati Karna.',
+    dalang: 'Ki Seno Purwanto',
+    epos: 'Mahabharata • Bharatayuddha',
+    duration: '3 Babak • Pathet Sanga',
+    views: '4.8k Apresiasi',
+    badge: 'Pagelaran Terpopuler #01',
+    description: 'Pertempuran malam hari di padang Kurusetra antara Senopati Udara Raden Gatotkaca melawan panah pusaka Kunta Wijayadanu Adipati Karna.',
     coverImg: galleryCoverGatotkaca,
   },
   {
     id: 'top-2',
-    rank: '02.',
+    rank: '02',
     title: 'Karno Tanding',
-    description: 'Puncak duel takdir dua ksatria bersaudara seibu di padang Kurusetra bersenjatakan panah Pasopati dan Kunta.',
+    dalang: 'Ki Manteb S. (Adaptasi)',
+    epos: 'Mahabharata • Karna Parwa',
+    duration: '4 Babak • Pathet Manyura',
+    views: '3.9k Apresiasi',
+    badge: 'Unggulan Kurasi #02',
+    description: 'Puncak duel takdir dua ksatria bersaudara seibu di palagan Kurusetra bersenjatakan panah Kyai Pasopati dan Kyai Kaladite.',
     coverImg: dalangPerformanceHeritage,
   },
   {
     id: 'top-3',
-    rank: '03.',
+    rank: '03',
     title: 'Anoman Obong',
-    description: 'Aksi kepahlawanan duta kera putih Hanoman membakar benteng angkara murka Alengka dengan api suci.',
+    dalang: 'Nyi Sri Sulastri',
+    epos: 'Ramayana • Sundara Kanda',
+    duration: '3 Babak • Pathet Nem',
+    views: '3.2k Apresiasi',
+    badge: 'Pilihan Budaya #03',
+    description: 'Aksi kepahlawanan duta kera putih Raden Hanoman membakar benteng kemegahan angkara murka kraton Alengka dengan kobaran api suci.',
     coverImg: tatahSunggingCraft,
   },
   {
     id: 'top-4',
-    rank: '04.',
+    rank: '04',
     title: 'Dewa Ruci',
-    description: 'Perjalanan kontemplasi spiritual Bima mengarungi samudra raya demi menemukan hakikat kasampurnan urip.',
+    dalang: 'Ki Sugito Purbacarita',
+    epos: 'Serat Dewa Ruci',
+    duration: '3 Babak • Kasampurnan',
+    views: '2.7k Apresiasi',
+    badge: 'Falsafah Luhur #04',
+    description: 'Perjalanan kontemplasi spiritual Raden Werkudara mengarungi samudra raya demi menemukan hakikat jati diri dan kasampurnan urip.',
     coverImg: gamelanOrchestraHeritage,
   },
 ];
@@ -137,10 +153,10 @@ export default function HomeView({ onNavigate, connectionStatus, onTestConnectio
   ];
   // State kartu accordion tokoh wayang (kartu aktif melebar, kartu lainnya ramping seperti di referensi)
   const [activeCharId, setActiveCharId] = useState(1);
-  // State kartu leaderboard top 4 (default 'top-2' aktif sesuai referensi screenshot)
-  const [activeLeaderboardId, setActiveLeaderboardId] = useState('top-2');
+  // State kartu leaderboard top 4 (default 'top-1' aktif)
+  const [activeLeaderboardId, setActiveLeaderboardId] = useState('top-1');
 
-  // 4 Karakter utama dengan data kultural otentik sesuai PRD & SRS
+  // 4 Karakter utama dengan data kultural otentik ragam gagrag
   const featuredCharacters = [
     {
       id: 1,
@@ -241,7 +257,7 @@ export default function HomeView({ onNavigate, connectionStatus, onTestConnectio
             objectFit: 'cover',
             objectPosition: 'bottom center',
             zIndex: 1,
-            filter: 'contrast(1.0) brightness(0.88)',
+            filter: 'contrast(1.02) brightness(0.78)',
           }}
         />
 
@@ -260,7 +276,7 @@ export default function HomeView({ onNavigate, connectionStatus, onTestConnectio
           }}
         />
 
-        {/* 2. Harmonious Center Ambient Overlay: Meneduhkan area tengah agar teks terbaca jernih tanpa silau */}
+        {/* 2. Harmonious Center Ambient Overlay: Meneduhkan area tengah agar teks terbaca jernih tanpa silau/kontras tajam (Persis Story Atlas) */}
         <div
           style={{
             position: 'absolute',
@@ -272,7 +288,7 @@ export default function HomeView({ onNavigate, connectionStatus, onTestConnectio
           }}
         />
 
-        {/* 3. Bottom Gradient: Transisi lembut ke bagian bawah hero */}
+        {/* 3. Bottom Gradient: Transisi lembut ke bagian bawah hero (Persis Story Atlas) */}
         <div
           style={{
             position: 'absolute',
@@ -287,7 +303,10 @@ export default function HomeView({ onNavigate, connectionStatus, onTestConnectio
           }}
         />
 
-        {/* Ornamen Gunungan HD di Kiri & Kanan (Halus, Mengipas Perlahan & Menyatu dengan Latar) */}
+        {/* Motif Awan Tradisional Jawa Otentik dengan Animasi Mengambang & Bergeser Halus (Layer 3 di atas backdrop agar sangat jelas terlihat) */}
+        <JavaneseCloudBackground variant="hero" theme="dark" opacity={0.55} animated={true} style={{ zIndex: 3 }} />
+
+        {/* Ornamen Gunungan HD di Kiri & Kanan (Bersih Alami Tanpa Drop-Shadow Kontras, Persis Story Atlas) */}
         <div
           className="hero-gunungan-frame-left"
           style={{
@@ -296,7 +315,7 @@ export default function HomeView({ onNavigate, connectionStatus, onTestConnectio
             bottom: '0',
             height: '530px',
             width: '330px',
-            zIndex: 3,
+            zIndex: 4,
             opacity: 0.78,
             pointerEvents: 'none',
             filter: 'none',
@@ -317,7 +336,7 @@ export default function HomeView({ onNavigate, connectionStatus, onTestConnectio
             bottom: '0',
             height: '530px',
             width: '330px',
-            zIndex: 3,
+            zIndex: 4,
             opacity: 0.78,
             pointerEvents: 'none',
             filter: 'none',
@@ -341,36 +360,59 @@ export default function HomeView({ onNavigate, connectionStatus, onTestConnectio
             zIndex: 10,
           }}
         >
-          {/* Main Headline (Warna Alami Bersih Tanpa Shadow/Stroke) */}
-          <h1
+          {/* Eyebrow Budaya Nusantara */}
+          <div
             style={{
-              margin: '0 0 22px 0',
-              fontSize: 'clamp(34px, 5.2vw, 56px)',
-              fontWeight: '850',
-              color: '#fcfaf2',
-              lineHeight: '1.22',
-              letterSpacing: '-0.6px',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '10px',
+              padding: '6px 16px',
+              borderRadius: '9999px',
+              background: 'rgba(212, 175, 55, 0.08)',
+              border: '1px solid rgba(212, 175, 55, 0.22)',
+              color: '#d4af37',
+              fontSize: '11px',
+              fontWeight: '700',
+              letterSpacing: '2.5px',
+              textTransform: 'uppercase',
+              marginBottom: '18px',
             }}
           >
-            Satu Panggung untuk Memainkan{' '}
-            <span style={{ color: '#d4af37' }}>Seni Wayang</span>{' '}
-            dan Karakter Luhur
+            <span style={{ width: '5px', height: '5px', borderRadius: '50%', background: '#d4af37' }} />
+            <span>Pagelaran Wayang Kulit Digital Interaktif</span>
+            <span style={{ width: '5px', height: '5px', borderRadius: '50%', background: '#d4af37' }} />
+          </div>
+
+          {/* Main Headline - Selaras dengan Standar Tipografi Atlas & Karya Saya */}
+          <h1
+            style={{
+              margin: '0 0 20px 0',
+              fontFamily: 'var(--font-sans)',
+              fontSize: 'clamp(34px, 4.8vw, 56px)',
+              fontWeight: '850',
+              color: '#fcfaf2',
+              letterSpacing: '-0.5px',
+              lineHeight: '1.22',
+            }}
+          >
+            Satu Panggung untuk Memainkan <span style={{ color: '#d4af37' }}>Seni Wayang</span> & Karakter Luhur
           </h1>
 
           {/* Subtitle Sesuai PRD 1.2 Proposisi Nilai */}
           <p
             style={{
-              margin: '0 auto 36px auto',
-              fontSize: '16.5px',
+              margin: '0 auto 34px auto',
+              fontSize: 'clamp(15px, 1.5vw, 17px)',
               color: '#f0e6d8',
-              lineHeight: '1.75',
-              maxWidth: '720px',
+              lineHeight: '1.8',
+              maxWidth: '740px',
+              fontWeight: '450',
             }}
           >
             Wayangverse menghadirkan panggung wayang digital interaktif dua dimensi berbasis kelir dengan visual tatah-sungging otentik, animasi solah dalang, tata suara gamelan real-time, dan relasi data ke naskah pakem bersejarah.
           </p>
 
-          {/* Dual Action Buttons (Warna Solid Alami Bersih Tanpa Shadow/Stroke Berlebih) */}
+          {/* Dual Action Buttons (Material Alami: Emas Prada & Dark Soga Glass) */}
           <div
             style={{
               display: 'flex',
@@ -381,62 +423,70 @@ export default function HomeView({ onNavigate, connectionStatus, onTestConnectio
               marginBottom: '0',
             }}
           >
-            {/* Primary Capsule Button -> Panggung Virtual */}
+            {/* Primary Button -> Panggung Virtual */}
             <button
               onClick={() => onNavigate('stage')}
               style={{
-                background: '#e8bb5c',
-                border: 'none',
-                color: '#0d0a07',
-                padding: '12px 28px',
-                borderRadius: '20px',
+                background: 'linear-gradient(135deg, #e8bb5c 0%, #d4af37 100%)',
+                border: '1px solid rgba(245, 215, 127, 0.45)',
+                color: '#1a120b',
+                padding: '13px 30px',
+                borderRadius: '12px',
                 fontSize: '14px',
                 fontWeight: '750',
+                letterSpacing: '0.2px',
                 cursor: 'pointer',
                 display: 'inline-flex',
                 alignItems: 'center',
-                justifyContent: 'center',
-                boxShadow: 'none',
-                transition: 'all 0.2s ease',
+                gap: '8px',
+                boxShadow: '0 2px 8px rgba(0, 0, 0, 0.25)',
+                transition: 'all 0.25s cubic-bezier(0.16, 1, 0.3, 1)',
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.transform = 'translateY(-1px)';
-                e.currentTarget.style.background = '#dcae4d';
+                e.currentTarget.style.transform = 'translateY(-2px)';
+                e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.35)';
               }}
               onMouseLeave={(e) => {
                 e.currentTarget.style.transform = 'translateY(0)';
-                e.currentTarget.style.background = '#e8bb5c';
+                e.currentTarget.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.25)';
               }}
             >
               Buka Panggung Virtual
             </button>
 
-            {/* Secondary Capsule Button -> Story Atlas */}
+            {/* Secondary Button -> Story Atlas */}
             <button
               onClick={() => onNavigate('atlas')}
               style={{
-                background: '#1c140d',
-                border: '1px solid rgba(212, 175, 55, 0.3)',
-                color: '#fcfaf2',
+                background: 'rgba(24, 17, 11, 0.65)',
+                backdropFilter: 'blur(10px)',
+                WebkitBackdropFilter: 'blur(10px)',
+                border: '1px solid rgba(212, 175, 55, 0.28)',
+                color: '#fdfbf7',
                 padding: '13px 28px',
-                borderRadius: '20px',
+                borderRadius: '12px',
                 fontSize: '14px',
                 fontWeight: '650',
+                letterSpacing: '0.2px',
                 cursor: 'pointer',
                 display: 'inline-flex',
                 alignItems: 'center',
-                transition: 'all 0.2s ease',
+                gap: '8px',
+                transition: 'all 0.25s cubic-bezier(0.16, 1, 0.3, 1)',
               }}
               onMouseEnter={(e) => {
                 e.currentTarget.style.transform = 'translateY(-2px)';
-                e.currentTarget.style.background = '#281c12';
+                e.currentTarget.style.background = 'rgba(36, 25, 16, 0.85)';
+                e.currentTarget.style.borderColor = 'rgba(212, 175, 55, 0.45)';
               }}
               onMouseLeave={(e) => {
                 e.currentTarget.style.transform = 'translateY(0)';
-                e.currentTarget.style.background = '#1c140d';
+                e.currentTarget.style.background = 'rgba(24, 17, 11, 0.65)';
+                e.currentTarget.style.borderColor = 'rgba(212, 175, 55, 0.28)';
               }}
             >
-              Jelajahi Story Atlas
+              <span>Jelajahi Story Atlas</span>
+              <span style={{ fontSize: '15px' }}>→</span>
             </button>
           </div>
         </div>
@@ -472,7 +522,7 @@ export default function HomeView({ onNavigate, connectionStatus, onTestConnectio
             <div style={statSubStyle}>Karya dalang & generasi muda</div>
           </div>
 
-          {/* Metrik 2: Tokoh Tatah-Sungging (FR-03) (Countdown Serentak dari 50 ke 15+) */}
+          {/* Metrik 2: Tokoh Tatah-Sungging Klasik (Countdown Serentak dari 50 ke 15+) */}
           <div
             className={`hero-floating-stat-item ${statsInView ? 'stat-item-active' : ''}`}
             style={{
@@ -495,7 +545,7 @@ export default function HomeView({ onNavigate, connectionStatus, onTestConnectio
             <div style={statSubStyle}>Tatah-sungging otentik HD</div>
           </div>
 
-          {/* Metrik 3: Naskah Rujukan Terkurasi (FR-01) (Countdown Serentak dari 150% ke 100%) */}
+          {/* Metrik 3: Naskah Rujukan Terkurasi Sanad Purwa (Countdown Serentak dari 150% ke 100%) */}
           <div
             className={`hero-floating-stat-item ${statsInView ? 'stat-item-active' : ''}`}
             style={{
@@ -521,7 +571,7 @@ export default function HomeView({ onNavigate, connectionStatus, onTestConnectio
       </div>
 
       {/* ============================================================
-          2. TIGA PILAR UTAMA SESUAI PRD (PR-01, PR-02, PR-04)
+          2. TIGA PILAR EKOSISTEM: PANGGUNG KELIR, PUSTAKA PAKEM, & TATA SUARA
           ============================================================ */}
       <div id="home-light-sections">
       <section
@@ -533,11 +583,28 @@ export default function HomeView({ onNavigate, connectionStatus, onTestConnectio
           justifyContent: 'center',
           boxSizing: 'border-box',
           padding: '110px 24px 100px 24px',
+          position: 'relative',
+          overflow: 'hidden',
         }}
       >
-        <div style={{ maxWidth: '1280px', width: '100%', margin: '0 auto' }}>
-          {/* Header Bagian: Judul Utama & Subjudul Tanpa Tag dan Garis */}
+        {/* Motif Awan Tradisional Jawa Halus Khusus Section Terang dengan Cardbox (Hanya di margin tepi, tidak menabrak cardbox) */}
+        <JavaneseCloudBackground variant="flanking" theme="light" opacity={0.18} animated={true} />
+
+        <div style={{ maxWidth: '1280px', width: '100%', margin: '0 auto', position: 'relative', zIndex: 10 }}>
+          {/* Header Bagian: Judul Utama & Subjudul dengan Eyebrow Kultural */}
           <div style={{ textAlign: 'center', marginBottom: '44px' }}>
+            <div
+              style={{
+                fontSize: '11.5px',
+                fontWeight: '800',
+                letterSpacing: '0.08em',
+                textTransform: 'uppercase',
+                color: '#8b4513',
+                marginBottom: '8px',
+              }}
+            >
+              ARUS KREASI NUSANTARA
+            </div>
             <h2
               style={{
                 fontSize: 'clamp(28px, 3.5vw, 40px)',
@@ -547,7 +614,7 @@ export default function HomeView({ onNavigate, connectionStatus, onTestConnectio
                 margin: '0 0 14px 0',
               }}
             >
-              Fondasi Ekosistem <span style={{ color: '#d4af37' }}>Wayangverse</span>
+              Tiga Pilar Ekosistem Wayangverse
             </h2>
 
             <p
@@ -570,25 +637,25 @@ export default function HomeView({ onNavigate, connectionStatus, onTestConnectio
                 id: 'pilar-1',
                 nav: 'stage',
                 icon: <Film size={26} color="#8b4513" />,
-                title: 'Panggung Virtual 2D (PR-02)',
-                desc: 'Kanvas kelir interaktif untuk menempatkan tokoh wayang, menggerakkan lengan tudhing, memilih pose perang/sembah, serta menyusun urutan babak multi-scene.',
-                btnLabel: 'Buka Studio',
+                title: 'Studio Panggung Kelir',
+                desc: 'Kanvas kelir digital interaktif untuk menata lakon adegan, menggerakkan tudhing tokoh, merangkai babak, serta memimpin pagelaran secara visual.',
+                btnLabel: 'Masuk ke Panggung',
               },
               {
                 id: 'pilar-2',
                 nav: 'atlas',
                 icon: <BookOpen size={26} color="#8b4513" />,
-                title: 'Story Atlas & Pakem (PR-01)',
-                desc: 'Ensiklopedia terkurasi yang memuat sinopsis naskah, falsafah watak tokoh, silsilah keturunan, serta pencatatan sumber naskah bersejarah.',
-                btnLabel: 'Telusuri Atlas',
+                title: 'Pustaka & Sanad Pakem',
+                desc: 'Ensiklopedia naskah wiracarita terkurasi yang mengupas silsilah, filosofi watak luhur para ksatria, serta kajian naskah bersejarah Nusantara.',
+                btnLabel: 'Jelajahi Pustaka',
               },
               {
                 id: 'pilar-3',
                 nav: 'stage',
                 icon: <Music size={26} color="#8b4513" />,
-                title: 'Audio Gamelan Slendro (PR-04)',
-                desc: 'Sintesis audio peramban real-time untuk gending laras slendro (srepeg, sampak, ayak-ayak) serta efek suara pedalangan dodogan cempala dan kepyak.',
-                btnLabel: 'Eksplorasi Audio',
+                title: 'Tata Suara Gamelan Slendro',
+                desc: 'Sintesis tata suara peramban real-time untuk gending laras slendro, ritme kendhang, hingga hentakan dodogan cempala dan kepyak dalang.',
+                btnLabel: 'Dengarkan Suara',
               },
             ].map((pilar, idx) => {
               const isHovered = hoveredPillar === idx;
@@ -635,7 +702,7 @@ export default function HomeView({ onNavigate, connectionStatus, onTestConnectio
       </section>
 
       {/* ============================================================
-          4. KURASI LAKON NASKAH RUJUKAN (PRD PR-01 & SRS FR-01, FR-02)
+          4. KURASI LAKON NASKAH RUJUKAN KLASIK
           ============================================================ */}
       <section
         style={{
@@ -662,11 +729,23 @@ export default function HomeView({ onNavigate, connectionStatus, onTestConnectio
             }}
           >
             <div style={{ maxWidth: '780px' }}>
+              <div
+                style={{
+                  fontSize: '11.5px',
+                  fontWeight: '800',
+                  letterSpacing: '0.08em',
+                  textTransform: 'uppercase',
+                  color: '#8b4513',
+                  marginBottom: '8px',
+                }}
+              >
+                KHAZANAH NASKAH PURWA
+              </div>
               <h2 style={{ ...sectionHeadingStyle, margin: '0 0 8px 0' }}>
-                Lakon Wayang <span style={{ color: '#d4af37' }}>Pilihan</span>
+                Lakon Wayang Rujukan Bersejarah
               </h2>
               <p style={{ ...sectionSubtitleStyle, margin: 0, maxWidth: '720px' }}>
-                Pilih naskah pakem bersejarah dan langsung mainkan adegannya di panggung virtual kelir.
+                Pilih wiracarita pakem klasik dan langsung pentaskan babak adegannya di panggung virtual kelir.
               </p>
             </div>
 
@@ -682,7 +761,8 @@ export default function HomeView({ onNavigate, connectionStatus, onTestConnectio
                 e.currentTarget.style.transform = 'translateY(0)';
               }}
             >
-              Selengkapnya
+              Jelajahi Pustaka Lakon
+              <ArrowRight size={14} />
             </button>
           </div>
 
@@ -733,7 +813,7 @@ export default function HomeView({ onNavigate, connectionStatus, onTestConnectio
       </section>
 
       {/* ============================================================
-          5. KOLEKSI TOKOH WAYANG KLASIK (PRD PR-01 & SRS FR-03)
+          5. KOLEKSI TOKOH WAYANG KLASIK & WANDHA OTENTIK
           Tata letak terinspirasi dari referensi desain: Tag slash,
           headline besar, paragraf kanan dengan kontrol slider (← [bar] →),
           dan kartu modern dengan satu kartu aktif berlatar gelap.
@@ -748,9 +828,14 @@ export default function HomeView({ onNavigate, connectionStatus, onTestConnectio
           boxSizing: 'border-box',
           padding: '110px 24px',
           background: '#fcfaf5',
+          position: 'relative',
+          overflow: 'hidden',
         }}
       >
-        <div style={{ maxWidth: '1280px', width: '100%', margin: '0 auto' }}>
+        {/* Motif Awan Tradisional Jawa Halus Khusus Section Terang dengan Cardbox */}
+        <JavaneseCloudBackground variant="flanking" theme="light" opacity={0.18} animated={true} />
+
+        <div style={{ maxWidth: '1280px', width: '100%', margin: '0 auto', position: 'relative', zIndex: 10 }}>
           {/* Header Bagian: Kiri (Headline Besar Tanpa Teks Tag), Kanan (Deskripsi PRD Tanpa Arrow) */}
           <div
             style={{
@@ -764,6 +849,18 @@ export default function HomeView({ onNavigate, connectionStatus, onTestConnectio
           >
             {/* Sisi Kiri: Headline Utama Tanpa Teks di Atasnya */}
             <div style={{ maxWidth: '640px' }}>
+              <div
+                style={{
+                  fontSize: '11.5px',
+                  fontWeight: '800',
+                  letterSpacing: '0.08em',
+                  textTransform: 'uppercase',
+                  color: '#8b4513',
+                  marginBottom: '8px',
+                }}
+              >
+                WANDHA & FALSAFAH KSATRIA
+              </div>
               <h2
                 style={{
                   fontSize: 'clamp(32px, 4.2vw, 46px)',
@@ -774,11 +871,11 @@ export default function HomeView({ onNavigate, connectionStatus, onTestConnectio
                   margin: 0,
                 }}
               >
-                Karakter Wayang Otentik<br />dengan <span style={{ color: '#d4af37' }}>Falsafah Luhur</span>
+                Karakter Wayang Klasik & Falsafah Watak
               </h2>
             </div>
 
-            {/* Sisi Kanan: Paragraf Pendukung PRD (Tanpa Icon Arrow/Slider Sesuai Permintaan) */}
+            {/* Sisi Kanan: Narasi Filosofi Budaya (Tanpa Icon Arrow/Slider Sesuai Permintaan) */}
             <div style={{ maxWidth: '480px', width: '100%' }}>
               <p
                 style={{
@@ -898,7 +995,7 @@ export default function HomeView({ onNavigate, connectionStatus, onTestConnectio
                 e.currentTarget.style.transform = 'translateY(0)';
               }}
             >
-              Selengkapnya
+              Telusuri Ensiklopedia Tokoh
               <ArrowRight size={15} />
             </button>
           </div>
@@ -934,13 +1031,25 @@ export default function HomeView({ onNavigate, connectionStatus, onTestConnectio
             }}
           >
             <div style={{ maxWidth: '780px' }}>
+              <div
+                style={{
+                  fontSize: '11.5px',
+                  fontWeight: '800',
+                  letterSpacing: '0.08em',
+                  textTransform: 'uppercase',
+                  color: '#8b4513',
+                  marginBottom: '8px',
+                }}
+              >
+                PAGELARAN KOMUNITAS TERPILIH
+              </div>
               <h2
                 style={{
                   ...sectionHeadingStyle,
                   margin: '0 0 8px 0',
                 }}
               >
-                Leaderboard Top 4 <span style={{ color: '#d4af37' }}>Pementasan Wayang</span>
+                Pentas Wayang Terpopuler Pekan Ini
               </h2>
               <p
                 style={{
@@ -949,7 +1058,7 @@ export default function HomeView({ onNavigate, connectionStatus, onTestConnectio
                   maxWidth: '720px',
                 }}
               >
-                Karya pementasan pengguna terpopuler yang terhubung langsung ke lakon naskah pakem dan karakter pewayangan otentik.
+                Karya lakon pilihan gubahan kreator muda dan dalang teruji yang terhubung langsung ke sanad pakem klasik.
               </p>
             </div>
 
@@ -965,87 +1074,134 @@ export default function HomeView({ onNavigate, connectionStatus, onTestConnectio
                 e.currentTarget.style.transform = 'translateY(0)';
               }}
             >
-              Selengkapnya
+              Buka Seluruh Galeri Karya
+              <ArrowRight size={14} />
             </button>
           </div>
 
-          {/* Leaderboard Top 4 Interactive Accordion Sesuai Screenshot */}
-          <div className="leaderboard-accordion-container">
-            {HOME_TOP_4_PERFORMANCES.map((item) => {
-              const isActive = activeLeaderboardId === item.id;
+          {/* Leaderboard Top 4 Theatrical Exhibition Showcase (Menggantikan Accordion Kembar) */}
+          {(() => {
+            const activePerformance =
+              HOME_TOP_4_PERFORMANCES.find((item) => item.id === activeLeaderboardId) ||
+              HOME_TOP_4_PERFORMANCES[0];
 
-              return (
-                <div
-                  key={item.id}
-                  onClick={() => setActiveLeaderboardId(item.id)}
-                  onMouseEnter={() => setActiveLeaderboardId(item.id)}
-                  className={`leaderboard-accordion-card ${isActive ? 'active' : 'inactive'}`}
-                  role="button"
-                  tabIndex={0}
-                  aria-expanded={isActive}
-                  aria-label={item.title}
-                >
-                  {/* Visual Image - Tampil di Semua Cardbox (Termasuk Saat Lonjong) */}
-                  <div className="leaderboard-card-img-wrap">
-                    <img
-                      src={item.coverImg}
-                      alt={item.title}
-                      className="leaderboard-card-img"
-                      loading="lazy"
-                    />
+            return (
+              <div className="leaderboard-showcase-grid">
+                {/* Sisi Kiri: Master Stage Spotlight */}
+                <div className="leaderboard-spotlight-stage">
+                  <img
+                    src={activePerformance.coverImg}
+                    alt={activePerformance.title}
+                    className="leaderboard-spotlight-bg-img"
+                    key={activePerformance.id}
+                  />
+                  <div className="leaderboard-spotlight-scrim" />
+
+                  {/* Header Meta: Terapung anggun di bagian paling atas panggung */}
+                  <div className="leaderboard-spotlight-header-meta">
+                    <span className="leaderboard-spotlight-badge">
+                      <Sparkles size={12} />
+                      {activePerformance.badge}
+                    </span>
+                    <span className="leaderboard-spotlight-epos">
+                      {activePerformance.epos} • {activePerformance.duration}
+                    </span>
                   </div>
 
-                  {/* Body Konten Cardbox */}
-                  <div className="leaderboard-card-body">
-                    {/* Nomor Urut Palet Wayangverse (Prada Emas Heritage) */}
-                    <div className="leaderboard-rank-number">
-                      {item.rank}
-                    </div>
-
-                    {/* Judul Pementasan */}
-                    <h3 className={`leaderboard-card-title ${isActive ? 'active-title' : 'inactive-title'}`}>
-                      {item.title}
+                  {/* Bottom Content: Mengendap rapi di dasar panggung (Tengah terbuka jernih) */}
+                  <div className="leaderboard-spotlight-content">
+                    <h3 className="leaderboard-spotlight-title">
+                      {activePerformance.title}
                     </h3>
 
-                    {/* Deskripsi Singkat Padat Jelas */}
-                    <p className={`leaderboard-card-desc ${isActive ? 'active-desc' : 'inactive-desc'}`}>
-                      {item.description}
+                    <div className="leaderboard-spotlight-dalang">
+                      <span>Dalang: {activePerformance.dalang}</span>
+                      <span>•</span>
+                      <span>{activePerformance.views}</span>
+                    </div>
+
+                    <p className="leaderboard-spotlight-desc">
+                      {activePerformance.description}
                     </p>
 
-                    {/* 2 Tombol Aksi Horizontal - Selalu Tampil Langsung di Card Aktif Tanpa Hover */}
-                    {isActive && (
-                      <div className="leaderboard-btn-row">
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            onNavigate('archive');
-                          }}
-                          className="leaderboard-btn-primary"
-                        >
-                          Tonton Pertunjukan
-                        </button>
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            onNavigate('atlas');
-                          }}
-                          className="leaderboard-btn-secondary"
-                        >
-                          Naskah Pakem
-                        </button>
-                      </div>
-                    )}
+                    <div className="leaderboard-spotlight-actions">
+                      <button
+                        onClick={() => onNavigate('archive')}
+                        className="leaderboard-btn-primary"
+                        aria-label={`Tonton pertunjukan ${activePerformance.title}`}
+                      >
+                        <Film size={15} style={{ marginRight: '7px' }} />
+                        Tonton Pertunjukan
+                      </button>
+                      <button
+                        onClick={() => onNavigate('atlas')}
+                        className="leaderboard-btn-secondary"
+                        aria-label={`Buka naskah pakem ${activePerformance.title}`}
+                      >
+                        <BookOpen size={15} style={{ marginRight: '7px' }} />
+                        Naskah Pakem
+                      </button>
+                    </div>
                   </div>
                 </div>
-              );
-            })}
-          </div>
+
+                {/* Sisi Kanan: Reel Stack of 4 Curated Performances */}
+                <div className="leaderboard-reel-stack">
+                  {HOME_TOP_4_PERFORMANCES.map((item) => {
+                    const isSelected = item.id === activePerformance.id;
+
+                    return (
+                      <div
+                        key={item.id}
+                        onClick={() => setActiveLeaderboardId(item.id)}
+                        onMouseEnter={() => setActiveLeaderboardId(item.id)}
+                        className={`leaderboard-reel-card ${isSelected ? 'active' : ''}`}
+                        role="button"
+                        tabIndex={0}
+                        aria-selected={isSelected}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter' || e.key === ' ') {
+                            setActiveLeaderboardId(item.id);
+                          }
+                        }}
+                      >
+                        <div className="leaderboard-reel-rank">{item.rank}.</div>
+
+                        <div className="leaderboard-reel-img-thumb">
+                          <img
+                            src={item.coverImg}
+                            alt={item.title}
+                            className="leaderboard-reel-img"
+                            loading="lazy"
+                          />
+                        </div>
+
+                        <div className="leaderboard-reel-body">
+                          <h4 className="leaderboard-reel-title">{item.title}</h4>
+                          <div className="leaderboard-reel-dalang">Oleh {item.dalang}</div>
+                          <div className="leaderboard-reel-meta">
+                            <span>{item.epos}</span>
+                            <span>•</span>
+                            <span>{item.views}</span>
+                          </div>
+                        </div>
+
+                        <div className="leaderboard-reel-arrow">
+                          <ArrowRight size={14} />
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            );
+          })()}
         </div>
       </section>
       </div>
 
       {/* ============================================================
-          6. FALSAFAH KULTURAL & CALL TO ACTION PENUTUP (PRD 1.1)
+          6. FALSAFAH KULTURAL & CALL TO ACTION PENUTUP PAGELARAN
           ============================================================ */}
       <section
         style={{
@@ -1124,6 +1280,18 @@ export default function HomeView({ onNavigate, connectionStatus, onTestConnectio
                 margin: '0 auto',
               }}
             >
+              <div
+                style={{
+                  fontSize: '12px',
+                  fontWeight: '800',
+                  letterSpacing: '0.1em',
+                  textTransform: 'uppercase',
+                  color: '#e8bb5c',
+                  marginBottom: '12px',
+                }}
+              >
+                PANGGILAN PAGELARAN DALANG
+              </div>
               <h2
                 style={{
                   margin: '0 0 16px 0',
@@ -1134,7 +1302,7 @@ export default function HomeView({ onNavigate, connectionStatus, onTestConnectio
                   lineHeight: '1.25',
                 }}
               >
-                Siap Menjadi Dalang di <span style={{ color: '#e8bb5c' }}>Panggung Virtual?</span>
+                Tancep Kayon: Mulai Pementasan Perdana Anda
               </h2>
 
               <p
@@ -1146,7 +1314,7 @@ export default function HomeView({ onNavigate, connectionStatus, onTestConnectio
                   maxWidth: '620px',
                 }}
               >
-                Wujudkan pementasan lakon wayang impian Anda bersama Wayangverse. Eksplorasi watak ksatria, olah suara gamelan slendro, dan rangkai babak kelir dengan kebebasan digital.
+                Wujudkan lakon wayang impian Anda bersama Wayangverse. Eksplorasi watak ksatria, olah suara gamelan slendro, dan pimpin kelir digital dengan kebebasan berekspresi.
               </p>
 
               <button
@@ -1163,6 +1331,7 @@ export default function HomeView({ onNavigate, connectionStatus, onTestConnectio
                   display: 'inline-flex',
                   alignItems: 'center',
                   justifyContent: 'center',
+                  gap: '8px',
                   boxShadow: 'none',
                   transition: 'all 0.2s ease',
                 }}
@@ -1175,7 +1344,8 @@ export default function HomeView({ onNavigate, connectionStatus, onTestConnectio
                   e.currentTarget.style.background = '#e8bb5c';
                 }}
               >
-                Mulai Menjadi Dalang
+                Buka Kanvas Panggung Kelir
+                <ArrowRight size={16} />
               </button>
             </div>
           </div>
@@ -1189,32 +1359,28 @@ export default function HomeView({ onNavigate, connectionStatus, onTestConnectio
 // STYLES TOKENS & UTILITIES
 // ============================================================
 
-const statItemStyle = {
-  textAlign: 'center',
-  padding: '8px 16px',
-};
-
 const statNumberStyle = {
-  fontSize: '34px',
-  fontWeight: '850',
+  fontSize: '36px',
+  fontWeight: '800',
   color: '#e8bb5c',
-  letterSpacing: '-0.8px',
+  letterSpacing: '-0.5px',
   lineHeight: '1.1',
-  marginBottom: '5px',
+  marginBottom: '6px',
 };
 
 const statLabelStyle = {
-  fontSize: '14px',
-  fontWeight: '800',
-  color: '#fcfaf2',
+  fontSize: '14.5px',
+  fontWeight: '700',
+  color: '#fdfbf7',
   marginBottom: '4px',
-  letterSpacing: '-0.2px',
+  letterSpacing: '0.2px',
 };
 
 const statSubStyle = {
-  fontSize: '12px',
-  color: '#bfae9b',
-  fontWeight: '450',
+  fontSize: '12.5px',
+  color: '#c7b7a6',
+  fontWeight: '400',
+  lineHeight: '1.4',
 };
 
 const sectionHeadingStyle = {

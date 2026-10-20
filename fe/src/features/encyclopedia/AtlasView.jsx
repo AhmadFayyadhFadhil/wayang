@@ -9,12 +9,15 @@ import {
   Play,
   Square,
   ChevronDown,
+  Shield,
+  X,
 } from 'lucide-react';
 
 // Aset Visual Hero Section Sesuai Referensi Pengguna (SS 1, SS 2, SS 3)
 import heroParchmentWideBg from '../../assets/hero_parchment_clouds_widescreen_hd.jpg';
 import atlasGoldMotifStrip from '../../assets/atlas_gold_motif_strip.jpg';
 import gununganHd from '../../assets/gunungan_kayon_hd.png';
+import JavaneseCloudBackground from '../../components/ui/JavaneseCloudBackground';
 
 // Gambar Otentik Lakon & Tokoh Sesuai Cardbox Halaman Beranda
 import galleryCoverGatotkaca from '../../assets/gallery_cover_gatotkaca.jpg';
@@ -223,7 +226,7 @@ export default function AtlasView({ onPlayCharacterOnStage }) {
             objectFit: 'cover',
             objectPosition: 'bottom center',
             zIndex: 1,
-            filter: 'contrast(1.0) brightness(0.88)',
+            filter: 'contrast(1.02) brightness(0.78)',
           }}
         />
 
@@ -269,6 +272,9 @@ export default function AtlasView({ onPlayCharacterOnStage }) {
           }}
         />
 
+        {/* Motif Awan Tradisional Jawa Otentik dengan Animasi Mengambang & Bergeser Halus (Berada di atas backdrop layer 2) */}
+        <JavaneseCloudBackground variant="hero" theme="dark" opacity={0.55} animated={true} style={{ zIndex: 2 }} />
+
         {/* Ornamen Gunungan HD di Kiri & Kanan (Mengipas Perlahan & Menyatu dengan Latar Persis Beranda) */}
         <div
           className="hero-gunungan-frame-left"
@@ -278,7 +284,7 @@ export default function AtlasView({ onPlayCharacterOnStage }) {
             bottom: '0',
             height: '530px',
             width: '330px',
-            zIndex: 3,
+            zIndex: 4,
             opacity: 0.78,
             pointerEvents: 'none',
             filter: 'none',
@@ -299,7 +305,7 @@ export default function AtlasView({ onPlayCharacterOnStage }) {
             bottom: '0',
             height: '530px',
             width: '330px',
-            zIndex: 3,
+            zIndex: 4,
             opacity: 0.78,
             pointerEvents: 'none',
             filter: 'none',
@@ -317,21 +323,44 @@ export default function AtlasView({ onPlayCharacterOnStage }) {
           />
         </div>
 
-        {/* Konten Utama: Tipografi Klasik Mewah Sesuai Tata Letak SS 1 */}
+        {/* Konten Utama: Tipografi Klasik Mewah Terpusat Sempurna (Persis Hero Beranda) */}
         <div
           style={{
             position: 'relative',
             zIndex: 10,
-            maxWidth: '880px',
+            maxWidth: '920px',
             width: '100%',
             margin: '0 auto',
+            textAlign: 'center',
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
           }}
         >
+          {/* Eyebrow Budaya Nusantara (Persis Hero Beranda) */}
+          <div
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '10px',
+              padding: '6px 16px',
+              borderRadius: '9999px',
+              background: 'rgba(212, 175, 55, 0.08)',
+              border: '1px solid rgba(212, 175, 55, 0.22)',
+              color: '#d4af37',
+              fontSize: '11px',
+              fontWeight: '700',
+              letterSpacing: '2.5px',
+              textTransform: 'uppercase',
+              marginBottom: '18px',
+            }}
+          >
+            <span style={{ width: '5px', height: '5px', borderRadius: '50%', background: '#d4af37' }} />
+            <span>Pustaka Wiracarita & Ensiklopedi Wayang</span>
+            <span style={{ width: '5px', height: '5px', borderRadius: '50%', background: '#d4af37' }} />
+          </div>
 
-          {/* Judul Besar Klasik Sesuai Tipografi PRD & SRS (Plus Jakarta Sans) - Alami Bersih Tanpa Shadow */}
+          {/* Judul Besar Klasik Sesuai Tipografi PRD & SRS (Plus Jakarta Sans) - Terpusat */}
           <h1
             style={{
               margin: '0 0 20px 0',
@@ -341,71 +370,73 @@ export default function AtlasView({ onPlayCharacterOnStage }) {
               color: '#fcfaf2',
               letterSpacing: '-0.5px',
               lineHeight: '1.22',
+              textAlign: 'center',
             }}
           >
             Warisan Lakon Pakem & <span style={{ color: '#d4af37' }}>Tokoh Wayang</span> Nusantara
           </h1>
 
-          {/* Deskripsi Subtitle Elegan - Alami Bersih Tanpa Shadow */}
+          {/* Deskripsi Subtitle Elegan - Terpusat */}
           <p
             style={{
-              margin: '0 auto',
+              margin: '0 auto 34px auto',
               fontSize: 'clamp(15px, 1.5vw, 17px)',
               color: '#f0e6d8',
               lineHeight: '1.8',
               maxWidth: '740px',
               fontWeight: '450',
+              textAlign: 'center',
             }}
           >
             Jelajahi naskah wiracarita klasik, filosofi watak ksatria adiluhung, rujukan babak pementasan purwa, serta tata suara gamelan tradisional yang terhubung secara otentik demi integritas budaya.
           </p>
-        </div>
 
-        {/* Indikator Gulir / Scroll Cue ke Konten Ensiklopedi */}
-        <button
-          onClick={() => {
-            const el = document.getElementById('atlas-content-section');
-            if (el) el.scrollIntoView({ behavior: 'smooth' });
-          }}
-          style={{
-            position: 'absolute',
-            bottom: '52px',
-            left: '50%',
-            transform: 'translateX(-50%)',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            gap: '6px',
-            cursor: 'pointer',
-            zIndex: 20,
-            background: 'none',
-            border: 'none',
-            padding: '8px 16px',
-            color: '#d4af37',
-            opacity: 0.85,
-            transition: 'opacity 0.2s ease, transform 0.2s ease',
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.opacity = '1';
-            e.currentTarget.style.transform = 'translateX(-50%) translateY(2px)';
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.opacity = '0.85';
-            e.currentTarget.style.transform = 'translateX(-50%) translateY(0)';
-          }}
-        >
-          <span
+          {/* Tombol Aksi Utama Hero (Persis Tata Letak Hero Beranda) */}
+          <div
             style={{
-              fontSize: '11px',
-              fontWeight: '750',
-              letterSpacing: '0.14em',
-              textTransform: 'uppercase',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              gap: '14px',
+              flexWrap: 'wrap',
+              marginBottom: '0',
             }}
           >
-            Jelajahi Arsip & Lakon
-          </span>
-          <ChevronDown size={19} />
-        </button>
+            <button
+              onClick={() => {
+                const el = document.getElementById('atlas-content-section');
+                if (el) el.scrollIntoView({ behavior: 'smooth' });
+              }}
+              style={{
+                background: 'linear-gradient(135deg, #e8bb5c 0%, #d4af37 100%)',
+                border: '1px solid rgba(245, 215, 127, 0.45)',
+                color: '#1a120b',
+                padding: '13px 30px',
+                borderRadius: '12px',
+                fontSize: '14px',
+                fontWeight: '750',
+                letterSpacing: '0.2px',
+                cursor: 'pointer',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '8px',
+                boxShadow: '0 2px 8px rgba(0, 0, 0, 0.25)',
+                transition: 'all 0.25s cubic-bezier(0.16, 1, 0.3, 1)',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = 'translateY(-2px)';
+                e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.35)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = 'translateY(0)';
+                e.currentTarget.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.25)';
+              }}
+            >
+              Jelajahi Pustaka & Lakon
+              <ChevronDown size={16} />
+            </button>
+          </div>
+        </div>
 
         {/* Strip Motif Batik Emas di Bagian Bawah Hero Sesuai Permintaan SS 3 */}
         <div
@@ -429,14 +460,20 @@ export default function AtlasView({ onPlayCharacterOnStage }) {
       {/* Konten Utama Story Atlas (Latar Belakang Hangat #f5f0e4 Sesuai Section Lakon Beranda) */}
       <section
         id="atlas-light-sections"
+        data-light-section="true"
         style={{
           width: '100%',
           background: '#f5f0e4',
           minHeight: '80vh',
           padding: '80px 0 100px 0',
           boxSizing: 'border-box',
+          position: 'relative',
+          overflow: 'hidden',
         }}
       >
+        {/* Motif Awan Tradisional Jawa Halus (Hanya di margin tepi, tidak menabrak cardbox) */}
+        <JavaneseCloudBackground variant="flanking" theme="light" opacity={0.20} animated={true} />
+
         <div
           id="atlas-content-section"
           style={{
@@ -445,6 +482,8 @@ export default function AtlasView({ onPlayCharacterOnStage }) {
             margin: '0 auto',
             padding: '0 24px',
             boxSizing: 'border-box',
+            position: 'relative',
+            zIndex: 10,
           }}
         >
           {/* 1. Header Khazanah Pustaka Wayang Sesuai Tipografi PRD & SRS (Plus Jakarta Sans) */}
@@ -1322,281 +1361,546 @@ export default function AtlasView({ onPlayCharacterOnStage }) {
         </div>
       </section>
 
-      {/* MODAL 1: DETAIL LAKON CERITA (FR-02) */}
-      {selectedStoryModal && (
-        <div
-          style={{
-            position: 'fixed',
-            inset: 0,
-            background: 'rgba(0,0,0,0.85)',
-            backdropFilter: 'blur(6px)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            zIndex: 1000,
-            padding: '16px',
-          }}
-        >
+      {/* MODAL 1: DETAIL LAKON CERITA (FR-02) — BESPOKE MUSEUM MANUSCRIPT DESIGN */}
+      {selectedStoryModal && (() => {
+        const asset = STORY_ASSETS[selectedStoryModal.slug] || {};
+        const coverImg = asset.coverImg || null;
+        const tradition = asset.traditionBadge || selectedStoryModal.tradition;
+        const pakem = asset.versionPakem || selectedStoryModal.versionLabel;
+
+        return (
           <div
-            style={{
-              background: '#17110c',
-              border: '1px solid #d4af37',
-              borderRadius: '16px',
-              maxWidth: '650px',
-              width: '100%',
-              maxHeight: '90vh',
-              overflowY: 'auto',
-              padding: '24px',
-              color: '#fcfaf2',
-              boxShadow: '0 25px 60px rgba(0,0,0,0.9), 0 0 30px rgba(212, 175, 55, 0.15)',
-            }}
+            className="wayang-modal-backdrop"
+            style={{ zIndex: 1000 }}
+            onClick={() => setSelectedStoryModal(null)}
           >
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-              <div>
-                <span style={{ fontSize: '11px', color: '#d4af37', fontWeight: 'bold', textTransform: 'uppercase' }}>
-                  {selectedStoryModal.tradition} • {selectedStoryModal.versionLabel}
-                </span>
-                <h2 style={{ margin: '4px 0 0 0', fontSize: '22px', color: '#fcfaf2', fontWeight: '700' }}>
-                  {selectedStoryModal.title}
-                </h2>
-              </div>
-              <button
-                onClick={() => setSelectedStoryModal(null)}
-                style={{ background: 'none', border: 'none', color: '#bfae9c', fontSize: '20px', cursor: 'pointer' }}
-              >
-                ✕
-              </button>
-            </div>
-
-            <div style={{ marginBottom: '16px' }}>
-              <h4 style={{ margin: '0 0 6px 0', fontSize: '13px', color: '#d4af37', fontWeight: '700' }}>Ringkasan Lakon</h4>
-              <p style={{ margin: 0, fontSize: '13px', color: '#e5dec9', lineHeight: '1.6' }}>
-                {selectedStoryModal.synopsis}
-              </p>
-            </div>
-
             <div
-              style={{
-                background: '#221a13',
-                borderLeft: '4px solid #d4af37',
-                padding: '12px 16px',
-                borderRadius: '8px',
-                marginBottom: '16px',
-              }}
+              className="wayang-modal-chassis"
+              style={{ maxWidth: '720px', width: '100%' }}
+              onClick={(e) => e.stopPropagation()}
             >
-              <h4 style={{ margin: '0 0 4px 0', fontSize: '13px', color: '#d4af37' }}>
-                Makna Filosofis & Nilai Moral
-              </h4>
-              <p style={{ margin: 0, fontSize: '12px', color: '#fcfaf2', lineHeight: '1.5', fontStyle: 'italic' }}>
-                "{selectedStoryModal.philosophy}"
-              </p>
-            </div>
+              <div className="wayang-modal-hairline" />
 
-            <div style={{ marginBottom: '16px' }}>
-              <h4 style={{ margin: '0 0 8px 0', fontSize: '13px', color: '#d4af37', fontWeight: '700' }}>
-                Catatan Sumber & Integritas Budaya
-              </h4>
-              <div style={{ background: '#120e0a', padding: '14px', borderRadius: '8px', border: '1px solid #362619' }}>
-                {selectedStoryModal.sources.map((src, i) => (
-                  <div key={i} style={{ marginBottom: i < selectedStoryModal.sources.length - 1 ? '10px' : 0, fontSize: '12px' }}>
-                    <div style={{ fontWeight: 'bold', color: '#fcfaf2' }}>{src.title}</div>
-                    <div style={{ color: '#bfae9c' }}>Pengarang / Penerbit: {src.author}</div>
-                    <div style={{ color: '#8c7d6e', fontSize: '11px' }}>Rujukan: {src.reference} • Hak Cipta: {src.rightsNote}</div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '20px' }}>
-              <button
-                onClick={() => setSelectedStoryModal(null)}
-                style={{
-                  background: '#221a13',
-                  border: '1px solid #4a3826',
-                  color: '#fcfaf2',
-                  padding: '9px 24px',
-                  borderRadius: '20px',
-                  cursor: 'pointer',
-                  fontSize: '13px',
-                  fontWeight: '600',
-                  transition: 'all 0.2s ease',
-                }}
-              >
-                Tutup
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* MODAL 2: DETAIL PROFIL KARAKTER & UJI POSE (FR-03) */}
-      {selectedCharModal && (
-        <div
-          style={{
-            position: 'fixed',
-            inset: 0,
-            background: 'rgba(0,0,0,0.85)',
-            backdropFilter: 'blur(6px)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            zIndex: 1000,
-            padding: '16px',
-          }}
-        >
-          <div
-            style={{
-              background: '#17110c',
-              border: '1px solid #d4af37',
-              borderRadius: '16px',
-              maxWidth: '680px',
-              width: '100%',
-              maxHeight: '90vh',
-              overflowY: 'auto',
-              padding: '24px',
-              color: '#fcfaf2',
-              boxShadow: '0 25px 60px rgba(0,0,0,0.9), 0 0 30px rgba(212, 175, 55, 0.15)',
-            }}
-          >
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
-              <div>
-                <span style={{ fontSize: '11px', color: selectedCharModal.accentColor, fontWeight: 'bold', textTransform: 'uppercase' }}>
-                  {selectedCharModal.typeName}
-                </span>
-                <h2 style={{ margin: '4px 0 0 0', fontSize: '22px', color: '#fcfaf2', fontWeight: '700' }}>
-                  {selectedCharModal.name}
-                </h2>
-                <div style={{ fontSize: '12px', color: '#bfae9c' }}>{selectedCharModal.alias}</div>
-              </div>
-              <button
-                onClick={() => setSelectedCharModal(null)}
-                style={{ background: 'none', border: 'none', color: '#bfae9c', fontSize: '20px', cursor: 'pointer' }}
-              >
-                ✕
-              </button>
-            </div>
-
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '20px', alignItems: 'center', marginBottom: '20px' }}>
-              {/* Kanvas Interactive Pose Preview */}
-              <div
-                style={{
-                  background: '#150f0a',
-                  borderRadius: '12px',
-                  padding: '20px',
-                  border: `1px solid ${selectedCharModal.accentColor || '#d4af37'}`,
-                  textAlign: 'center',
-                }}
-              >
-                <WayangFigureSvg
-                  slug={selectedCharModal.slug}
-                  pose={previewPose}
-                  scale={0.8}
-                  width={140}
-                  height={200}
-                  accentColor={selectedCharModal.accentColor}
-                />
-                <div style={{ fontSize: '11px', color: '#bfae9c', marginTop: '8px' }}>
-                  Pose Aktif: <strong style={{ color: selectedCharModal.accentColor }}>{previewPose.toUpperCase()}</strong>
-                </div>
-
-                {/* Tombol Pilihan Pose */}
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px', justifyContent: 'center', marginTop: '10px' }}>
-                  {selectedCharModal.availablePoses.map((p) => (
-                    <button
-                      key={p}
-                      onClick={() => setPreviewPose(p)}
-                      style={{
-                        background: previewPose === p ? '#d4af37' : '#221a13',
-                        border: `1px solid ${previewPose === p ? '#d4af37' : '#362619'}`,
-                        color: previewPose === p ? '#0d0a07' : '#fcfaf2',
-                        fontWeight: previewPose === p ? '700' : '500',
-                        padding: '4px 10px',
-                        borderRadius: '6px',
-                        fontSize: '11px',
-                        cursor: 'pointer',
-                        textTransform: 'capitalize',
-                      }}
-                    >
-                      {p}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Watak & Nilai Filosofis */}
-              <div>
-                <div style={{ marginBottom: '12px' }}>
-                  <h4 style={{ margin: '0 0 4px 0', fontSize: '12px', color: '#d4af37' }}>Senjata & Pusaka</h4>
-                  <div style={{ fontSize: '12px', color: '#fcfaf2' }}>{selectedCharModal.weapons}</div>
-                </div>
-
-                <div style={{ marginBottom: '12px' }}>
-                  <h4 style={{ margin: '0 0 4px 0', fontSize: '12px', color: '#d4af37' }}>Watak & Karakteristik</h4>
-                  <p style={{ margin: 0, fontSize: '12px', color: '#e5dec9', lineHeight: '1.5' }}>
-                    {selectedCharModal.description}
-                  </p>
-                </div>
-
+              {/* 1. ILLUMINATED MANUSCRIPT COVER BANNER */}
+              {coverImg ? (
                 <div
                   style={{
-                    background: '#221a13',
-                    borderLeft: '3px solid #d4af37',
-                    padding: '10px 14px',
-                    borderRadius: '6px',
+                    position: 'relative',
+                    height: '220px',
+                    width: '100%',
+                    flexShrink: 0,
+                    overflow: 'hidden',
+                    backgroundColor: '#120d08',
                   }}
                 >
-                  <h4 style={{ margin: '0 0 2px 0', fontSize: '11px', color: '#d4af37' }}>Nilai Luhur</h4>
-                  <p style={{ margin: 0, fontSize: '11px', color: '#fcfaf2', lineHeight: '1.4', fontStyle: 'italic' }}>
-                    "{selectedCharModal.philosophy}"
+                  <img
+                    src={coverImg}
+                    alt={selectedStoryModal.title}
+                    style={{
+                      width: '100%',
+                      height: '100%',
+                      objectFit: 'cover',
+                      objectPosition: 'center 30%',
+                      filter: 'brightness(0.82) contrast(1.08)',
+                    }}
+                  />
+                  {/* Subtle Gradient Vignette Fading Smoothly into Modal Body */}
+                  <div
+                    style={{
+                      position: 'absolute',
+                      inset: 0,
+                      background: 'linear-gradient(180deg, rgba(20, 14, 9, 0.22) 0%, rgba(247, 243, 234, 0.45) 45%, rgba(247, 243, 234, 0.95) 85%, #f7f3ea 100%)',
+                    }}
+                  />
+
+                  {/* Top Bar: Micro Category Badge & Engineered Close Pill */}
+                  <div
+                    style={{
+                      position: 'absolute',
+                      top: '18px',
+                      left: '24px',
+                      right: '20px',
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      zIndex: 3,
+                    }}
+                  >
+                    <div
+                      style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                        padding: '4px 12px',
+                        borderRadius: '9999px',
+                        background: 'rgba(255, 255, 255, 0.92)',
+                        backdropFilter: 'blur(10px)',
+                        border: '1px solid rgba(40, 28, 16, 0.08)',
+                        fontSize: '10.5px',
+                        fontWeight: '800',
+                        letterSpacing: '0.12em',
+                        color: '#8b4513',
+                        textTransform: 'uppercase',
+                        boxShadow: '0 2px 8px rgba(40, 28, 16, 0.08)',
+                      }}
+                    >
+                      <span style={{ width: '5px', height: '5px', borderRadius: '50%', background: '#d4af37' }} />
+                      <span>SERAT LAKON PURWA</span>
+                    </div>
+
+                    <button
+                      type="button"
+                      aria-label="Tutup Dialog Lakon"
+                      onClick={() => setSelectedStoryModal(null)}
+                      className="wayang-modal-close-btn"
+                      style={{
+                        width: '38px',
+                        height: '38px',
+                      }}
+                    >
+                      <X size={16} />
+                    </button>
+                  </div>
+
+                  {/* Title & Metadata inside Banner lower section */}
+                  <div
+                    style={{
+                      position: 'absolute',
+                      bottom: '16px',
+                      left: '26px',
+                      right: '26px',
+                      zIndex: 2,
+                    }}
+                  >
+                    <div
+                      style={{
+                        fontSize: '11px',
+                        color: '#8b4513',
+                        fontWeight: '800',
+                        letterSpacing: '0.08em',
+                        textTransform: 'uppercase',
+                        marginBottom: '4px',
+                      }}
+                    >
+                      {tradition} • {pakem}
+                    </div>
+                    <h2
+                      style={{
+                        margin: 0,
+                        fontSize: '25px',
+                        fontWeight: '850',
+                        color: '#1a140e',
+                        fontFamily: 'Cinzel, Georgia, serif',
+                        letterSpacing: '-0.02em',
+                        lineHeight: '1.2',
+                      }}
+                    >
+                      {selectedStoryModal.title}
+                    </h2>
+                  </div>
+                </div>
+              ) : (
+                /* Header fallback if no cover image */
+                <div
+                  style={{
+                    padding: '28px 28px 16px 28px',
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'flex-start',
+                    borderBottom: '1px solid rgba(212, 175, 55, 0.25)',
+                  }}
+                >
+                  <div>
+                    <div
+                      style={{
+                        fontSize: '11px',
+                        color: '#8b4513',
+                        fontWeight: '800',
+                        letterSpacing: '0.08em',
+                        textTransform: 'uppercase',
+                        marginBottom: '6px',
+                      }}
+                    >
+                      SERAT LAKON PURWA • {tradition} ({pakem})
+                    </div>
+                    <h2
+                      style={{
+                        margin: 0,
+                        fontSize: '24px',
+                        fontWeight: '850',
+                        color: '#1a140e',
+                        fontFamily: 'Cinzel, Georgia, serif',
+                      }}
+                    >
+                      {selectedStoryModal.title}
+                    </h2>
+                  </div>
+                  <button
+                    type="button"
+                    aria-label="Tutup Dialog Lakon"
+                    onClick={() => setSelectedStoryModal(null)}
+                    className="wayang-modal-close-btn"
+                  >
+                    <X size={18} />
+                  </button>
+                </div>
+              )}
+
+              {/* 2. EDITORIAL MANUSCRIPT CONTENT (ANTI-BOX SOUP) */}
+              <div
+                className="wayang-modal-inner modal-custom-scroll"
+                style={{
+                  padding: '24px 28px 28px 28px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '24px',
+                }}
+              >
+                {/* A. Sinopsis Lakon — Clean Editorial Prose */}
+                <div>
+                  <div style={{ marginBottom: '10px' }}>
+                    <span style={{ fontSize: '11px', color: '#8b4513', fontWeight: '800', letterSpacing: '0.12em', textTransform: 'uppercase' }}>
+                      Ringkasan & Alur Kisah
+                    </span>
+                  </div>
+                  <p
+                    style={{
+                      margin: 0,
+                      fontSize: '14.5px',
+                      lineHeight: '1.85',
+                      color: '#3d2b1f',
+                      letterSpacing: '0.01em',
+                    }}
+                  >
+                    {selectedStoryModal.synopsis}
                   </p>
+                </div>
+
+                {/* B. Makna Filosofis — Sacred Illuminated Pull-Quote */}
+                <div
+                  style={{
+                    position: 'relative',
+                    padding: '16px 20px',
+                    borderRadius: '10px',
+                    border: '1px solid rgba(212, 175, 55, 0.28)',
+                    background: '#ffffff',
+                    boxShadow: '0 2px 8px rgba(40, 28, 16, 0.04)',
+                  }}
+                >
+                  <div
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '6px',
+                      fontSize: '11px',
+                      fontWeight: '800',
+                      color: '#8b4513',
+                      letterSpacing: '0.08em',
+                      textTransform: 'uppercase',
+                      marginBottom: '6px',
+                    }}
+                  >
+                    <span>Piwulang Luhur & Hakikat Filosofis</span>
+                  </div>
+                  <p
+                    style={{
+                      margin: 0,
+                      fontSize: '14px',
+                      lineHeight: '1.7',
+                      color: '#1a140e',
+                      fontStyle: 'italic',
+                      fontFamily: 'Georgia, serif',
+                    }}
+                  >
+                    "{selectedStoryModal.philosophy}"
+                  </p>
+                </div>
+
+                {/* C. Catatan Filologi & Provenance — Architectural Ledger */}
+                <div>
+                  <div style={{ marginBottom: '12px' }}>
+                    <span style={{ fontSize: '11px', color: '#6e5e4d', fontWeight: '800', letterSpacing: '0.12em', textTransform: 'uppercase' }}>
+                      Rujukan Filologi & Sumber Pakem
+                    </span>
+                  </div>
+
+                  <div
+                    style={{
+                      display: 'grid',
+                      gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
+                      gap: '12px 24px',
+                      fontSize: '12.5px',
+                    }}
+                  >
+                    {selectedStoryModal.sources.map((src, i) => (
+                      <div key={i} style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
+                        <div style={{ color: '#8b4513', fontWeight: '750' }}>{src.title}</div>
+                        <div style={{ color: '#5c4a3b', fontSize: '12px' }}>
+                          Pujangga / Sumber: <span style={{ color: '#1a140e', fontWeight: '600' }}>{src.author}</span>
+                        </div>
+                        <div style={{ color: '#7a6858', fontSize: '11.5px' }}>
+                          Rujukan: {src.reference} • {src.rightsNote}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* D. Balanced Footer */}
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    paddingTop: '18px',
+                    marginTop: '6px',
+                    borderTop: '1px solid rgba(40, 28, 16, 0.06)',
+                    flexWrap: 'wrap',
+                    gap: '12px',
+                  }}
+                >
+                  <div style={{ fontSize: '11.5px', color: '#6e5e4d', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <span style={{ display: 'inline-block', width: '5px', height: '5px', borderRadius: '50%', background: '#d4af37' }} />
+                    <span>Preservasi Budaya Wayang Digital Indonesia</span>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => setSelectedStoryModal(null)}
+                    className="wayang-btn-ghost"
+                  >
+                    Tutup Pratinjau
+                  </button>
                 </div>
               </div>
             </div>
+          </div>
+        );
+      })()}
 
-            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px', borderTop: '1px solid #362619', paddingTop: '16px' }}>
+      {/* MODAL 2: DETAIL PROFIL KARAKTER & UJI POSE (FR-03) — BESPOKE ARCHIVAL SHOWCASE */}
+      {selectedCharModal && (
+        <div
+          className="wayang-modal-backdrop"
+          style={{ zIndex: 1000 }}
+          onClick={() => setSelectedCharModal(null)}
+        >
+          <div
+            className="wayang-modal-chassis"
+            style={{ maxWidth: '820px', width: '100%' }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="wayang-modal-hairline" />
+
+            {/* Header Dialog */}
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'flex-start',
+                padding: '24px 28px 16px 28px',
+                borderBottom: 'none',
+              }}
+            >
+              <div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
+                  <span style={{ display: 'inline-block', width: '6px', height: '6px', borderRadius: '50%', background: selectedCharModal.accentColor || '#d4af37' }} />
+                  <span style={{ fontSize: '10.5px', letterSpacing: '0.12em', textTransform: 'uppercase', color: selectedCharModal.accentColor || '#8b4513', fontWeight: '800' }}>
+                    ENSIKLOPEDIA TOKOH WAYANG
+                  </span>
+                  <span style={{ opacity: 0.4, color: '#8b5a1b' }}>•</span>
+                  <span style={{ fontSize: '11px', color: '#5c4a3b', fontWeight: '700' }}>
+                    {selectedCharModal.typeName}
+                  </span>
+                </div>
+                <h2
+                  style={{
+                    margin: 0,
+                    fontSize: '26px',
+                    color: '#1a140e',
+                    fontWeight: '850',
+                    fontFamily: 'Cinzel, Georgia, serif',
+                    letterSpacing: '-0.02em',
+                  }}
+                >
+                  {selectedCharModal.name}
+                </h2>
+                <div style={{ fontSize: '13px', color: '#8b4513', fontStyle: 'italic', marginTop: '2px', fontWeight: '600' }}>
+                  {selectedCharModal.alias}
+                </div>
+              </div>
+
               <button
+                type="button"
+                aria-label="Tutup Dialog Tokoh"
                 onClick={() => setSelectedCharModal(null)}
+                className="wayang-modal-close-btn"
+                style={{ width: '38px', height: '38px' }}
+              >
+                <X size={16} />
+              </button>
+            </div>
+
+            {/* Grid Pedestal Preview & Watak (No Repetitive Boxes) */}
+            <div
+              className="wayang-modal-inner modal-custom-scroll"
+              style={{ padding: '24px 28px 28px 28px' }}
+            >
+              <div
                 style={{
-                  background: '#221a13',
-                  border: '1px solid #4a3826',
-                  color: '#fcfaf2',
-                  padding: '9px 20px',
-                  borderRadius: '20px',
-                  cursor: 'pointer',
-                  fontSize: '13px',
-                  transition: 'all 0.2s ease',
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+                  gap: '28px',
+                  alignItems: 'start',
+                  marginBottom: '24px',
                 }}
               >
-                Tutup
-              </button>
-              <button
-                onClick={() => {
-                  if (onPlayCharacterOnStage) onPlayCharacterOnStage(selectedCharModal.id);
-                  setSelectedCharModal(null);
-                }}
+                {/* Kolom Kiri: Pedestal Kelir & Uji Pose */}
+                <div
+                  style={{
+                    background: 'radial-gradient(circle at 50% 35%, rgba(45, 32, 20, 0.5) 0%, rgba(13, 9, 6, 0.95) 100%)',
+                    borderRadius: '16px',
+                    padding: '24px 20px',
+                    border: '1px solid rgba(212, 175, 55, 0.22)',
+                    boxShadow: 'inset 0 2px 14px rgba(0,0,0,0.6)',
+                    textAlign: 'center',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                >
+                  <div style={{ marginBottom: '14px' }}>
+                    <WayangFigureSvg
+                      slug={selectedCharModal.slug}
+                      pose={previewPose}
+                      scale={0.88}
+                      width={160}
+                      height={220}
+                      accentColor={selectedCharModal.accentColor}
+                    />
+                  </div>
+                  <div style={{ fontSize: '11.5px', color: '#bfae9c', marginBottom: '12px' }}>
+                    Pose Aktif: <strong style={{ color: selectedCharModal.accentColor || '#d4af37' }}>{previewPose.toUpperCase()}</strong>
+                  </div>
+
+                  {/* Tombol Pilihan Pose */}
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', justifyContent: 'center' }}>
+                    {selectedCharModal.availablePoses.map((p) => (
+                      <button
+                        key={p}
+                        type="button"
+                        onClick={() => setPreviewPose(p)}
+                        style={{
+                          background: previewPose === p ? 'linear-gradient(135deg, #e8bb5c 0%, #d4af37 100%)' : 'rgba(255, 255, 255, 0.05)',
+                          border: `1px solid ${previewPose === p ? '#d4af37' : 'rgba(212, 175, 55, 0.22)'}`,
+                          color: previewPose === p ? '#0d0a07' : '#fcfaf2',
+                          fontWeight: previewPose === p ? '800' : '650',
+                          padding: '6px 14px',
+                          borderRadius: '8px',
+                          fontSize: '11.5px',
+                          cursor: 'pointer',
+                          textTransform: 'capitalize',
+                          minHeight: '34px',
+                          transition: 'all 0.2s ease',
+                        }}
+                      >
+                        {p}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Kolom Kanan: Watak, Senjata, dan Nilai Luhur (Unboxed Flow) */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                  {/* Watak & Karakteristik */}
+                  <div>
+                    <div style={{ fontSize: '11px', color: '#8b4513', fontWeight: '800', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '6px' }}>
+                      Watak & Karakteristik
+                    </div>
+                    <p style={{ margin: 0, fontSize: '14px', color: '#3d2b1f', lineHeight: '1.8' }}>
+                      {selectedCharModal.description}
+                    </p>
+                  </div>
+
+                  {/* Senjata & Pusaka */}
+                  <div>
+                    <div style={{ fontSize: '11px', color: '#6e5e4d', fontWeight: '800', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '6px' }}>
+                      Senjata & Pusaka Utama
+                    </div>
+                    <div
+                      style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                        background: '#ffffff',
+                        border: '1px solid rgba(212, 175, 55, 0.35)',
+                        borderRadius: '9999px',
+                        padding: '5px 14px',
+                        fontSize: '12.5px',
+                        fontWeight: '750',
+                        color: '#1a140e',
+                        boxShadow: '0 2px 8px rgba(40, 28, 16, 0.04)',
+                      }}
+                    >
+                      <Shield size={13} color="#8b4513" />
+                      <span>{selectedCharModal.weapons}</span>
+                    </div>
+                  </div>
+
+                  {/* Nilai Luhur Manuscript Pull-Quote */}
+                  <div
+                    style={{
+                      padding: '16px 20px',
+                      borderRadius: '10px',
+                      border: '1px solid rgba(212, 175, 55, 0.28)',
+                      background: '#ffffff',
+                      boxShadow: '0 2px 8px rgba(40, 28, 16, 0.04)',
+                    }}
+                  >
+                    <div style={{ fontSize: '10.5px', color: '#8b4513', fontWeight: '800', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: '4px' }}>
+                      Nilai Luhur Tokoh
+                    </div>
+                    <p style={{ margin: 0, fontSize: '13.5px', color: '#1a140e', lineHeight: '1.65', fontStyle: 'italic', fontFamily: 'Georgia, serif' }}>
+                      "{selectedCharModal.philosophy}"
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Footer Buttons */}
+              <div
                 style={{
-                  background: '#e8bb5c',
-                  border: 'none',
-                  color: '#0d0a07',
-                  padding: '9px 24px',
-                  borderRadius: '20px',
-                  fontWeight: '750',
-                  cursor: 'pointer',
-                  fontSize: '13px',
                   display: 'flex',
+                  justifyContent: 'flex-end',
                   alignItems: 'center',
-                  gap: '6px',
-                  transition: 'all 0.2s ease',
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.background = '#dcae4d';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.background = '#e8bb5c';
+                  gap: '12px',
+                  borderTop: '1px solid rgba(212, 175, 55, 0.25)',
+                  paddingTop: '18px',
                 }}
               >
-                Mainkan di Virtual Stage
-              </button>
+                <button
+                  type="button"
+                  onClick={() => setSelectedCharModal(null)}
+                  className="wayang-btn-ghost"
+                >
+                  Tutup
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (onPlayCharacterOnStage) onPlayCharacterOnStage(selectedCharModal.id);
+                    setSelectedCharModal(null);
+                  }}
+                  className="wayang-btn-cta"
+                  style={{ justifyContent: 'space-between' }}
+                >
+                  <span>Mainkan di Virtual Stage</span>
+                  <span className="wayang-btn-cta-icon">
+                    <Play size={13} fill="#16100a" color="#16100a" />
+                  </span>
+                </button>
+              </div>
             </div>
           </div>
         </div>

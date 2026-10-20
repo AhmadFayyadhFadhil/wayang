@@ -1,13 +1,39 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { apiClient } from '../../services/api';
 import { CHARACTERS_MASTER } from '../../data/master/charactersMaster';
 import { STORIES_MASTER } from '../../data/master/storiesMaster';
 import { AUDIO_MASTER } from '../../data/master/audioMaster';
 import persistenceService from '../../services/persistenceService';
+import { soundEngine } from '../../services/soundscape';
+import JavaneseCloudBackground from '../../components/ui/JavaneseCloudBackground';
+import heroParchmentWideBg from '../../assets/hero_parchment_clouds_widescreen_hd.jpg';
+import gununganHd from '../../assets/gunungan_kayon_hd.png';
+import atlasGoldMotifStrip from '../../assets/atlas_gold_motif_strip.jpg';
+import {
+  X,
+  Save,
+  Plus,
+  RefreshCw,
+  Search,
+  Users,
+  BookOpen,
+  Music,
+  Film,
+  ShieldCheck,
+  Pencil,
+  Trash2,
+  Play,
+  Square,
+  Eye,
+  EyeOff,
+  CheckCircle2,
+  AlertCircle,
+  ChevronDown,
+} from 'lucide-react';
 
 export default function AdminCmsView({ onPlayPerformance }) {
   const [activeTab, setActiveTab] = useState('karakter'); // 'karakter' | 'cerita' | 'audio' | 'karya' | 'users'
-  const [loading, setLoading] = useState(true);
+  const [isSyncing, setIsSyncing] = useState(false);
   const [stats, setStats] = useState(null);
   const [characters, setCharacters] = useState([]);
   const [stories, setStories] = useState([]);
@@ -15,6 +41,15 @@ export default function AdminCmsView({ onPlayPerformance }) {
   const [performances, setPerformances] = useState([]);
   const [usersList, setUsersList] = useState([]);
   const [notice, setNotice] = useState(null);
+  const [isServerConnected, setIsServerConnected] = useState(false);
+
+  // Search & Filter State
+  const [searchQuery, setSearchQuery] = useState('');
+  const [filterCategory, setFilterCategory] = useState('all');
+  const [filterStatus, setFilterStatus] = useState('all');
+
+  // Audio Testing State
+  const [playingAudioId, setPlayingAudioId] = useState(null);
 
   // Modal State
   const [modalType, setModalType] = useState(null); // 'character' | 'story' | 'audio' | null
@@ -23,18 +58,32 @@ export default function AdminCmsView({ onPlayPerformance }) {
 
   const showNotice = (msg, isError = false) => {
     setNotice({ msg, isError });
-    setTimeout(() => setNotice(null), 3000);
+    setTimeout(() => setNotice(null), 3500);
   };
 
-  const loadData = useCallback(async () => {
-    setLoading(true);
+  // Stop background music on unmount
+  useEffect(() => {
+    return () => {
+      try {
+        soundEngine.stopBgm();
+      } catch {
+        // Safe unmount
+      }
+    };
+  }, []);
+
+  const loadData = useCallback(async (showSpinner = false) => {
+    await Promise.resolve();
+    if (showSpinner) setIsSyncing(true);
     try {
       // 1. Pastikan token admin tersedia
       let token = localStorage.getItem('wayangverse_auth_token');
       let authUser = null;
       try {
         authUser = JSON.parse(localStorage.getItem('wayangverse_auth_user') || '{}');
-      } catch (_e) {}
+      } catch {
+        // Abaikan parse error
+      }
 
       if (!token && authUser?.token) token = authUser.token;
 
@@ -53,7 +102,7 @@ export default function AdminCmsView({ onPlayPerformance }) {
               localStorage.setItem('wayangverse_auth_user', JSON.stringify(authUser));
             }
           }
-        } catch (_authErr) {
+        } catch {
           // Lewati jika offline
         }
       }
@@ -71,9 +120,10 @@ export default function AdminCmsView({ onPlayPerformance }) {
           if (Array.isArray(d.performances)) setPerformances(d.performances);
           if (Array.isArray(d.users)) setUsersList(d.users);
           loadedViaApi = true;
+          setIsServerConnected(true);
         }
-      } catch (_apiErr) {
-        // Fallback jika endpoint admin gagal / token unauthorized
+      } catch {
+        setIsServerConnected(false);
       }
 
       // 3. Fallback cerdas: Ambil dari master data lokal jika server kosong/offline
@@ -82,18 +132,24 @@ export default function AdminCmsView({ onPlayPerformance }) {
         setCharacters(CHARACTERS_MASTER);
         setStories(STORIES_MASTER);
         setAudioAssets(AUDIO_MASTER);
-        setPerformances(localWorks.length > 0 ? localWorks : [
-          {
-            id: 'demo-1',
-            title: 'Bharatayuddha: Gugurnya Ghatotkaca',
-            visibility: 'public',
-            updated_at: new Date().toISOString(),
-          }
-        ]);
+        setPerformances(
+          localWorks.length > 0
+            ? localWorks
+            : [
+                {
+                  id: 'demo-1',
+                  title: 'Bharatayuddha: Gugurnya Ghatotkaca',
+                  author: 'Dalang Muda Preservasi Budaya',
+                  visibility: 'public',
+                  created_at: new Date().toISOString(),
+                  updated_at: new Date().toISOString(),
+                },
+              ]
+        );
         setUsersList([
-          { id: 1, name: 'Dalang Demo (Juri)', email: 'demo@wayangdigital.id', created_at: new Date().toISOString() },
-          { id: 2, name: 'Ki Dalang Muda Nusantara', email: 'dalang_demo@wayangverse.id', created_at: new Date().toISOString() },
-          { id: 3, name: 'Administrator Wayang', email: 'admin@wayangdigital.id', created_at: new Date().toISOString() },
+          { id: 1, name: 'Dalang Demo (Juri)', email: 'demo@wayangdigital.id', role: 'admin', performances_count: 3, created_at: new Date().toISOString() },
+          { id: 2, name: 'Ki Dalang Muda Nusantara', email: 'dalang_demo@wayangverse.id', role: 'dalang', performances_count: 5, created_at: new Date().toISOString() },
+          { id: 3, name: 'Administrator Wayang', email: 'admin@wayangdigital.id', role: 'admin', performances_count: 1, created_at: new Date().toISOString() },
         ]);
         setStats({
           counts: {
@@ -105,20 +161,64 @@ export default function AdminCmsView({ onPlayPerformance }) {
           },
         });
       }
-    } catch (_e) {
+    } catch {
       showNotice('Menggunakan data preservasi lokal.', false);
     } finally {
-      setLoading(false);
+      if (showSpinner) setIsSyncing(false);
     }
   }, []);
 
   useEffect(() => {
-    loadData();
+    let isMounted = true;
+    const initFetch = async () => {
+      if (isMounted) {
+        await loadData(false);
+      }
+    };
+    initFetch();
+    return () => {
+      isMounted = false;
+    };
   }, [loadData]);
+
+  // Audio Testing Handler
+  const handleToggleAudioPlay = (item) => {
+    if (playingAudioId === item.id) {
+      try {
+        soundEngine.stopBgm();
+      } catch {
+        // Safe stop
+      }
+      setPlayingAudioId(null);
+    } else {
+      try {
+        soundEngine.stopBgm();
+        if (item.category === 'sfx') {
+          const t = (item.title || '').toLowerCase();
+          if (t.includes('dodogan')) {
+            soundEngine.playDodogan();
+          } else if (t.includes('kepyak')) {
+            soundEngine.playKepyak();
+          } else if (t.includes('gong')) {
+            soundEngine.playGong();
+          } else {
+            soundEngine.playDodogan();
+          }
+          setPlayingAudioId(item.id);
+          setTimeout(() => setPlayingAudioId(null), 1400);
+        } else {
+          soundEngine.startBgm(item.synth_type || item.synthType || 'srepeg', item.title);
+          setPlayingAudioId(item.id);
+        }
+      } catch {
+        setPlayingAudioId(null);
+      }
+    }
+  };
 
   // Hapus Data
   const handleDelete = async (type, id, title) => {
-    if (!window.confirm(`Hapus "${title}"?`)) return;
+    if (!window.confirm(`Hapus "${title}" dari basis data master?`)) return;
     try {
       if (type === 'character') {
         await apiClient.delete(`/admin/characters/${id}`);
@@ -133,8 +233,8 @@ export default function AdminCmsView({ onPlayPerformance }) {
         await apiClient.delete(`/admin/performances/${id}`);
         setPerformances((prev) => prev.filter((i) => i.id !== id));
       }
-      showNotice(`Data "${title}" berhasil dihapus`);
-      loadData();
+      showNotice(`Data "${title}" berhasil dihapus.`);
+      loadData(false);
     } catch (err) {
       showNotice(err.response?.data?.message || 'Gagal menghapus data', true);
     }
@@ -148,8 +248,8 @@ export default function AdminCmsView({ onPlayPerformance }) {
       setPerformances((prev) =>
         prev.map((p) => (p.id === perf.id ? { ...p, visibility: nextVis } : p))
       );
-      showNotice(`Visibilitas diubah ke ${nextVis}`);
-    } catch (_e) {
+      showNotice(`Visibilitas lakon diubah ke "${nextVis}".`);
+    } catch {
       showNotice('Gagal mengubah visibilitas', true);
     }
   };
@@ -215,607 +315,1533 @@ export default function AdminCmsView({ onPlayPerformance }) {
           await apiClient.post('/admin/audio-assets', form);
         }
       }
-      showNotice('Perubahan berhasil disimpan');
+      showNotice('Data kurasi berhasil disimpan.');
       setModalType(null);
-      loadData();
+      loadData(false);
     } catch (err) {
       showNotice(err.response?.data?.message || 'Gagal menyimpan data', true);
     }
   };
 
+  // Filtered Collections
+  const filteredCharacters = useMemo(() => {
+    return characters.filter((c) => {
+      const q = searchQuery.toLowerCase().trim();
+      const matchSearch =
+        !q ||
+        (c.name && c.name.toLowerCase().includes(q)) ||
+        (c.alias && c.alias.toLowerCase().includes(q)) ||
+        (c.weapons && c.weapons.toLowerCase().includes(q)) ||
+        (c.type && c.type.toLowerCase().includes(q));
+
+      const matchCat = filterCategory === 'all' || c.type === filterCategory;
+      const matchStat = filterStatus === 'all' || c.status === filterStatus;
+      return matchSearch && matchCat && matchStat;
+    });
+  }, [characters, searchQuery, filterCategory, filterStatus]);
+
+  const filteredStories = useMemo(() => {
+    return stories.filter((s) => {
+      const q = searchQuery.toLowerCase().trim();
+      const matchSearch =
+        !q ||
+        (s.title && s.title.toLowerCase().includes(q)) ||
+        (s.tradition && s.tradition.toLowerCase().includes(q)) ||
+        (s.synopsis && s.synopsis.toLowerCase().includes(q));
+
+      const matchStat = filterStatus === 'all' || s.status === filterStatus;
+      return matchSearch && matchStat;
+    });
+  }, [stories, searchQuery, filterStatus]);
+
+  const filteredAudio = useMemo(() => {
+    return audioAssets.filter((a) => {
+      const q = searchQuery.toLowerCase().trim();
+      const matchSearch =
+        !q ||
+        (a.title && a.title.toLowerCase().includes(q)) ||
+        (a.instrument && a.instrument.toLowerCase().includes(q)) ||
+        (a.mood && a.mood.toLowerCase().includes(q));
+
+      const matchCat = filterCategory === 'all' || a.category === filterCategory;
+      return matchSearch && matchCat;
+    });
+  }, [audioAssets, searchQuery, filterCategory]);
+
+  const filteredPerformances = useMemo(() => {
+    return performances.filter((p) => {
+      const q = searchQuery.toLowerCase().trim();
+      const matchSearch =
+        !q ||
+        (p.title && p.title.toLowerCase().includes(q)) ||
+        (p.author && p.author.toLowerCase().includes(q)) ||
+        (p.user?.name && p.user.name.toLowerCase().includes(q));
+
+      const matchStat = filterStatus === 'all' || p.visibility === filterStatus;
+      return matchSearch && matchStat;
+    });
+  }, [performances, searchQuery, filterStatus]);
+
+  const filteredUsers = useMemo(() => {
+    return usersList.filter((u) => {
+      const q = searchQuery.toLowerCase().trim();
+      return (
+        !q ||
+        (u.name && u.name.toLowerCase().includes(q)) ||
+        (u.email && u.email.toLowerCase().includes(q)) ||
+        (u.role && u.role.toLowerCase().includes(q))
+      );
+    });
+  }, [usersList, searchQuery]);
+
+
+  // Helper golongan badge class
+  const getGolonganClass = (type) => {
+    const t = (type || '').toLowerCase();
+    if (t === 'ksatria') return 'admin-badge-golongan-ksatria';
+    if (t === 'punakawan') return 'admin-badge-golongan-punakawan';
+    if (t === 'dewa') return 'admin-badge-golongan-dewa';
+    if (t === 'raksasa') return 'admin-badge-golongan-raksasa';
+    return 'admin-badge-golongan-generic';
+  };
+
   return (
-    <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '24px 20px', color: '#fcfaf2' }}>
-      {/* 1. Header Ringkas */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px', flexWrap: 'wrap', gap: '12px' }}>
-        <div>
-          <h1 style={{ margin: 0, fontSize: '24px', fontWeight: '700', color: '#fcfaf2' }}>
-            Manajemen Data & Master Wayang
-          </h1>
-          <p style={{ margin: '4px 0 0 0', fontSize: '13px', color: '#bfae9c' }}>
-            Pusat kurasi master data tokoh, lakon wiracarita, instrumen tata suara, dan moderasi karya pagelaran dalang.
-          </p>
-        </div>
-        <button
-          onClick={loadData}
-          disabled={loading}
+    <div style={{ width: '100%', minHeight: '100vh', background: '#f5f0e4' }}>
+      {/* ============================================================
+          1. HERO SECTION: BALAI KURASI & MASTER WAYANG (FULL 100VH)
+          Desain Menawan Harmonis Persis Sesuai Beranda, Story Atlas & Karya Saya:
+          Backdrop Perkamen Soga HD, Floating Awan Tradisional, Full 100vh Stage,
+          Gunungan Kayon HD Kiri-Kanan, Eyebrow Kultural, & Floating Stat Bar
+          ============================================================ */}
+      <section
+        style={{
+          width: '100%',
+          minHeight: '100vh',
+          position: 'relative',
+          overflow: 'hidden',
+          background: '#0d0a07',
+          padding: '130px 24px 90px 24px',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          textAlign: 'center',
+          boxSizing: 'border-box',
+          boxShadow: '0 12px 36px rgba(0, 0, 0, 0.45)',
+        }}
+      >
+        {/* Layer 1: Latar Perkamen Awan Tradisional Warm Bronze HD (Sama Persis dengan Beranda & Pustaka) */}
+        <img
+          src={heroParchmentWideBg}
+          alt="Latar Perkamen Awan Tradisional Horizontal HD"
           style={{
-            background: '#221a13',
-            border: '1px solid rgba(212, 175, 55, 0.3)',
-            color: '#e8bb5c',
-            padding: '8px 18px',
-            borderRadius: '20px',
-            fontSize: '12px',
-            fontWeight: '650',
-            cursor: loading ? 'wait' : 'pointer',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            transition: 'all 0.2s ease',
-          }}
-        >
-          {loading ? 'Menyinkronkan...' : 'Sinkronkan Data'}
-        </button>
-      </div>
-
-      {/* Notifikasi Singkat */}
-      {notice && (
-        <div
-          style={{
-            padding: '10px 16px',
-            borderRadius: '8px',
-            marginBottom: '20px',
-            fontSize: '13px',
-            background: notice.isError ? 'rgba(185, 28, 28, 0.15)' : 'rgba(16, 185, 129, 0.15)',
-            border: `1px solid ${notice.isError ? '#ef4444' : '#10b981'}`,
-            color: notice.isError ? '#fca5a5' : '#6ee7b7',
-          }}
-        >
-          {notice.msg}
-        </div>
-      )}
-
-      {/* 2. Ringkasan Metrik Esensial */}
-      {stats && (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '12px', marginBottom: '24px' }}>
-          <MetricBox label="Tokoh Wayang" value={stats.counts?.characters ?? characters.length} onClick={() => setActiveTab('karakter')} active={activeTab === 'karakter'} />
-          <MetricBox label="Lakon Cerita" value={stats.counts?.stories ?? stories.length} onClick={() => setActiveTab('cerita')} active={activeTab === 'cerita'} />
-          <MetricBox label="Tata Suara / SFX" value={stats.counts?.audio_assets ?? audioAssets.length} onClick={() => setActiveTab('audio')} active={activeTab === 'audio'} />
-          <MetricBox label="Karya Pagelaran" value={stats.counts?.performances ?? performances.length} onClick={() => setActiveTab('karya')} active={activeTab === 'karya'} />
-          <MetricBox label="Pengguna Terdaftar" value={stats.counts?.users ?? usersList.length} onClick={() => setActiveTab('users')} active={activeTab === 'users'} />
-        </div>
-      )}
-
-      {/* 3. Tab Navigasi Bersih */}
-      <div style={{ display: 'flex', borderBottom: '1px solid #362619', marginBottom: '20px', gap: '6px', overflowX: 'auto' }}>
-        <TabItem label="Tokoh Wayang" active={activeTab === 'karakter'} count={characters.length} onClick={() => setActiveTab('karakter')} />
-        <TabItem label="Lakon Cerita" active={activeTab === 'cerita'} count={stories.length} onClick={() => setActiveTab('cerita')} />
-        <TabItem label="Tata Suara" active={activeTab === 'audio'} count={audioAssets.length} onClick={() => setActiveTab('audio')} />
-        <TabItem label="Karya Pagelaran" active={activeTab === 'karya'} count={performances.length} onClick={() => setActiveTab('karya')} />
-        <TabItem label="Pengguna" active={activeTab === 'users'} count={usersList.length} onClick={() => setActiveTab('users')} />
-      </div>
-
-      {/* 4. Konten Tab */}
-      <div style={{ background: '#17110c', border: '1px solid #362619', borderRadius: '12px', padding: '20px' }}>
-
-        {/* TAB TOKOH WAYANG */}
-        {activeTab === 'karakter' && (
-          <div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
-              <span style={{ fontSize: '13px', fontWeight: '600', color: '#e5e7eb' }}>Daftar Tokoh Wayang</span>
-              <button onClick={() => openModal('character')} style={btnAddStyle}>
-                Tambah Tokoh
-              </button>
-            </div>
-            <div style={{ overflowX: 'auto' }}>
-              <table style={tblStyle}>
-                <thead>
-                  <tr style={tblHeadStyle}>
-                    <th style={thStyle}>Nama</th>
-                    <th style={thStyle}>Golongan</th>
-                    <th style={thStyle}>Senjata</th>
-                    <th style={thStyle}>Status</th>
-                    <th style={{ ...thStyle, textAlign: 'right' }}>Aksi</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {characters.map((c) => (
-                    <tr key={c.id} style={tblRowStyle}>
-                      <td style={tdStyle}>
-                        <div style={{ fontWeight: '600', color: '#fef3c7' }}>{c.name}</div>
-                        <div style={{ fontSize: '11px', color: '#9ca3af' }}>{c.alias || '-'}</div>
-                      </td>
-                      <td style={tdStyle}><span style={badgeStyle}>{c.type_name || c.type}</span></td>
-                      <td style={tdStyle}>{c.weapons || '-'}</td>
-                      <td style={tdStyle}>
-                        <span style={{ ...badgeStyle, background: c.status === 'published' ? '#064e3b' : '#27272a', color: c.status === 'published' ? '#6ee7b7' : '#9ca3af' }}>
-                          {c.status}
-                        </span>
-                      </td>
-                      <td style={{ ...tdStyle, textAlign: 'right' }}>
-                        <button onClick={() => openModal('character', c)} style={btnEditStyle}>Edit</button>
-                        <button onClick={() => handleDelete('character', c.id, c.name)} style={btnDelStyle}>Hapus</button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        )}
-
-        {/* TAB LAKON CERITA */}
-        {activeTab === 'cerita' && (
-          <div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
-              <span style={{ fontSize: '13px', fontWeight: '600', color: '#e5e7eb' }}>Daftar Lakon Wiracarita</span>
-              <button onClick={() => openModal('story')} style={btnAddStyle}>
-                Tambah Lakon
-              </button>
-            </div>
-            <div style={{ overflowX: 'auto' }}>
-              <table style={tblStyle}>
-                <thead>
-                  <tr style={tblHeadStyle}>
-                    <th style={thStyle}>Judul</th>
-                    <th style={thStyle}>Tradisi</th>
-                    <th style={thStyle}>Musik</th>
-                    <th style={thStyle}>Status</th>
-                    <th style={{ ...thStyle, textAlign: 'right' }}>Aksi</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {stories.map((s) => (
-                    <tr key={s.id} style={tblRowStyle}>
-                      <td style={tdStyle}>
-                        <div style={{ fontWeight: '600', color: '#fef3c7' }}>{s.title}</div>
-                        <div style={{ fontSize: '11px', color: '#9ca3af' }}>{s.version_label}</div>
-                      </td>
-                      <td style={tdStyle}>{s.tradition}</td>
-                      <td style={tdStyle}>{s.theme_song}</td>
-                      <td style={tdStyle}>
-                        <span style={{ ...badgeStyle, background: s.status === 'published' ? '#064e3b' : '#27272a', color: s.status === 'published' ? '#6ee7b7' : '#9ca3af' }}>
-                          {s.status}
-                        </span>
-                      </td>
-                      <td style={{ ...tdStyle, textAlign: 'right' }}>
-                        <button onClick={() => openModal('story', s)} style={btnEditStyle}>Edit</button>
-                        <button onClick={() => handleDelete('story', s.id, s.title)} style={btnDelStyle}>Hapus</button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        )}
-
-        {/* TAB TATA SUARA */}
-        {activeTab === 'audio' && (
-          <div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
-              <span style={{ fontSize: '13px', fontWeight: '600', color: '#e5e7eb' }}>Daftar Tata Suara & SFX</span>
-              <button onClick={() => openModal('audio')} style={btnAddStyle}>
-                Tambah Audio
-              </button>
-            </div>
-            <div style={{ overflowX: 'auto' }}>
-              <table style={tblStyle}>
-                <thead>
-                  <tr style={tblHeadStyle}>
-                    <th style={thStyle}>Judul</th>
-                    <th style={thStyle}>Kategori</th>
-                    <th style={thStyle}>Instrumen</th>
-                    <th style={thStyle}>Tempo</th>
-                    <th style={{ ...thStyle, textAlign: 'right' }}>Aksi</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {audioAssets.map((a) => (
-                    <tr key={a.id} style={tblRowStyle}>
-                      <td style={tdStyle}>
-                        <div style={{ fontWeight: '600', color: '#fef3c7' }}>{a.title}</div>
-                        <div style={{ fontSize: '11px', color: '#9ca3af' }}>Synth: {a.synth_type}</div>
-                      </td>
-                      <td style={tdStyle}><span style={badgeStyle}>{a.category.toUpperCase()}</span></td>
-                      <td style={tdStyle}>{a.instrument}</td>
-                      <td style={tdStyle}>{a.tempo}</td>
-                      <td style={{ ...tdStyle, textAlign: 'right' }}>
-                        <button onClick={() => openModal('audio', a)} style={btnEditStyle}>Edit</button>
-                        <button onClick={() => handleDelete('audio', a.id, a.title)} style={btnDelStyle}>Hapus</button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        )}
-
-        {/* TAB KARYA PENGGUNA */}
-        {activeTab === 'karya' && (
-          <div>
-            <div style={{ marginBottom: '14px' }}>
-              <span style={{ fontSize: '13px', fontWeight: '600', color: '#e5e7eb' }}>Moderasi Karya Pengguna</span>
-            </div>
-            <div style={{ overflowX: 'auto' }}>
-              <table style={tblStyle}>
-                <thead>
-                  <tr style={tblHeadStyle}>
-                    <th style={thStyle}>Judul Lakon</th>
-                    <th style={thStyle}>Dalang / Pengguna</th>
-                    <th style={thStyle}>Visibilitas</th>
-                    <th style={thStyle}>Tanggal</th>
-                    <th style={{ ...thStyle, textAlign: 'right' }}>Aksi</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {performances.map((p) => (
-                    <tr key={p.id} style={tblRowStyle}>
-                      <td style={tdStyle}>
-                        <div style={{ fontWeight: '600', color: '#fef3c7' }}>{p.title}</div>
-                        <div style={{ fontSize: '11px', color: '#9ca3af' }}>{p.story?.title || 'Karya Mandiri'}</div>
-                      </td>
-                      <td style={tdStyle}>
-                        <div>{p.user?.name || p.author}</div>
-                        <div style={{ fontSize: '11px', color: '#9ca3af' }}>{p.user?.email}</div>
-                      </td>
-                      <td style={tdStyle}>
-                        <button
-                          onClick={() => handleToggleVis(p)}
-                          style={{
-                            background: p.visibility === 'public' ? '#064e3b' : '#27272a',
-                            color: p.visibility === 'public' ? '#6ee7b7' : '#9ca3af',
-                            border: 'none',
-                            padding: '3px 8px',
-                            borderRadius: '4px',
-                            fontSize: '11px',
-                            cursor: 'pointer',
-                          }}
-                        >
-                          {p.visibility.toUpperCase()} (Ganti)
-                        </button>
-                      </td>
-                      <td style={tdStyle}>
-                        <span style={{ fontSize: '11px', color: '#9ca3af' }}>
-                          {new Date(p.created_at).toLocaleDateString('id-ID')}
-                        </span>
-                      </td>
-                      <td style={{ ...tdStyle, textAlign: 'right' }}>
-                        {onPlayPerformance && (
-                          <button
-                            onClick={() => onPlayPerformance(p)}
-                            style={{ ...btnEditStyle, background: '#0369a1', borderColor: '#38bdf8' }}
-                          >
-                            Putar
-                          </button>
-                        )}
-                        <button onClick={() => handleDelete('performance', p.id, p.title)} style={btnDelStyle}>
-                          Hapus
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        )}
-
-        {/* TAB PENGGUNA */}
-        {activeTab === 'users' && (
-          <div>
-            <div style={{ marginBottom: '14px' }}>
-              <span style={{ fontSize: '13px', fontWeight: '600', color: '#e5e7eb' }}>Daftar Pengguna Terdaftar</span>
-            </div>
-            <div style={{ overflowX: 'auto' }}>
-              <table style={tblStyle}>
-                <thead>
-                  <tr style={tblHeadStyle}>
-                    <th style={thStyle}>Nama</th>
-                    <th style={thStyle}>Email</th>
-                    <th style={thStyle}>Peran</th>
-                    <th style={thStyle}>Total Karya</th>
-                    <th style={{ ...thStyle, textAlign: 'right' }}>Terdaftar</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {usersList.map((u) => (
-                    <tr key={u.id} style={tblRowStyle}>
-                      <td style={tdStyle}>
-                        <div style={{ fontWeight: '600', color: '#fef3c7' }}>{u.name}</div>
-                      </td>
-                      <td style={tdStyle}>{u.email}</td>
-                      <td style={tdStyle}>
-                        <span
-                          style={{
-                            ...badgeStyle,
-                            background: u.role === 'admin' ? '#78350f' : '#1e293b',
-                            color: u.role === 'admin' ? '#fde68a' : '#94a3b8',
-                          }}
-                        >
-                          {u.role.toUpperCase()}
-                        </span>
-                      </td>
-                      <td style={tdStyle}>{u.performances_count} karya</td>
-                      <td style={{ ...tdStyle, textAlign: 'right', fontSize: '11px', color: '#9ca3af' }}>
-                        {new Date(u.created_at).toLocaleDateString('id-ID')}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        )}
-      </div>
-
-      {/* 5. Modal Sederhana (Tambah / Edit) */}
-      {modalType && (
-        <div
-          style={{
-            position: 'fixed',
+            position: 'absolute',
             inset: 0,
-            background: 'rgba(0,0,0,0.75)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            zIndex: 2000,
-            padding: '16px',
+            width: '100%',
+            height: '100%',
+            objectFit: 'cover',
+            objectPosition: 'bottom center',
+            zIndex: 1,
+            filter: 'contrast(1.02) brightness(0.78)',
+          }}
+        />
+
+        {/* 1. Top Shadow Gradient: Menyelaraskan dengan Navbar Transparan */}
+        <div
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            height: '210px',
+            background:
+              'linear-gradient(to bottom, rgba(13, 10, 7, 0.94) 0%, rgba(13, 10, 7, 0.65) 100px, transparent 100%)',
+            pointerEvents: 'none',
+            zIndex: 2,
+          }}
+        />
+
+        {/* 2. Ambient Center Overlay: Meneduhkan Area Tengah agar Teks Terbaca Tajam */}
+        <div
+          style={{
+            position: 'absolute',
+            inset: 0,
+            background:
+              'radial-gradient(ellipse 75% 70% at 50% 48%, rgba(16, 11, 7, 0.65) 0%, rgba(18, 12, 8, 0.42) 60%, rgba(10, 7, 5, 0.68) 100%)',
+            pointerEvents: 'none',
+            zIndex: 2,
+          }}
+        />
+
+        {/* 3. Bottom Gradient: Transisi Lembut ke Bagian Konten & Cardbox Stat */}
+        <div
+          style={{
+            position: 'absolute',
+            bottom: 0,
+            left: 0,
+            right: 0,
+            height: '160px',
+            background:
+              'linear-gradient(to top, rgba(13, 10, 7, 0.88) 0%, rgba(13, 10, 7, 0.35) 60%, transparent 100%)',
+            pointerEvents: 'none',
+            zIndex: 2,
+          }}
+        />
+
+        {/* Motif Awan Tradisional Jawa Otentik dengan Animasi Mengambang & Bergeser Halus (Layer 3) */}
+        <JavaneseCloudBackground variant="hero" theme="dark" opacity={0.55} animated={true} style={{ zIndex: 3 }} />
+
+        {/* Ornamen Wayang Gunungan Berayun Kiri */}
+        <div
+          className="hero-gunungan-frame-left"
+          style={{
+            position: 'absolute',
+            left: '-15px',
+            bottom: '0',
+            height: '530px',
+            width: '330px',
+            zIndex: 4,
+            opacity: 0.78,
+            pointerEvents: 'none',
+            filter: 'none',
           }}
         >
+          <img
+            src={gununganHd}
+            alt="Wayang Gunungan Kiri HD"
+            style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+          />
+        </div>
+
+        {/* Ornamen Wayang Gunungan Berayun Kanan */}
+        <div
+          className="hero-gunungan-frame-right"
+          style={{
+            position: 'absolute',
+            right: '-15px',
+            bottom: '0',
+            height: '530px',
+            width: '330px',
+            zIndex: 3,
+            opacity: 0.78,
+            pointerEvents: 'none',
+            filter: 'none',
+          }}
+        >
+          <img
+            src={gununganHd}
+            alt="Wayang Gunungan Kanan HD"
+            style={{ width: '100%', height: '100%', objectFit: 'contain', transform: 'scaleX(-1)' }}
+          />
+        </div>
+
+        {/* Konten Teks Hero Terpusat Sempurna (Panjang Selaras dengan Navbar 1180px) */}
+        <div style={{ maxWidth: '1180px', width: '100%', position: 'relative', zIndex: 10, margin: '0 auto', textAlign: 'center' }}>
+          {/* Eyebrow Budaya Nusantara */}
           <div
             style={{
-              background: '#17110c',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '10px',
+              padding: '6px 16px',
+              borderRadius: '9999px',
+              background: 'rgba(212, 175, 55, 0.08)',
               border: '1px solid rgba(212, 175, 55, 0.22)',
-              boxShadow: '0 16px 40px rgba(0, 0, 0, 0.5)',
-              borderRadius: '12px',
-              padding: '24px',
-              maxWidth: '500px',
-              width: '100%',
-              color: '#fcfaf2',
+              color: '#d4af37',
+              fontSize: '11px',
+              fontWeight: '700',
+              letterSpacing: '2.5px',
+              textTransform: 'uppercase',
+              marginBottom: '18px',
             }}
           >
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-              <h3 style={{ margin: 0, fontSize: '16px', color: '#d4af37', fontWeight: '700' }}>
-                {editingItem ? 'Perbarui Data Master' : 'Tambah Data Master Baru'}
-              </h3>
-              <button
-                onClick={() => setModalType(null)}
-                style={{ background: 'none', border: 'none', color: '#bfae9c', fontSize: '18px', cursor: 'pointer' }}
-              >
-                ✕
-              </button>
+            <span style={{ width: '5px', height: '5px', borderRadius: '50%', background: '#d4af37' }} />
+            <span>KONSOL KURASI & MASTER DATA WAYANG</span>
+            <span style={{ width: '5px', height: '5px', borderRadius: '50%', background: '#d4af37' }} />
+          </div>
+
+          {/* Heading Hero Wayangverse - Selaras dengan Standar Tipografi Atlas & Karya Saya */}
+          <h1
+            style={{
+              margin: '0 auto 20px auto',
+              maxWidth: '850px',
+              fontFamily: 'var(--font-sans)',
+              fontSize: 'clamp(34px, 4.8vw, 56px)',
+              fontWeight: '850',
+              color: '#fcfaf2',
+              letterSpacing: '-0.5px',
+              lineHeight: '1.22',
+              textAlign: 'center',
+            }}
+          >
+            Pusat Kurasi & <span style={{ color: '#d4af37' }}>Master Data Wayang</span>
+          </h1>
+
+          {/* Subjudul Hero Sesuai Narasi Heritage */}
+          <p
+            style={{
+              margin: '0 auto 30px auto',
+              fontSize: 'clamp(15px, 1.5vw, 17px)',
+              color: '#f0e6d8',
+              lineHeight: '1.8',
+              maxWidth: '740px',
+              fontWeight: '450',
+            }}
+          >
+            Pusat kurasi wiracarita pakem, filosofi watak luhur para ksatria, tata suara gamelan slendro, dan moderasi karya pagelaran dalang nusantara.
+          </p>
+
+          {/* Toolbar Status Sanctum & Sinkronkan Data */}
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '14px', flexWrap: 'wrap', marginBottom: '24px' }}>
+            <div
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '8px',
+                padding: '7px 18px',
+                borderRadius: '9999px',
+                background: 'rgba(20, 14, 9, 0.76)',
+                border: `1px solid ${isServerConnected ? 'rgba(34, 197, 94, 0.35)' : 'rgba(212, 175, 55, 0.35)'}`,
+                fontSize: '12px',
+                fontWeight: '650',
+                color: isServerConnected ? '#a7f3d0' : '#e8bb5c',
+                backdropFilter: 'blur(8px)',
+              }}
+            >
+              <span
+                style={{
+                  width: '7px',
+                  height: '7px',
+                  borderRadius: '50%',
+                  background: isServerConnected ? '#16a34a' : '#d4af37',
+                }}
+              />
+              <span>{isServerConnected ? 'Sanctum Server Terhubung' : 'Preservasi Lokal Terverifikasi'}</span>
             </div>
 
-            <form onSubmit={handleSave}>
-              {modalType === 'character' && (
-                <div>
-                  <div style={{ marginBottom: '10px' }}>
-                    <label style={lblStyle}>Nama Karakter</label>
-                    <input
-                      type="text"
-                      value={form.name || ''}
-                      onChange={(e) => setForm({ ...form, name: e.target.value })}
-                      required
-                      style={inpStyle}
-                    />
-                  </div>
-                  <div style={{ marginBottom: '10px' }}>
-                    <label style={lblStyle}>Gelar / Alias</label>
-                    <input
-                      type="text"
-                      value={form.alias || ''}
-                      onChange={(e) => setForm({ ...form, alias: e.target.value })}
-                      style={inpStyle}
-                    />
-                  </div>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', marginBottom: '10px' }}>
-                    <div>
-                      <label style={lblStyle}>Golongan</label>
-                      <select
-                        value={form.type || 'ksatria'}
-                        onChange={(e) => setForm({ ...form, type: e.target.value })}
-                        style={inpStyle}
-                      >
-                        <option value="ksatria">Ksatria</option>
-                        <option value="punakawan">Punakawan</option>
-                        <option value="raksasa">Raksasa</option>
-                        <option value="dewa">Dewa</option>
-                        <option value="wanita">Wanita</option>
-                        <option value="lainnya">Lainnya</option>
-                      </select>
-                    </div>
-                    <div>
-                      <label style={lblStyle}>Status</label>
-                      <select
-                        value={form.status || 'published'}
-                        onChange={(e) => setForm({ ...form, status: e.target.value })}
-                        style={inpStyle}
-                      >
-                        <option value="published">Published</option>
-                        <option value="draft">Draft</option>
-                      </select>
-                    </div>
-                  </div>
-                  <div style={{ marginBottom: '10px' }}>
-                    <label style={lblStyle}>Senjata Pusaka</label>
-                    <input
-                      type="text"
-                      value={form.weapons || ''}
-                      onChange={(e) => setForm({ ...form, weapons: e.target.value })}
-                      style={inpStyle}
-                    />
-                  </div>
-                  <div style={{ marginBottom: '10px' }}>
-                    <label style={lblStyle}>Deskripsi</label>
-                    <textarea
-                      rows={2}
-                      value={form.description || ''}
-                      onChange={(e) => setForm({ ...form, description: e.target.value })}
-                      required
-                      style={inpStyle}
-                    />
-                  </div>
-                  <div style={{ marginBottom: '14px' }}>
-                    <label style={lblStyle}>Filosofi</label>
-                    <textarea
-                      rows={2}
-                      value={form.philosophy || ''}
-                      onChange={(e) => setForm({ ...form, philosophy: e.target.value })}
-                      required
-                      style={inpStyle}
-                    />
-                  </div>
+            <button
+              onClick={() => loadData(true)}
+              disabled={isSyncing}
+              className="wayang-btn-cta"
+              style={{ cursor: isSyncing ? 'wait' : 'pointer', minHeight: '40px', borderRadius: '9999px' }}
+            >
+              <span>{isSyncing ? 'Menyinkronkan...' : 'Sinkronkan Data'}</span>
+              <span className="wayang-btn-cta-icon">
+                <RefreshCw size={14} color="#16100a" className={isSyncing ? 'admin-spin-anim' : ''} />
+              </span>
+            </button>
+          </div>
+
+          {/* Cardbox Numerik Floating (Selaras dengan Hero Beranda & MyWorksView) */}
+          <div className="admin-floating-stats-card" style={{ marginTop: '20px', marginBottom: '8px' }}>
+            {/* Metrik 1: Tokoh */}
+            <div
+              className={`admin-floating-stat-item ${activeTab === 'karakter' ? 'active' : ''}`}
+              onClick={() => {
+                setActiveTab('karakter');
+                setSearchQuery('');
+                setFilterCategory('all');
+              }}
+            >
+              <div
+                style={{
+                  fontSize: '25px',
+                  fontWeight: '850',
+                  color: '#e8bb5c',
+                  letterSpacing: '-0.3px',
+                  lineHeight: '1.15',
+                  marginBottom: '3px',
+                  fontVariantNumeric: 'tabular-nums',
+                }}
+              >
+                {stats?.counts?.characters ?? characters.length}
+              </div>
+              <div style={{ fontSize: '13px', fontWeight: '750', color: '#fdfbf7', marginBottom: '2px', letterSpacing: '0.15px' }}>
+                Tokoh Wayang
+              </div>
+              <div style={{ fontSize: '11px', color: '#bfae9c', fontWeight: '400', lineHeight: '1.3' }}>
+                Ksatria & Punakawan
+              </div>
+            </div>
+
+            {/* Metrik 2: Lakon */}
+            <div
+              className={`admin-floating-stat-item ${activeTab === 'cerita' ? 'active' : ''}`}
+              onClick={() => {
+                setActiveTab('cerita');
+                setSearchQuery('');
+                setFilterStatus('all');
+              }}
+            >
+              <div
+                style={{
+                  fontSize: '25px',
+                  fontWeight: '850',
+                  color: '#e8bb5c',
+                  letterSpacing: '-0.3px',
+                  lineHeight: '1.15',
+                  marginBottom: '3px',
+                  fontVariantNumeric: 'tabular-nums',
+                }}
+              >
+                {stats?.counts?.stories ?? stories.length}
+              </div>
+              <div style={{ fontSize: '13px', fontWeight: '750', color: '#fdfbf7', marginBottom: '2px', letterSpacing: '0.15px' }}>
+                Lakon Cerita
+              </div>
+              <div style={{ fontSize: '11px', color: '#bfae9c', fontWeight: '400', lineHeight: '1.3' }}>
+                Serat Purwa Pakem
+              </div>
+            </div>
+
+            {/* Metrik 3: Audio */}
+            <div
+              className={`admin-floating-stat-item ${activeTab === 'audio' ? 'active' : ''}`}
+              onClick={() => {
+                setActiveTab('audio');
+                setSearchQuery('');
+                setFilterCategory('all');
+              }}
+            >
+              <div
+                style={{
+                  fontSize: '25px',
+                  fontWeight: '850',
+                  color: '#e8bb5c',
+                  letterSpacing: '-0.3px',
+                  lineHeight: '1.15',
+                  marginBottom: '3px',
+                  fontVariantNumeric: 'tabular-nums',
+                }}
+              >
+                {stats?.counts?.audio_assets ?? audioAssets.length}
+              </div>
+              <div style={{ fontSize: '13px', fontWeight: '750', color: '#fdfbf7', marginBottom: '2px', letterSpacing: '0.15px' }}>
+                Tata Suara / SFX
+              </div>
+              <div style={{ fontSize: '11px', color: '#bfae9c', fontWeight: '400', lineHeight: '1.3' }}>
+                Slendro & Dodogan
+              </div>
+            </div>
+
+            {/* Metrik 4: Karya */}
+            <div
+              className={`admin-floating-stat-item ${activeTab === 'karya' ? 'active' : ''}`}
+              onClick={() => {
+                setActiveTab('karya');
+                setSearchQuery('');
+                setFilterStatus('all');
+              }}
+            >
+              <div
+                style={{
+                  fontSize: '25px',
+                  fontWeight: '850',
+                  color: '#e8bb5c',
+                  letterSpacing: '-0.3px',
+                  lineHeight: '1.15',
+                  marginBottom: '3px',
+                  fontVariantNumeric: 'tabular-nums',
+                }}
+              >
+                {stats?.counts?.performances ?? performances.length}
+              </div>
+              <div style={{ fontSize: '13px', fontWeight: '750', color: '#fdfbf7', marginBottom: '2px', letterSpacing: '0.15px' }}>
+                Karya Pagelaran
+              </div>
+              <div style={{ fontSize: '11px', color: '#bfae9c', fontWeight: '400', lineHeight: '1.3' }}>
+                Pentas Babak Kelir
+              </div>
+            </div>
+
+            {/* Metrik 5: Pengguna */}
+            <div
+              className={`admin-floating-stat-item ${activeTab === 'users' ? 'active' : ''}`}
+              onClick={() => {
+                setActiveTab('users');
+                setSearchQuery('');
+              }}
+            >
+              <div
+                style={{
+                  fontSize: '25px',
+                  fontWeight: '850',
+                  color: '#e8bb5c',
+                  letterSpacing: '-0.3px',
+                  lineHeight: '1.15',
+                  marginBottom: '3px',
+                  fontVariantNumeric: 'tabular-nums',
+                }}
+              >
+                {stats?.counts?.users ?? usersList.length}
+              </div>
+              <div style={{ fontSize: '13px', fontWeight: '750', color: '#fdfbf7', marginBottom: '2px', letterSpacing: '0.15px' }}>
+                Pengguna Terdaftar
+              </div>
+              <div style={{ fontSize: '11px', color: '#bfae9c', fontWeight: '400', lineHeight: '1.3' }}>
+                Kurator & Dalang
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Strip Motif Batik Emas di Bagian Bawah Hero Sesuai Desain Atlas */}
+        <div
+          style={{
+            position: 'absolute',
+            bottom: 0,
+            left: 0,
+            right: 0,
+            height: '40px',
+            backgroundImage: `url(${atlasGoldMotifStrip})`,
+            backgroundRepeat: 'repeat-x',
+            backgroundPosition: 'center bottom',
+            backgroundSize: 'auto 40px',
+            borderTop: '1px solid rgba(212, 175, 55, 0.65)',
+            boxShadow: '0 -2px 10px rgba(0, 0, 0, 0.15)',
+            zIndex: 15,
+          }}
+        />
+      </section>
+
+      {/* ============================================================
+          2. SECTION KURASI ARSIP (WARM IVORY HERITAGE BACKGROUND #f5f0e4)
+          Desain Menawan Harmonis Persis Sesuai Beranda, Story Atlas & Karya Saya:
+          Latar #f5f0e4, Flanking Awan Tradisional, Kapsul Search & Filter Bar,
+          dan Kontras Teks Alami
+          ============================================================ */}
+      <section
+        id="admin-archive-content"
+        data-light-section="true"
+        style={{
+          width: '100%',
+          background: '#f5f0e4',
+          position: 'relative',
+          boxSizing: 'border-box',
+          padding: '80px 24px 100px 24px',
+          overflow: 'hidden',
+          minHeight: '600px',
+        }}
+      >
+        {/* Motif Awan Tradisional Jawa Halus */}
+        <JavaneseCloudBackground variant="flanking" theme="light" opacity={0.20} animated={true} />
+
+        <div style={{ maxWidth: '1280px', width: '100%', margin: '0 auto', position: 'relative', zIndex: 10 }}>
+          {/* Header Section Kurasi */}
+          <div style={{ textAlign: 'center', marginBottom: '32px' }}>
+            <div
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '8px',
+                padding: '5px 14px',
+                borderRadius: '9999px',
+                background: 'rgba(212, 175, 55, 0.10)',
+                border: '1px solid rgba(212, 175, 55, 0.28)',
+                color: '#8b5a1b',
+                fontSize: '11px',
+                fontWeight: '750',
+                letterSpacing: '0.1em',
+                textTransform: 'uppercase',
+                marginBottom: '14px',
+              }}
+            >
+              <span style={{ width: '5px', height: '5px', borderRadius: '50%', background: '#8b5a1b' }} />
+              <span>Panel Kurator & Dalang Master</span>
+              <span style={{ width: '5px', height: '5px', borderRadius: '50%', background: '#8b5a1b' }} />
+            </div>
+
+            <h2
+              style={{
+                textAlign: 'center',
+                fontFamily: 'var(--font-sans)',
+                fontSize: 'clamp(28px, 4vw, 44px)',
+                fontWeight: 800,
+                color: '#1a140e',
+                margin: '0 0 12px 0',
+                letterSpacing: '-0.02em',
+              }}
+            >
+              Khazanah Kurasi & <span style={{ color: '#d4af37' }}>Master Data</span>
+            </h2>
+            <p style={{ margin: '0 auto', fontSize: '15px', color: '#6e5e4d', maxWidth: '640px' }}>
+              Kelola entitas wiracarita, spesifikasi watak wayang kulit, ragam nada gamelan, dan moderasi pentas publik.
+            </p>
+          </div>
+
+          {/* Banner Notifikasi Halus */}
+          {notice && (
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '10px',
+                padding: '14px 20px',
+                borderRadius: '12px',
+                marginBottom: '26px',
+                fontSize: '13.5px',
+                fontWeight: '650',
+                background: notice.isError ? 'rgba(239, 68, 68, 0.10)' : 'rgba(34, 197, 94, 0.10)',
+                border: `1px solid ${notice.isError ? 'rgba(239, 68, 68, 0.35)' : 'rgba(34, 197, 94, 0.35)'}`,
+                color: notice.isError ? '#b91c1c' : '#15803d',
+                boxShadow: '0 4px 16px rgba(40, 28, 16, 0.05)',
+              }}
+            >
+              {notice.isError ? <AlertCircle size={18} /> : <CheckCircle2 size={18} />}
+              <span>{notice.msg}</span>
+            </div>
+          )}
+
+          {/* 1. Navigasi Tab Kategori Master Data (Clean Segmented Bar) */}
+          <div className="admin-category-tabs-bar">
+            {[
+              { id: 'karakter', label: 'Tokoh Wayang', count: characters.length, icon: Users },
+              { id: 'cerita', label: 'Lakon Cerita', count: stories.length, icon: BookOpen },
+              { id: 'audio', label: 'Tata Suara / SFX', count: audioAssets.length, icon: Music },
+              { id: 'karya', label: 'Karya Pagelaran', count: performances.length, icon: Film },
+              { id: 'users', label: 'Pengguna', count: usersList.length, icon: ShieldCheck },
+            ].map((tab) => {
+              const isActive = activeTab === tab.id;
+              const TabIcon = tab.icon;
+              return (
+                <button
+                  key={tab.id}
+                  type="button"
+                  onClick={() => {
+                    setActiveTab(tab.id);
+                    setSearchQuery('');
+                    setFilterCategory('all');
+                    setFilterStatus('all');
+                  }}
+                  className={`admin-category-tab-btn ${isActive ? 'active' : ''}`}
+                >
+                  <TabIcon size={16} />
+                  <span>{tab.label}</span>
+                  <span className="admin-tab-count-badge">
+                    {tab.count}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+
+          {/* 2. Unified Control Bar (Search, Sub-filters & Tombol Tambah Aligned 100% dengan Grid Tabel) */}
+          <div className="admin-control-bar">
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap', flex: 1 }}>
+              {/* Search Bar Input */}
+              <div className="admin-control-search-wrap">
+                <Search size={18} style={{ position: 'absolute', left: '14px', color: '#8a7d6e', pointerEvents: 'none' }} />
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder={
+                    activeTab === 'karakter'
+                      ? 'Cari nama tokoh, gelar, trah, pusaka...'
+                      : activeTab === 'cerita'
+                      ? 'Cari lakon wiracarita, tradisi, gending...'
+                      : activeTab === 'audio'
+                      ? 'Cari instrumen gamelan, nada, tempo...'
+                      : activeTab === 'karya'
+                      ? 'Cari judul lakon atau dalang...'
+                      : 'Cari nama kurator atau surel...'
+                  }
+                  className="admin-control-search-input"
+                />
+                {searchQuery && (
+                  <button
+                    type="button"
+                    onClick={() => setSearchQuery('')}
+                    style={{
+                      position: 'absolute',
+                      right: '12px',
+                      background: 'none',
+                      border: 'none',
+                      color: '#8a7d6e',
+                      cursor: 'pointer',
+                      padding: '2px',
+                      fontSize: '14px',
+                      display: 'flex',
+                      alignItems: 'center',
+                    }}
+                    title="Hapus pencarian"
+                  >
+                    ✕
+                  </button>
+                )}
+              </div>
+
+              {/* Filter Golongan Karakter */}
+              {activeTab === 'karakter' && (
+                <div className="admin-control-select-wrap">
+                  <select
+                    value={filterCategory}
+                    onChange={(e) => setFilterCategory(e.target.value)}
+                    className="admin-control-select"
+                  >
+                    <option value="all">Semua Golongan</option>
+                    <option value="ksatria">Ksatria</option>
+                    <option value="punakawan">Punakawan</option>
+                    <option value="dewa">Dewa</option>
+                    <option value="raksasa">Raksasa</option>
+                    <option value="wanita">Wanita</option>
+                  </select>
+                  <ChevronDown size={14} className="admin-control-select-chevron" />
                 </div>
               )}
 
-              {modalType === 'story' && (
+              {/* Filter Kategori Audio */}
+              {activeTab === 'audio' && (
+                <div className="admin-control-select-wrap">
+                  <select
+                    value={filterCategory}
+                    onChange={(e) => setFilterCategory(e.target.value)}
+                    className="admin-control-select"
+                  >
+                    <option value="all">Semua Kategori Audio</option>
+                    <option value="bgm">BGM Gamelan</option>
+                    <option value="sfx">SFX Pedalangan</option>
+                  </select>
+                  <ChevronDown size={14} className="admin-control-select-chevron" />
+                </div>
+              )}
+
+              {/* Filter Status / Visibilitas */}
+              {(activeTab === 'karakter' || activeTab === 'cerita' || activeTab === 'karya') && (
+                <div className="admin-control-select-wrap">
+                  <select
+                    value={filterStatus}
+                    onChange={(e) => setFilterStatus(e.target.value)}
+                    className="admin-control-select"
+                  >
+                    <option value="all">
+                      {activeTab === 'karya' ? 'Semua Visibilitas' : 'Semua Status'}
+                    </option>
+                    {activeTab === 'karya' ? (
+                      <>
+                        <option value="public">Publik</option>
+                        <option value="private">Privat</option>
+                      </>
+                    ) : (
+                      <>
+                        <option value="published">Published</option>
+                        <option value="draft">Draft</option>
+                      </>
+                    )}
+                  </select>
+                  <ChevronDown size={14} className="admin-control-select-chevron" />
+                </div>
+              )}
+            </div>
+
+            {/* Tombol Tambah Data Master (Prada Gold CTA Aligned) */}
+            {activeTab !== 'karya' && activeTab !== 'users' && (
+              <button
+                type="button"
+                onClick={() => {
+                  if (activeTab === 'karakter') openModal('character');
+                  else if (activeTab === 'cerita') openModal('story');
+                  else if (activeTab === 'audio') openModal('audio');
+                }}
+                className="admin-control-add-btn"
+              >
+                <Plus size={16} strokeWidth={2.5} />
+                <span>
+                  {activeTab === 'karakter'
+                    ? 'Tambah Tokoh'
+                    : activeTab === 'cerita'
+                    ? 'Tambah Lakon'
+                    : 'Tambah Audio'}
+                </span>
+              </button>
+            )}
+          </div>
+
+          {/* Luxury Archive Table Chassis (Cardbox Bersih di Latar Ivory) */}
+          <div className="admin-table-chassis">
+            <div className="admin-table-scroll">
+              {/* TAB 1: TOKOH WAYANG */}
+              {activeTab === 'karakter' && (
+                <table className="admin-table">
+                  <thead>
+                    <tr>
+                      <th>Nama & Gelar Tokoh</th>
+                      <th>Golongan / Trah</th>
+                      <th>Senjata Pusaka</th>
+                      <th>Status Moderasi</th>
+                      <th style={{ textAlign: 'right' }}>Aksi</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filteredCharacters.length === 0 ? (
+                      <tr>
+                        <td colSpan={5} style={{ textAlign: 'center', padding: '52px 24px', color: '#6e5e4d' }}>
+                          <div style={{ fontSize: '15px', fontWeight: '800', color: '#1a140e', marginBottom: '6px' }}>
+                            Tidak Ada Tokoh Wayang
+                          </div>
+                          <div style={{ fontSize: '13px' }}>
+                            Tidak ditemukan tokoh yang cocok dengan filter pencarian "{searchQuery}".
+                          </div>
+                        </td>
+                      </tr>
+                    ) : (
+                      filteredCharacters.map((c) => (
+                        <tr key={c.id}>
+                          <td>
+                            <div>
+                              <div style={{ fontWeight: '800', color: '#1a140e', fontSize: '14.5px', letterSpacing: '-0.01em' }}>
+                                {c.name}
+                              </div>
+                              <div style={{ fontSize: '12px', color: '#786554', marginTop: '3px' }}>
+                                {c.alias || c.typeName || 'Tokoh Wayang Purwa'}
+                              </div>
+                            </div>
+                          </td>
+                          <td>
+                            <span className={getGolonganClass(c.type)}>
+                              {c.typeName || c.type}
+                            </span>
+                          </td>
+                          <td>
+                            <span style={{ color: '#423122', fontSize: '13px', fontWeight: '500' }}>
+                              {c.weapons || '-'}
+                            </span>
+                          </td>
+                          <td>
+                            {c.status === 'published' ? (
+                              <div className="admin-status-indicator published">
+                                <span className="admin-status-dot published" />
+                                <span>Published</span>
+                              </div>
+                            ) : (
+                              <div className="admin-status-indicator draft">
+                                <span className="admin-status-dot draft" />
+                                <span>Draft</span>
+                              </div>
+                            )}
+                          </td>
+                          <td style={{ textAlign: 'right' }}>
+                            <div style={{ display: 'inline-flex', gap: '8px' }}>
+                              <button
+                                onClick={() => openModal('character', c)}
+                                className="admin-btn-action-edit"
+                              >
+                                <Pencil size={13} />
+                                <span>Ubah</span>
+                              </button>
+                              <button
+                                onClick={() => handleDelete('character', c.id, c.name)}
+                                className="admin-btn-action-del"
+                              >
+                                <Trash2 size={13} />
+                                <span>Hapus</span>
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                </table>
+              )}
+
+              {/* TAB 2: LAKON WIRACARITA */}
+              {activeTab === 'cerita' && (
+                <table className="admin-table">
+                  <thead>
+                    <tr>
+                      <th>Judul Lakon Wiracarita</th>
+                      <th>Gaya Tradisi</th>
+                      <th>Gending Iringan</th>
+                      <th>Status Moderasi</th>
+                      <th style={{ textAlign: 'right' }}>Aksi</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filteredStories.length === 0 ? (
+                      <tr>
+                        <td colSpan={5} style={{ textAlign: 'center', padding: '52px 24px', color: '#6e5e4d' }}>
+                          <div style={{ fontSize: '15px', fontWeight: '800', color: '#1a140e', marginBottom: '6px' }}>
+                            Tidak Ada Lakon Wiracarita
+                          </div>
+                          <div style={{ fontSize: '13px' }}>
+                            Tidak ditemukan lakon yang cocok dengan filter pencarian.
+                          </div>
+                        </td>
+                      </tr>
+                    ) : (
+                      filteredStories.map((s) => (
+                        <tr key={s.id}>
+                          <td>
+                            <div>
+                              <div style={{ fontWeight: '800', color: '#1a140e', fontSize: '14.5px', letterSpacing: '-0.01em' }}>
+                                {s.title}
+                              </div>
+                              <div style={{ fontSize: '12px', color: '#786554', marginTop: '3px' }}>
+                                {s.versionLabel || s.version_label || 'Pakem Purwa Klasik'}
+                              </div>
+                            </div>
+                          </td>
+                          <td>
+                            <span style={{ color: '#8b4513', fontSize: '13px', fontWeight: '650' }}>
+                              {s.tradition || 'Gaya Surakarta & Yogyakarta'}
+                            </span>
+                          </td>
+                          <td>
+                            <span style={{ color: '#423122', fontSize: '13px', fontWeight: '500' }}>
+                              {s.themeSong || s.theme_song || 'Gamelan Srepeg Mataram'}
+                            </span>
+                          </td>
+                          <td>
+                            {s.status === 'published' ? (
+                              <div className="admin-status-indicator published">
+                                <span className="admin-status-dot published" />
+                                <span>Published</span>
+                              </div>
+                            ) : (
+                              <div className="admin-status-indicator draft">
+                                <span className="admin-status-dot draft" />
+                                <span>Draft</span>
+                              </div>
+                            )}
+                          </td>
+                          <td style={{ textAlign: 'right' }}>
+                            <div style={{ display: 'inline-flex', gap: '8px' }}>
+                              <button
+                                onClick={() => openModal('story', s)}
+                                className="admin-btn-action-edit"
+                              >
+                                <Pencil size={13} />
+                                <span>Ubah</span>
+                              </button>
+                              <button
+                                onClick={() => handleDelete('story', s.id, s.title)}
+                                className="admin-btn-action-del"
+                              >
+                                <Trash2 size={13} />
+                                <span>Hapus</span>
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                </table>
+              )}
+
+              {/* TAB 3: TATA SUARA & SFX */}
+              {activeTab === 'audio' && (
+                <table className="admin-table">
+                  <thead>
+                    <tr>
+                      <th>Instrumen & Judul</th>
+                      <th>Kategori</th>
+                      <th>Instrumen Gamelan</th>
+                      <th>Tempo</th>
+                      <th style={{ textAlign: 'right' }}>Aksi</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filteredAudio.length === 0 ? (
+                      <tr>
+                        <td colSpan={5} style={{ textAlign: 'center', padding: '52px 24px', color: '#6e5e4d' }}>
+                          <div style={{ fontSize: '15px', fontWeight: '800', color: '#1a140e', marginBottom: '6px' }}>
+                            Tidak Ada Aset Tata Suara
+                          </div>
+                          <div style={{ fontSize: '13px' }}>
+                            Tidak ditemukan audio yang cocok dengan filter pencarian.
+                          </div>
+                        </td>
+                      </tr>
+                    ) : (
+                      filteredAudio.map((a) => (
+                        <tr key={a.id}>
+                          <td>
+                            <div>
+                              <div style={{ fontWeight: '800', color: '#1a140e', fontSize: '14.5px', letterSpacing: '-0.01em' }}>
+                                {a.title}
+                              </div>
+                              <div style={{ fontSize: '12px', color: '#786554', marginTop: '3px' }}>
+                                Sintesis Web Audio: {a.synth_type || a.synthType || 'Gamelan'}
+                              </div>
+                            </div>
+                          </td>
+                          <td>
+                            <span className="admin-badge-golongan-generic">
+                              {(a.category || 'BGM').toUpperCase()}
+                            </span>
+                          </td>
+                          <td>
+                            <span style={{ color: '#423122', fontSize: '13px', fontWeight: '500' }}>
+                              {a.instrument || '-'}
+                            </span>
+                          </td>
+                          <td>
+                            <span style={{ color: '#6e5e4d', fontSize: '13px' }}>
+                              {a.tempo || 'Sedang'}
+                            </span>
+                          </td>
+                          <td style={{ textAlign: 'right' }}>
+                            <div style={{ display: 'inline-flex', gap: '8px' }}>
+                              <button
+                                onClick={() => handleToggleAudioPlay(a)}
+                                className="admin-btn-action-audio"
+                                title="Tes Bunyi Tata Suara"
+                              >
+                                {playingAudioId === a.id ? <Square size={13} /> : <Play size={13} />}
+                                <span>{playingAudioId === a.id ? 'Berhenti' : 'Tes Suara'}</span>
+                              </button>
+                              <button
+                                onClick={() => openModal('audio', a)}
+                                className="admin-btn-action-edit"
+                              >
+                                <Pencil size={13} />
+                                <span>Ubah</span>
+                              </button>
+                              <button
+                                onClick={() => handleDelete('audio', a.id, a.title)}
+                                className="admin-btn-action-del"
+                              >
+                                <Trash2 size={13} />
+                                <span>Hapus</span>
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                </table>
+              )}
+
+              {/* TAB 4: MODERASI KARYA PAGELARAN DALANG */}
+              {activeTab === 'karya' && (
+                <table className="admin-table">
+                  <thead>
+                    <tr>
+                      <th>Judul Pagelaran</th>
+                      <th>Dalang / Pengkarya</th>
+                      <th>Visibilitas</th>
+                      <th>Tanggal Kreasi</th>
+                      <th style={{ textAlign: 'right' }}>Aksi</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filteredPerformances.length === 0 ? (
+                      <tr>
+                        <td colSpan={5} style={{ textAlign: 'center', padding: '52px 24px', color: '#6e5e4d' }}>
+                          <div style={{ fontSize: '15px', fontWeight: '800', color: '#1a140e', marginBottom: '6px' }}>
+                            Belum Ada Karya Pagelaran
+                          </div>
+                          <div style={{ fontSize: '13px' }}>
+                            Belum ada pagelaran dalang yang tersimpan atau cocok dengan filter.
+                          </div>
+                        </td>
+                      </tr>
+                    ) : (
+                      filteredPerformances.map((p) => (
+                        <tr key={p.id}>
+                          <td>
+                            <div>
+                              <div style={{ fontWeight: '800', color: '#1a140e', fontSize: '14.5px', letterSpacing: '-0.01em' }}>
+                                {p.title}
+                              </div>
+                              <div style={{ fontSize: '12px', color: '#786554', marginTop: '3px' }}>
+                                {p.story?.title || 'Lakon Mandiri Sanggar'}
+                              </div>
+                            </div>
+                          </td>
+                          <td>
+                            <div style={{ color: '#1a140e', fontWeight: '750', fontSize: '13.5px' }}>
+                              {p.user?.name || p.author || 'Dalang Muda'}
+                            </div>
+                            <div style={{ fontSize: '12px', color: '#786554' }}>
+                              {p.user?.email || 'dalang@wayangverse.id'}
+                            </div>
+                          </td>
+                          <td>
+                            <button
+                              onClick={() => handleToggleVis(p)}
+                              className={`admin-badge-visibility ${p.visibility === 'public' ? 'public' : 'private'}`}
+                              title="Klik untuk mengubah visibilitas"
+                            >
+                              {p.visibility === 'public' ? <Eye size={12} /> : <EyeOff size={12} />}
+                              <span>{p.visibility === 'public' ? 'Publik' : 'Privat'}</span>
+                            </button>
+                          </td>
+                          <td>
+                            <span style={{ fontSize: '12.5px', color: '#6e5e4d' }}>
+                              {p.created_at ? new Date(p.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) : '-'}
+                            </span>
+                          </td>
+                          <td style={{ textAlign: 'right' }}>
+                            <div style={{ display: 'inline-flex', gap: '8px' }}>
+                              {onPlayPerformance && (
+                                <button
+                                  onClick={() => onPlayPerformance(p)}
+                                  className="admin-btn-action-play"
+                                >
+                                  <Play size={13} />
+                                  <span>Putar Panggung</span>
+                                </button>
+                              )}
+                              <button
+                                onClick={() => handleDelete('performance', p.id, p.title)}
+                                className="admin-btn-action-del"
+                              >
+                                <Trash2 size={13} />
+                                <span>Hapus</span>
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                </table>
+              )}
+
+              {/* TAB 5: DAFTAR PENGGUNA TERDAFTAR */}
+              {activeTab === 'users' && (
+                <table className="admin-table">
+                  <thead>
+                    <tr>
+                      <th>Nama Pengguna</th>
+                      <th>Surel (Email)</th>
+                      <th>Peran Akun</th>
+                      <th>Total Pagelaran</th>
+                      <th style={{ textAlign: 'right' }}>Terdaftar</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filteredUsers.length === 0 ? (
+                      <tr>
+                        <td colSpan={5} style={{ textAlign: 'center', padding: '52px 24px', color: '#6e5e4d' }}>
+                          <div style={{ fontSize: '15px', fontWeight: '800', color: '#1a140e', marginBottom: '6px' }}>
+                            Pengguna Tidak Ditemukan
+                          </div>
+                          <div style={{ fontSize: '13px' }}>
+                            Tidak ditemukan pengguna yang cocok dengan kata kunci "{searchQuery}".
+                          </div>
+                        </td>
+                      </tr>
+                    ) : (
+                      filteredUsers.map((u) => (
+                        <tr key={u.id}>
+                          <td>
+                            <div>
+                              <div style={{ fontWeight: '800', color: '#1a140e', fontSize: '14.5px', letterSpacing: '-0.01em' }}>
+                                {u.name}
+                              </div>
+                              <div style={{ fontSize: '11.5px', color: '#8a7d6e', marginTop: '2px' }}>
+                                Kurator Sistem Wayangverse
+                              </div>
+                            </div>
+                          </td>
+                          <td>
+                            <span style={{ color: '#423122', fontSize: '13px' }}>{u.email}</span>
+                          </td>
+                          <td>
+                            <span className="admin-badge-golongan-generic">
+                              {(u.role || 'DALANG').toUpperCase()}
+                            </span>
+                          </td>
+                          <td>
+                            <span style={{ color: '#8b4513', fontWeight: '800', fontSize: '13px' }}>
+                              {u.performances_count ?? 0} lakon
+                            </span>
+                          </td>
+                          <td style={{ textAlign: 'right', fontSize: '12.5px', color: '#6e5e4d' }}>
+                            {u.created_at ? new Date(u.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) : '-'}
+                          </td>
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                </table>
+              )}
+
+            </div>
+
+            {/* Footer Ringkasan Metadata Tabel */}
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                padding: '14px 20px',
+                background: '#f8f4ec',
+                borderTop: '1px solid rgba(212, 175, 55, 0.22)',
+                fontSize: '12.5px',
+                color: '#6e5e4d',
+                flexWrap: 'wrap',
+                gap: '8px',
+              }}
+            >
+              <div>
+                Menampilkan{' '}
+                <strong style={{ color: '#8b4513' }}>
+                  {activeTab === 'karakter'
+                    ? filteredCharacters.length
+                    : activeTab === 'cerita'
+                    ? filteredStories.length
+                    : activeTab === 'audio'
+                    ? filteredAudio.length
+                    : activeTab === 'karya'
+                    ? filteredPerformances.length
+                    : filteredUsers.length}
+                </strong>{' '}
+                data terkurasi
+              </div>
+              <div>Pakem Pedalangan Surakarta & Yogyakarta • Standar Digital Wayangverse</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ============================================================
+          3. MODAL FORM DIALOG (TAMBAH / UBAH DATA MASTER)
+          ============================================================ */}
+      {modalType && (
+        <div
+          className="wayang-modal-backdrop"
+          style={{ zIndex: 2000 }}
+          onClick={() => setModalType(null)}
+        >
+          <div
+            className="wayang-modal-chassis"
+            style={{ maxWidth: '640px', width: '100%' }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="wayang-modal-inner modal-custom-scroll" style={{ padding: '32px 30px' }}>
+              <div className="wayang-modal-hairline" />
+
+              {/* Header Dialog */}
+              <div
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'flex-start',
+                  gap: '16px',
+                  marginBottom: '24px',
+                  borderBottom: '1px solid rgba(212, 175, 55, 0.18)',
+                  paddingBottom: '16px',
+                }}
+              >
                 <div>
-                  <div style={{ marginBottom: '10px' }}>
-                    <label style={lblStyle}>Judul Lakon</label>
-                    <input
-                      type="text"
-                      value={form.title || ''}
-                      onChange={(e) => setForm({ ...form, title: e.target.value })}
-                      required
-                      style={inpStyle}
+                  <div className="wayang-modal-eyebrow" style={{ marginBottom: '8px' }}>
+                    <span
+                      style={{
+                        display: 'inline-block',
+                        width: '6px',
+                        height: '6px',
+                        borderRadius: '50%',
+                        background: '#d4af37',
+                      }}
                     />
+                    <span>KURASI MASTER DATA</span>
+                    <span style={{ opacity: 0.5 }}>•</span>
+                    <span>
+                      {modalType === 'character'
+                        ? 'TOKOH WAYANG'
+                        : modalType === 'story'
+                        ? 'LAKON CERITA'
+                        : 'TATA SUARA'}
+                    </span>
                   </div>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', marginBottom: '10px' }}>
+                  <h3
+                    style={{
+                      margin: 0,
+                      fontSize: '22px',
+                      color: '#1a140e',
+                      fontWeight: '850',
+                      fontFamily: 'Cinzel, Georgia, serif',
+                      letterSpacing: '-0.01em',
+                    }}
+                  >
+                    {editingItem ? 'Perbarui Data Master' : 'Tambah Data Master Baru'}
+                  </h3>
+                </div>
+                <button
+                  type="button"
+                  aria-label="Tutup Dialog Admin"
+                  onClick={() => setModalType(null)}
+                  className="wayang-modal-close-btn"
+                >
+                  <X size={18} />
+                </button>
+              </div>
+
+              {/* Form Input Sesuai Kategori */}
+              <form onSubmit={handleSave}>
+                {/* 1. Form Tokoh Wayang */}
+                {modalType === 'character' && (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                     <div>
-                      <label style={lblStyle}>Gaya Tradisi</label>
+                      <label style={modalLabelStyle}>Nama Tokoh Wayang</label>
                       <input
                         type="text"
-                        value={form.tradition || ''}
-                        onChange={(e) => setForm({ ...form, tradition: e.target.value })}
-                        style={inpStyle}
+                        value={form.name || ''}
+                        onChange={(e) => setForm({ ...form, name: e.target.value })}
+                        required
+                        placeholder="Contoh: Raden Gatotkaca"
+                        style={modalInputStyle}
                       />
                     </div>
-                    <div>
-                      <label style={lblStyle}>Status</label>
-                      <select
-                        value={form.status || 'published'}
-                        onChange={(e) => setForm({ ...form, status: e.target.value })}
-                        style={inpStyle}
-                      >
-                        <option value="published">Published</option>
-                        <option value="draft">Draft</option>
-                      </select>
-                    </div>
-                  </div>
-                  <div style={{ marginBottom: '10px' }}>
-                    <label style={lblStyle}>Sinopsis</label>
-                    <textarea
-                      rows={2}
-                      value={form.synopsis || ''}
-                      onChange={(e) => setForm({ ...form, synopsis: e.target.value })}
-                      required
-                      style={inpStyle}
-                    />
-                  </div>
-                  <div style={{ marginBottom: '14px' }}>
-                    <label style={lblStyle}>Nilai Filosofis</label>
-                    <textarea
-                      rows={2}
-                      value={form.philosophy || ''}
-                      onChange={(e) => setForm({ ...form, philosophy: e.target.value })}
-                      required
-                      style={inpStyle}
-                    />
-                  </div>
-                </div>
-              )}
 
-              {modalType === 'audio' && (
-                <div>
-                  <div style={{ marginBottom: '10px' }}>
-                    <label style={lblStyle}>Judul Audio</label>
-                    <input
-                      type="text"
-                      value={form.title || ''}
-                      onChange={(e) => setForm({ ...form, title: e.target.value })}
-                      required
-                      style={inpStyle}
-                    />
-                  </div>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', marginBottom: '10px' }}>
                     <div>
-                      <label style={lblStyle}>Kategori</label>
-                      <select
-                        value={form.category || 'bgm'}
-                        onChange={(e) => setForm({ ...form, category: e.target.value })}
-                        style={inpStyle}
-                      >
-                        <option value="bgm">BGM</option>
-                        <option value="sfx">SFX</option>
-                      </select>
+                      <label style={modalLabelStyle}>Gelar / Julukan Luhur</label>
+                      <input
+                        type="text"
+                        value={form.alias || ''}
+                        onChange={(e) => setForm({ ...form, alias: e.target.value })}
+                        placeholder="Contoh: Satria Pringgandani, Senopati Udara"
+                        style={modalInputStyle}
+                      />
                     </div>
+
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
+                      <div>
+                        <label style={modalLabelStyle}>Golongan / Trah</label>
+                        <select
+                          value={form.type || 'ksatria'}
+                          onChange={(e) => setForm({ ...form, type: e.target.value })}
+                          style={modalInputStyle}
+                        >
+                          <option value="ksatria">Ksatria</option>
+                          <option value="punakawan">Punakawan</option>
+                          <option value="raksasa">Raksasa</option>
+                          <option value="dewa">Dewa</option>
+                          <option value="wanita">Wanita</option>
+                          <option value="lainnya">Lainnya</option>
+                        </select>
+                      </div>
+
+                      <div>
+                        <label style={modalLabelStyle}>Status Publikasi</label>
+                        <select
+                          value={form.status || 'published'}
+                          onChange={(e) => setForm({ ...form, status: e.target.value })}
+                          style={modalInputStyle}
+                        >
+                          <option value="published">Published</option>
+                          <option value="draft">Draft</option>
+                        </select>
+                      </div>
+                    </div>
+
                     <div>
-                      <label style={lblStyle}>Instrumen</label>
+                      <label style={modalLabelStyle}>Senjata Pusaka & Aji-Aji</label>
+                      <input
+                        type="text"
+                        value={form.weapons || ''}
+                        onChange={(e) => setForm({ ...form, weapons: e.target.value })}
+                        placeholder="Contoh: Kotang Antakusuma, Aji Brajamusti"
+                        style={modalInputStyle}
+                      />
+                    </div>
+
+                    <div>
+                      <label style={modalLabelStyle}>Deskripsi Karakter</label>
+                      <textarea
+                        rows={2}
+                        value={form.description || ''}
+                        onChange={(e) => setForm({ ...form, description: e.target.value })}
+                        required
+                        placeholder="Ringkasan riwayat dan watak tokoh..."
+                        style={modalInputStyle}
+                      />
+                    </div>
+
+                    <div>
+                      <label style={modalLabelStyle}>Makna Filosofis</label>
+                      <textarea
+                        rows={2}
+                        value={form.philosophy || ''}
+                        onChange={(e) => setForm({ ...form, philosophy: e.target.value })}
+                        required
+                        placeholder="Nilai moral dan keteladanan yang diwariskan..."
+                        style={modalInputStyle}
+                      />
+                    </div>
+                  </div>
+                )}
+
+                {/* 2. Form Lakon Wiracarita */}
+                {modalType === 'story' && (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                    <div>
+                      <label style={modalLabelStyle}>Judul Lakon Cerita</label>
+                      <input
+                        type="text"
+                        value={form.title || ''}
+                        onChange={(e) => setForm({ ...form, title: e.target.value })}
+                        required
+                        placeholder="Contoh: Bharatayuddha: Gugurnya Ghatotkaca"
+                        style={modalInputStyle}
+                      />
+                    </div>
+
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
+                      <div>
+                        <label style={modalLabelStyle}>Gaya Tradisi Pedalangan</label>
+                        <input
+                          type="text"
+                          value={form.tradition || ''}
+                          onChange={(e) => setForm({ ...form, tradition: e.target.value })}
+                          placeholder="Contoh: Gaya Surakarta & Yogyakarta"
+                          style={modalInputStyle}
+                        />
+                      </div>
+
+                      <div>
+                        <label style={modalLabelStyle}>Status Publikasi</label>
+                        <select
+                          value={form.status || 'published'}
+                          onChange={(e) => setForm({ ...form, status: e.target.value })}
+                          style={modalInputStyle}
+                        >
+                          <option value="published">Published</option>
+                          <option value="draft">Draft</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div>
+                      <label style={modalLabelStyle}>Gending / Lagu Tema Iringan</label>
+                      <input
+                        type="text"
+                        value={form.theme_song || form.themeSong || ''}
+                        onChange={(e) => setForm({ ...form, theme_song: e.target.value })}
+                        placeholder="Contoh: Gamelan Srepeg Mataram"
+                        style={modalInputStyle}
+                      />
+                    </div>
+
+                    <div>
+                      <label style={modalLabelStyle}>Sinopsis Lakon</label>
+                      <textarea
+                        rows={3}
+                        value={form.synopsis || ''}
+                        onChange={(e) => setForm({ ...form, synopsis: e.target.value })}
+                        required
+                        placeholder="Jalan cerita pementasan babak adegan..."
+                        style={modalInputStyle}
+                      />
+                    </div>
+
+                    <div>
+                      <label style={modalLabelStyle}>Nilai Filosofis Lakon</label>
+                      <textarea
+                        rows={2}
+                        value={form.philosophy || ''}
+                        onChange={(e) => setForm({ ...form, philosophy: e.target.value })}
+                        required
+                        placeholder="Pesan moral dan sanad kebijaksanaan luhur..."
+                        style={modalInputStyle}
+                      />
+                    </div>
+                  </div>
+                )}
+
+                {/* 3. Form Tata Suara / SFX */}
+                {modalType === 'audio' && (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                    <div>
+                      <label style={modalLabelStyle}>Judul Aset Audio</label>
+                      <input
+                        type="text"
+                        value={form.title || ''}
+                        onChange={(e) => setForm({ ...form, title: e.target.value })}
+                        required
+                        placeholder="Contoh: Gamelan Srepeg Mataram"
+                        style={modalInputStyle}
+                      />
+                    </div>
+
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
+                      <div>
+                        <label style={modalLabelStyle}>Kategori</label>
+                        <select
+                          value={form.category || 'bgm'}
+                          onChange={(e) => setForm({ ...form, category: e.target.value })}
+                          style={modalInputStyle}
+                        >
+                          <option value="bgm">BGM (Gamelan Melodi)</option>
+                          <option value="sfx">SFX (Dodogan / Kepyak / Gong)</option>
+                        </select>
+                      </div>
+
+                      <div>
+                        <label style={modalLabelStyle}>Tempo Permainan</label>
+                        <input
+                          type="text"
+                          value={form.tempo || ''}
+                          onChange={(e) => setForm({ ...form, tempo: e.target.value })}
+                          placeholder="Contoh: Cepat & Heroik / Lambat"
+                          style={modalInputStyle}
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <label style={modalLabelStyle}>Instrumen Gamelan Terkait</label>
                       <input
                         type="text"
                         value={form.instrument || ''}
                         onChange={(e) => setForm({ ...form, instrument: e.target.value })}
                         required
-                        style={inpStyle}
+                        placeholder="Contoh: Kendang Ciblon, Bonang, Gong"
+                        style={modalInputStyle}
+                      />
+                    </div>
+
+                    <div>
+                      <label style={modalLabelStyle}>Suasana / Mood Adegan</label>
+                      <input
+                        type="text"
+                        value={form.mood || ''}
+                        onChange={(e) => setForm({ ...form, mood: e.target.value })}
+                        placeholder="Contoh: Pertempuran / Dialog Syahdu / Jejer"
+                        style={modalInputStyle}
                       />
                     </div>
                   </div>
-                  <div style={{ marginBottom: '14px' }}>
-                    <label style={lblStyle}>Tempo</label>
-                    <input
-                      type="text"
-                      value={form.tempo || ''}
-                      onChange={(e) => setForm({ ...form, tempo: e.target.value })}
-                      style={inpStyle}
-                    />
-                  </div>
-                </div>
-              )}
+                )}
 
-              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px', marginTop: '18px' }}>
-                <button
-                  type="button"
-                  onClick={() => setModalType(null)}
+                {/* Tombol Aksi Dialog */}
+                <div
                   style={{
-                    background: '#221a13',
-                    border: '1px solid #4a3826',
-                    color: '#bfae9c',
-                    padding: '8px 18px',
-                    borderRadius: '20px',
-                    fontSize: '12px',
-                    fontWeight: '600',
-                    cursor: 'pointer',
-                    transition: 'all 0.2s ease',
+                    display: 'flex',
+                    justifyContent: 'flex-end',
+                    gap: '12px',
+                    marginTop: '28px',
+                    borderTop: '1px solid rgba(212, 175, 55, 0.18)',
+                    paddingTop: '20px',
                   }}
                 >
-                  Batal
-                </button>
-                <button
-                  type="submit"
-                  style={{
-                    background: '#e8bb5c',
-                    border: 'none',
-                    color: '#0d0a07',
-                    padding: '8px 22px',
-                    borderRadius: '20px',
-                    fontSize: '12px',
-                    fontWeight: '750',
-                    cursor: 'pointer',
-                    boxShadow: 'none',
-                    transition: 'all 0.2s ease',
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.background = '#dcae4d';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.background = '#e8bb5c';
-                  }}
-                >
-                  Simpan Perubahan
-                </button>
-              </div>
-            </form>
+                  <button
+                    type="button"
+                    onClick={() => setModalType(null)}
+                    className="wayang-btn-ghost"
+                  >
+                    Batal
+                  </button>
+
+                  <button
+                    type="submit"
+                    className="wayang-btn-cta"
+                    style={{ justifyContent: 'space-between' }}
+                  >
+                    <span>Simpan Data Master</span>
+                    <span className="wayang-btn-cta-icon">
+                      <Save size={15} color="#16100a" />
+                    </span>
+                  </button>
+                </div>
+              </form>
+            </div>
           </div>
         </div>
       )}
@@ -823,152 +1849,26 @@ export default function AdminCmsView({ onPlayPerformance }) {
   );
 }
 
-// Sub-komponen Ringkas
-function MetricBox({ label, value, onClick, active }) {
-  return (
-    <div
-      onClick={onClick}
-      style={{
-        background: active ? 'rgba(212, 175, 55, 0.12)' : '#17110c',
-        border: `1px solid ${active ? '#d4af37' : '#362619'}`,
-        borderRadius: '8px',
-        padding: '12px 14px',
-        cursor: 'pointer',
-        boxShadow: active ? '0 0 15px rgba(212, 175, 55, 0.12)' : 'none',
-        transition: 'all 0.2s ease',
-      }}
-    >
-      <div style={{ fontSize: '11px', color: active ? '#d4af37' : '#bfae9c', marginBottom: '4px', fontWeight: '500' }}>{label}</div>
-      <div style={{ fontSize: '22px', fontWeight: '700', color: active ? '#fcfaf2' : '#d4af37' }}>{value}</div>
-    </div>
-  );
-}
-
-function TabItem({ label, active, count, onClick }) {
-  return (
-    <button
-      onClick={onClick}
-      style={{
-        background: 'transparent',
-        border: 'none',
-        borderBottom: `2px solid ${active ? '#d4af37' : 'transparent'}`,
-        color: active ? '#d4af37' : '#bfae9c',
-        padding: '10px 16px',
-        fontSize: '13px',
-        fontWeight: active ? '700' : '500',
-        cursor: 'pointer',
-        display: 'flex',
-        alignItems: 'center',
-        gap: '6px',
-        whiteSpace: 'nowrap',
-        transition: 'color 0.15s ease',
-      }}
-    >
-      <span>{label}</span>
-      <span style={{ fontSize: '11px', background: active ? 'rgba(212, 175, 55, 0.2)' : '#231a13', color: active ? '#d4af37' : '#bfae9c', padding: '1px 7px', borderRadius: '10px', border: '1px solid #362619' }}>
-        {count}
-      </span>
-    </button>
-  );
-}
-
-// Styling Ringkas & Rapi
-const btnAddStyle = {
-  background: '#e8bb5c',
-  border: 'none',
-  color: '#0d0a07',
-  padding: '8px 20px',
-  borderRadius: '20px',
-  fontSize: '12px',
-  fontWeight: '750',
-  cursor: 'pointer',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  boxShadow: 'none',
-  transition: 'all 0.2s ease',
-};
-
-const tblStyle = {
-  width: '100%',
-  borderCollapse: 'collapse',
-  fontSize: '12px',
-};
-
-const tblHeadStyle = {
-  borderBottom: '1px solid #362619',
-  textAlign: 'left',
-};
-
-const thStyle = {
-  padding: '10px 12px',
-  color: '#d4af37',
-  fontSize: '11px',
-  fontWeight: '600',
-  letterSpacing: '0.04em',
-  textTransform: 'uppercase',
-};
-
-const tblRowStyle = {
-  borderBottom: '1px solid #231a13',
-  transition: 'background 0.15s ease',
-};
-
-const tdStyle = {
-  padding: '12px',
-  verticalAlign: 'middle',
-  color: '#fcfaf2',
-};
-
-const badgeStyle = {
-  background: '#231a13',
-  border: '1px solid #362619',
-  padding: '3px 8px',
-  borderRadius: '4px',
-  fontSize: '11px',
-  color: '#d4af37',
-  display: 'inline-block',
-  fontWeight: '500',
-};
-
-const btnEditStyle = {
-  background: '#231a13',
-  border: '1px solid #4a3826',
-  color: '#fcfaf2',
-  padding: '5px 10px',
-  borderRadius: '4px',
-  fontSize: '11px',
-  cursor: 'pointer',
-  marginRight: '6px',
-  fontWeight: '500',
-};
-
-const btnDelStyle = {
-  background: 'rgba(185, 28, 28, 0.15)',
-  border: '1px solid rgba(239, 68, 68, 0.4)',
-  color: '#fca5a5',
-  padding: '5px 10px',
-  borderRadius: '4px',
-  fontSize: '11px',
-  cursor: 'pointer',
-  fontWeight: '500',
-};
-
-const lblStyle = {
+// Modal Form Styles
+const modalLabelStyle = {
   display: 'block',
-  fontSize: '11px',
-  fontWeight: '600',
-  color: '#bfae9c',
-  marginBottom: '4px',
+  fontSize: '11.5px',
+  fontWeight: '750',
+  color: '#423122',
+  marginBottom: '6px',
+  letterSpacing: '0.01em',
 };
 
-const inpStyle = {
+const modalInputStyle = {
   width: '100%',
-  padding: '8px 12px',
-  background: '#0d0a07',
-  border: '1px solid #362619',
-  borderRadius: '6px',
-  color: '#fcfaf2',
-  fontSize: '12px',
+  padding: '10px 14px',
+  background: '#ffffff',
+  border: '1px solid rgba(212, 175, 55, 0.4)',
+  borderRadius: '8px',
+  color: '#1a140e',
+  fontSize: '13px',
   boxSizing: 'border-box',
+  outline: 'none',
+  fontFamily: 'inherit',
+  boxShadow: 'inset 0 1px 2px rgba(40, 28, 16, 0.04)',
 };

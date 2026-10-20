@@ -10,7 +10,7 @@ export default function Navbar({ activeTab, onNavigate, backendConnected, curren
         window.requestAnimationFrame(() => {
           // Cari semua section bertema terang secara dinamis dan menyeluruh
           const lightElements = document.querySelectorAll(
-            '[data-light-section="true"], #home-light-sections, #atlas-light-sections, #my-works-light-sections, #template-lakon-section'
+            '[data-light-section="true"], #home-light-sections, #atlas-light-sections, #my-works-light-sections, #template-lakon-section, #archive-light-sections'
           );
           let inLight = false;
           const navbarTop = 20;

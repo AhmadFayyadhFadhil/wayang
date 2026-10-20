@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { apiClient } from '../../services/api';
-import { User, ShieldCheck, AlertCircle, CheckCircle } from 'lucide-react';
+import { User, ShieldCheck, AlertCircle, CheckCircle, X, LogOut, UserCheck, ArrowRight, KeyRound } from 'lucide-react';
 
 export default function AuthModal({ isOpen, onClose, currentUser, onAuthSuccess, onLogout }) {
   const [tab, setTab] = useState('login'); // 'login' | 'register'
@@ -16,7 +16,7 @@ export default function AuthModal({ isOpen, onClose, currentUser, onAuthSuccess,
   const handleFillDemoAccount = () => {
     setEmail('dalang_demo@wayangverse.id');
     setPassword('dalang2026!');
-    setName('Dalang Inovasi Lomba');
+    setName('Dalang Inovasi Sanggar');
     setErrorMsg(null);
   };
 
@@ -37,8 +37,8 @@ export default function AuthModal({ isOpen, onClose, currentUser, onAuthSuccess,
       // 1. Dapatkan CSRF cookie dari Sanctum
       try {
         await apiClient.get('/sanctum/csrf-cookie');
-      } catch (_e) {
-        // Backend offline fallback
+      } catch {
+        // Fallback jika API belum terhubung
       }
 
       // 2. Kirim kredensial ke API
@@ -55,10 +55,10 @@ export default function AuthModal({ isOpen, onClose, currentUser, onAuthSuccess,
           localStorage.setItem('wayangverse_auth_token', token);
         }
       } catch (apiErr) {
-        // Jika server offline / 404, gunakan fallback akun demo lokal yang aman
+        // Fallback ke penyimpanan sesi lokal
         console.warn('API auth fallback to local session:', apiErr);
         userResult = {
-          name: name || (email.startsWith('dalang') ? 'Dalang Inovasi Lomba' : email.split('@')[0]),
+          name: name || (email.startsWith('dalang') ? 'Dalang Inovasi Sanggar' : email.split('@')[0]),
           email,
           role: email.includes('admin') ? 'admin' : 'user',
         };
@@ -66,14 +66,14 @@ export default function AuthModal({ isOpen, onClose, currentUser, onAuthSuccess,
 
       // Simpan session
       localStorage.setItem('wayangverse_auth_user', JSON.stringify(userResult));
-      setSuccessMsg(tab === 'login' ? 'Berhasil masuk ke Wayangverse!' : 'Pendaftaran berhasil!');
+      setSuccessMsg(tab === 'login' ? 'Sugeng Rawuh! Berhasil masuk ke Sanggar Wayangverse.' : 'Pendaftaran dalang berhasil!');
       if (onAuthSuccess) onAuthSuccess(userResult);
 
       setTimeout(() => {
         onClose();
-      }, 1000);
+      }, 900);
     } catch (err) {
-      setErrorMsg(err.response?.data?.message || 'Gagal memproses autentikasi.');
+      setErrorMsg(err.response?.data?.message || 'Gagal memproses autentikasi. Silakan periksa kembali data Anda.');
     } finally {
       setLoading(false);
     }
@@ -81,286 +81,683 @@ export default function AuthModal({ isOpen, onClose, currentUser, onAuthSuccess,
 
   return (
     <div
-      style={{
-        position: 'fixed',
-        inset: 0,
-        background: 'rgba(0,0,0,0.82)',
-        backdropFilter: 'blur(8px)',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        zIndex: 2000,
-      }}
+      className="wayang-modal-backdrop"
+      style={{ zIndex: 2000 }}
+      onClick={onClose}
     >
       <div
+        className="wayang-modal-chassis"
         style={{
-          background: '#17110c',
-          border: '1px solid rgba(212, 175, 55, 0.22)',
-          borderRadius: '20px',
-          padding: '28px',
-          maxWidth: '440px',
-          width: '90%',
-          color: '#fcfaf2',
-          boxShadow: '0 16px 40px rgba(0, 0, 0, 0.5)',
+          maxWidth: '500px',
+          width: '100%',
+          borderRadius: '16px',
+          border: 'none',
+          boxShadow: '0 24px 64px -12px rgba(20, 14, 9, 0.32), 0 4px 20px rgba(0, 0, 0, 0.08)',
+          background: '#f7f3ea',
         }}
+        onClick={(e) => e.stopPropagation()}
       >
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '18px' }}>
-          <h3 style={{ margin: 0, color: '#fcfaf2', fontSize: '18px', fontWeight: '800' }}>
-            {currentUser ? 'Profil Pengguna' : 'Masuk / Daftar Akun'}
-          </h3>
-          <button
-            onClick={onClose}
-            style={{ background: 'none', border: 'none', color: '#bfae9c', fontSize: '18px', cursor: 'pointer', padding: '4px' }}
-          >
-            ✕
-          </button>
-        </div>
+        <div className="wayang-modal-inner modal-custom-scroll" style={{ padding: '32px 30px' }}>
+          <div className="wayang-modal-hairline" />
 
-        {currentUser ? (
-          // Jika Sudah Login: Tampilkan Info Profil & Tombol Keluar
-          <div>
-            <div
-              style={{
-                background: '#221a13',
-                padding: '16px',
-                borderRadius: '12px',
-                marginBottom: '18px',
-                border: '1px solid #362619',
-              }}
-            >
-              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '10px' }}>
-                <div
+          {/* Header Modal */}
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'flex-start',
+              gap: '16px',
+              marginBottom: '22px',
+              borderBottom: '1px solid rgba(212, 175, 55, 0.2)',
+              paddingBottom: '16px',
+            }}
+          >
+            <div>
+              <div
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  padding: '3px 10px',
+                  borderRadius: '6px',
+                  background: 'rgba(212, 175, 55, 0.12)',
+                  border: '1px solid rgba(212, 175, 55, 0.32)',
+                  fontSize: '11px',
+                  fontWeight: '700',
+                  letterSpacing: '0.08em',
+                  textTransform: 'uppercase',
+                  color: '#8b4513',
+                  marginBottom: '8px',
+                  fontFamily: "'Plus Jakarta Sans', var(--font-sans), sans-serif",
+                }}
+              >
+                <span
                   style={{
-                    width: '42px',
-                    height: '42px',
+                    display: 'inline-block',
+                    width: '6px',
+                    height: '6px',
                     borderRadius: '50%',
                     background: '#d4af37',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    fontSize: '18px',
-                    color: '#0d0a07',
-                    fontWeight: '800',
                   }}
-                >
-                  <User size={20} color="#0d0a07" />
-                </div>
-                <div>
-                  <div style={{ fontWeight: '700', fontSize: '15px', color: '#fcfaf2' }}>{currentUser.name}</div>
-                  <div style={{ fontSize: '12px', color: '#bfae9c' }}>{currentUser.email}</div>
-                </div>
+                />
+                <span>PORTAL SANGGAR DALANG</span>
               </div>
-              <div style={{ fontSize: '11px', color: '#d4af37', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                <ShieldCheck size={14} /> Peran: <strong>{currentUser.role?.toUpperCase() || 'USER (DALANG KREATOR)'}</strong>
-              </div>
+              <h3
+                style={{
+                  margin: '0 0 4px 0',
+                  color: '#18120c',
+                  fontSize: '22px',
+                  fontWeight: '700',
+                  fontFamily: "'Cinzel', Georgia, serif",
+                  letterSpacing: '-0.01em',
+                  lineHeight: '1.25',
+                }}
+              >
+                {currentUser ? 'Profil Dalang Pementasan' : tab === 'login' ? 'Masuk Sanggar Wayang' : 'Pendaftaran Dalang Baru'}
+              </h3>
+              <p
+                style={{
+                  margin: 0,
+                  fontSize: '13px',
+                  color: '#5c4b3a',
+                  lineHeight: '1.45',
+                  fontFamily: "'Plus Jakarta Sans', var(--font-sans), sans-serif",
+                }}
+              >
+                {currentUser
+                  ? 'Pengaturan hak akses dan identitas sanggar dalang pementasan.'
+                  : tab === 'login'
+                  ? 'Akses arsip pertunjukan dan lembar lakon pedalangan Anda.'
+                  : 'Bergabunglah dalam pelestarian dan pagelaran seni wayang kulit digital.'}
+              </p>
             </div>
 
             <button
-              onClick={() => {
-                localStorage.removeItem('wayangverse_auth_user');
-                if (onLogout) onLogout();
-                onClose();
-              }}
+              type="button"
+              onClick={onClose}
+              aria-label="Tutup Dialog"
+              className="wayang-modal-close-btn"
               style={{
-                width: '100%',
-                background: 'rgba(153, 27, 27, 0.2)',
-                border: '1px solid rgba(239, 68, 68, 0.4)',
-                color: '#fca5a5',
-                padding: '11px',
-                borderRadius: '20px',
-                fontWeight: '700',
+                width: '38px',
+                height: '38px',
+                borderRadius: '50%',
+                background: '#ffffff',
+                border: '1px solid rgba(212, 175, 55, 0.35)',
+                color: '#18120c',
                 cursor: 'pointer',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                fontSize: '13px',
+                flexShrink: 0,
+                transition: 'all 0.18s ease',
               }}
             >
-              Keluar (Logout)
+              <X size={17} />
             </button>
           </div>
-        ) : (
-          // Jika Belum Login: Form Login / Register
-          <div>
-            {/* Tab Selector */}
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', marginBottom: '16px' }}>
-              <button
-                type="button"
-                onClick={() => setTab('login')}
-                style={{
-                  ...authTabBtnStyle,
-                  background: tab === 'login' ? 'rgba(212, 175, 55, 0.18)' : 'transparent',
-                  color: tab === 'login' ? '#d4af37' : '#bfae9c',
-                  borderColor: tab === 'login' ? 'rgba(212, 175, 55, 0.45)' : 'rgba(212, 175, 55, 0.15)',
-                }}
-              >
-                Masuk (Login)
-              </button>
-              <button
-                type="button"
-                onClick={() => setTab('register')}
-                style={{
-                  ...authTabBtnStyle,
-                  background: tab === 'register' ? 'rgba(212, 175, 55, 0.18)' : 'transparent',
-                  color: tab === 'register' ? '#d4af37' : '#bfae9c',
-                  borderColor: tab === 'register' ? 'rgba(212, 175, 55, 0.45)' : 'rgba(212, 175, 55, 0.15)',
-                }}
-              >
-                Daftar Akun
-              </button>
-            </div>
 
-            {/* Tombol Cepat Akun Demo Lomba & Admin */}
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', marginBottom: '16px' }}>
-              <button
-                type="button"
-                onClick={handleFillDemoAccount}
+          {currentUser ? (
+            // Tampilan Pengguna yang Sudah Masuk
+            <div>
+              <div
                 style={{
-                  background: 'rgba(212, 175, 55, 0.1)',
+                  background: '#ffffff',
+                  padding: '22px',
+                  borderRadius: '14px',
+                  marginBottom: '20px',
                   border: '1px solid rgba(212, 175, 55, 0.3)',
-                  color: '#d4af37',
-                  padding: '7px 12px',
-                  borderRadius: '20px',
-                  fontSize: '11px',
-                  fontWeight: '700',
-                  cursor: 'pointer',
-                  textAlign: 'center',
+                  boxShadow: '0 2px 10px rgba(40, 28, 16, 0.04)',
                 }}
               >
-                Isi Akun Dalang
-              </button>
-              <button
-                type="button"
-                onClick={handleFillAdminAccount}
-                style={{
-                  background: 'rgba(139, 69, 19, 0.2)',
-                  border: '1px solid rgba(212, 175, 55, 0.3)',
-                  color: '#fcfaf2',
-                  padding: '7px 12px',
-                  borderRadius: '20px',
-                  fontSize: '11px',
-                  fontWeight: '700',
-                  cursor: 'pointer',
-                  textAlign: 'center',
-                }}
-              >
-                Isi Akun Admin
-              </button>
-            </div>
-
-            <form onSubmit={handleSubmit}>
-              {tab === 'register' && (
-                <div style={{ marginBottom: '12px' }}>
-                  <label style={authLabelStyle}>Nama Lengkap / Nama Panggung</label>
-                  <input
-                    type="text"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    placeholder="Ki Anom Subroto"
-                    required
-                    style={authInputStyle}
-                  />
+                <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '16px' }}>
+                  <div
+                    style={{
+                      width: '50px',
+                      height: '50px',
+                      borderRadius: '50%',
+                      background: 'linear-gradient(135deg, #e8bb5c 0%, #d4af37 100%)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      color: '#18120c',
+                      fontWeight: '800',
+                      boxShadow: '0 2px 8px rgba(212, 175, 55, 0.28)',
+                      flexShrink: 0,
+                    }}
+                  >
+                    <User size={26} color="#18120c" />
+                  </div>
+                  <div>
+                    <div
+                      style={{
+                        fontWeight: '700',
+                        fontSize: '17px',
+                        color: '#18120c',
+                        fontFamily: "'Cinzel', Georgia, serif",
+                      }}
+                    >
+                      {currentUser.name}
+                    </div>
+                    <div
+                      style={{
+                        fontSize: '13px',
+                        color: '#5c4b3a',
+                        marginTop: '3px',
+                        fontFamily: "'Plus Jakarta Sans', var(--font-sans), sans-serif",
+                      }}
+                    >
+                      {currentUser.email}
+                    </div>
+                  </div>
                 </div>
-              )}
 
-              <div style={{ marginBottom: '12px' }}>
-                <label style={authLabelStyle}>Alamat Email</label>
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="dalang@wayangverse.id"
-                  required
-                  style={authInputStyle}
-                />
+                <div
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '7px',
+                    background: 'rgba(212, 175, 55, 0.12)',
+                    border: '1px solid rgba(212, 175, 55, 0.32)',
+                    padding: '6px 12px',
+                    borderRadius: '8px',
+                    fontSize: '12px',
+                    color: '#8b4513',
+                    fontWeight: '700',
+                    fontFamily: "'Plus Jakarta Sans', var(--font-sans), sans-serif",
+                  }}
+                >
+                  <ShieldCheck size={15} />
+                  <span>Hak Akses: {currentUser.role?.toUpperCase() === 'ADMIN' ? 'ADMINISTRATOR SANGGAR' : 'DALANG KREATOR LAKON'}</span>
+                </div>
               </div>
 
-              <div style={{ marginBottom: '16px' }}>
-                <label style={authLabelStyle}>Kata Sandi (Password)</label>
-                <input
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="••••••••"
-                  required
-                  style={authInputStyle}
-                />
-              </div>
-
-              {errorMsg && (
-                <div style={{ padding: '8px 12px', background: 'rgba(153, 27, 27, 0.2)', border: '1px solid rgba(239, 68, 68, 0.4)', color: '#fca5a5', borderRadius: '8px', fontSize: '11px', marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <AlertCircle size={14} /> {errorMsg}
-                </div>
-              )}
-
-              {successMsg && (
-                <div style={{ padding: '8px 12px', background: 'rgba(16, 185, 129, 0.2)', border: '1px solid #10b981', color: '#6ee7b7', borderRadius: '8px', fontSize: '11px', marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <CheckCircle size={14} /> {successMsg}
-                </div>
-              )}
-
               <button
-                type="submit"
-                disabled={loading}
+                type="button"
+                onClick={() => {
+                  localStorage.removeItem('wayangverse_auth_user');
+                  localStorage.removeItem('wayangverse_auth_token');
+                  if (onLogout) onLogout();
+                  onClose();
+                }}
                 style={{
                   width: '100%',
-                  background: '#e8bb5c',
-                  border: 'none',
-                  color: '#0d0a07',
-                  padding: '12px 24px',
-                  borderRadius: '20px',
-                  fontSize: '14px',
-                  fontWeight: '750',
-                  cursor: loading ? 'wait' : 'pointer',
-                  boxShadow: 'none',
-                  transition: 'all 0.2s ease',
+                  background: '#fef2f2',
+                  border: '1px solid rgba(239, 68, 68, 0.32)',
+                  color: '#991b1b',
+                  padding: '12px',
+                  borderRadius: '10px',
+                  fontWeight: '700',
+                  cursor: 'pointer',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '8px',
+                  fontSize: '13.5px',
+                  minHeight: '44px',
+                  fontFamily: "'Plus Jakarta Sans', var(--font-sans), sans-serif",
+                  transition: 'all 0.18s ease',
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.background = '#dcae4d';
+                  e.currentTarget.style.background = '#fee2e2';
+                  e.currentTarget.style.borderColor = '#dc2626';
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.background = '#e8bb5c';
+                  e.currentTarget.style.background = '#fef2f2';
+                  e.currentTarget.style.borderColor = 'rgba(239, 68, 68, 0.32)';
                 }}
               >
-                {loading ? 'Memproses...' : tab === 'login' ? 'Masuk Sekarang' : 'Daftarkan Akun'}
+                <LogOut size={16} />
+                <span>Keluar dari Sanggar</span>
               </button>
-            </form>
-          </div>
-        )}
+            </div>
+          ) : (
+            // Tampilan Form Masuk / Daftar
+            <div>
+              {/* Tab Selector Segmented Controller */}
+              <div
+                style={{
+                  display: 'grid',
+                  gridTemplateColumns: '1fr 1fr',
+                  gap: '4px',
+                  marginBottom: '20px',
+                  background: '#ede6d6',
+                  padding: '4px',
+                  borderRadius: '10px',
+                  border: '1px solid rgba(212, 175, 55, 0.28)',
+                }}
+              >
+                <button
+                  type="button"
+                  onClick={() => setTab('login')}
+                  style={{
+                    border: 'none',
+                    padding: '9px 14px',
+                    borderRadius: '8px',
+                    fontSize: '13px',
+                    fontWeight: tab === 'login' ? '700' : '600',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    transition: 'all 0.18s ease',
+                    minHeight: '40px',
+                    background: tab === 'login' ? '#ffffff' : 'transparent',
+                    color: tab === 'login' ? '#18120c' : '#7a6858',
+                    boxShadow: tab === 'login' ? '0 1px 4px rgba(40, 28, 16, 0.08)' : 'none',
+                    fontFamily: "'Plus Jakarta Sans', var(--font-sans), sans-serif",
+                  }}
+                >
+                  Masuk Sanggar
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setTab('register')}
+                  style={{
+                    border: 'none',
+                    padding: '9px 14px',
+                    borderRadius: '8px',
+                    fontSize: '13px',
+                    fontWeight: tab === 'register' ? '700' : '600',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    transition: 'all 0.18s ease',
+                    minHeight: '40px',
+                    background: tab === 'register' ? '#ffffff' : 'transparent',
+                    color: tab === 'register' ? '#18120c' : '#7a6858',
+                    boxShadow: tab === 'register' ? '0 1px 4px rgba(40, 28, 16, 0.08)' : 'none',
+                    fontFamily: "'Plus Jakarta Sans', var(--font-sans), sans-serif",
+                  }}
+                >
+                  Daftar Dalang
+                </button>
+              </div>
+
+              {/* Akses Cepat Kredensial Pengujian */}
+              <div style={{ marginBottom: '20px' }}>
+                <div
+                  style={{
+                    fontSize: '11px',
+                    color: '#8b4513',
+                    fontWeight: '700',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.06em',
+                    marginBottom: '8px',
+                    fontFamily: "'Plus Jakarta Sans', var(--font-sans), sans-serif",
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '6px',
+                  }}
+                >
+                  <KeyRound size={12} color="#8b4513" />
+                  <span>KUNCI MASUK CEPAT PENGUJIAN</span>
+                </div>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+                  <button
+                    type="button"
+                    onClick={handleFillDemoAccount}
+                    style={{
+                      background: '#ffffff',
+                      border: '1px solid rgba(212, 175, 55, 0.32)',
+                      borderRadius: '10px',
+                      padding: '10px 12px',
+                      cursor: 'pointer',
+                      textAlign: 'left',
+                      minHeight: '44px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '10px',
+                      transition: 'all 0.18s ease',
+                      boxShadow: '0 1px 3px rgba(28, 20, 12, 0.04)',
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.borderColor = '#d4af37';
+                      e.currentTarget.style.background = '#faf6ee';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.borderColor = 'rgba(212, 175, 55, 0.32)';
+                      e.currentTarget.style.background = '#ffffff';
+                    }}
+                  >
+                    <div
+                      style={{
+                        width: '30px',
+                        height: '30px',
+                        borderRadius: '6px',
+                        background: 'rgba(212, 175, 55, 0.14)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        color: '#8b4513',
+                        flexShrink: 0,
+                      }}
+                    >
+                      <UserCheck size={16} />
+                    </div>
+                    <div>
+                      <div
+                        style={{
+                          fontSize: '12px',
+                          fontWeight: '700',
+                          color: '#18120c',
+                          fontFamily: "'Plus Jakarta Sans', var(--font-sans), sans-serif",
+                          lineHeight: '1.2',
+                        }}
+                      >
+                        Dalang Kreator
+                      </div>
+                      <div
+                        style={{
+                          fontSize: '10.5px',
+                          color: '#7a6858',
+                          marginTop: '2px',
+                          fontFamily: "'Plus Jakarta Sans', var(--font-sans), sans-serif",
+                        }}
+                      >
+                        Kreator Lakon
+                      </div>
+                    </div>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={handleFillAdminAccount}
+                    style={{
+                      background: '#ffffff',
+                      border: '1px solid rgba(212, 175, 55, 0.32)',
+                      borderRadius: '10px',
+                      padding: '10px 12px',
+                      cursor: 'pointer',
+                      textAlign: 'left',
+                      minHeight: '44px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '10px',
+                      transition: 'all 0.18s ease',
+                      boxShadow: '0 1px 3px rgba(28, 20, 12, 0.04)',
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.borderColor = '#d4af37';
+                      e.currentTarget.style.background = '#faf6ee';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.borderColor = 'rgba(212, 175, 55, 0.32)';
+                      e.currentTarget.style.background = '#ffffff';
+                    }}
+                  >
+                    <div
+                      style={{
+                        width: '30px',
+                        height: '30px',
+                        borderRadius: '6px',
+                        background: 'rgba(212, 175, 55, 0.14)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        color: '#8b4513',
+                        flexShrink: 0,
+                      }}
+                    >
+                      <ShieldCheck size={16} />
+                    </div>
+                    <div>
+                      <div
+                        style={{
+                          fontSize: '12px',
+                          fontWeight: '700',
+                          color: '#18120c',
+                          fontFamily: "'Plus Jakarta Sans', var(--font-sans), sans-serif",
+                          lineHeight: '1.2',
+                        }}
+                      >
+                        Pengelola Pustaka
+                      </div>
+                      <div
+                        style={{
+                          fontSize: '10.5px',
+                          color: '#7a6858',
+                          marginTop: '2px',
+                          fontFamily: "'Plus Jakarta Sans', var(--font-sans), sans-serif",
+                        }}
+                      >
+                        Kurator Sanggar
+                      </div>
+                    </div>
+                  </button>
+                </div>
+              </div>
+
+              {/* Form Input Data */}
+              <form onSubmit={handleSubmit}>
+                {tab === 'register' && (
+                  <div style={{ marginBottom: '14px' }}>
+                    <label
+                      style={{
+                        display: 'block',
+                        fontSize: '11.5px',
+                        fontWeight: '700',
+                        color: '#5c4b3a',
+                        marginBottom: '6px',
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.04em',
+                        fontFamily: "'Plus Jakarta Sans', var(--font-sans), sans-serif",
+                      }}
+                    >
+                      Nama Lengkap / Gelar Dalang
+                    </label>
+                    <input
+                      type="text"
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      placeholder="Contoh: Ki Anom Suroto"
+                      required
+                      style={{
+                        width: '100%',
+                        padding: '11px 14px',
+                        background: '#ffffff',
+                        border: '1px solid rgba(212, 175, 55, 0.35)',
+                        borderRadius: '10px',
+                        color: '#18120c',
+                        fontSize: '13.5px',
+                        boxSizing: 'border-box',
+                        outline: 'none',
+                        transition: 'border-color 0.2s ease, box-shadow 0.2s ease',
+                        fontFamily: "'Plus Jakarta Sans', var(--font-sans), sans-serif",
+                        minHeight: '44px',
+                      }}
+                      onFocus={(e) => {
+                        e.target.style.borderColor = '#d4af37';
+                        e.target.style.boxShadow = '0 0 0 3px rgba(212, 175, 55, 0.15)';
+                      }}
+                      onBlur={(e) => {
+                        e.target.style.borderColor = 'rgba(212, 175, 55, 0.35)';
+                        e.target.style.boxShadow = 'none';
+                      }}
+                    />
+                  </div>
+                )}
+
+                <div style={{ marginBottom: '14px' }}>
+                  <label
+                    style={{
+                      display: 'block',
+                      fontSize: '11.5px',
+                      fontWeight: '700',
+                      color: '#5c4b3a',
+                      marginBottom: '6px',
+                      textTransform: 'uppercase',
+                      letterSpacing: '0.04em',
+                      fontFamily: "'Plus Jakarta Sans', var(--font-sans), sans-serif",
+                    }}
+                  >
+                    Alamat Email
+                  </label>
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="dalang@wayangverse.id"
+                    required
+                    style={{
+                      width: '100%',
+                      padding: '11px 14px',
+                      background: '#ffffff',
+                      border: '1px solid rgba(212, 175, 55, 0.35)',
+                      borderRadius: '10px',
+                      color: '#18120c',
+                      fontSize: '13.5px',
+                      boxSizing: 'border-box',
+                      outline: 'none',
+                      transition: 'border-color 0.2s ease, box-shadow 0.2s ease',
+                      fontFamily: "'Plus Jakarta Sans', var(--font-sans), sans-serif",
+                      minHeight: '44px',
+                    }}
+                    onFocus={(e) => {
+                      e.target.style.borderColor = '#d4af37';
+                      e.target.style.boxShadow = '0 0 0 3px rgba(212, 175, 55, 0.15)';
+                    }}
+                    onBlur={(e) => {
+                      e.target.style.borderColor = 'rgba(212, 175, 55, 0.35)';
+                      e.target.style.boxShadow = 'none';
+                    }}
+                  />
+                </div>
+
+                <div style={{ marginBottom: '18px' }}>
+                  <label
+                    style={{
+                      display: 'block',
+                      fontSize: '11.5px',
+                      fontWeight: '700',
+                      color: '#5c4b3a',
+                      marginBottom: '6px',
+                      textTransform: 'uppercase',
+                      letterSpacing: '0.04em',
+                      fontFamily: "'Plus Jakarta Sans', var(--font-sans), sans-serif",
+                    }}
+                  >
+                    Kata Sandi
+                  </label>
+                  <input
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="••••••••"
+                    required
+                    style={{
+                      width: '100%',
+                      padding: '11px 14px',
+                      background: '#ffffff',
+                      border: '1px solid rgba(212, 175, 55, 0.35)',
+                      borderRadius: '10px',
+                      color: '#18120c',
+                      fontSize: '13.5px',
+                      boxSizing: 'border-box',
+                      outline: 'none',
+                      transition: 'border-color 0.2s ease, box-shadow 0.2s ease',
+                      fontFamily: "'Plus Jakarta Sans', var(--font-sans), sans-serif",
+                      minHeight: '44px',
+                    }}
+                    onFocus={(e) => {
+                      e.target.style.borderColor = '#d4af37';
+                      e.target.style.boxShadow = '0 0 0 3px rgba(212, 175, 55, 0.15)';
+                    }}
+                    onBlur={(e) => {
+                      e.target.style.borderColor = 'rgba(212, 175, 55, 0.35)';
+                      e.target.style.boxShadow = 'none';
+                    }}
+                  />
+                </div>
+
+                {errorMsg && (
+                  <div
+                    style={{
+                      padding: '11px 14px',
+                      background: '#fef2f2',
+                      border: '1px solid #fca5a5',
+                      color: '#991b1b',
+                      borderRadius: '10px',
+                      fontSize: '12.5px',
+                      marginBottom: '16px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '9px',
+                      fontFamily: "'Plus Jakarta Sans', var(--font-sans), sans-serif",
+                    }}
+                  >
+                    <AlertCircle size={16} color="#dc2626" style={{ flexShrink: 0 }} />
+                    <span>{errorMsg}</span>
+                  </div>
+                )}
+
+                {successMsg && (
+                  <div
+                    style={{
+                      padding: '11px 14px',
+                      background: '#f0fdf4',
+                      border: '1px solid #86efac',
+                      color: '#065f46',
+                      borderRadius: '10px',
+                      fontSize: '12.5px',
+                      marginBottom: '16px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '9px',
+                      fontFamily: "'Plus Jakarta Sans', var(--font-sans), sans-serif",
+                    }}
+                  >
+                    <CheckCircle size={16} color="#16a34a" style={{ flexShrink: 0 }} />
+                    <span>{successMsg}</span>
+                  </div>
+                )}
+
+                <button
+                  type="submit"
+                  disabled={loading}
+                  style={{
+                    width: '100%',
+                    background: 'linear-gradient(135deg, #d4af37 0%, #c59b27 100%)',
+                    border: '1px solid rgba(139, 69, 19, 0.25)',
+                    color: '#18120c',
+                    padding: '12px 20px',
+                    borderRadius: '10px',
+                    fontWeight: '700',
+                    fontSize: '14px',
+                    cursor: loading ? 'not-allowed' : 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '10px',
+                    minHeight: '46px',
+                    boxShadow: '0 3px 12px rgba(212, 175, 55, 0.28)',
+                    fontFamily: "'Plus Jakarta Sans', var(--font-sans), sans-serif",
+                    transition: 'all 0.18s ease',
+                    opacity: loading ? 0.75 : 1,
+                  }}
+                  onMouseEnter={(e) => {
+                    if (!loading) {
+                      e.currentTarget.style.background = 'linear-gradient(135deg, #deb845 0%, #d4af37 100%)';
+                      e.currentTarget.style.boxShadow = '0 5px 16px rgba(212, 175, 55, 0.35)';
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!loading) {
+                      e.currentTarget.style.background = 'linear-gradient(135deg, #d4af37 0%, #c59b27 100%)';
+                      e.currentTarget.style.boxShadow = '0 3px 12px rgba(212, 175, 55, 0.28)';
+                    }
+                  }}
+                >
+                  <span>
+                    {loading ? 'Memproses Permintaan...' : tab === 'login' ? 'Masuk ke Sanggar' : 'Daftarkan Akun Dalang'}
+                  </span>
+                  {!loading && <ArrowRight size={16} />}
+                </button>
+              </form>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
 }
-
-const authTabBtnStyle = {
-  borderWidth: '1px',
-  borderStyle: 'solid',
-  padding: '9px 16px',
-  borderRadius: '20px',
-  fontSize: '13px',
-  fontWeight: '700',
-  cursor: 'pointer',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  transition: 'all 0.18s ease',
-};
-
-const authLabelStyle = {
-  display: 'block',
-  fontSize: '11px',
-  fontWeight: '600',
-  color: '#bfae9c',
-  marginBottom: '4px',
-};
-
-const authInputStyle = {
-  width: '100%',
-  padding: '8px 12px',
-  background: '#0d0a07',
-  border: '1px solid #362619',
-  borderRadius: '8px',
-  color: '#fcfaf2',
-  fontSize: '12px',
-  boxSizing: 'border-box',
-};

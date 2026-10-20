@@ -1,30 +1,48 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { apiClient } from '../../services/api';
 import persistenceService from '../../services/persistenceService';
 import { getStoryById } from '../../data/master/storiesMaster';
-import { getCharacterById } from '../../data/master/charactersMaster';
-import { Compass } from 'lucide-react';
+import {
+  Search,
+  Play,
+  BookOpen,
+  ChevronDown,
+  Compass,
+  Music,
+  Layers,
+} from 'lucide-react';
 
-// Cover Assets Berkualitas Tinggi untuk 4 Pementasan Terpopuler
+// Aset Visual Heritage & Ornamen Budaya
+import heroParchmentWideBg from '../../assets/hero_parchment_clouds_widescreen_hd.jpg';
+import atlasGoldMotifStrip from '../../assets/atlas_gold_motif_strip.jpg';
+import gununganKayonHd from '../../assets/gunungan_kayon_hd.png';
+import JavaneseCloudBackground from '../../components/ui/JavaneseCloudBackground';
 import galleryCoverGatotkaca from '../../assets/gallery_cover_gatotkaca.jpg';
 import dalangPerformanceHeritage from '../../assets/dalang_performance_heritage.jpg';
 import tatahSunggingCraft from '../../assets/tatah_sungging_craft.jpg';
 import gamelanOrchestraHeritage from '../../assets/gamelan_orchestra_heritage.jpg';
+import lakonCoverShintaObong from '../../assets/lakon_cover_shinta_obong.jpg';
+import lakonCoverDewaRuci from '../../assets/lakon_cover_dewa_ruci.jpg';
 
-// 4 Pementasan Unggulan Terkurasi Sesuai Format Leaderboard Top 4
+// 4 Pementasan Unggulan Terkurasi dengan Deskripsi Singkat, Padat, dan Jelas
 const TOP_4_PERFORMANCES = [
   {
     id: 'top-1',
     rank: '01',
     title: 'Bharatayuddha: Gugurnya Ghatotkaca',
-    description: 'Pertempuran sengit malam hari di padang Kurusetra antara Senopati Udara Raden Gatotkaca melawan Adipati Karna bersenjatakan pusaka Kunta Wijayadanu.',
+    subtitle: 'Palagan Kurusetra • Senopati Udara Melawan Panah Kunta',
+    dalang: 'Ki Seno Purwanto',
+    epos: 'Mahabharata • Bharatayuddha',
+    category: 'mahabharata',
+    badge: 'Pilihan Kurator #01',
+    description:
+      'Laga malam Kurusetra: Pengorbanan Sang Senopati Udara menahan panah Kunta Wijayadanu demi dharma Pandawa.',
     coverImg: galleryCoverGatotkaca,
-    stat1: 'LAKON: BHARATAYUDDHA',
-    stat2: '4 BABAK MEDAN LAGA',
-    stat3: 'GENDING: SLENDRO SREPEG',
+    gending: 'Laras Slendro Srepeg',
+    sanad: 'Serat Kakawin Bharatayuddha',
     storyId: 1,
     storySlug: 'bharatayuddha-kurusetra',
-    characterIds: [1, 3, 2], // Gatotkaca, Karna, Arjuna
+    characterIds: [1, 3, 2],
     characterNames: ['Raden Gatotkaca', 'Adipati Karna', 'Raden Arjuna'],
     scene_data: {
       scenes: [
@@ -92,14 +110,19 @@ const TOP_4_PERFORMANCES = [
     id: 'top-2',
     rank: '02',
     title: 'Karno Tanding: Panah Kyai Pasopati',
-    description: 'Puncak duel takdir dua ksatria bersaudara kandung seibu di atas kereta kencana perang Kurusetra, mempertemukan keagungan ilmu panah Arjuna dan keteguhan satria Karna.',
+    subtitle: 'Palagan Kurusetra • Duel Dharma Dua Ksatria Bersaudara',
+    dalang: 'Ki Manteb Soedharsono (Adaptasi)',
+    epos: 'Mahabharata • Karna Parwa',
+    category: 'mahabharata',
+    badge: 'Pilihan Kurator #02',
+    description:
+      'Duel agung dua ksatria bersaudara kandung di Kurusetra untuk menunaikan sumpah satria dan takdir dharma.',
     coverImg: dalangPerformanceHeritage,
-    stat1: 'LAKON: BHARATAYUDDHA',
-    stat2: '5 BABAK SATRIA',
-    stat3: 'GENDING: SAMPAK MANYURA',
+    gending: 'Laras Slendro Sampak Manyura',
+    sanad: 'Mahabharata Parwa Sansekerta',
     storyId: 1,
     storySlug: 'bharatayuddha-kurusetra',
-    characterIds: [2, 3, 4], // Arjuna, Karna, Bima
+    characterIds: [2, 3, 4],
     characterNames: ['Raden Arjuna', 'Adipati Karna', 'Raden Werkudara'],
     scene_data: {
       scenes: [
@@ -145,14 +168,19 @@ const TOP_4_PERFORMANCES = [
     id: 'top-3',
     rank: '03',
     title: 'Ramayana: Anoman Obong Alengka',
-    description: 'Aksi kepahlawanan sang duta kera putih Hanoman yang meloloskan diri dari kepungan raksasa dan menyulut api suci membumihanguskan benteng kezaliman Rahwana.',
-    coverImg: tatahSunggingCraft,
-    stat1: 'LAKON: RAMAYANA PURWA',
-    stat2: '3 BABAK DUTA SUCI',
-    stat3: 'GENDING: SREPEG LASEM',
+    subtitle: 'Taman Argasoka • Kobaran Api Suci Sang Wanara Putih',
+    dalang: 'Nyi Sri Sulastri',
+    epos: 'Ramayana Purwa',
+    category: 'ramayana',
+    badge: 'Pilihan Kurator #03',
+    description:
+      'Aksi Duta Wanara Putih Hanoman meloloskan diri dan menyulut api suci membumihanguskan benteng Rahwana.',
+    coverImg: lakonCoverShintaObong || tatahSunggingCraft,
+    gending: 'Laras Slendro Srepeg Lasem',
+    sanad: 'Serat Ramayana Kakawin',
     storyId: 2,
     storySlug: 'ramayana-anoman-obong',
-    characterIds: [5, 2], // Dewi Shinta, Arjuna
+    characterIds: [5, 2],
     characterNames: ['Dewi Shinta', 'Raden Arjuna', 'Ksatria Wanara'],
     scene_data: {
       scenes: [
@@ -184,15 +212,20 @@ const TOP_4_PERFORMANCES = [
   {
     id: 'top-4',
     rank: '04',
-    title: 'Dewa Ruci: Samudra Sunyata Bima Suci',
-    description: 'Perjalanan kontemplasi spiritual Raden Werkudara menyelami dasar Samudra Minangkalbu untuk menemukan Tirta Pawitra dan wejangan hakikat kasampurnan urip.',
-    coverImg: gamelanOrchestraHeritage,
-    stat1: 'LAKON: SERAT PURWA',
-    stat2: '4 BABAK MAKRIFAT',
-    stat3: 'GENDING: AYAK-AYAK SLENDRO',
+    title: 'Dewa Ruci: Samudra Minangkalbu',
+    subtitle: 'Laku Batin • Wejangan Suci Tirta Perwitasari',
+    dalang: 'Ki Sugito Purbacarita',
+    epos: 'Serat Dewa Ruci',
+    category: 'dewaruci',
+    badge: 'Pilihan Kurator #04',
+    description:
+      'Pencarian spiritual Raden Werkudara menyelami samudra raya demi wejangan suci dan kasampurnan urip.',
+    coverImg: lakonCoverDewaRuci || gamelanOrchestraHeritage,
+    gending: 'Laras Pelog Ayak-Ayak',
+    sanad: 'Serat Dewa Ruci Yasadipura I',
     storyId: 3,
     storySlug: 'dewa-ruci-bima-suci',
-    characterIds: [4, 2], // Bima, Arjuna
+    characterIds: [4, 2],
     characterNames: ['Raden Werkudara', 'Raden Arjuna'],
     scene_data: {
       scenes: [
@@ -223,8 +256,21 @@ const TOP_4_PERFORMANCES = [
   },
 ];
 
-export default function ConnectedArchiveView({ onPlayPerformance, onNavigateToCharacter, onNavigateToStory }) {
+const FILTER_CHIPS = [
+  { id: 'all', label: 'Semua Pagelaran' },
+  { id: 'mahabharata', label: 'Mahabharata' },
+  { id: 'ramayana', label: 'Ramayana' },
+  { id: 'dewaruci', label: 'Serat Dewa Ruci' },
+  { id: 'community', label: 'Karya Komunitas' },
+];
+
+export default function ConnectedArchiveView({
+  onPlayPerformance,
+  onNavigateToStory,
+}) {
   const [publicWorks, setPublicWorks] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [activeCategory, setActiveCategory] = useState('all');
 
   useEffect(() => {
     let isMounted = true;
@@ -235,8 +281,8 @@ export default function ConnectedArchiveView({ onPlayPerformance, onNavigateToCh
           if (isMounted) setPublicWorks(res.data.data);
           return;
         }
-      } catch (_e) {
-        // Fallback ke local storage
+      } catch {
+        // Fallback mulus ke localStorage jika backend offline
       }
 
       const all = persistenceService.getLocalWorks();
@@ -250,352 +296,851 @@ export default function ConnectedArchiveView({ onPlayPerformance, onNavigateToCh
     };
   }, []);
 
-  return (
-    <div
-      style={{
-        maxWidth: '1160px',
-        margin: '0 auto',
-        padding: '24px 20px 80px 20px',
-        color: '#fcfaf2',
-        boxSizing: 'border-box',
-      }}
-    >
-      {/* ============================================================
-          HEADER HALAMAN GALERI (Tipografi Bersih & Elegan)
-          ============================================================ */}
-      <div style={{ textAlign: 'center', marginBottom: '44px' }}>
-        <h1
-          style={{
-            fontSize: 'clamp(28px, 4.2vw, 42px)',
-            fontWeight: '850',
-            color: '#fcfaf2',
-            letterSpacing: '-0.5px',
-            margin: '0 0 12px 0',
-            lineHeight: '1.2',
-          }}
-        >
-          Leaderboard Top 4 <span style={{ color: '#d4af37' }}>Pementasan Wayang</span>
-        </h1>
-        <p
-          style={{
-            fontSize: '15px',
-            color: '#b5a492',
-            maxWidth: '680px',
-            margin: '0 auto',
-            lineHeight: '1.65',
-          }}
-        >
-          Karya pementasan lakon wayang digital terkurasi dengan kelir interaktif dua dimensi, visual tatah-sungging otentik, dan naskah pakem bersejarah.
-        </p>
-      </div>
+  // Gabungkan dan normalisasi seluruh pementasan (Terkurasi + Publik Komunitas)
+  const allPerformances = useMemo(() => {
+    const curated = TOP_4_PERFORMANCES.map((item) => ({
+      ...item,
+      isCommunity: false,
+      scenesCount: item.scene_data?.scenes?.length || 1,
+    }));
 
+    const community = publicWorks.map((work) => {
+      let sceneData = work.scene_data;
+      if (typeof sceneData === 'string') {
+        try {
+          sceneData = JSON.parse(sceneData);
+        } catch {
+          sceneData = { scenes: [] };
+        }
+      }
+      const scenes = sceneData?.scenes || [];
+      const refStory = work.story_id ? getStoryById(work.story_id) : null;
+      const charNames = Array.from(
+        new Set(scenes.flatMap((s) => (s.characters || []).map((c) => c.name || 'Tokoh Wayang')))
+      );
+
+      return {
+        id: work.id,
+        rank: null,
+        title: work.title,
+        subtitle: refStory ? `Karya Komunitas • Adaptasi ${refStory.title}` : 'Karya Dalang Komunitas Digital',
+        dalang: work.author || 'Dalang Komunitas Wayangverse',
+        epos: refStory ? `Pakem: ${refStory.title}` : 'Kreasi Lakon Mandiri',
+        category: 'community',
+        badge: 'Karya Komunitas',
+        description: work.description || 'Pementasan lakon wayang digital gubahan dalang komunitas Wayangverse.',
+        coverImg: dalangPerformanceHeritage,
+        gending: 'Laras Gamelan Panggung',
+        sanad: refStory?.pakemSource || 'Arsip Publik Wayangverse',
+        storyId: work.story_id || null,
+        storySlug: refStory?.slug || null,
+        characterIds: [],
+        characterNames: charNames.length > 0 ? charNames : ['Tokoh Pementasan'],
+        scene_data: sceneData,
+        isCommunity: true,
+        scenesCount: scenes.length || 1,
+      };
+    });
+
+    return [...curated, ...community];
+  }, [publicWorks]);
+
+  // Filter & Search Engine
+  const filteredPerformances = useMemo(() => {
+    const q = searchQuery.trim().toLowerCase();
+    return allPerformances.filter((item) => {
+      // Filter Kategori
+      if (activeCategory === 'mahabharata' && item.category !== 'mahabharata') return false;
+      if (activeCategory === 'ramayana' && item.category !== 'ramayana') return false;
+      if (activeCategory === 'dewaruci' && item.category !== 'dewaruci') return false;
+      if (activeCategory === 'community' && !item.isCommunity) return false;
+
+      // Filter Pencarian Teks
+      if (!q) return true;
+      const matchTitle = item.title?.toLowerCase().includes(q);
+      const matchDesc = item.description?.toLowerCase().includes(q);
+      const matchDalang = item.dalang?.toLowerCase().includes(q);
+      const matchEpos = item.epos?.toLowerCase().includes(q);
+      const matchChars = (item.characterNames || []).some((c) => c.toLowerCase().includes(q));
+
+      return matchTitle || matchDesc || matchDalang || matchEpos || matchChars;
+    });
+  }, [allPerformances, activeCategory, searchQuery]);
+
+  return (
+    <div style={{ width: '100%', minHeight: '100vh', background: '#0d0a07', color: '#fcfaf2' }}>
       {/* ============================================================
-          GRID 2x2 KARTU PEMENTASAN (Sesuai Layout Desain Referensi)
+          1. HERO SECTION CINEMATIC ALAMI (Full 100vh, Bersih, Anti-Slop)
           ============================================================ */}
-      <div
+      <section
+        id="archive-hero-section"
         style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(460px, 1fr))',
-          gap: '24px',
-          marginBottom: '56px',
+          width: '100%',
+          minHeight: '100vh',
+          position: 'relative',
+          overflow: 'hidden',
+          background: '#0d0a07',
+          padding: '130px 24px 90px 24px',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          textAlign: 'center',
+          boxSizing: 'border-box',
+          boxShadow: '0 12px 36px rgba(0, 0, 0, 0.45)',
         }}
       >
-        {TOP_4_PERFORMANCES.map((item) => (
+        {/* Layer Background Perkamen Awan Tradisional Warm Bronze HD */}
+        <img
+          src={heroParchmentWideBg}
+          alt="Latar Perkamen Awan Tradisional Horizontal HD"
+          style={{
+            position: 'absolute',
+            inset: 0,
+            width: '100%',
+            height: '100%',
+            objectFit: 'cover',
+            objectPosition: 'bottom center',
+            zIndex: 1,
+            filter: 'contrast(1.02) brightness(0.78)',
+          }}
+        />
+
+        {/* Top Shadow Gradient Menyelaraskan dengan Floating Navbar */}
+        <div
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            height: '210px',
+            background:
+              'linear-gradient(to bottom, rgba(13, 10, 7, 0.94) 0%, rgba(13, 10, 7, 0.65) 100px, transparent 100%)',
+            pointerEvents: 'none',
+            zIndex: 2,
+          }}
+        />
+
+        {/* Ambient Center Overlay: Meneduhkan Area Tengah agar Teks Terbaca Tajam */}
+        <div
+          style={{
+            position: 'absolute',
+            inset: 0,
+            background:
+              'radial-gradient(ellipse 75% 70% at 50% 48%, rgba(16, 11, 7, 0.62) 0%, rgba(18, 12, 8, 0.40) 60%, rgba(10, 7, 5, 0.65) 100%)',
+            pointerEvents: 'none',
+            zIndex: 2,
+          }}
+        />
+
+        {/* Bottom Gradient Transisi Lembut ke Bagian Konten Terang */}
+        <div
+          style={{
+            position: 'absolute',
+            bottom: 0,
+            left: 0,
+            right: 0,
+            height: '140px',
+            background:
+              'linear-gradient(to top, rgba(13, 10, 7, 0.85) 0%, rgba(13, 10, 7, 0.35) 60%, transparent 100%)',
+            pointerEvents: 'none',
+            zIndex: 2,
+          }}
+        />
+
+        {/* Motif Awan Tradisional Jawa Otentik dengan Animasi Mengambang & Bergeser Halus (Berada di atas backdrop layer 2) */}
+        <JavaneseCloudBackground variant="hero" theme="dark" opacity={0.55} animated={true} style={{ zIndex: 2 }} />
+
+        {/* Ornamen Wayang Gunungan Kiri */}
+        <div
+          className="hero-gunungan-frame-left"
+          style={{
+            position: 'absolute',
+            left: '-15px',
+            bottom: '0',
+            height: '530px',
+            width: '330px',
+            zIndex: 4,
+            opacity: 0.78,
+            pointerEvents: 'none',
+            filter: 'none',
+          }}
+        >
+          <img
+            src={gununganKayonHd}
+            alt="Wayang Gunungan Kiri"
+            style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+          />
+        </div>
+
+        {/* Ornamen Wayang Gunungan Kanan */}
+        <div
+          className="hero-gunungan-frame-right"
+          style={{
+            position: 'absolute',
+            right: '-15px',
+            bottom: '0',
+            height: '530px',
+            width: '330px',
+            zIndex: 4,
+            opacity: 0.78,
+            pointerEvents: 'none',
+            filter: 'none',
+          }}
+        >
+          <img
+            src={gununganKayonHd}
+            alt="Wayang Gunungan Kanan"
+            style={{ width: '100%', height: '100%', objectFit: 'contain', transform: 'scaleX(-1)' }}
+          />
+        </div>
+
+        {/* Konten Hero Terpusat Sederhana & Berwibawa */}
+        <div
+          style={{
+            maxWidth: '920px',
+            width: '100%',
+            position: 'relative',
+            zIndex: 10,
+            margin: '0 auto',
+            textAlign: 'center',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+          }}
+        >
+          {/* Eyebrow Budaya Nusantara */}
           <div
-            key={item.id}
             style={{
-              background: '#120d09',
-              border: '1px solid rgba(212, 175, 55, 0.16)',
-              borderRadius: '20px',
-              overflow: 'hidden',
-              display: 'flex',
-              flexDirection: 'column',
-              transition: 'border-color 0.25s ease, transform 0.25s ease',
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.borderColor = 'rgba(212, 175, 55, 0.42)';
-              e.currentTarget.style.transform = 'translateY(-3px)';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.borderColor = 'rgba(212, 175, 55, 0.16)';
-              e.currentTarget.style.transform = 'translateY(0)';
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '10px',
+              padding: '6px 16px',
+              borderRadius: '9999px',
+              background: 'rgba(212, 175, 55, 0.08)',
+              border: '1px solid rgba(212, 175, 55, 0.22)',
+              color: '#d4af37',
+              fontSize: '11px',
+              fontWeight: '700',
+              letterSpacing: '2.5px',
+              textTransform: 'uppercase',
+              marginBottom: '18px',
             }}
           >
-            {/* Bagian Atas: Media Image 16:9 dengan Badge Nomor & Bar Metrik */}
-            <div
-              style={{
-                position: 'relative',
-                width: '100%',
-                height: '240px',
-                overflow: 'hidden',
-                background: '#090705',
-              }}
-            >
-              <img
-                src={item.coverImg}
-                alt={item.title}
-                style={{
-                  width: '100%',
-                  height: '100%',
-                  objectFit: 'cover',
-                  objectPosition: 'center',
-                }}
-              />
-
-              {/* Badge Nomor di Pojok Kanan Atas (01, 02, 03, 04) */}
-              <div
-                style={{
-                  position: 'absolute',
-                  top: '16px',
-                  right: '20px',
-                  fontSize: '32px',
-                  fontWeight: '700',
-                  fontFamily: 'monospace, var(--font-sans)',
-                  color: 'rgba(255, 255, 255, 0.78)',
-                  lineHeight: 1,
-                  letterSpacing: '1px',
-                  pointerEvents: 'none',
-                }}
-              >
-                {item.rank}
-              </div>
-
-              {/* Bar Metrik Teks di Bawah Gambar (Sesuai Referensi ROI | Win Rate | AUM) */}
-              <div
-                style={{
-                  position: 'absolute',
-                  bottom: 0,
-                  left: 0,
-                  right: 0,
-                  padding: '28px 18px 12px 18px',
-                  background: 'linear-gradient(to top, rgba(10, 7, 5, 0.96) 0%, rgba(10, 7, 5, 0.65) 65%, transparent 100%)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '8px',
-                  fontSize: '11px',
-                  fontWeight: '650',
-                  color: '#e4d6c2',
-                  letterSpacing: '0.04em',
-                  pointerEvents: 'none',
-                }}
-              >
-                <span>{item.stat1}</span>
-                <span style={{ color: 'rgba(212, 175, 55, 0.45)' }}>|</span>
-                <span>{item.stat2}</span>
-                <span style={{ color: 'rgba(212, 175, 55, 0.45)' }}>|</span>
-                <span>{item.stat3}</span>
-              </div>
-            </div>
-
-            {/* Bagian Bawah: Judul, Deskripsi & Tombol Aksi Interaktif */}
-            <div
-              style={{
-                padding: '24px 24px 22px 24px',
-                display: 'flex',
-                flexDirection: 'column',
-                flex: 1,
-                justifyContent: 'space-between',
-              }}
-            >
-              <div>
-                <h2
-                  style={{
-                    margin: '0 0 10px 0',
-                    fontSize: '21px',
-                    fontWeight: '800',
-                    color: '#fcfaf2',
-                    letterSpacing: '-0.3px',
-                    lineHeight: '1.3',
-                  }}
-                >
-                  {item.title}
-                </h2>
-
-                <p
-                  style={{
-                    margin: '0 0 18px 0',
-                    fontSize: '13.5px',
-                    color: '#b5a492',
-                    lineHeight: '1.65',
-                  }}
-                >
-                  {item.description}
-                </p>
-
-                {/* Tokoh Terhubung (Badge Pills) */}
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginBottom: '22px' }}>
-                  {item.characterNames.map((name, idx) => (
-                    <span
-                      key={idx}
-                      style={{
-                        background: 'rgba(212, 175, 55, 0.08)',
-                        border: '1px solid rgba(212, 175, 55, 0.2)',
-                        color: '#d4af37',
-                        padding: '3px 10px',
-                        borderRadius: '9999px',
-                        fontSize: '11px',
-                        fontWeight: '650',
-                      }}
-                    >
-                      {name}
-                    </span>
-                  ))}
-                </div>
-              </div>
-
-              {/* Tombol Aksi */}
-              <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-                <button
-                  onClick={() =>
-                    onPlayPerformance({
-                      id: item.id,
-                      title: item.title,
-                      description: item.description,
-                      scene_data: item.scene_data,
-                    })
-                  }
-                  style={{
-                    flex: 1,
-                    background: '#e8bb5c',
-                    border: 'none',
-                    color: '#0d0a07',
-                    padding: '11px 20px',
-                    borderRadius: '20px',
-                    fontSize: '13.5px',
-                    fontWeight: '750',
-                    cursor: 'pointer',
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    boxShadow: 'none',
-                    transition: 'all 0.2s ease',
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.background = '#dcae4d';
-                    e.currentTarget.style.transform = 'translateY(-1px)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.background = '#e8bb5c';
-                    e.currentTarget.style.transform = 'translateY(0)';
-                  }}
-                >
-                  Tonton Pertunjukan
-                </button>
-
-                <button
-                  onClick={() => onNavigateToStory && onNavigateToStory(item.storySlug)}
-                  style={{
-                    background: '#1c150f',
-                    border: '1px solid rgba(212, 175, 55, 0.3)',
-                    color: '#fcfaf2',
-                    padding: '11px 20px',
-                    borderRadius: '20px',
-                    fontSize: '13.5px',
-                    fontWeight: '650',
-                    cursor: 'pointer',
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    transition: 'all 0.2s ease',
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.background = '#281c14';
-                    e.currentTarget.style.borderColor = '#d4af37';
-                    e.currentTarget.style.transform = 'translateY(-1px)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.background = '#1c150f';
-                    e.currentTarget.style.borderColor = 'rgba(212, 175, 55, 0.3)';
-                    e.currentTarget.style.transform = 'translateY(0)';
-                  }}
-                >
-                  Naskah
-                </button>
-              </div>
-            </div>
+            <span style={{ width: '5px', height: '5px', borderRadius: '50%', background: '#d4af37' }} />
+            <span>PANGGUNG TERBUKA PAGELARAN NUSANTARA</span>
+            <span style={{ width: '5px', height: '5px', borderRadius: '50%', background: '#d4af37' }} />
           </div>
-        ))}
-      </div>
+
+          {/* Headline Utama Selaras Tipografi Atlas & Beranda */}
+          <h1
+            style={{
+              margin: '0 0 20px 0',
+              fontFamily: 'var(--font-sans)',
+              fontSize: 'clamp(34px, 4.8vw, 56px)',
+              fontWeight: '850',
+              color: '#fcfaf2',
+              letterSpacing: '-0.5px',
+              lineHeight: '1.22',
+              textAlign: 'center',
+            }}
+          >
+            Khazanah Pagelaran & <span style={{ color: '#d4af37' }}>Pentas Wayang</span>
+          </h1>
+
+          {/* Subjudul Narasi Singkat, Padat, dan Jelas */}
+          <p
+            style={{
+              margin: '0 auto 34px auto',
+              fontSize: 'clamp(15px, 1.5vw, 17px)',
+              color: '#f0e6d8',
+              lineHeight: '1.8',
+              maxWidth: '720px',
+              fontWeight: '450',
+              textAlign: 'center',
+            }}
+          >
+            Panggung kelir digital nusantara. Saksikan lakon wiracarita luhur dan kreasi pedalangan modern dalam format dua dimensi interaktif.
+          </p>
+
+          {/* Tombol Aksi Tunggal yang Tenang & Jelas (Persis AtlasView) */}
+          <button
+            onClick={() => {
+              const el = document.getElementById('archive-light-sections');
+              if (el) el.scrollIntoView({ behavior: 'smooth' });
+            }}
+            style={{
+              background: 'linear-gradient(135deg, #e8bb5c 0%, #d4af37 100%)',
+              border: '1px solid rgba(245, 215, 127, 0.45)',
+              color: '#1a120b',
+              padding: '13px 32px',
+              borderRadius: '12px',
+              fontSize: '14px',
+              fontWeight: '750',
+              letterSpacing: '0.2px',
+              cursor: 'pointer',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '8px',
+              boxShadow: '0 2px 8px rgba(0, 0, 0, 0.25)',
+              transition: 'all 0.25s cubic-bezier(0.16, 1, 0.3, 1)',
+              minHeight: '44px',
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = 'translateY(-2px)';
+              e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.35)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = 'translateY(0)';
+              e.currentTarget.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.25)';
+            }}
+          >
+            <span>Jelajahi Koleksi Pagelaran</span>
+            <ChevronDown size={16} />
+          </button>
+        </div>
+
+        {/* Strip Motif Batik Emas di Bagian Bawah Hero Sesuai Desain Atlas */}
+        <div
+          style={{
+            position: 'absolute',
+            bottom: 0,
+            left: 0,
+            right: 0,
+            height: '40px',
+            backgroundImage: `url(${atlasGoldMotifStrip})`,
+            backgroundRepeat: 'repeat-x',
+            backgroundPosition: 'center bottom',
+            backgroundSize: 'auto 40px',
+            borderTop: '1px solid rgba(212, 175, 55, 0.65)',
+            boxShadow: '0 -2px 10px rgba(0, 0, 0, 0.15)',
+            zIndex: 15,
+          }}
+        />
+      </section>
 
       {/* ============================================================
-          KARYA TAMBAHAN KOMUNITAS / PENGGUNA (Jika ada karya baru)
+          2. LIGHT PARCHMENT ZONE (#f5f0e4)
+          Navbar otomatis beralih ke mode terang di area ini
           ============================================================ */}
-      {publicWorks.length > 0 && (
-        <div style={{ marginTop: '20px', borderTop: '1px solid rgba(212, 175, 55, 0.14)', paddingTop: '40px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '20px' }}>
-            <Compass size={18} color="#d4af37" />
-            <h2 style={{ fontSize: '20px', fontWeight: '800', color: '#fcfaf2', margin: 0 }}>
-              Karya Pengguna Tersimpan
-            </h2>
-          </div>
+      <section
+        id="archive-light-sections"
+        data-light-section="true"
+        style={{
+          width: '100%',
+          background: '#f5f0e4',
+          minHeight: '80vh',
+          padding: '80px 0 100px 0',
+          boxSizing: 'border-box',
+          color: '#1a140e',
+          position: 'relative',
+          overflow: 'hidden',
+        }}
+      >
+        {/* Motif Awan Tradisional Jawa Halus (Hanya di margin tepi, tidak menabrak cardbox) */}
+        <JavaneseCloudBackground variant="flanking" theme="light" opacity={0.20} animated={true} />
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '18px' }}>
-            {publicWorks.map((work) => {
-              const sceneData = typeof work.scene_data === 'string' ? JSON.parse(work.scene_data) : work.scene_data;
-              const scenes = sceneData?.scenes || [];
-              const refStory = work.story_id ? getStoryById(work.story_id) : null;
+        <div
+          style={{
+            maxWidth: '1280px',
+            width: '100%',
+            margin: '0 auto',
+            padding: '0 24px',
+            boxSizing: 'border-box',
+            position: 'relative',
+            zIndex: 10,
+          }}
+        >
+          {/* Section Header */}
+          <h2
+            style={{
+              textAlign: 'center',
+              fontFamily: 'var(--font-sans)',
+              fontSize: 'clamp(28px, 4vw, 44px)',
+              fontWeight: 800,
+              color: '#1a140e',
+              margin: '0 0 12px 0',
+              letterSpacing: '-0.02em',
+            }}
+          >
+            Koleksi Pagelaran <span style={{ color: '#c27827' }}>Wayang Digital</span>
+          </h2>
 
+          <p
+            style={{
+              textAlign: 'center',
+              fontSize: '15px',
+              color: '#6e5e4d',
+              maxWidth: '680px',
+              margin: '0 auto 36px auto',
+              lineHeight: '1.7',
+            }}
+          >
+            Pilih lakon untuk menyaksikan pementasan wayang kulit dua dimensi dengan tata suara gamelan otentik.
+          </p>
+
+          {/* Kapsul Search Bar Elegan (Persis AtlasView) */}
+          <form
+            onSubmit={(e) => e.preventDefault()}
+            style={{
+              maxWidth: '820px',
+              width: '100%',
+              margin: '0 auto 20px auto',
+              background: '#ffffff',
+              border: 'none',
+              boxShadow: '0 8px 30px rgba(0, 0, 0, 0.08)',
+              borderRadius: '9999px',
+              padding: '5px 6px 5px 22px',
+              display: 'flex',
+              alignItems: 'center',
+              boxSizing: 'border-box',
+              outline: 'none',
+              transition: 'all 0.2s ease',
+            }}
+          >
+            <Search size={22} style={{ color: '#78716c', marginRight: '14px', flexShrink: 0 }} />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Cari lakon pagelaran, dalang, atau wiracarita..."
+              style={{
+                flex: 1,
+                border: 'none',
+                outline: 'none',
+                background: 'transparent',
+                color: '#1a130d',
+                fontSize: '15px',
+                fontWeight: '500',
+                fontFamily: 'inherit',
+                padding: '10px 0',
+                minWidth: '100px',
+              }}
+            />
+            {searchQuery && (
+              <button
+                type="button"
+                onClick={() => setSearchQuery('')}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  color: '#8a7d6e',
+                  cursor: 'pointer',
+                  padding: '4px 8px',
+                  marginRight: '6px',
+                  fontSize: '18px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+                title="Hapus pencarian"
+              >
+                ✕
+              </button>
+            )}
+            <button
+              type="submit"
+              style={{
+                background: '#c27827',
+                color: '#ffffff',
+                border: 'none',
+                borderRadius: '9999px',
+                padding: '12px 34px',
+                fontSize: '15px',
+                fontWeight: '750',
+                cursor: 'pointer',
+                letterSpacing: '0.02em',
+                flexShrink: 0,
+                boxShadow: 'none',
+                transition: 'all 0.2s ease',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = '#ad671d';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = '#c27827';
+              }}
+            >
+              Cari
+            </button>
+          </form>
+
+          {/* Baris Kapsul Filter Kategori (Persis AtlasView) */}
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '10px',
+              flexWrap: 'wrap',
+              marginBottom: '46px',
+            }}
+          >
+            {FILTER_CHIPS.map((chip) => {
+              const isActive = activeCategory === chip.id;
               return (
-                <div
-                  key={work.id}
+                <button
+                  key={chip.id}
+                  type="button"
+                  onClick={() => setActiveCategory(chip.id)}
                   style={{
-                    background: '#120d09',
-                    border: '1px solid rgba(212, 175, 55, 0.16)',
-                    borderRadius: '16px',
-                    padding: '20px',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    justifyContent: 'space-between',
+                    background: isActive ? '#c27827' : '#ffffff',
+                    color: isActive ? '#ffffff' : '#2d1f14',
+                    border: isActive ? '1px solid #c27827' : '1px solid #dcd7ce',
+                    borderRadius: '9999px',
+                    padding: '8px 22px',
+                    fontSize: '14px',
+                    fontWeight: isActive ? '750' : '600',
+                    cursor: 'pointer',
+                    boxShadow: 'none',
+                    transition: 'all 0.18s ease',
+                  }}
+                  onMouseEnter={(e) => {
+                    if (!isActive) {
+                      e.currentTarget.style.borderColor = '#c27827';
+                      e.currentTarget.style.color = '#c27827';
+                      e.currentTarget.style.transform = 'translateY(-1px)';
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!isActive) {
+                      e.currentTarget.style.borderColor = '#dcd7ce';
+                      e.currentTarget.style.color = '#2d1f14';
+                      e.currentTarget.style.transform = 'translateY(0)';
+                    }
                   }}
                 >
-                  <div>
-                    <h3 style={{ margin: '0 0 6px 0', fontSize: '17px', color: '#fcfaf2', fontWeight: '750' }}>
-                      {work.title}
-                    </h3>
-                    <p style={{ margin: '0 0 12px 0', fontSize: '12.5px', color: '#b5a492', lineHeight: '1.5' }}>
-                      {work.description || 'Pertunjukan karya kreator digital Wayangverse.'}
-                    </p>
-                    {refStory && (
-                      <div style={{ fontSize: '11.5px', color: '#d4af37', marginBottom: '14px' }}>
-                        Lakon: {refStory.title}
-                      </div>
-                    )}
-                  </div>
-
-                  <button
-                    onClick={() => onPlayPerformance && onPlayPerformance(work)}
-                    style={{
-                      background: '#e8bb5c',
-                      border: 'none',
-                      color: '#0d0a07',
-                      padding: '10px 20px',
-                      borderRadius: '20px',
-                      fontSize: '13px',
-                      fontWeight: '750',
-                      cursor: 'pointer',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      boxShadow: 'none',
-                      transition: 'all 0.2s ease',
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.background = '#dcae4d';
-                      e.currentTarget.style.transform = 'translateY(-1px)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.background = '#e8bb5c';
-                      e.currentTarget.style.transform = 'translateY(0)';
-                    }}
-                  >
-                    Putar ({scenes.length} Babak)
-                  </button>
-                </div>
+                  {chip.label}
+                </button>
               );
             })}
           </div>
+
+          {/* ============================================================
+              BARIS HEADER KATALOG (Persis Story Atlas - Rapi, Tanpa Duplikasi)
+              ============================================================ */}
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              marginBottom: '24px',
+              borderBottom: '1px solid rgba(0, 0, 0, 0.08)',
+              paddingBottom: '12px',
+            }}
+          >
+            <h3
+              style={{
+                margin: 0,
+                fontSize: '22px',
+                color: '#1a140e',
+                fontWeight: '850',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '10px',
+              }}
+            >
+              Daftar Pagelaran Wayang
+            </h3>
+            <span
+              style={{
+                fontSize: '12px',
+                color: '#8b5a1b',
+                background: '#ffffff',
+                border: '1px solid rgba(212, 175, 55, 0.25)',
+                padding: '4px 14px',
+                borderRadius: '14px',
+                fontWeight: '750',
+              }}
+            >
+              {filteredPerformances.length} Pagelaran
+            </span>
+          </div>
+
+          {/* ============================================================
+              GRID KATALOG PAGELARAN (Cardbox Bersih Sesuai AtlasView)
+              ============================================================ */}
+          {filteredPerformances.length === 0 ? (
+            /* Keadaan Kosong (Empty State Bersih) */
+            <div
+              style={{
+                textAlign: 'center',
+                padding: '60px 24px',
+                background: '#ffffff',
+                borderRadius: '26px',
+                border: '1px solid rgba(212, 175, 55, 0.25)',
+                boxShadow: '0 4px 24px rgba(0, 0, 0, 0.04)',
+                maxWidth: '640px',
+                margin: '30px auto',
+              }}
+            >
+              <Compass size={36} color="#8b5a1b" style={{ margin: '0 auto 14px auto' }} />
+              <p style={{ fontSize: '18px', color: '#1a140e', fontWeight: '800', marginBottom: '8px' }}>
+                Tidak ada pagelaran yang cocok dengan kata kunci "{searchQuery}"
+              </p>
+              <p style={{ fontSize: '13.5px', color: '#6e5e4d', marginBottom: '22px' }}>
+                Coba gunakan kata kunci lain seperti "Gatotkaca", "Karna", "Anoman", atau reset filter.
+              </p>
+              <button
+                onClick={() => {
+                  setSearchQuery('');
+                  setActiveCategory('all');
+                }}
+                style={{
+                  background: '#c27827',
+                  color: '#ffffff',
+                  border: 'none',
+                  borderRadius: '9999px',
+                  padding: '10px 26px',
+                  fontSize: '13.5px',
+                  fontWeight: '750',
+                  cursor: 'pointer',
+                  minHeight: '44px',
+                }}
+              >
+                Tampilkan Semua Pagelaran
+              </button>
+            </div>
+          ) : (
+            <div
+              style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))',
+                gap: '32px',
+              }}
+            >
+              {filteredPerformances.map((item) => {
+                return (
+                  <div
+                    key={item.id}
+                    style={{
+                      background: '#ffffff',
+                      borderRadius: '20px',
+                      border: '1px solid rgba(0, 0, 0, 0.06)',
+                      padding: '24px',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      transition: 'transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease',
+                      boxShadow: '0 2px 10px rgba(40, 28, 16, 0.04)',
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.borderColor = 'rgba(212, 175, 55, 0.35)';
+                      e.currentTarget.style.transform = 'translateY(-4px)';
+                      e.currentTarget.style.boxShadow = '0 8px 24px rgba(40, 28, 16, 0.08)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.borderColor = 'rgba(0, 0, 0, 0.06)';
+                      e.currentTarget.style.transform = 'translateY(0)';
+                      e.currentTarget.style.boxShadow = '0 2px 10px rgba(40, 28, 16, 0.04)';
+                    }}
+                  >
+                    {/* Visual Cover Gambar 16:9 dengan Badge Tunggal Bersih */}
+                    <div
+                      style={{
+                        position: 'relative',
+                        width: '100%',
+                        height: '210px',
+                        borderRadius: '16px',
+                        overflow: 'hidden',
+                        background: '#090705',
+                        marginBottom: '20px',
+                      }}
+                    >
+                      <img
+                        src={item.coverImg}
+                        alt={item.title}
+                        style={{
+                          width: '100%',
+                          height: '100%',
+                          objectFit: 'cover',
+                          objectPosition: 'center',
+                          display: 'block',
+                          transition: 'transform 0.4s ease',
+                        }}
+                      />
+
+                      {/* Badge Tradisi / Kategori Tunggal Bersih di Pojok Kiri Atas */}
+                      <div
+                        style={{
+                          position: 'absolute',
+                          top: '12px',
+                          left: '12px',
+                          background: 'rgba(255, 255, 255, 0.96)',
+                          backdropFilter: 'blur(8px)',
+                          borderRadius: '9999px',
+                          padding: '5px 12px',
+                          boxShadow: '0 2px 8px rgba(0, 0, 0, 0.12)',
+                          fontSize: '11px',
+                          fontWeight: '800',
+                          color: '#1a140e',
+                          letterSpacing: '0.04em',
+                          textTransform: 'uppercase',
+                          pointerEvents: 'none',
+                        }}
+                      >
+                        {item.badge || item.epos}
+                      </div>
+                    </div>
+
+                    {/* Informasi Konten Teks & Tombol Aksi */}
+                    <div
+                      style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        flex: 1,
+                        justifyContent: 'space-between',
+                      }}
+                    >
+                      <div>
+                        {/* Meta Stack Rapi & Alami (Tanpa AI Slop) */}
+                        <div
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '8px',
+                            marginBottom: '10px',
+                            fontSize: '12px',
+                            color: '#8b5a1b',
+                            fontWeight: '700',
+                            textTransform: 'uppercase',
+                            letterSpacing: '0.04em',
+                          }}
+                        >
+                          <span>{item.epos}</span>
+                          <span style={{ color: '#dcd7ce' }}>•</span>
+                          <span>{item.dalang}</span>
+                        </div>
+
+                        {/* Judul Lakon */}
+                        <h3
+                          style={{
+                            margin: '0 0 10px 0',
+                            fontSize: '20px',
+                            fontWeight: '850',
+                            color: '#1a140e',
+                            letterSpacing: '-0.3px',
+                            lineHeight: '1.35',
+                          }}
+                        >
+                          {item.title}
+                        </h3>
+
+                        {/* Deskripsi Singkat, Padat, dan Jelas (TIDAK KEPOTONG / FULL DISPLAY) */}
+                        <p
+                          style={{
+                            margin: '0 0 14px 0',
+                            fontSize: '13.5px',
+                            color: '#655342',
+                            lineHeight: '1.6',
+                          }}
+                        >
+                          {item.description}
+                        </p>
+
+                        {/* Sajian Gending & Jumlah Babak */}
+                        <div
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '8px',
+                            fontSize: '12.5px',
+                            color: '#786c5e',
+                            marginBottom: '20px',
+                          }}
+                        >
+                          <Music size={13} style={{ color: '#8b5a1b' }} />
+                          <span>{item.gending}</span>
+                          <span style={{ color: '#dcd7ce' }}>•</span>
+                          <Layers size={13} style={{ color: '#8b5a1b' }} />
+                          <span>{item.scenesCount} Babak</span>
+                        </div>
+                      </div>
+
+                      {/* Tombol Aksi Utama Bersih (1 Tombol Utama + Opsi Naskah Jika Ada) */}
+                      <div style={{ display: 'flex', gap: '8px', alignItems: 'center', marginTop: 'auto' }}>
+                        <button
+                          onClick={() =>
+                            onPlayPerformance({
+                              id: item.id,
+                              title: item.title,
+                              description: item.description,
+                              scene_data: item.scene_data,
+                            })
+                          }
+                          style={{
+                            flex: 1,
+                            background: '#e8bb5c',
+                            border: 'none',
+                            color: '#0d0a07',
+                            padding: '12px 20px',
+                            borderRadius: '12px',
+                            fontSize: '13.5px',
+                            fontWeight: '750',
+                            letterSpacing: '0.01em',
+                            cursor: 'pointer',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            gap: '6px',
+                            boxShadow: 'none',
+                            transition: 'background 0.2s ease, transform 0.2s ease',
+                            minHeight: '44px',
+                          }}
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.background = '#dcae4d';
+                            e.currentTarget.style.transform = 'translateY(-1px)';
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.background = '#e8bb5c';
+                            e.currentTarget.style.transform = 'translateY(0)';
+                          }}
+                        >
+                          <Play size={15} fill="#0d0a07" />
+                          <span>Tonton Pagelaran</span>
+                        </button>
+
+                        {item.storySlug && (
+                          <button
+                            onClick={() => onNavigateToStory && onNavigateToStory(item.storySlug)}
+                            style={{
+                              background: '#ffffff',
+                              border: '1px solid #dcd7ce',
+                              color: '#2d1f14',
+                              padding: '12px 14px',
+                              borderRadius: '12px',
+                              fontSize: '13px',
+                              fontWeight: '650',
+                              cursor: 'pointer',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              gap: '6px',
+                              transition: 'all 0.2s ease',
+                              minHeight: '44px',
+                            }}
+                            onMouseEnter={(e) => {
+                              e.currentTarget.style.borderColor = '#c27827';
+                              e.currentTarget.style.color = '#c27827';
+                            }}
+                            onMouseLeave={(e) => {
+                              e.currentTarget.style.borderColor = '#dcd7ce';
+                              e.currentTarget.style.color = '#2d1f14';
+                            }}
+                            title="Buka naskah cerita pakem"
+                          >
+                            <BookOpen size={15} />
+                            <span>Naskah</span>
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
         </div>
-      )}
+      </section>
     </div>
   );
 }

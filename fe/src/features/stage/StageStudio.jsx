@@ -4,6 +4,8 @@ import VirtualStageCanvas from './VirtualStageCanvas';
 import SceneComposer from './SceneComposer';
 import StagePreviewModal from './StagePreviewModal';
 import SavePerformanceModal from './SavePerformanceModal';
+import { RotateCcw, Play, Save, ArrowLeft, X } from 'lucide-react';
+
 export default function StageStudio({ onNavigate }) {
   const {
     metadata,
@@ -27,6 +29,7 @@ export default function StageStudio({ onNavigate }) {
 
   const [showPreviewModal, setShowPreviewModal] = useState(false);
   const [showSaveModal, setShowSaveModal] = useState(false);
+  const [showResetConfirmModal, setShowResetConfirmModal] = useState(false);
 
   const currentScene = scenes[activeSceneIndex] || scenes[0];
 
@@ -40,8 +43,8 @@ export default function StageStudio({ onNavigate }) {
           alignItems: 'center',
           justifyContent: 'space-between',
           background: '#16100a',
-          border: '1px solid #362619',
-          borderRadius: '14px',
+          border: '1px solid rgba(212, 175, 55, 0.25)',
+          borderRadius: '16px',
           padding: '14px 20px',
           marginBottom: '16px',
           gap: '12px',
@@ -55,22 +58,32 @@ export default function StageStudio({ onNavigate }) {
               background: '#231a13',
               border: '1px solid rgba(212, 175, 55, 0.3)',
               color: '#e8bb5c',
-              padding: '8px 18px',
-              borderRadius: '20px',
+              padding: '8px 16px',
+              borderRadius: '12px',
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
-              justifyContent: 'center',
-              fontSize: '12px',
-              fontWeight: '650',
+              gap: '6px',
+              fontSize: '12.5px',
+              fontWeight: '700',
+              minHeight: '40px',
               transition: 'all 0.2s ease',
             }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.borderColor = '#d4af37';
+              e.currentTarget.style.background = '#2c2017';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.borderColor = 'rgba(212, 175, 55, 0.3)';
+              e.currentTarget.style.background = '#231a13';
+            }}
           >
-            Beranda
+            <ArrowLeft size={14} />
+            <span>Beranda</span>
           </button>
 
           <div>
-            <h1 style={{ margin: 0, fontSize: '18px', color: '#fcfaf2', fontWeight: '700' }}>
+            <h1 style={{ margin: 0, fontSize: '18px', color: '#fcfaf2', fontWeight: '800' }}>
               {metadata.title || 'Lakon Wayang Baru'}
             </h1>
             <div style={{ fontSize: '11px', color: '#bfae9c', marginTop: '2px' }}>
@@ -82,15 +95,20 @@ export default function StageStudio({ onNavigate }) {
         {/* Toolbar Tombol Aksi Studio */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           <button
-            onClick={() => {
-              if (window.confirm('Mulai proyek lakon baru dari awal? Perubahan belum tersimpan akan di-reset.')) {
-                resetStudio();
-              }
-            }}
+            onClick={() => setShowResetConfirmModal(true)}
             title="Reset Panggung ke Adegan Awal"
             style={studioBtnStyle}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.borderColor = 'rgba(212, 175, 55, 0.5)';
+              e.currentTarget.style.background = '#2c2017';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.borderColor = 'rgba(212, 175, 55, 0.25)';
+              e.currentTarget.style.background = '#231a13';
+            }}
           >
-            Reset
+            <RotateCcw size={13} />
+            <span>Reset</span>
           </button>
 
           <button
@@ -98,32 +116,45 @@ export default function StageStudio({ onNavigate }) {
             style={{
               ...studioBtnStyle,
               background: '#231a13',
-              borderColor: '#e8bb5c',
+              border: '1px solid rgba(212, 175, 55, 0.45)',
               color: '#e8bb5c',
-              fontWeight: '650',
+              fontWeight: '700',
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.borderColor = '#d4af37';
+              e.currentTarget.style.background = '#2c2017';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.borderColor = 'rgba(212, 175, 55, 0.45)';
+              e.currentTarget.style.background = '#231a13';
             }}
           >
-            Pratinjau Pertunjukan
+            <Play size={13} fill="#e8bb5c" />
+            <span>Pratinjau Pertunjukan</span>
           </button>
 
           <button
             onClick={() => setShowSaveModal(true)}
             style={{
               ...studioBtnStyle,
-              background: '#e8bb5c',
+              background: 'linear-gradient(135deg, #e8bb5c 0%, #d4af37 100%)',
               border: 'none',
               color: '#0d0a07',
-              fontWeight: '750',
+              fontWeight: '800',
               padding: '9px 20px',
+              boxShadow: '0 2px 8px rgba(212, 175, 55, 0.25)',
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.background = '#dcae4d';
+              e.currentTarget.style.filter = 'brightness(1.06)';
+              e.currentTarget.style.transform = 'translateY(-1px)';
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.background = '#e8bb5c';
+              e.currentTarget.style.filter = 'none';
+              e.currentTarget.style.transform = 'translateY(0)';
             }}
           >
-            Simpan Karya
+            <Save size={14} />
+            <span>Simpan Karya</span>
           </button>
         </div>
       </div>
@@ -172,21 +203,115 @@ export default function StageStudio({ onNavigate }) {
           if (savedRecord?.id) setMetadata({ id: savedRecord.id });
         }}
       />
+
+      {/* Modal Konfirmasi Reset Proyek Lakon */}
+      {showResetConfirmModal && (
+        <div
+          className="wayang-modal-backdrop"
+          style={{ zIndex: 1100 }}
+          onClick={() => setShowResetConfirmModal(false)}
+        >
+          <div
+            className="wayang-modal-chassis"
+            style={{ maxWidth: '480px', width: '100%' }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="wayang-modal-inner" style={{ padding: '32px 28px', textAlign: 'center' }}>
+              <div className="wayang-modal-hairline" />
+
+              {/* Tombol Tutup X */}
+              <button
+                type="button"
+                onClick={() => setShowResetConfirmModal(false)}
+                aria-label="Tutup Dialog"
+                className="wayang-modal-close-btn"
+                style={{
+                  position: 'absolute',
+                  top: '18px',
+                  right: '18px',
+                  width: '38px',
+                  height: '38px',
+                }}
+              >
+                <X size={16} />
+              </button>
+
+              <div
+                style={{
+                  width: '58px',
+                  height: '58px',
+                  borderRadius: '50%',
+                  background: 'rgba(212, 175, 55, 0.14)',
+                  border: '1px solid rgba(212, 175, 55, 0.42)',
+                  boxShadow: '0 4px 12px rgba(139, 69, 19, 0.08)',
+                  color: '#8b4513',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  margin: '0 auto 16px auto',
+                }}
+              >
+                <RotateCcw size={24} />
+              </div>
+
+              <div className="wayang-modal-eyebrow" style={{ marginBottom: '8px' }}>
+                <span style={{ display: 'inline-block', width: '6px', height: '6px', borderRadius: '50%', background: '#d4af37' }} />
+                <span>KONFIRMASI PANGGUNG KELIR</span>
+              </div>
+
+              <h3 style={{ margin: '0 0 10px 0', fontSize: '22px', fontWeight: '850', color: '#1a140e', fontFamily: 'Cinzel, Georgia, serif', letterSpacing: '-0.3px' }}>
+                Reset Proyek Lakon?
+              </h3>
+              <p style={{ margin: '0 0 26px 0', fontSize: '13.5px', color: '#5c4738', lineHeight: '1.65' }}>
+                Mulai lakon baru dari awal? Seluruh susunan adegan, tokoh wayang, dan naskah dialog di panggung yang belum tersimpan akan dikembalikan ke kondisi awal.
+              </p>
+
+              <div style={{ display: 'flex', gap: '14px', justifyContent: 'center' }}>
+                <button
+                  type="button"
+                  onClick={() => setShowResetConfirmModal(false)}
+                  className="wayang-btn-ghost"
+                  style={{ flex: 1 }}
+                >
+                  Batalkan
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    resetStudio();
+                    setShowResetConfirmModal(false);
+                  }}
+                  className="wayang-btn-cta"
+                  style={{ flex: 1, justifyContent: 'space-between' }}
+                >
+                  <span>Reset Lakon</span>
+                  <span className="wayang-btn-cta-icon">
+                    <RotateCcw size={15} color="#16100a" />
+                  </span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
 
 const studioBtnStyle = {
   background: '#231a13',
-  border: '1px solid #362619',
+  border: '1px solid rgba(212, 175, 55, 0.25)',
   color: '#fcfaf2',
   padding: '8px 16px',
-  borderRadius: '20px',
+  borderRadius: '12px',
   cursor: 'pointer',
-  display: 'flex',
+  display: 'inline-flex',
   alignItems: 'center',
+  justifyContent: 'center',
   gap: '6px',
-  fontSize: '12px',
-  fontWeight: '600',
+  fontSize: '12.5px',
+  fontWeight: '700',
+  minHeight: '40px',
   transition: 'all 0.2s ease',
 };

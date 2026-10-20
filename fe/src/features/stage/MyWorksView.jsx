@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import persistenceService from '../../services/persistenceService';
 import { useStageStore } from './useStageStore';
-import { getStoryById, STORIES_MASTER } from '../../data/master/storiesMaster';
-import { getCharacterById, CHARACTERS_MASTER } from '../../data/master/charactersMaster';
+import { getStoryById } from '../../data/master/storiesMaster';
 import { AUDIO_MASTER } from '../../data/master/audioMaster';
 import soundEngine from '../../services/soundscape';
+import AnimatedCounter from '../../components/ui/AnimatedCounter';
 import {
   Film,
   Globe,
@@ -16,7 +16,6 @@ import {
   Search,
   Play,
   Square,
-  Sparkles,
   Copy,
   Trash2,
   ChevronDown,
@@ -26,23 +25,19 @@ import {
   Music,
   ArrowRight,
   Edit3,
-  X,
   SlidersHorizontal,
   Users,
-  Eye,
   Volume2,
   LayoutGrid,
   Columns,
-  Flame,
-  Shield,
-  HelpCircle,
-  ExternalLink,
+  X,
 } from 'lucide-react';
 
 // Aset Visual Heritage & Ornamen Budaya
 import heroParchmentWideBg from '../../assets/hero_parchment_clouds_widescreen_hd.jpg';
 import atlasGoldMotifStrip from '../../assets/atlas_gold_motif_strip.jpg';
 import gununganKayonHd from '../../assets/gunungan_kayon_hd.png';
+import JavaneseCloudBackground from '../../components/ui/JavaneseCloudBackground';
 import galleryCoverGatotkaca from '../../assets/gallery_cover_gatotkaca.jpg';
 import dalangPerformanceHeritage from '../../assets/dalang_performance_heritage.jpg';
 import lakonCoverDewaRuci from '../../assets/lakon_cover_dewa_ruci.jpg';
@@ -52,10 +47,6 @@ import avatarArjuna from '../../assets/avatar_arjuna.png';
 import avatarBima from '../../assets/avatar_bima.png';
 import avatarGatotkaca from '../../assets/avatar_gatotkaca.png';
 import avatarShinta from '../../assets/avatar_shinta.png';
-import wayangCardArjuna from '../../assets/wayang_card_arjuna.jpg';
-import wayangCardGatotkaca from '../../assets/wayang_card_gatotkaca.jpg';
-import wayangCardBima from '../../assets/wayang_card_bima.jpg';
-import wayangCardShinta from '../../assets/wayang_card_shinta.jpg';
 
 // 4 Template Inspirasi Lakon Pakem Klasik untuk Pementasan Cepat Berstandar Keraton
 const TEMPLATE_STARTERS = [
@@ -364,14 +355,19 @@ export default function MyWorksView({ onOpenStudio, onPlayPerformance }) {
   const { loadPerformanceFromData, resetStudio } = useStageStore();
 
   const loadWorks = async () => {
-    setLoading(true);
-    const data = await persistenceService.getMyWorks();
-    setWorks(data || []);
-    setLoading(false);
+    try {
+      const data = await persistenceService.getMyWorks();
+      setWorks(data || []);
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
-    loadWorks();
+    async function initWorks() {
+      await loadWorks();
+    }
+    initWorks();
     return () => {
       soundEngine.stopBgm();
     };
@@ -628,10 +624,11 @@ export default function MyWorksView({ onOpenStudio, onPlayPerformance }) {
             objectFit: 'cover',
             objectPosition: 'bottom center',
             zIndex: 1,
-            filter: 'contrast(1.0) brightness(0.88)',
+            filter: 'contrast(1.02) brightness(0.78)',
           }}
         />
-        {/* Top Shadow Gradient: Menyelaraskan Latar Belakang dengan Navbar Transparan */}
+
+        {/* 1. Top Shadow Gradient: Menyelaraskan Latar Belakang dengan Navbar Transparan agar Tidak Tabrakan Kontras */}
         <div
           style={{
             position: 'absolute',
@@ -646,32 +643,35 @@ export default function MyWorksView({ onOpenStudio, onPlayPerformance }) {
           }}
         />
 
-        {/* Ambient Center Overlay: Meneduhkan Area Tengah agar Teks Terbaca Tajam & Jernih */}
+        {/* 2. Ambient Center Overlay: Meneduhkan Area Tengah agar Teks Terbaca Tajam, Mewah, dan Nyaman di Mata */}
         <div
           style={{
             position: 'absolute',
             inset: 0,
             background:
-              'radial-gradient(ellipse 75% 70% at 50% 50%, rgba(16, 11, 7, 0.62) 0%, rgba(18, 12, 8, 0.45) 60%, rgba(10, 7, 5, 0.72) 100%)',
+              'radial-gradient(ellipse 75% 70% at 50% 48%, rgba(16, 11, 7, 0.65) 0%, rgba(18, 12, 8, 0.42) 60%, rgba(10, 7, 5, 0.68) 100%)',
             pointerEvents: 'none',
             zIndex: 2,
           }}
         />
 
-        {/* Bottom Gradient Transisi Lembut ke Bagian Konten */}
+        {/* 3. Bottom Gradient Transisi Lembut ke Bagian Konten & Cardbox Stat */}
         <div
           style={{
             position: 'absolute',
             bottom: 0,
             left: 0,
             right: 0,
-            height: '140px',
+            height: '160px',
             background:
               'linear-gradient(to top, rgba(13, 10, 7, 0.88) 0%, rgba(13, 10, 7, 0.35) 60%, transparent 100%)',
             pointerEvents: 'none',
             zIndex: 2,
           }}
         />
+
+        {/* Motif Awan Tradisional Jawa Otentik dengan Animasi Mengambang & Bergeser Halus (Berada di atas backdrop layer 3 di panggung malam) */}
+        <JavaneseCloudBackground variant="hero" theme="dark" opacity={0.55} animated={true} style={{ zIndex: 3 }} />
 
         {/* Ornamen Wayang Gunungan Berayun Kiri */}
         <div
@@ -680,11 +680,12 @@ export default function MyWorksView({ onOpenStudio, onPlayPerformance }) {
             position: 'absolute',
             left: '-15px',
             bottom: '0',
-            height: '520px',
-            width: '320px',
-            zIndex: 3,
-            opacity: 0.82,
+            height: '530px',
+            width: '330px',
+            zIndex: 4,
+            opacity: 0.78,
             pointerEvents: 'none',
+            filter: 'none',
           }}
         >
           <img
@@ -701,11 +702,12 @@ export default function MyWorksView({ onOpenStudio, onPlayPerformance }) {
             position: 'absolute',
             right: '-15px',
             bottom: '0',
-            height: '520px',
-            width: '320px',
+            height: '530px',
+            width: '330px',
             zIndex: 3,
-            opacity: 0.82,
+            opacity: 0.78,
             pointerEvents: 'none',
+            filter: 'none',
           }}
         >
           <img
@@ -715,17 +717,43 @@ export default function MyWorksView({ onOpenStudio, onPlayPerformance }) {
           />
         </div>
 
-        {/* Konten Teks Hero */}
-        <div style={{ maxWidth: '960px', width: '100%', position: 'relative', zIndex: 10, margin: '0 auto' }}>
+        {/* Konten Teks Hero Terpusat Sempurna (Panjang Selaras dengan Navbar 1180px) */}
+        <div style={{ maxWidth: '1180px', width: '100%', position: 'relative', zIndex: 10, margin: '0 auto', textAlign: 'center' }}>
+          {/* Eyebrow Budaya Nusantara */}
+          <div
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '10px',
+              padding: '6px 16px',
+              borderRadius: '9999px',
+              background: 'rgba(212, 175, 55, 0.08)',
+              border: '1px solid rgba(212, 175, 55, 0.22)',
+              color: '#d4af37',
+              fontSize: '11px',
+              fontWeight: '700',
+              letterSpacing: '2.5px',
+              textTransform: 'uppercase',
+              marginBottom: '18px',
+            }}
+          >
+            <span style={{ width: '5px', height: '5px', borderRadius: '50%', background: '#d4af37' }} />
+            <span>RUANG CIPTA PAGELARAN WAYANG</span>
+            <span style={{ width: '5px', height: '5px', borderRadius: '50%', background: '#d4af37' }} />
+          </div>
+
           {/* Headline Utama */}
           <h1
             style={{
-              fontSize: 'clamp(32px, 5.2vw, 56px)',
+              margin: '0 auto 20px auto',
+              maxWidth: '850px',
+              fontFamily: 'var(--font-sans)',
+              fontSize: 'clamp(34px, 4.8vw, 56px)',
               fontWeight: '850',
               color: '#fcfaf2',
-              lineHeight: '1.2',
-              margin: '0 0 18px 0',
-              letterSpacing: '-0.02em',
+              letterSpacing: '-0.5px',
+              lineHeight: '1.22',
+              textAlign: 'center',
             }}
           >
             Pustaka Lakon & <span style={{ color: '#d4af37' }}>Karya Saya</span>
@@ -734,17 +762,19 @@ export default function MyWorksView({ onOpenStudio, onPlayPerformance }) {
           {/* Subjudul Sesuai Narasi Heritage */}
           <p
             style={{
-              fontSize: '16.5px',
-              color: '#e5dec9',
-              lineHeight: '1.7',
+              margin: '0 auto 34px auto',
+              fontSize: 'clamp(15px, 1.5vw, 17px)',
+              color: '#f0e6d8',
+              lineHeight: '1.8',
               maxWidth: '740px',
-              margin: '0 auto 32px auto',
+              fontWeight: '450',
+              textAlign: 'center',
             }}
           >
-            Ruang kreasi pementasan wayang dua dimensi Anda. Atur alur babak pementasan, hidupkan solah ksatria pewayangan berdasar pakem, dan kelola tata suara gamelan klasik Nusantara.
+            Ruang kreasi pementasan wayang dua dimensi Anda. Rancang babak kelir digital, hidupkan solah ksatria pewayangan berdasar pakem, dan kelola arsip lakon pementasan pribadi.
           </p>
 
-          {/* Tombol Aksi Utama Hero */}
+          {/* Tombol Aksi Utama Hero (Format Harmonis 12px Radius) */}
           <div
             style={{
               display: 'flex',
@@ -752,37 +782,38 @@ export default function MyWorksView({ onOpenStudio, onPlayPerformance }) {
               alignItems: 'center',
               gap: '14px',
               flexWrap: 'wrap',
-              marginBottom: '38px',
+              marginBottom: '0',
             }}
           >
             {/* Primary Action Button -> Buat Lakon Baru */}
             <button
               onClick={handleCreateNew}
               style={{
-                background: '#e8bb5c',
-                border: 'none',
-                color: '#0d0a07',
+                background: 'linear-gradient(135deg, #e8bb5c 0%, #d4af37 100%)',
+                border: '1px solid rgba(245, 215, 127, 0.45)',
+                color: '#1a120b',
                 padding: '13px 30px',
-                borderRadius: '24px',
-                fontSize: '14.5px',
-                fontWeight: '800',
+                borderRadius: '12px',
+                fontSize: '14px',
+                fontWeight: '750',
+                letterSpacing: '0.2px',
                 cursor: 'pointer',
                 display: 'inline-flex',
                 alignItems: 'center',
                 gap: '8px',
-                boxShadow: 'none',
-                transition: 'all 0.2s ease',
+                boxShadow: '0 2px 8px rgba(0, 0, 0, 0.25)',
+                transition: 'all 0.25s cubic-bezier(0.16, 1, 0.3, 1)',
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.background = '#dcae4d';
                 e.currentTarget.style.transform = 'translateY(-2px)';
+                e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.35)';
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.background = '#e8bb5c';
                 e.currentTarget.style.transform = 'translateY(0)';
+                e.currentTarget.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.25)';
               }}
             >
-              <Plus size={18} strokeWidth={2.5} />
+              <Plus size={16} strokeWidth={2.5} />
               <span>Rancang Lakon Baru</span>
             </button>
 
@@ -792,36 +823,36 @@ export default function MyWorksView({ onOpenStudio, onPlayPerformance }) {
                 if (onOpenStudio) onOpenStudio();
               }}
               style={{
-                background: 'rgba(255, 255, 255, 0.08)',
-                border: '1.5px solid rgba(212, 175, 55, 0.50)',
-                color: '#fcfaf2',
-                padding: '12px 26px',
-                borderRadius: '24px',
-                fontSize: '14.5px',
-                fontWeight: '750',
+                background: 'rgba(24, 17, 11, 0.65)',
+                backdropFilter: 'blur(10px)',
+                WebkitBackdropFilter: 'blur(10px)',
+                border: '1px solid rgba(212, 175, 55, 0.28)',
+                color: '#fdfbf7',
+                padding: '13px 26px',
+                borderRadius: '12px',
+                fontSize: '14px',
+                fontWeight: '650',
+                letterSpacing: '0.2px',
                 cursor: 'pointer',
                 display: 'inline-flex',
                 alignItems: 'center',
                 gap: '8px',
-                backdropFilter: 'blur(10px)',
-                transition: 'all 0.25s ease',
+                transition: 'all 0.25s cubic-bezier(0.16, 1, 0.3, 1)',
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.background = 'rgba(212, 175, 55, 0.18)';
-                e.currentTarget.style.borderColor = '#d4af37';
                 e.currentTarget.style.transform = 'translateY(-2px)';
+                e.currentTarget.style.background = 'rgba(36, 25, 16, 0.85)';
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.background = 'rgba(255, 255, 255, 0.08)';
-                e.currentTarget.style.borderColor = 'rgba(212, 175, 55, 0.50)';
                 e.currentTarget.style.transform = 'translateY(0)';
+                e.currentTarget.style.background = 'rgba(24, 17, 11, 0.65)';
               }}
             >
-              <Film size={17} style={{ color: '#e8bb5c' }} />
+              <Film size={16} style={{ color: '#d4af37' }} />
               <span>Buka Studio Kelir</span>
             </button>
 
-            {/* Scroll & Buka Inspirasi Template Pakem */}
+            {/* Action 3 -> Inspirasi Template Pakem */}
             <button
               onClick={() => {
                 setShowTemplatesDrawer(true);
@@ -831,161 +862,153 @@ export default function MyWorksView({ onOpenStudio, onPlayPerformance }) {
                 }, 60);
               }}
               style={{
-                background: 'rgba(232, 187, 92, 0.15)',
-                border: '1.5px solid rgba(212, 175, 55, 0.45)',
+                background: 'rgba(212, 175, 55, 0.12)',
+                border: '1px solid rgba(212, 175, 55, 0.35)',
                 color: '#e8bb5c',
-                padding: '12px 24px',
-                borderRadius: '24px',
+                padding: '13px 22px',
+                borderRadius: '12px',
                 fontSize: '14px',
-                fontWeight: '750',
+                fontWeight: '650',
                 cursor: 'pointer',
                 display: 'inline-flex',
                 alignItems: 'center',
                 gap: '8px',
-                backdropFilter: 'blur(10px)',
-                transition: 'all 0.25s ease',
+                transition: 'all 0.2s ease',
               }}
               onMouseEnter={(e) => {
                 e.currentTarget.style.borderColor = '#d4af37';
-                e.currentTarget.style.background = 'rgba(232, 187, 92, 0.28)';
+                e.currentTarget.style.background = 'rgba(212, 175, 55, 0.22)';
                 e.currentTarget.style.transform = 'translateY(-2px)';
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.borderColor = 'rgba(212, 175, 55, 0.45)';
-                e.currentTarget.style.background = 'rgba(232, 187, 92, 0.15)';
+                e.currentTarget.style.borderColor = 'rgba(212, 175, 55, 0.35)';
+                e.currentTarget.style.background = 'rgba(212, 175, 55, 0.12)';
                 e.currentTarget.style.transform = 'translateY(0)';
               }}
             >
-              <Compass size={17} />
+              <Compass size={16} />
               <span>Inspirasi Pakem</span>
             </button>
           </div>
 
-          {/* 4 Kartu Metrik Ringkas Kaca (Glassmorphism Stat Highlights) */}
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
-              gap: '14px',
-              maxWidth: '860px',
-              margin: '0 auto',
-            }}
-          >
-            <div
-              style={{
-                background: 'rgba(23, 17, 12, 0.65)',
-                border: '1px solid rgba(212, 175, 55, 0.25)',
-                borderRadius: '18px',
-                padding: '12px 18px',
-                backdropFilter: 'blur(8px)',
-              }}
-            >
-              <div style={{ fontSize: '24px', fontWeight: '850', color: '#e8bb5c', lineHeight: '1.1' }}>
-                {stats.total}
+          {/* Cardbox Numerik Floating (Selaras dengan Hero Beranda & Panjang Menyesuaikan Navbar 1180px) */}
+          <div className="myworks-floating-stats-card" style={{ marginTop: '38px', marginBottom: '8px' }}>
+            {/* Metrik 1: Total Lakon */}
+            <div className="myworks-floating-stat-item">
+              <div
+                style={{
+                  fontSize: '25px',
+                  fontWeight: '850',
+                  color: '#e8bb5c',
+                  letterSpacing: '-0.3px',
+                  lineHeight: '1.15',
+                  marginBottom: '3px',
+                  fontVariantNumeric: 'tabular-nums',
+                }}
+              >
+                <AnimatedCounter
+                  start={0}
+                  target={stats.total}
+                  duration={900}
+                  shouldStart={true}
+                />
               </div>
-              <div style={{ fontSize: '12px', color: '#bfae9c', fontWeight: '650', marginTop: '2px' }}>
-                Total Lakon Dibuat
+              <div style={{ fontSize: '13px', fontWeight: '750', color: '#fdfbf7', marginBottom: '2px', letterSpacing: '0.15px' }}>
+                Total Lakon
+              </div>
+              <div style={{ fontSize: '11px', color: '#bfae9c', fontWeight: '400', lineHeight: '1.3' }}>
+                Koleksi lakon di sanggar
               </div>
             </div>
 
-            <div
-              style={{
-                background: 'rgba(23, 17, 12, 0.65)',
-                border: '1px solid rgba(212, 175, 55, 0.25)',
-                borderRadius: '18px',
-                padding: '12px 18px',
-                backdropFilter: 'blur(8px)',
-              }}
-            >
-              <div style={{ fontSize: '24px', fontWeight: '850', color: '#10b981', lineHeight: '1.1' }}>
-                {stats.publicWorks}
+            {/* Metrik 2: Pagelaran Publik */}
+            <div className="myworks-floating-stat-item">
+              <div
+                style={{
+                  fontSize: '25px',
+                  fontWeight: '850',
+                  color: '#e8bb5c',
+                  letterSpacing: '-0.3px',
+                  lineHeight: '1.15',
+                  marginBottom: '3px',
+                  fontVariantNumeric: 'tabular-nums',
+                }}
+              >
+                <AnimatedCounter
+                  start={0}
+                  target={stats.publicWorks}
+                  duration={900}
+                  delay={80}
+                  shouldStart={true}
+                />
               </div>
-              <div style={{ fontSize: '12px', color: '#bfae9c', fontWeight: '650', marginTop: '2px' }}>
+              <div style={{ fontSize: '13px', fontWeight: '750', color: '#fdfbf7', marginBottom: '2px', letterSpacing: '0.15px' }}>
                 Pagelaran Publik
               </div>
-            </div>
-
-            <div
-              style={{
-                background: 'rgba(23, 17, 12, 0.65)',
-                border: '1px solid rgba(212, 175, 55, 0.25)',
-                borderRadius: '18px',
-                padding: '12px 18px',
-                backdropFilter: 'blur(8px)',
-              }}
-            >
-              <div style={{ fontSize: '24px', fontWeight: '850', color: '#f59e0b', lineHeight: '1.1' }}>
-                {stats.privateWorks}
-              </div>
-              <div style={{ fontSize: '12px', color: '#bfae9c', fontWeight: '650', marginTop: '2px' }}>
-                Draf Privat Anda
+              <div style={{ fontSize: '11px', color: '#bfae9c', fontWeight: '400', lineHeight: '1.3' }}>
+                Tayang terbuka di Galeri
               </div>
             </div>
 
-            <div
-              style={{
-                background: 'rgba(23, 17, 12, 0.65)',
-                border: '1px solid rgba(212, 175, 55, 0.25)',
-                borderRadius: '18px',
-                padding: '12px 18px',
-                backdropFilter: 'blur(8px)',
-              }}
-            >
-              <div style={{ fontSize: '24px', fontWeight: '850', color: '#fcfaf2', lineHeight: '1.1' }}>
-                {stats.totalScenes}
+            {/* Metrik 3: Draf Privat */}
+            <div className="myworks-floating-stat-item">
+              <div
+                style={{
+                  fontSize: '25px',
+                  fontWeight: '850',
+                  color: '#e8bb5c',
+                  letterSpacing: '-0.3px',
+                  lineHeight: '1.15',
+                  marginBottom: '3px',
+                  fontVariantNumeric: 'tabular-nums',
+                }}
+              >
+                <AnimatedCounter
+                  start={0}
+                  target={stats.privateWorks}
+                  duration={900}
+                  delay={160}
+                  shouldStart={true}
+                />
               </div>
-              <div style={{ fontSize: '12px', color: '#bfae9c', fontWeight: '650', marginTop: '2px' }}>
-                Babak Adegan Aktif
+              <div style={{ fontSize: '13px', fontWeight: '750', color: '#fdfbf7', marginBottom: '2px', letterSpacing: '0.15px' }}>
+                Draf Privat
+              </div>
+              <div style={{ fontSize: '11px', color: '#bfae9c', fontWeight: '400', lineHeight: '1.3' }}>
+                Arsip pribadi sanggar
+              </div>
+            </div>
+
+            {/* Metrik 4: Total Babak Kelir */}
+            <div className="myworks-floating-stat-item">
+              <div
+                style={{
+                  fontSize: '25px',
+                  fontWeight: '850',
+                  color: '#e8bb5c',
+                  letterSpacing: '-0.3px',
+                  lineHeight: '1.15',
+                  marginBottom: '3px',
+                  fontVariantNumeric: 'tabular-nums',
+                }}
+              >
+                <AnimatedCounter
+                  start={0}
+                  target={stats.totalScenes}
+                  duration={900}
+                  delay={240}
+                  shouldStart={true}
+                />
+              </div>
+              <div style={{ fontSize: '13px', fontWeight: '750', color: '#fdfbf7', marginBottom: '2px', letterSpacing: '0.15px' }}>
+                Babak Adegan
+              </div>
+              <div style={{ fontSize: '11px', color: '#bfae9c', fontWeight: '400', lineHeight: '1.3' }}>
+                Adegan kelir digital
               </div>
             </div>
           </div>
         </div>
-
-        {/* Tombol Scroll Down Menuju Daftar Karya (Sesuai Desain Atlas & Beranda) */}
-        <button
-          onClick={() => {
-            const el = document.getElementById('my-works-content-section');
-            if (el) el.scrollIntoView({ behavior: 'smooth' });
-          }}
-          style={{
-            position: 'absolute',
-            bottom: '52px',
-            left: '50%',
-            transform: 'translateX(-50%)',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            gap: '6px',
-            cursor: 'pointer',
-            zIndex: 20,
-            background: 'none',
-            border: 'none',
-            padding: '8px 16px',
-            color: '#d4af37',
-            opacity: 0.85,
-            transition: 'opacity 0.2s ease, transform 0.2s ease',
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.opacity = '1';
-            e.currentTarget.style.transform = 'translateX(-50%) translateY(2px)';
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.opacity = '0.85';
-            e.currentTarget.style.transform = 'translateX(-50%) translateY(0)';
-          }}
-        >
-          <span
-            style={{
-              fontSize: '11px',
-              fontWeight: '750',
-              letterSpacing: '0.14em',
-              textTransform: 'uppercase',
-            }}
-          >
-            Jelajahi Pustaka Karya
-          </span>
-          <ChevronDown size={19} />
-        </button>
 
         {/* Strip Motif Batik Emas di Bagian Bawah Hero Sesuai Desain Atlas */}
         <div
@@ -1026,45 +1049,8 @@ export default function MyWorksView({ onOpenStudio, onPlayPerformance }) {
           overflow: 'hidden',
         }}
       >
-        {/* Ornamen Gunungan Kiri & Kanan Berbayang Lembut Sesuai Estetika Hero */}
-        <div
-          style={{
-            position: 'absolute',
-            left: '-60px',
-            top: '20px',
-            height: '420px',
-            width: '260px',
-            opacity: 0.12,
-            pointerEvents: 'none',
-            zIndex: 1,
-          }}
-        >
-          <img
-            src={gununganKayonHd}
-            alt="Gunungan Watermark Left"
-            style={{ width: '100%', height: '100%', objectFit: 'contain' }}
-          />
-        </div>
-
-        <div
-          style={{
-            position: 'absolute',
-            right: '-60px',
-            top: '20px',
-            height: '420px',
-            width: '260px',
-            opacity: 0.12,
-            pointerEvents: 'none',
-            zIndex: 1,
-            transform: 'scaleX(-1)',
-          }}
-        >
-          <img
-            src={gununganKayonHd}
-            alt="Gunungan Watermark Right"
-            style={{ width: '100%', height: '100%', objectFit: 'contain' }}
-          />
-        </div>
+        {/* Motif Latar Belakang Awan Tradisional Jawa Halus (Hanya di margin tepi, tidak menabrak cardbox) */}
+        <JavaneseCloudBackground variant="flanking" theme="light" opacity={0.20} animated={true} />
 
         <div
           style={{
@@ -1074,7 +1060,7 @@ export default function MyWorksView({ onOpenStudio, onPlayPerformance }) {
             padding: '0 24px',
             boxSizing: 'border-box',
             position: 'relative',
-            zIndex: 2,
+            zIndex: 10,
           }}
         >
           {/* Kondisi Jika Section Ditutup (Collapsed Ribbon Banner) */}
@@ -1692,13 +1678,14 @@ export default function MyWorksView({ onOpenStudio, onPlayPerformance }) {
                             style={{
                               flex: 1,
                               background: '#ffffff',
-                              border: '1.5px solid rgba(212, 175, 55, 0.45)',
+                              border: '1px solid rgba(212, 175, 55, 0.35)',
                               color: '#8b5a1b',
                               padding: '10px 14px',
-                              borderRadius: '16px',
+                              borderRadius: '12px',
                               fontSize: '12.5px',
                               fontWeight: '750',
                               cursor: 'pointer',
+                              minHeight: '44px',
                               display: 'inline-flex',
                               alignItems: 'center',
                               justifyContent: 'center',
@@ -1706,13 +1693,11 @@ export default function MyWorksView({ onOpenStudio, onPlayPerformance }) {
                               transition: 'all 0.2s ease',
                             }}
                             onMouseEnter={(e) => {
-                              e.currentTarget.style.borderColor = '#c27827';
-                              e.currentTarget.style.color = '#c27827';
-                              e.currentTarget.style.background = 'rgba(212, 175, 55, 0.08)';
+                              e.currentTarget.style.borderColor = '#d4af37';
+                              e.currentTarget.style.background = '#fcfaf5';
                             }}
                             onMouseLeave={(e) => {
-                              e.currentTarget.style.borderColor = 'rgba(212, 175, 55, 0.45)';
-                              e.currentTarget.style.color = '#8b5a1b';
+                              e.currentTarget.style.borderColor = 'rgba(212, 175, 55, 0.35)';
                               e.currentTarget.style.background = '#ffffff';
                             }}
                           >
@@ -1725,27 +1710,28 @@ export default function MyWorksView({ onOpenStudio, onPlayPerformance }) {
                             onClick={() => handleUseTemplate(tpl)}
                             style={{
                               flex: 1.25,
-                              background: '#c27827',
+                              background: 'linear-gradient(135deg, #e8bb5c 0%, #d4af37 100%)',
                               border: 'none',
-                              color: '#ffffff',
+                              color: '#1a140e',
                               padding: '10px 16px',
-                              borderRadius: '16px',
+                              borderRadius: '12px',
                               fontSize: '12.5px',
-                              fontWeight: '750',
+                              fontWeight: '800',
                               cursor: 'pointer',
+                              minHeight: '44px',
                               display: 'inline-flex',
                               alignItems: 'center',
                               justifyContent: 'center',
                               gap: '6px',
-                              boxShadow: '0 2px 10px rgba(194, 120, 39, 0.35)',
+                              boxShadow: '0 2px 8px rgba(212, 175, 55, 0.25)',
                               transition: 'all 0.2s ease',
                             }}
                             onMouseEnter={(e) => {
-                              e.currentTarget.style.background = '#ad671d';
+                              e.currentTarget.style.filter = 'brightness(1.06)';
                               e.currentTarget.style.transform = 'translateY(-1px)';
                             }}
                             onMouseLeave={(e) => {
-                              e.currentTarget.style.background = '#c27827';
+                              e.currentTarget.style.filter = 'none';
                               e.currentTarget.style.transform = 'translateY(0)';
                             }}
                           >
@@ -1898,41 +1884,19 @@ export default function MyWorksView({ onOpenStudio, onPlayPerformance }) {
                               }}
                             />
 
-                            {/* Lampu Blencong Keemasan di Pucuk Tengah Kelir */}
+                            {/* Pendaran Hangat Cahaya Blencong Tradisional */}
                             <div
                               style={{
                                 position: 'absolute',
-                                top: '8px',
+                                top: '0',
                                 left: '50%',
                                 transform: 'translateX(-50%)',
-                                background: 'radial-gradient(circle, rgba(254, 240, 138, 0.9) 0%, rgba(234, 179, 8, 0.4) 60%, transparent 100%)',
-                                width: '120px',
-                                height: '40px',
-                                borderRadius: '50%',
-                                filter: 'blur(4px)',
+                                background: 'radial-gradient(ellipse 70% 50% at 50% 0%, rgba(212, 175, 55, 0.30) 0%, rgba(212, 175, 55, 0.06) 60%, transparent 100%)',
+                                width: '180px',
+                                height: '80px',
                                 pointerEvents: 'none',
                               }}
                             />
-                            <div
-                              style={{
-                                position: 'absolute',
-                                top: '10px',
-                                left: '50%',
-                                transform: 'translateX(-50%)',
-                                background: 'rgba(23, 17, 12, 0.85)',
-                                border: '1px solid rgba(212, 175, 55, 0.5)',
-                                padding: '3px 12px',
-                                borderRadius: '12px',
-                                color: '#e8bb5c',
-                                fontSize: '10.5px',
-                                fontWeight: '800',
-                                zIndex: 10,
-                                textTransform: 'uppercase',
-                                letterSpacing: '0.08em',
-                              }}
-                            >
-                              Lampu Blencong Aktif
-                            </div>
 
                             {/* Tokoh Wayang Terposisi Sesuai Koordinat X & Y Skenario */}
                             {activeScene.characters?.map((ch, idx) => (
@@ -1972,14 +1936,14 @@ export default function MyWorksView({ onOpenStudio, onPlayPerformance }) {
                                   </div>
                                 )}
 
-                                {/* Avatar Tokoh Wayang di Kelir */}
+                                {/* Avatar Tokoh Wayang di Kelir (Subtle Elevation Tanpa Neon Glow) */}
                                 <div
                                   style={{
                                     width: '46px',
                                     height: '46px',
                                     borderRadius: '50%',
-                                    border: `2.5px solid ${ch.accentColor || '#e8bb5c'}`,
-                                    boxShadow: `0 0 16px ${ch.accentColor || '#e8bb5c'}99`,
+                                    border: `2px solid ${ch.accentColor || '#d4af37'}`,
+                                    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.45)',
                                     background: '#1c140d',
                                     overflow: 'hidden',
                                   }}
@@ -2208,27 +2172,28 @@ export default function MyWorksView({ onOpenStudio, onPlayPerformance }) {
                             onClick={() => handleUseTemplate(currentTpl)}
                             style={{
                               width: '100%',
-                              background: '#c27827',
+                              background: 'linear-gradient(135deg, #e8bb5c 0%, #d4af37 100%)',
                               border: 'none',
-                              color: '#ffffff',
-                              padding: '13px 20px',
-                              borderRadius: '18px',
+                              color: '#1a140e',
+                              padding: '12px 20px',
+                              borderRadius: '12px',
                               fontSize: '14px',
                               fontWeight: '800',
                               cursor: 'pointer',
+                              minHeight: '44px',
                               display: 'inline-flex',
                               alignItems: 'center',
                               justifyContent: 'center',
                               gap: '8px',
-                              boxShadow: '0 4px 16px rgba(194, 120, 39, 0.35)',
+                              boxShadow: '0 4px 14px rgba(212, 175, 55, 0.25)',
                               transition: 'all 0.2s ease',
                             }}
                             onMouseEnter={(e) => {
-                              e.currentTarget.style.background = '#ad671d';
-                              e.currentTarget.style.transform = 'translateY(-2px)';
+                              e.currentTarget.style.filter = 'brightness(1.06)';
+                              e.currentTarget.style.transform = 'translateY(-1px)';
                             }}
                             onMouseLeave={(e) => {
-                              e.currentTarget.style.background = '#c27827';
+                              e.currentTarget.style.filter = 'none';
                               e.currentTarget.style.transform = 'translateY(0)';
                             }}
                           >
@@ -2262,8 +2227,13 @@ export default function MyWorksView({ onOpenStudio, onPlayPerformance }) {
           padding: '70px 0 100px 0',
           boxSizing: 'border-box',
           color: '#1a140e',
+          position: 'relative',
+          overflow: 'hidden',
         }}
       >
+        {/* Motif Awan Tradisional Jawa Halus (Hanya di margin tepi, tidak menabrak cardbox) */}
+        <JavaneseCloudBackground variant="flanking" theme="light" opacity={0.20} animated={true} />
+
         <div
           id="my-works-content-section"
           style={{
@@ -2272,6 +2242,8 @@ export default function MyWorksView({ onOpenStudio, onPlayPerformance }) {
             margin: '0 auto',
             padding: '0 24px',
             boxSizing: 'border-box',
+            position: 'relative',
+            zIndex: 10,
           }}
         >
           {/* Header Bagian Konten */}
@@ -2497,29 +2469,29 @@ export default function MyWorksView({ onOpenStudio, onPlayPerformance }) {
             <div
               style={{
                 background: '#ffffff',
-                border: '1.5px dashed rgba(212, 175, 55, 0.45)',
-                borderRadius: '28px',
-                padding: '60px 24px',
+                border: '1px solid rgba(212, 175, 55, 0.28)',
+                borderRadius: '24px',
+                padding: '56px 24px',
                 textAlign: 'center',
                 maxWidth: '680px',
                 margin: '0 auto',
-                boxShadow: '0 8px 30px rgba(0, 0, 0, 0.04)',
+                boxShadow: '0 4px 20px rgba(40, 28, 16, 0.04)',
               }}
             >
               <div
                 style={{
-                  width: '74px',
-                  height: '74px',
-                  borderRadius: '24px',
-                  background: 'rgba(212, 175, 55, 0.12)',
-                  border: '1px solid rgba(212, 175, 55, 0.3)',
+                  width: '68px',
+                  height: '68px',
+                  borderRadius: '20px',
+                  background: 'rgba(212, 175, 55, 0.1)',
+                  border: '1px solid rgba(212, 175, 55, 0.25)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   margin: '0 auto 20px auto',
                 }}
               >
-                <Film size={34} style={{ color: '#b48a28' }} />
+                <Film size={30} style={{ color: '#b48a28' }} />
               </div>
 
               <h3 style={{ margin: '0 0 10px 0', fontSize: '22px', color: '#1a140e', fontWeight: '800' }}>
@@ -2547,11 +2519,12 @@ export default function MyWorksView({ onOpenStudio, onPlayPerformance }) {
                     background: '#1a140e',
                     border: 'none',
                     color: '#fcfaf2',
-                    padding: '11px 26px',
-                    borderRadius: '20px',
+                    padding: '11px 24px',
+                    borderRadius: '12px',
                     fontWeight: '750',
                     fontSize: '13.5px',
                     cursor: 'pointer',
+                    minHeight: '44px',
                   }}
                 >
                   Bersihkan Pencarian
@@ -2561,15 +2534,16 @@ export default function MyWorksView({ onOpenStudio, onPlayPerformance }) {
                   <button
                     onClick={handleCreateNew}
                     style={{
-                      background: '#e8bb5c',
+                      background: 'linear-gradient(135deg, #e8bb5c 0%, #d4af37 100%)',
                       border: 'none',
-                      color: '#0d0a07',
+                      color: '#1a140e',
                       padding: '12px 28px',
-                      borderRadius: '20px',
+                      borderRadius: '12px',
                       fontWeight: '800',
                       fontSize: '14px',
                       cursor: 'pointer',
-                      boxShadow: '0 4px 14px rgba(232, 187, 92, 0.35)',
+                      minHeight: '44px',
+                      boxShadow: '0 4px 14px rgba(212, 175, 55, 0.25)',
                     }}
                   >
                     Rancang Lakon Pertama
@@ -2578,13 +2552,14 @@ export default function MyWorksView({ onOpenStudio, onPlayPerformance }) {
                     onClick={() => setShowTemplatesDrawer(true)}
                     style={{
                       background: '#ffffff',
-                      border: '1.5px solid rgba(212, 175, 55, 0.45)',
+                      border: '1px solid rgba(212, 175, 55, 0.4)',
                       color: '#8b5a1b',
                       padding: '12px 24px',
-                      borderRadius: '20px',
+                      borderRadius: '12px',
                       fontWeight: '750',
                       fontSize: '14px',
                       cursor: 'pointer',
+                      minHeight: '44px',
                     }}
                   >
                     Gunakan Template Pakem
@@ -2593,7 +2568,7 @@ export default function MyWorksView({ onOpenStudio, onPlayPerformance }) {
               )}
             </div>
           ) : (
-            /* Daftar Card Karya Pementasan (Tata Letak Modern Glass & Heritage Sesuai Page Sebelumnya) */
+            /* Daftar Card Karya Pementasan (Heritage Elegance, De-cluttered & Anti-Slop) */
             <div
               style={{
                 display: 'grid',
@@ -2616,28 +2591,28 @@ export default function MyWorksView({ onOpenStudio, onPlayPerformance }) {
                     key={item.id}
                     style={{
                       background: '#ffffff',
-                      borderRadius: '26px',
-                      border: '1px solid rgba(212, 175, 55, 0.24)',
-                      boxShadow: '0 6px 24px rgba(0, 0, 0, 0.05)',
+                      borderRadius: '20px',
+                      border: '1px solid rgba(212, 175, 55, 0.22)',
+                      boxShadow: '0 2px 10px rgba(40, 28, 16, 0.04)',
                       overflow: 'hidden',
                       display: 'flex',
                       flexDirection: 'column',
-                      transition: 'all 0.28s ease',
+                      transition: 'all 0.25s ease',
                       boxSizing: 'border-box',
                     }}
                     onMouseEnter={(e) => {
-                      e.currentTarget.style.transform = 'translateY(-4px)';
-                      e.currentTarget.style.borderColor = '#d4af37';
+                      e.currentTarget.style.transform = 'translateY(-3px)';
+                      e.currentTarget.style.borderColor = 'rgba(212, 175, 55, 0.48)';
                       e.currentTarget.style.boxShadow =
-                        '0 16px 36px rgba(212, 175, 55, 0.20), 0 6px 14px rgba(0, 0, 0, 0.04)';
+                        '0 12px 30px rgba(40, 28, 16, 0.08), 0 2px 6px rgba(40, 28, 16, 0.04)';
                     }}
                     onMouseLeave={(e) => {
                       e.currentTarget.style.transform = 'translateY(0)';
-                      e.currentTarget.style.borderColor = 'rgba(212, 175, 55, 0.24)';
-                      e.currentTarget.style.boxShadow = '0 6px 24px rgba(0, 0, 0, 0.05)';
+                      e.currentTarget.style.borderColor = 'rgba(212, 175, 55, 0.22)';
+                      e.currentTarget.style.boxShadow = '0 2px 10px rgba(40, 28, 16, 0.04)';
                     }}
                   >
-                    {/* 1. Visual Cover Thumbnail dengan Badges & Tombol Play Hover */}
+                    {/* 1. Visual Cover Thumbnail: Bersih Tanpa Over-Badging */}
                     <div
                       style={{
                         height: '185px',
@@ -2653,37 +2628,37 @@ export default function MyWorksView({ onOpenStudio, onPlayPerformance }) {
                           width: '100%',
                           height: '100%',
                           objectFit: 'cover',
-                          transition: 'transform 0.5s ease',
+                          transition: 'transform 0.4s ease',
                         }}
                       />
 
-                      {/* Scrim Gradient Gelap */}
+                      {/* Scrim Gradient Gelap Alami */}
                       <div
                         style={{
                           position: 'absolute',
                           inset: 0,
                           background:
-                            'linear-gradient(to top, rgba(13, 10, 7, 0.90) 0%, rgba(13, 10, 7, 0.25) 50%, transparent 100%)',
+                            'linear-gradient(to top, rgba(13, 10, 7, 0.85) 0%, rgba(13, 10, 7, 0.2) 50%, transparent 100%)',
                         }}
                       />
 
-                      {/* Badge Visibilitas (Pojok Kiri Atas) */}
+                      {/* Single Clean Status Tag (Pojok Kiri Atas) */}
                       <div
                         style={{
                           position: 'absolute',
-                          top: '14px',
-                          left: '14px',
+                          top: '12px',
+                          left: '12px',
                           display: 'flex',
                           alignItems: 'center',
                           gap: '5px',
-                          padding: '4px 11px',
-                          borderRadius: '12px',
-                          background: isPublic ? 'rgba(5, 150, 105, 0.88)' : 'rgba(23, 17, 12, 0.88)',
-                          color: '#ffffff',
-                          border: `1px solid ${isPublic ? '#10b981' : 'rgba(212, 175, 55, 0.5)'}`,
-                          fontSize: '11px',
-                          fontWeight: '800',
+                          padding: '4px 10px',
+                          borderRadius: '8px',
+                          background: 'rgba(20, 15, 10, 0.82)',
                           backdropFilter: 'blur(6px)',
+                          color: isPublic ? '#34d399' : '#e8bb5c',
+                          border: `1px solid ${isPublic ? 'rgba(16, 185, 129, 0.6)' : 'rgba(212, 175, 55, 0.35)'}`,
+                          fontSize: '11px',
+                          fontWeight: '750',
                           letterSpacing: '0.02em',
                         }}
                       >
@@ -2691,30 +2666,7 @@ export default function MyWorksView({ onOpenStudio, onPlayPerformance }) {
                         <span>{isPublic ? 'Publik' : 'Privat'}</span>
                       </div>
 
-                      {/* Badge Babak Adegan (Pojok Kanan Atas) */}
-                      <div
-                        style={{
-                          position: 'absolute',
-                          top: '14px',
-                          right: '14px',
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '5px',
-                          padding: '4px 11px',
-                          borderRadius: '12px',
-                          background: 'rgba(13, 10, 7, 0.82)',
-                          color: '#e8bb5c',
-                          border: '1px solid rgba(212, 175, 55, 0.35)',
-                          fontSize: '11px',
-                          fontWeight: '750',
-                          backdropFilter: 'blur(6px)',
-                        }}
-                      >
-                        <Layers size={11} />
-                        <span>{sceneCount} Babak</span>
-                      </div>
-
-                      {/* Tombol Play Mengambang di Atas Cover */}
+                      {/* Tombol Play Mengambang di Pojok Kanan Bawah */}
                       <button
                         onClick={() => {
                           if (onPlayPerformance) onPlayPerformance(item);
@@ -2723,78 +2675,49 @@ export default function MyWorksView({ onOpenStudio, onPlayPerformance }) {
                         style={{
                           position: 'absolute',
                           bottom: '12px',
-                          right: '14px',
-                          width: '42px',
-                          height: '42px',
+                          right: '12px',
+                          width: '40px',
+                          height: '40px',
                           borderRadius: '50%',
-                          background: '#e8bb5c',
+                          background: 'linear-gradient(135deg, #e8bb5c 0%, #d4af37 100%)',
                           border: 'none',
                           color: '#0d0a07',
                           display: 'flex',
                           alignItems: 'center',
                           justifyContent: 'center',
                           cursor: 'pointer',
-                          boxShadow: '0 4px 16px rgba(0, 0, 0, 0.45)',
+                          boxShadow: '0 4px 14px rgba(0, 0, 0, 0.45)',
                           transition: 'all 0.2s ease',
                         }}
                         onMouseEnter={(e) => {
-                          e.currentTarget.style.transform = 'scale(1.1)';
-                          e.currentTarget.style.background = '#f5c767';
+                          e.currentTarget.style.transform = 'scale(1.08)';
+                          e.currentTarget.style.filter = 'brightness(1.08)';
                         }}
                         onMouseLeave={(e) => {
                           e.currentTarget.style.transform = 'scale(1.0)';
-                          e.currentTarget.style.background = '#e8bb5c';
+                          e.currentTarget.style.filter = 'none';
                         }}
                       >
-                        <Play size={16} fill="#0d0a07" style={{ marginLeft: '2px' }} />
+                        <Play size={15} fill="#0d0a07" style={{ marginLeft: '2px' }} />
                       </button>
-
-                      {/* Naskah Rujukan Tag di Bawah Cover */}
-                      {refStory && (
-                        <div
-                          style={{
-                            position: 'absolute',
-                            bottom: '14px',
-                            left: '14px',
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '5px',
-                            fontSize: '11px',
-                            color: '#fcfaf2',
-                            background: 'rgba(23, 17, 12, 0.75)',
-                            padding: '3px 9px',
-                            borderRadius: '8px',
-                            border: '1px solid rgba(212, 175, 55, 0.3)',
-                            backdropFilter: 'blur(4px)',
-                            maxWidth: '70%',
-                            whiteSpace: 'nowrap',
-                            overflow: 'hidden',
-                            textOverflow: 'ellipsis',
-                          }}
-                        >
-                          <BookOpen size={11} style={{ color: '#d4af37', flexShrink: 0 }} />
-                          <span style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                            {refStory.title}
-                          </span>
-                        </div>
-                      )}
                     </div>
 
-                    {/* 2. Isi Kartu: Judul Lakon & Deskripsi Bersih Kontras */}
+                    {/* 2. Isi Kartu: Metadata Terpadu, Judul Lakon & Cast */}
                     <div
                       style={{
-                        padding: '22px 24px',
+                        padding: '20px 22px',
                         display: 'flex',
                         flexDirection: 'column',
                         flex: 1,
                         boxSizing: 'border-box',
                       }}
                     >
-                      {/* Tanggal Terakhir Disunting */}
+                      {/* Metadata Row: Tanggal, Babak, dan Gamelan */}
                       <div
                         style={{
                           display: 'flex',
                           alignItems: 'center',
+                          flexWrap: 'wrap',
                           gap: '6px',
                           fontSize: '11.5px',
                           color: '#8b5a1b',
@@ -2804,25 +2727,58 @@ export default function MyWorksView({ onOpenStudio, onPlayPerformance }) {
                           marginBottom: '8px',
                         }}
                       >
-                        <Calendar size={12} />
-                        <span>
-                          {new Date(item.updated_at || item.created_at || Date.now()).toLocaleDateString('id-ID', {
+                        <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                          <Calendar size={12} />
+                          {new Date(item.updated_at || item.created_at || '2026-01-01').toLocaleDateString('id-ID', {
                             day: 'numeric',
                             month: 'short',
                             year: 'numeric',
                           })}
                         </span>
-                        <span>•</span>
-                        <span style={{ display: 'flex', alignItems: 'center', gap: '3px' }}>
+                        <span style={{ color: 'rgba(139, 90, 27, 0.35)' }}>•</span>
+                        <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                          <Layers size={11} /> {sceneCount} Babak
+                        </span>
+                        <span style={{ color: 'rgba(139, 90, 27, 0.35)' }}>•</span>
+                        <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
                           <Music size={11} /> {audioTitle}
                         </span>
                       </div>
 
-                      {/* Judul Lakon (Warna Soga Charcoal Bersih & Kontras Sesuai Arahan User) */}
+                      {/* Tag Rujukan Cerita Pakem (Jika Ada) */}
+                      {refStory && (
+                        <div
+                          style={{
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: '5px',
+                            fontSize: '11px',
+                            color: '#7a4e18',
+                            background: '#faf6ee',
+                            border: '1px solid rgba(212, 175, 55, 0.25)',
+                            padding: '3px 8px',
+                            borderRadius: '6px',
+                            fontWeight: '650',
+                            width: 'fit-content',
+                            marginBottom: '8px',
+                            maxWidth: '100%',
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                            whiteSpace: 'nowrap',
+                          }}
+                        >
+                          <BookOpen size={11} style={{ color: '#b48a28', flexShrink: 0 }} />
+                          <span style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                            Pakem: {refStory.title}
+                          </span>
+                        </div>
+                      )}
+
+                      {/* Judul Lakon */}
                       <h3
                         style={{
                           margin: '0 0 8px 0',
-                          fontSize: '20px',
+                          fontSize: '19px',
                           fontWeight: '800',
                           color: '#1a140e',
                           letterSpacing: '-0.3px',
@@ -2832,7 +2788,7 @@ export default function MyWorksView({ onOpenStudio, onPlayPerformance }) {
                         {item.title}
                       </h3>
 
-                      {/* Deskripsi Lakon (Warna Abu Lembut Tidak Kontras) */}
+                      {/* Deskripsi Lakon */}
                       <p
                         style={{
                           margin: '0 0 16px 0',
@@ -2847,7 +2803,7 @@ export default function MyWorksView({ onOpenStudio, onPlayPerformance }) {
 
                       {/* Daftar Tokoh Wayang Terlibat (Cast Roster) */}
                       {charactersList.length > 0 && (
-                        <div style={{ marginBottom: '18px' }}>
+                        <div style={{ marginBottom: '16px' }}>
                           <div
                             style={{
                               fontSize: '11px',
@@ -2872,9 +2828,9 @@ export default function MyWorksView({ onOpenStudio, onPlayPerformance }) {
                                   display: 'inline-flex',
                                   alignItems: 'center',
                                   gap: '4px',
-                                  background: '#f5f0e4',
-                                  border: '1px solid rgba(212, 175, 55, 0.35)',
-                                  borderRadius: '12px',
+                                  background: '#fcfaf5',
+                                  border: '1px solid rgba(212, 175, 55, 0.3)',
+                                  borderRadius: '8px',
                                   padding: '2px 8px',
                                   fontSize: '11px',
                                   fontWeight: '650',
@@ -2905,14 +2861,14 @@ export default function MyWorksView({ onOpenStudio, onPlayPerformance }) {
                         </div>
                       )}
 
-                      {/* 3. Toolbar Aksi Kartu: Edit di Studio, Tonton, Duplikasi & Hapus */}
+                      {/* 3. Toolbar Aksi Kartu: Standardized 12px Radius & Clear Hierarchy */}
                       <div
                         style={{
                           display: 'flex',
                           alignItems: 'center',
                           gap: '8px',
-                          borderTop: '1px solid rgba(212, 175, 55, 0.20)',
-                          paddingTop: '16px',
+                          borderTop: '1px solid rgba(212, 175, 55, 0.18)',
+                          paddingTop: '14px',
                           marginTop: 'auto',
                         }}
                       >
@@ -2921,11 +2877,12 @@ export default function MyWorksView({ onOpenStudio, onPlayPerformance }) {
                           onClick={() => handleReopenInStudio(item)}
                           style={{
                             flex: 1,
-                            background: '#e8bb5c',
+                            minHeight: '42px',
+                            background: 'linear-gradient(135deg, #e8bb5c 0%, #d4af37 100%)',
                             border: 'none',
-                            color: '#0d0a07',
-                            padding: '10px 16px',
-                            borderRadius: '18px',
+                            color: '#1a140e',
+                            padding: '9px 14px',
+                            borderRadius: '12px',
                             fontSize: '13px',
                             fontWeight: '800',
                             cursor: 'pointer',
@@ -2933,14 +2890,15 @@ export default function MyWorksView({ onOpenStudio, onPlayPerformance }) {
                             alignItems: 'center',
                             justifyContent: 'center',
                             gap: '6px',
+                            boxShadow: '0 2px 8px rgba(212, 175, 55, 0.2)',
                             transition: 'all 0.2s ease',
                           }}
                           onMouseEnter={(e) => {
-                            e.currentTarget.style.background = '#dcae4d';
+                            e.currentTarget.style.filter = 'brightness(1.06)';
                             e.currentTarget.style.transform = 'translateY(-1px)';
                           }}
                           onMouseLeave={(e) => {
-                            e.currentTarget.style.background = '#e8bb5c';
+                            e.currentTarget.style.filter = 'none';
                             e.currentTarget.style.transform = 'translateY(0)';
                           }}
                         >
@@ -2955,11 +2913,12 @@ export default function MyWorksView({ onOpenStudio, onPlayPerformance }) {
                           }}
                           title="Tonton Pagelaran Langsung"
                           style={{
+                            minHeight: '42px',
                             background: '#ffffff',
-                            border: '1.5px solid rgba(212, 175, 55, 0.45)',
+                            border: '1px solid rgba(212, 175, 55, 0.35)',
                             color: '#8b5a1b',
-                            padding: '9px 14px',
-                            borderRadius: '18px',
+                            padding: '9px 12px',
+                            borderRadius: '12px',
                             fontSize: '12.5px',
                             fontWeight: '750',
                             cursor: 'pointer',
@@ -2973,7 +2932,7 @@ export default function MyWorksView({ onOpenStudio, onPlayPerformance }) {
                             e.currentTarget.style.background = '#fcfaf5';
                           }}
                           onMouseLeave={(e) => {
-                            e.currentTarget.style.borderColor = 'rgba(212, 175, 55, 0.45)';
+                            e.currentTarget.style.borderColor = 'rgba(212, 175, 55, 0.35)';
                             e.currentTarget.style.background = '#ffffff';
                           }}
                         >
@@ -2986,25 +2945,26 @@ export default function MyWorksView({ onOpenStudio, onPlayPerformance }) {
                           onClick={() => handleToggleVisibility(item)}
                           title={`Ubah menjadi ${isPublic ? 'Privat' : 'Publik'}`}
                           style={{
-                            width: '36px',
-                            height: '36px',
-                            borderRadius: '50%',
+                            width: '40px',
+                            height: '40px',
+                            borderRadius: '12px',
                             background: '#fcfaf5',
-                            border: '1px solid rgba(212, 175, 55, 0.35)',
+                            border: '1px solid rgba(212, 175, 55, 0.3)',
                             color: isPublic ? '#059669' : '#8b5a1b',
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center',
                             cursor: 'pointer',
                             transition: 'all 0.2s ease',
+                            flexShrink: 0,
                           }}
                           onMouseEnter={(e) => {
                             e.currentTarget.style.borderColor = '#d4af37';
-                            e.currentTarget.style.transform = 'scale(1.06)';
+                            e.currentTarget.style.background = '#f7f2e4';
                           }}
                           onMouseLeave={(e) => {
-                            e.currentTarget.style.borderColor = 'rgba(212, 175, 55, 0.35)';
-                            e.currentTarget.style.transform = 'scale(1.0)';
+                            e.currentTarget.style.borderColor = 'rgba(212, 175, 55, 0.3)';
+                            e.currentTarget.style.background = '#fcfaf5';
                           }}
                         >
                           {isPublic ? <Globe size={14} /> : <Lock size={14} />}
@@ -3015,25 +2975,26 @@ export default function MyWorksView({ onOpenStudio, onPlayPerformance }) {
                           onClick={() => handleDuplicate(item)}
                           title="Duplikasi Karya"
                           style={{
-                            width: '36px',
-                            height: '36px',
-                            borderRadius: '50%',
+                            width: '40px',
+                            height: '40px',
+                            borderRadius: '12px',
                             background: '#fcfaf5',
-                            border: '1px solid rgba(212, 175, 55, 0.35)',
+                            border: '1px solid rgba(212, 175, 55, 0.3)',
                             color: '#2b2118',
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center',
                             cursor: 'pointer',
                             transition: 'all 0.2s ease',
+                            flexShrink: 0,
                           }}
                           onMouseEnter={(e) => {
                             e.currentTarget.style.borderColor = '#d4af37';
-                            e.currentTarget.style.transform = 'scale(1.06)';
+                            e.currentTarget.style.background = '#f7f2e4';
                           }}
                           onMouseLeave={(e) => {
-                            e.currentTarget.style.borderColor = 'rgba(212, 175, 55, 0.35)';
-                            e.currentTarget.style.transform = 'scale(1.0)';
+                            e.currentTarget.style.borderColor = 'rgba(212, 175, 55, 0.3)';
+                            e.currentTarget.style.background = '#fcfaf5';
                           }}
                         >
                           <Copy size={14} />
@@ -3044,25 +3005,26 @@ export default function MyWorksView({ onOpenStudio, onPlayPerformance }) {
                           onClick={() => setDeleteTarget(item)}
                           title="Hapus Karya"
                           style={{
-                            width: '36px',
-                            height: '36px',
-                            borderRadius: '50%',
-                            background: 'rgba(239, 68, 68, 0.08)',
-                            border: '1px solid rgba(239, 68, 68, 0.3)',
+                            width: '40px',
+                            height: '40px',
+                            borderRadius: '12px',
+                            background: 'rgba(239, 68, 68, 0.06)',
+                            border: '1px solid rgba(239, 68, 68, 0.25)',
                             color: '#dc2626',
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center',
                             cursor: 'pointer',
                             transition: 'all 0.2s ease',
+                            flexShrink: 0,
                           }}
                           onMouseEnter={(e) => {
-                            e.currentTarget.style.background = 'rgba(239, 68, 68, 0.18)';
-                            e.currentTarget.style.transform = 'scale(1.06)';
+                            e.currentTarget.style.background = 'rgba(239, 68, 68, 0.14)';
+                            e.currentTarget.style.borderColor = '#dc2626';
                           }}
                           onMouseLeave={(e) => {
-                            e.currentTarget.style.background = 'rgba(239, 68, 68, 0.08)';
-                            e.currentTarget.style.transform = 'scale(1.0)';
+                            e.currentTarget.style.background = 'rgba(239, 68, 68, 0.06)';
+                            e.currentTarget.style.borderColor = 'rgba(239, 68, 68, 0.25)';
                           }}
                         >
                           <Trash2 size={14} />
@@ -3079,109 +3041,104 @@ export default function MyWorksView({ onOpenStudio, onPlayPerformance }) {
 
       {/* ============================================================
           4. MODAL KONFIRMASI HAPUS ELEGAN (CUSTOM DIALOG)
-          Menggantikan window.confirm() browser bawaan yang kaku
           ============================================================ */}
       {deleteTarget && (
         <div
-          style={{
-            position: 'fixed',
-            inset: 0,
-            background: 'rgba(0, 0, 0, 0.82)',
-            backdropFilter: 'blur(8px)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            zIndex: 1100,
-            padding: '20px',
-          }}
+          className="wayang-modal-backdrop"
+          style={{ zIndex: 1100 }}
+          onClick={() => setDeleteTarget(null)}
         >
           <div
-            style={{
-              background: '#17110c',
-              border: '1px solid #d4af37',
-              borderRadius: '24px',
-              maxWidth: '460px',
-              width: '100%',
-              padding: '28px',
-              color: '#fcfaf2',
-              boxShadow: '0 25px 60px rgba(0, 0, 0, 0.9), 0 0 30px rgba(212, 175, 55, 0.18)',
-              textAlign: 'center',
-            }}
+            className="wayang-modal-chassis"
+            style={{ maxWidth: '480px', width: '100%' }}
+            onClick={(e) => e.stopPropagation()}
           >
-            <div
-              style={{
-                width: '60px',
-                height: '60px',
-                borderRadius: '50%',
-                background: 'rgba(239, 68, 68, 0.15)',
-                border: '1px solid rgba(239, 68, 68, 0.4)',
-                color: '#ef4444',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                margin: '0 auto 16px auto',
-              }}
-            >
-              <Trash2 size={26} />
-            </div>
+            <div className="wayang-modal-inner" style={{ padding: '32px 28px', textAlign: 'center' }}>
+              <div className="wayang-modal-hairline" />
 
-            <h3 style={{ margin: '0 0 8px 0', fontSize: '20px', fontWeight: '800', color: '#fcfaf2' }}>
-              Hapus Pementasan?
-            </h3>
-            <p style={{ margin: '0 0 24px 0', fontSize: '13.5px', color: '#bfae9c', lineHeight: '1.55' }}>
-              Apakah Anda yakin ingin menghapus karya{' '}
-              <strong style={{ color: '#d4af37' }}>"{deleteTarget.title}"</strong>? Seluruh susunan adegan dan dialog di dalamnya akan dihapus secara permanen.
-            </p>
-
-            <div style={{ display: 'flex', gap: '12px', justifyContent: 'center' }}>
+              {/* Tombol Tutup X */}
               <button
+                type="button"
                 onClick={() => setDeleteTarget(null)}
+                aria-label="Tutup Dialog"
+                className="wayang-modal-close-btn"
                 style={{
-                  flex: 1,
-                  background: 'transparent',
-                  border: '1.5px solid rgba(212, 175, 55, 0.35)',
-                  color: '#e5dec9',
-                  padding: '11px 20px',
-                  borderRadius: '18px',
-                  fontSize: '13.5px',
-                  fontWeight: '700',
-                  cursor: 'pointer',
-                  transition: 'all 0.2s ease',
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.borderColor = '#d4af37';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.borderColor = 'rgba(212, 175, 55, 0.35)';
+                  position: 'absolute',
+                  top: '18px',
+                  right: '18px',
+                  width: '38px',
+                  height: '38px',
                 }}
               >
-                Batalkan
+                <X size={16} />
               </button>
 
-              <button
-                onClick={handleConfirmDelete}
+              <div
                 style={{
-                  flex: 1,
-                  background: '#dc2626',
-                  border: 'none',
-                  color: '#ffffff',
-                  padding: '11px 20px',
-                  borderRadius: '18px',
-                  fontSize: '13.5px',
-                  fontWeight: '800',
-                  cursor: 'pointer',
-                  boxShadow: '0 4px 14px rgba(220, 38, 38, 0.4)',
-                  transition: 'all 0.2s ease',
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.background = '#b91c1c';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.background = '#dc2626';
+                  width: '56px',
+                  height: '56px',
+                  borderRadius: '50%',
+                  background: 'rgba(239, 68, 68, 0.1)',
+                  border: '1px solid rgba(239, 68, 68, 0.3)',
+                  boxShadow: '0 4px 12px rgba(185, 28, 28, 0.08)',
+                  color: '#b91c1c',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  margin: '0 auto 16px auto',
                 }}
               >
-                Hapus Permanen
-              </button>
+                <Trash2 size={24} />
+              </div>
+
+              <div
+                className="wayang-modal-eyebrow"
+                style={{
+                  marginBottom: '8px',
+                  background: 'rgba(239, 68, 68, 0.12)',
+                  borderColor: 'rgba(239, 68, 68, 0.35)',
+                  color: '#b91c1c',
+                }}
+              >
+                <span style={{ display: 'inline-block', width: '6px', height: '6px', borderRadius: '50%', background: '#ef4444' }} />
+                <span>KONFIRMASI PENGHAPUSAN</span>
+              </div>
+
+              <h3 style={{ margin: '0 0 10px 0', fontSize: '22px', fontWeight: '850', color: '#1a140e', fontFamily: 'Cinzel, Georgia, serif', letterSpacing: '-0.3px' }}>
+                Hapus Pementasan?
+              </h3>
+              <p style={{ margin: '0 0 26px 0', fontSize: '13.5px', color: '#5c4738', lineHeight: '1.65' }}>
+                Apakah Anda yakin ingin menghapus karya{' '}
+                <strong style={{ color: '#8b4513' }}>"{deleteTarget.title}"</strong>? Seluruh susunan adegan dan dialog di dalamnya akan dihapus secara permanen.
+              </p>
+
+              <div style={{ display: 'flex', gap: '14px', justifyContent: 'center' }}>
+                <button
+                  type="button"
+                  onClick={() => setDeleteTarget(null)}
+                  className="wayang-btn-ghost"
+                  style={{ flex: 1 }}
+                >
+                  Batalkan
+                </button>
+
+                <button
+                  type="button"
+                  onClick={handleConfirmDelete}
+                  className="wayang-btn-cta"
+                  style={{
+                    flex: 1,
+                    background: 'linear-gradient(135deg, #ef4444 0%, #b91c1c 100%)',
+                    color: '#ffffff',
+                    justifyContent: 'space-between',
+                  }}
+                >
+                  <span>Hapus</span>
+                  <span className="wayang-btn-cta-icon" style={{ background: 'rgba(0,0,0,0.2)' }}>
+                    <Trash2 size={15} color="#ffffff" />
+                  </span>
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -3192,183 +3149,228 @@ export default function MyWorksView({ onOpenStudio, onPlayPerformance }) {
           ============================================================ */}
       {inspectingTemplate && (
         <div
-          style={{
-            position: 'fixed',
-            inset: 0,
-            zIndex: 1100,
-            background: 'rgba(12, 9, 6, 0.78)',
-            backdropFilter: 'blur(8px)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            padding: '20px',
-            boxSizing: 'border-box',
-          }}
+          className="wayang-modal-backdrop"
+          style={{ zIndex: 1100 }}
           onClick={() => setInspectingTemplate(null)}
         >
           <div
-            onClick={(e) => e.stopPropagation()}
+            className="wayang-modal-chassis"
             style={{
-              background: '#ffffff',
-              borderRadius: '28px',
-              border: '1.5px solid rgba(212, 175, 55, 0.45)',
-              boxShadow: '0 24px 60px rgba(0, 0, 0, 0.35)',
-              maxWidth: '820px',
+              maxWidth: '840px',
               width: '100%',
               maxHeight: '90vh',
-              overflowY: 'auto',
               display: 'flex',
               flexDirection: 'column',
-              boxSizing: 'border-box',
+              background: '#f7f3ea',
+              borderRadius: '20px',
+              border: 'none',
+              boxShadow: '0 24px 64px -12px rgba(20, 14, 9, 0.35), 0 4px 20px rgba(0, 0, 0, 0.08)',
+              overflow: 'hidden',
+              position: 'relative',
             }}
+            onClick={(e) => e.stopPropagation()}
           >
-            {/* Header Visual Cover Banner dengan Tombol Close */}
+            <div className="wayang-modal-hairline" />
+
+            {/* 1. Atmospheric Cover Banner with Fixed Badge Row & Close Button */}
             <div
               style={{
                 position: 'relative',
-                height: '200px',
+                height: '140px',
                 width: '100%',
+                flexShrink: 0,
                 overflow: 'hidden',
                 backgroundColor: '#140e09',
-                borderTopLeftRadius: '26px',
-                borderTopRightRadius: '26px',
               }}
             >
               <img
                 src={inspectingTemplate.coverImg}
                 alt={inspectingTemplate.title}
-                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center 30%', filter: 'brightness(0.78) contrast(1.05)' }}
               />
               <div
                 style={{
                   position: 'absolute',
                   inset: 0,
-                  background: 'linear-gradient(to top, rgba(17, 12, 8, 0.95) 0%, rgba(17, 12, 8, 0.4) 60%, transparent 100%)',
+                  background: 'linear-gradient(180deg, rgba(20, 14, 9, 0.45) 0%, rgba(247, 243, 234, 0.5) 60%, #f7f3ea 100%)',
                 }}
               />
 
-              {/* Badges di Cover Modal */}
+              {/* Top Navigation Row on Banner: Badges & Close Button */}
               <div
-                style={{
-                  position: 'absolute',
-                  top: '18px',
-                  left: '20px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '8px',
-                }}
-              >
-                <span
-                  style={{
-                    background: 'rgba(255, 255, 255, 0.96)',
-                    color: '#1a140e',
-                    padding: '5px 14px',
-                    borderRadius: '9999px',
-                    fontSize: '11px',
-                    fontWeight: '800',
-                    letterSpacing: '0.04em',
-                    textTransform: 'uppercase',
-                  }}
-                >
-                  {inspectingTemplate.tradition}
-                </span>
-
-                <span
-                  style={{
-                    background: 'rgba(23, 17, 12, 0.85)',
-                    border: '1px solid rgba(212, 175, 55, 0.4)',
-                    color: '#e8bb5c',
-                    padding: '5px 12px',
-                    borderRadius: '9999px',
-                    fontSize: '11px',
-                    fontWeight: '750',
-                  }}
-                >
-                  {inspectingTemplate.scenesCount} Babak Lengkap
-                </span>
-              </div>
-
-              {/* Tombol Tutup ✕ */}
-              <button
-                onClick={() => setInspectingTemplate(null)}
                 style={{
                   position: 'absolute',
                   top: '16px',
-                  right: '18px',
-                  width: '36px',
-                  height: '36px',
-                  borderRadius: '50%',
-                  background: 'rgba(20, 14, 9, 0.75)',
-                  border: '1px solid rgba(212, 175, 55, 0.4)',
-                  color: '#fcfaf2',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  cursor: 'pointer',
-                  fontSize: '18px',
-                }}
-              >
-                ✕
-              </button>
-
-              <div
-                style={{
-                  position: 'absolute',
-                  bottom: '16px',
                   left: '20px',
-                  right: '20px',
+                  right: '18px',
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  zIndex: 10,
                 }}
               >
-                <div style={{ fontSize: '11.5px', color: '#e8bb5c', fontWeight: '800', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                  {inspectingTemplate.subtitle}
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+                  <span
+                    style={{
+                      background: '#ffffff',
+                      color: '#1a140e',
+                      padding: '4px 12px',
+                      borderRadius: '9999px',
+                      fontSize: '11px',
+                      fontWeight: '800',
+                      letterSpacing: '0.04em',
+                      textTransform: 'uppercase',
+                      border: '1px solid rgba(40, 28, 16, 0.08)',
+                      boxShadow: '0 2px 8px rgba(40, 28, 16, 0.08)',
+                    }}
+                  >
+                    {inspectingTemplate.tradition}
+                  </span>
+
+                  <span
+                    className="wayang-modal-eyebrow"
+                    style={{
+                      background: 'rgba(255, 255, 255, 0.95)',
+                      padding: '4px 12px',
+                      boxShadow: '0 2px 8px rgba(40, 28, 16, 0.08)',
+                      margin: 0,
+                    }}
+                  >
+                    {inspectingTemplate.scenesCount} Babak Lengkap
+                  </span>
                 </div>
-                <h3 style={{ margin: '4px 0 0 0', fontSize: '22px', fontWeight: '850', color: '#fcfaf2' }}>
-                  {inspectingTemplate.title}
-                </h3>
+
+                <button
+                  type="button"
+                  onClick={() => setInspectingTemplate(null)}
+                  aria-label="Tutup Pratinjau"
+                  className="wayang-modal-close-btn"
+                  style={{
+                    width: '38px',
+                    height: '38px',
+                    flexShrink: 0,
+                  }}
+                >
+                  <X size={18} />
+                </button>
               </div>
             </div>
 
-            {/* Konten Isi Modal: Deskripsi, Roster Tokoh, dan Rincian Babak */}
-            <div style={{ padding: '26px', display: 'flex', flexDirection: 'column', gap: '22px' }}>
+            {/* 2. Dedicated Title & Eyebrow Row in Normal Flow (Cannot Collide) */}
+            <div
+              style={{
+                padding: '2px 28px 16px 28px',
+                borderBottom: 'none',
+                background: '#f7f3ea',
+                flexShrink: 0,
+              }}
+            >
+              <div
+                style={{
+                  fontSize: '11px',
+                  color: '#8b4513',
+                  fontWeight: '800',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.12em',
+                  marginBottom: '6px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                }}
+              >
+                <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#d4af37' }} />
+                <span>{inspectingTemplate.subtitle}</span>
+              </div>
+              <h2
+                style={{
+                  margin: 0,
+                  fontSize: '24px',
+                  fontWeight: '850',
+                  color: '#1a140e',
+                  fontFamily: 'Cinzel, Georgia, serif',
+                  letterSpacing: '-0.02em',
+                  lineHeight: '1.25',
+                }}
+              >
+                {inspectingTemplate.title}
+              </h2>
+            </div>
+
+            {/* 3. Scrollable Body with Clean Heritage Cards */}
+            <div
+              className="wayang-modal-inner modal-custom-scroll"
+              style={{
+                flex: 1,
+                overflowY: 'auto',
+                padding: '22px 28px',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '20px',
+              }}
+            >
+              {/* Sinopsis & Latar Filosofis — Clean Editorial */}
               <div>
-                <h4 style={{ margin: '0 0 6px 0', fontSize: '14px', fontWeight: '800', color: '#8b5a1b', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                <div
+                  style={{
+                    fontSize: '11px',
+                    color: '#8b4513',
+                    fontWeight: '800',
+                    letterSpacing: '0.1em',
+                    textTransform: 'uppercase',
+                    marginBottom: '8px',
+                  }}
+                >
                   Sinopsis & Latar Filosofis
-                </h4>
-                <p style={{ margin: 0, fontSize: '14px', color: '#4b3f33', lineHeight: '1.65' }}>
+                </div>
+                <p style={{ margin: 0, fontSize: '14px', color: '#3d2b1f', lineHeight: '1.8' }}>
                   {inspectingTemplate.description}
                 </p>
               </div>
 
               {/* Roster Tokoh yang Dipentaskan */}
-              <div style={{ background: '#faf6ee', border: '1px solid rgba(212, 175, 55, 0.28)', borderRadius: '18px', padding: '14px 18px' }}>
-                <div style={{ fontSize: '12px', fontWeight: '800', color: '#8b5a1b', textTransform: 'uppercase', marginBottom: '10px', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <Users size={14} />
-                  <span>Komposisi Tokoh Utama di Panggung Kelir</span>
+              <div>
+                <div style={{ marginBottom: '12px' }}>
+                  <span style={{ fontSize: '11px', color: '#8b4513', fontWeight: '800', letterSpacing: '0.1em', textTransform: 'uppercase' }}>
+                    Komposisi Tokoh di Panggung Kelir
+                  </span>
                 </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '14px', flexWrap: 'wrap' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
                   {inspectingTemplate.characters.map((ch, idx) => (
-                    <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <div
+                      key={idx}
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '10px',
+                        background: '#ffffff',
+                        border: '1px solid rgba(40, 28, 16, 0.08)',
+                        borderRadius: '9999px',
+                        padding: '5px 16px 5px 6px',
+                        boxShadow: '0 2px 6px rgba(40, 28, 16, 0.04)',
+                      }}
+                    >
                       <div
                         style={{
-                          width: '36px',
-                          height: '36px',
+                          width: '34px',
+                          height: '34px',
                           borderRadius: '50%',
-                          border: `2px solid ${ch.accentColor}`,
+                          border: `1.5px solid ${ch.accentColor || '#d4af37'}`,
                           overflow: 'hidden',
-                          background: '#1c140d',
+                          background: '#0d0805',
+                          flexShrink: 0,
                         }}
                       >
                         {ch.avatar ? (
                           <img src={ch.avatar} alt={ch.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                         ) : (
-                          <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#ffffff', fontWeight: 'bold' }}>
+                          <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#e8bb5c', fontWeight: 'bold', fontSize: '11px' }}>
                             {ch.name[0]}
                           </div>
                         )}
                       </div>
                       <div>
-                        <div style={{ fontSize: '13px', fontWeight: '750', color: '#1a140e' }}>{ch.name}</div>
-                        <div style={{ fontSize: '11px', color: '#8b5a1b' }}>{ch.role}</div>
+                        <div style={{ fontSize: '12.5px', fontWeight: '800', color: '#1a140e' }}>{ch.name}</div>
+                        <div style={{ fontSize: '11px', color: '#8b4513', fontWeight: '600' }}>{ch.role}</div>
                       </div>
                     </div>
                   ))}
@@ -3377,36 +3379,39 @@ export default function MyWorksView({ onOpenStudio, onPlayPerformance }) {
 
               {/* Daftar Babak Adegan Beserta Dialog */}
               <div>
-                <h4 style={{ margin: '0 0 12px 0', fontSize: '14px', fontWeight: '800', color: '#8b5a1b', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
-                  Rangkaian Babak & Naskah Dialog
-                </h4>
+                <div style={{ marginBottom: '12px' }}>
+                  <span style={{ fontSize: '11px', color: '#8b4513', fontWeight: '800', letterSpacing: '0.1em', textTransform: 'uppercase' }}>
+                    Rangkaian Babak & Naskah Dialog
+                  </span>
+                </div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                   {inspectingTemplate.scenes.map((sc, sIdx) => (
                     <div
                       key={sIdx}
                       style={{
                         background: '#ffffff',
-                        border: '1px solid rgba(212, 175, 55, 0.28)',
-                        borderRadius: '16px',
-                        padding: '14px 18px',
+                        border: '1px solid rgba(40, 28, 16, 0.08)',
+                        borderRadius: '14px',
+                        padding: '16px 18px',
+                        boxShadow: '0 2px 6px rgba(40, 28, 16, 0.03)',
                       }}
                     >
-                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px', flexWrap: 'wrap', gap: '8px' }}>
                         <span style={{ fontSize: '13.5px', fontWeight: '800', color: '#1a140e' }}>
                           Babak {sIdx + 1}: {sc.title}
                         </span>
-                        <span style={{ fontSize: '11.5px', color: '#8b5a1b', background: '#faf6ee', padding: '3px 10px', borderRadius: '10px', fontWeight: '700' }}>
+                        <span style={{ fontSize: '11px', color: '#8b4513', background: 'rgba(212, 175, 55, 0.12)', border: '1px solid rgba(212, 175, 55, 0.2)', padding: '3px 10px', borderRadius: '9999px', fontWeight: '750' }}>
                           Latar: {sc.background.replace('kelir-', '').replace(/-/g, ' ')}
                         </span>
                       </div>
 
                       {sc.characters?.[0]?.dialogue && (
-                        <div style={{ background: '#faf6ee', padding: '10px 14px', borderRadius: '12px', borderLeft: '3px solid #c27827' }}>
-                          <div style={{ fontSize: '13px', fontStyle: 'italic', color: '#1a140e', fontWeight: '700', marginBottom: '4px' }}>
+                        <div style={{ padding: '10px 14px', background: 'rgba(247, 243, 234, 0.65)', borderLeft: '3.5px solid #d4af37', borderRadius: '0 8px 8px 0' }}>
+                          <div style={{ fontSize: '13.5px', fontStyle: 'italic', color: '#1a140e', fontWeight: '650', marginBottom: '4px', fontFamily: 'Georgia, serif' }}>
                             "{sc.characters[0].dialogue}"
                           </div>
                           {sc.characters[0].translation && (
-                            <div style={{ fontSize: '11.5px', color: '#6e5e4d' }}>
+                            <div style={{ fontSize: '12px', color: '#6e5e4d' }}>
                               Terjemahan: {sc.characters[0].translation}
                             </div>
                           )}
@@ -3423,19 +3428,35 @@ export default function MyWorksView({ onOpenStudio, onPlayPerformance }) {
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'space-between',
-                  background: '#faf6ee',
-                  border: '1px solid rgba(212, 175, 55, 0.35)',
-                  borderRadius: '16px',
-                  padding: '12px 18px',
+                  padding: '14px 18px',
+                  borderRadius: '14px',
+                  background: '#ffffff',
+                  border: '1px solid rgba(40, 28, 16, 0.08)',
+                  boxShadow: '0 2px 8px rgba(40, 28, 16, 0.04)',
+                  flexWrap: 'wrap',
+                  gap: '12px',
                 }}
               >
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                  <Music size={18} style={{ color: '#8b5a1b' }} />
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                  <div
+                    style={{
+                      width: '36px',
+                      height: '36px',
+                      borderRadius: '50%',
+                      background: 'rgba(212, 175, 55, 0.16)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      color: '#8b4513',
+                    }}
+                  >
+                    <Music size={16} />
+                  </div>
                   <div>
-                    <div style={{ fontSize: '13px', fontWeight: '750', color: '#1a140e' }}>
+                    <div style={{ fontSize: '13px', fontWeight: '800', color: '#1a140e' }}>
                       Iringan: {inspectingTemplate.audioTitle}
                     </div>
-                    <div style={{ fontSize: '11.5px', color: '#8b5a1b' }}>{inspectingTemplate.audioMood}</div>
+                    <div style={{ fontSize: '11.5px', color: '#8b4513', fontWeight: '650' }}>{inspectingTemplate.audioMood}</div>
                   </div>
                 </div>
 
@@ -3443,76 +3464,70 @@ export default function MyWorksView({ onOpenStudio, onPlayPerformance }) {
                   type="button"
                   onClick={() => handleToggleAudio(inspectingTemplate)}
                   style={{
-                    background: playingAudioId === inspectingTemplate.id ? '#c27827' : '#ffffff',
-                    color: playingAudioId === inspectingTemplate.id ? '#ffffff' : '#8b5a1b',
-                    border: '1px solid rgba(212, 175, 55, 0.4)',
+                    background: playingAudioId === inspectingTemplate.id ? 'linear-gradient(135deg, #e8bb5c 0%, #d4af37 100%)' : '#ffffff',
+                    color: '#1a140e',
+                    border: '1px solid rgba(40, 28, 16, 0.12)',
                     borderRadius: '9999px',
-                    padding: '6px 16px',
+                    padding: '7px 18px',
                     fontSize: '12px',
                     fontWeight: '750',
                     cursor: 'pointer',
                     display: 'inline-flex',
                     alignItems: 'center',
-                    gap: '5px',
+                    gap: '6px',
+                    minHeight: '38px',
+                    transition: 'all 0.2s ease',
+                    boxShadow: '0 2px 6px rgba(40, 28, 16, 0.04)',
                   }}
                 >
-                  {playingAudioId === inspectingTemplate.id ? <Square size={12} fill="#ffffff" /> : <Play size={12} fill="#8b5a1b" />}
-                  <span>{playingAudioId === inspectingTemplate.id ? 'Hentikan' : 'Dengar Iringan'}</span>
-                </button>
-              </div>
-
-              {/* Tombol Aksi di Bawah Modal */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginTop: '6px' }}>
-                <button
-                  type="button"
-                  onClick={() => setInspectingTemplate(null)}
-                  style={{
-                    flex: 1,
-                    background: '#ffffff',
-                    border: '1.5px solid rgba(212, 175, 55, 0.35)',
-                    color: '#6e5e4d',
-                    padding: '12px 20px',
-                    borderRadius: '18px',
-                    fontSize: '13.5px',
-                    fontWeight: '750',
-                    cursor: 'pointer',
-                  }}
-                >
-                  Tutup Pratinjau
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => {
-                    const tpl = inspectingTemplate;
-                    setInspectingTemplate(null);
-                    handleUseTemplate(tpl);
-                  }}
-                  style={{
-                    flex: 1.5,
-                    background: '#c27827',
-                    border: 'none',
-                    color: '#ffffff',
-                    padding: '12px 24px',
-                    borderRadius: '18px',
-                    fontSize: '14px',
-                    fontWeight: '800',
-                    cursor: 'pointer',
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    gap: '8px',
-                    boxShadow: 'none',
-                  }}
-                >
-                  <span>Pakai Skenario Ini & Mulai Pentas</span>
-                  <ArrowRight size={16} />
+                  {playingAudioId === inspectingTemplate.id ? <Square size={13} fill="#1a140e" /> : <Play size={13} fill="#1a140e" />}
+                  <span>{playingAudioId === inspectingTemplate.id ? 'Hentikan Audio' : 'Dengar Iringan'}</span>
                 </button>
               </div>
             </div>
+
+            {/* 4. Pinned Sticky Action Footer */}
+            <div
+              style={{
+                flexShrink: 0,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                gap: '14px',
+                padding: '16px 28px',
+                background: '#f7f3ea',
+                borderTop: 'none',
+                boxShadow: '0 -4px 16px rgba(40, 28, 16, 0.04)',
+              }}
+            >
+              <button
+                type="button"
+                onClick={() => setInspectingTemplate(null)}
+                className="wayang-btn-ghost"
+                style={{ minHeight: '44px' }}
+              >
+                Tutup Pratinjau
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  const tpl = inspectingTemplate;
+                  setInspectingTemplate(null);
+                  handleUseTemplate(tpl);
+                }}
+                className="wayang-btn-cta"
+                style={{ minHeight: '44px', padding: '6px 6px 6px 22px' }}
+              >
+                <span>Gunakan Template di Studio</span>
+                <span className="wayang-btn-cta-icon">
+                  <ArrowRight size={16} color="#16100a" />
+                </span>
+              </button>
+            </div>
           </div>
-        </div>
-      )}
+      </div>
+    )}
 
       {/* ============================================================
           6. TOAST FEEDBACK NOTIFIKASI SUKSES / INFO
@@ -3525,9 +3540,9 @@ export default function MyWorksView({ onOpenStudio, onPlayPerformance }) {
             right: '28px',
             zIndex: 1200,
             background: '#17110c',
-            border: '1px solid #d4af37',
-            boxShadow: '0 12px 30px rgba(0, 0, 0, 0.5), 0 0 20px rgba(212, 175, 55, 0.2)',
-            borderRadius: '18px',
+            border: '1px solid rgba(212, 175, 55, 0.45)',
+            boxShadow: '0 12px 28px rgba(0, 0, 0, 0.4), 0 2px 8px rgba(40, 28, 16, 0.2)',
+            borderRadius: '12px',
             padding: '12px 20px',
             display: 'flex',
             alignItems: 'center',

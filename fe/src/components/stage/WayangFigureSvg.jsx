@@ -27,8 +27,8 @@ export default function WayangFigureSvg({
       style={{
         overflow: 'visible',
         filter: isSelected
-          ? `drop-shadow(0 0 14px ${accentColor}) drop-shadow(0 0 28px rgba(212, 175, 55, 0.45))`
-          : 'drop-shadow(0 8px 14px rgba(0,0,0,0.6))',
+          ? 'drop-shadow(0 6px 18px rgba(0, 0, 0, 0.75)) drop-shadow(0 0 14px rgba(232, 187, 92, 0.55))'
+          : 'drop-shadow(0 8px 14px rgba(0, 0, 0, 0.6))',
         transition: 'filter 0.2s ease, transform 0.15s ease',
         cursor: 'grab',
       }}

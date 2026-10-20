@@ -32,10 +32,12 @@ const InstagramIcon = () => (
 );
 
 // ============================================================
+// Tahun saat ini dihitung di tingkat modul agar render murni sesuai standar React 19
+const CURRENT_YEAR = new Date().getFullYear();
+
 // KOMPONEN UTAMA FOOTER
 // ============================================================
 export default function Footer({ onNavigate }) {
-  const currentYear = new Date().getFullYear();
   const [modalData, setModalData] = useState(null);
 
   const socialLinks = [
@@ -497,7 +499,7 @@ export default function Footer({ onNavigate }) {
           }}
         >
           <div>
-            © {currentYear} <strong style={{ color: '#fcfaf2' }}>Wayangverse</strong>. Dilindungi Hak Cipta. Dedikasi Pelestarian Seni Pedalangan Nusantara.
+            © {CURRENT_YEAR} <strong style={{ color: '#fcfaf2' }}>Wayangverse</strong>. Dilindungi Hak Cipta. Dedikasi Pelestarian Seni Pedalangan Nusantara.
           </div>
           <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
             <span>Pondok Leungsir Park</span>
@@ -510,111 +512,101 @@ export default function Footer({ onNavigate }) {
       {/* MODAL DIALOG INFORMASI TAUTAN */}
       {modalData && (
         <div
-          style={{
-            position: 'fixed',
-            inset: 0,
-            zIndex: 9999,
-            background: 'rgba(12, 9, 6, 0.75)',
-            backdropFilter: 'blur(5px)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            padding: '20px',
-          }}
+          className="wayang-modal-backdrop"
+          style={{ zIndex: 9999 }}
           onClick={() => setModalData(null)}
         >
           <div
-            style={{
-              background: '#18120c',
-              border: '1px solid rgba(212, 175, 55, 0.35)',
-              borderRadius: '20px',
-              maxWidth: '520px',
-              width: '100%',
-              padding: '28px',
-              boxShadow: '0 20px 50px rgba(0, 0, 0, 0.55)',
-              position: 'relative',
-              boxSizing: 'border-box',
-              color: '#fcfaf2',
-            }}
+            className="wayang-modal-chassis"
+            style={{ maxWidth: '560px', width: '100%' }}
             onClick={(e) => e.stopPropagation()}
           >
             <div
-              style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'flex-start',
-                marginBottom: '16px',
-              }}
+              className="wayang-modal-inner modal-custom-scroll"
+              style={{ padding: '30px 28px' }}
             >
-              <div>
-                <h3
+              <div className="wayang-modal-hairline" />
+
+              {/* Header Dialog */}
+              <div
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'flex-start',
+                  gap: '16px',
+                  marginBottom: '20px',
+                  borderBottom: '1px solid rgba(212, 175, 55, 0.15)',
+                  paddingBottom: '16px',
+                }}
+              >
+                <div>
+                  <div className="wayang-modal-eyebrow" style={{ marginBottom: '8px' }}>
+                    <span style={{ display: 'inline-block', width: '6px', height: '6px', borderRadius: '50%', background: '#d4af37' }} />
+                    <span>INFORMASI & DOKUMENTASI</span>
+                  </div>
+                  <h3
+                    style={{
+                      margin: '0 0 4px 0',
+                      fontSize: '22px',
+                      fontWeight: '850',
+                      color: '#1a140e',
+                      fontFamily: 'Cinzel, Georgia, serif',
+                      letterSpacing: '-0.01em',
+                    }}
+                  >
+                    {modalData.title}
+                  </h3>
+                  <div style={{ fontSize: '12.5px', color: '#8b4513', fontWeight: '650' }}>
+                    {modalData.subtitle}
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  aria-label="Tutup Dialog Informasi"
+                  onClick={() => setModalData(null)}
+                  className="wayang-modal-close-btn"
+                >
+                  <X size={18} />
+                </button>
+              </div>
+
+              {/* Isi Konten */}
+              <div
+                style={{
+                  background: '#ffffff',
+                  border: '1px solid rgba(212, 175, 55, 0.35)',
+                  borderRadius: '14px',
+                  padding: '18px 20px',
+                  marginBottom: '24px',
+                  boxShadow: '0 2px 8px rgba(40, 28, 16, 0.04)',
+                }}
+              >
+                <p
                   style={{
-                    margin: '0 0 6px 0',
-                    fontSize: '19px',
-                    fontWeight: '800',
-                    color: '#fcfaf2',
+                    fontSize: '13.5px',
+                    lineHeight: '1.75',
+                    color: '#3d2b1f',
+                    margin: 0,
+                    whiteSpace: 'pre-line',
                   }}
                 >
-                  {modalData.title}
-                </h3>
-                <div style={{ fontSize: '13px', color: '#e8bb5c', fontWeight: '600' }}>
-                  {modalData.subtitle}
-                </div>
+                  {modalData.content}
+                </p>
               </div>
-              <button
-                onClick={() => setModalData(null)}
-                style={{
-                  background: 'rgba(212, 175, 55, 0.12)',
-                  border: '1px solid rgba(212, 175, 55, 0.25)',
-                  borderRadius: '50%',
-                  width: '32px',
-                  height: '32px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  cursor: 'pointer',
-                  color: '#e8bb5c',
-                }}
-              >
-                <X size={16} />
-              </button>
-            </div>
 
-            <p
-              style={{
-                fontSize: '14px',
-                lineHeight: '1.7',
-                color: '#bfae9c',
-                margin: '0 0 24px 0',
-                whiteSpace: 'pre-line',
-              }}
-            >
-              {modalData.content}
-            </p>
-
-            <div style={{ textAlign: 'right' }}>
-              <button
-                onClick={() => setModalData(null)}
-                style={{
-                  background: '#e8bb5c',
-                  border: 'none',
-                  color: '#0d0a07',
-                  padding: '9px 26px',
-                  borderRadius: '20px',
-                  fontSize: '13.5px',
-                  fontWeight: '750',
-                  cursor: 'pointer',
-                  transition: 'all 0.2s ease',
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.background = '#dcae4d';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.background = '#e8bb5c';
-                }}
-              >
-                Tutup
-              </button>
+              {/* Tombol Aksi */}
+              <div style={{ display: 'flex', justifyContent: 'flex-end', borderTop: '1px solid rgba(212, 175, 55, 0.15)', paddingTop: '18px' }}>
+                <button
+                  type="button"
+                  onClick={() => setModalData(null)}
+                  className="wayang-btn-cta"
+                >
+                  <span>Mengerti & Tutup</span>
+                  <span className="wayang-btn-cta-icon">
+                    <X size={15} color="#16100a" />
+                  </span>
+                </button>
+              </div>
             </div>
           </div>
         </div>

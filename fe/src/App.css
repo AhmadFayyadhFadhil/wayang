@@ -120,17 +120,17 @@
 
 .dot.green {
   background-color: #10b981;
-  box-shadow: 0 0 10px #10b981;
+  box-shadow: 0 1px 3px rgba(16, 185, 129, 0.4);
 }
 
 .dot.red {
   background-color: #ef4444;
-  box-shadow: 0 0 10px #ef4444;
+  box-shadow: 0 1px 3px rgba(239, 68, 68, 0.4);
 }
 
 .dot.yellow {
   background-color: #d4af37;
-  box-shadow: 0 0 10px #d4af37;
+  box-shadow: 0 1px 3px rgba(212, 175, 55, 0.4);
 }
 
 .section-title {
@@ -524,16 +524,16 @@
   width: 100%;
   margin: -116px auto 0 auto;
   position: relative;
-  background: rgba(20, 14, 9, 0.68);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border-radius: 26px;
-  border: 1px solid rgba(212, 175, 55, 0.22);
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
-  padding: 22px 28px;
+  background: rgba(18, 13, 9, 0.78);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: 20px;
+  border: 1px solid rgba(212, 175, 55, 0.20);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.42);
+  padding: 24px 28px;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
+  gap: 0;
   align-items: center;
   box-sizing: border-box;
   transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease, background 0.3s ease;
@@ -541,14 +541,14 @@
 
 .hero-floating-card:hover {
   transform: translateY(-2px);
-  background: rgba(26, 18, 12, 0.78);
-  border-color: rgba(212, 175, 55, 0.38);
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.42);
+  background: rgba(24, 16, 11, 0.85);
+  border-color: rgba(212, 175, 55, 0.34);
+  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.48);
 }
 
 .hero-floating-stat-item {
   text-align: center;
-  padding: 6px 14px;
+  padding: 8px 24px;
   position: relative;
   transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease;
 }
@@ -615,6 +615,82 @@
     padding: 18px 16px;
     gap: 16px;
     border-radius: 18px;
+  }
+}
+
+/* ============================================================
+   Cardbox Numerik Karya Saya (Selaras dengan Hero Beranda)
+   ============================================================ */
+.myworks-floating-stats-card {
+  max-width: 1180px;
+  width: 100%;
+  margin: 0 auto;
+  position: relative;
+  background: rgba(18, 13, 9, 0.76);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-radius: 18px;
+  border: 1px solid rgba(212, 175, 55, 0.22);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.38);
+  padding: 14px 24px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0;
+  align-items: center;
+  box-sizing: border-box;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease, background 0.3s ease;
+}
+
+.myworks-floating-stats-card:hover {
+  transform: translateY(-2px);
+  background: rgba(24, 16, 11, 0.85);
+  border-color: rgba(212, 175, 55, 0.34);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45);
+}
+
+.myworks-floating-stat-item {
+  text-align: center;
+  padding: 4px 14px;
+  position: relative;
+  box-sizing: border-box;
+  transition: transform 0.3s ease;
+}
+
+.myworks-floating-stat-item:hover {
+  transform: translateY(-1px);
+}
+
+@media (min-width: 769px) {
+  .myworks-floating-stat-item:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 15%;
+    height: 70%;
+    width: 1px;
+    background: linear-gradient(
+      to bottom,
+      rgba(212, 175, 55, 0.03),
+      rgba(212, 175, 55, 0.22) 50%,
+      rgba(212, 175, 55, 0.03)
+    );
+  }
+}
+
+@media (max-width: 900px) {
+  .myworks-floating-stats-card {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    padding: 14px 16px;
+  }
+}
+
+@media (max-width: 540px) {
+  .myworks-floating-stats-card {
+    grid-template-columns: 1fr;
+    gap: 14px;
+    padding: 18px 16px;
+    border-radius: 16px;
   }
 }
 
@@ -1152,163 +1228,303 @@
 }
 
 /* ============================================================
-   Leaderboard Top 4 Accordion Cards (Wayangverse Refined)
+   LEADERBOARD TOP 4 - THEATRICAL EXHIBITION SHOWCASE (ANTI-SLOP)
+   Menggantikan layout accordion kembar dengan panggung pementasan
+   asimetris yang sinematik, ergonomis & interaktif
    ============================================================ */
 
-.leaderboard-accordion-container {
-  display: flex;
-  flex-direction: row;
-  align-items: stretch;
+.leaderboard-showcase-grid {
+  display: grid;
+  grid-template-columns: 1.35fr 1fr;
+  gap: 28px;
   width: 100%;
-  gap: 20px;
-  box-sizing: border-box;
-  padding: 8px 0;
+  align-items: stretch;
 }
 
-.leaderboard-accordion-card {
+/* Sisi Kiri: Master Stage Spotlight */
+.leaderboard-spotlight-stage {
   position: relative;
-  background: #ffffff;
-  border-radius: 18px;
-  border: 1px solid rgba(0, 0, 0, 0.07);
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+  background: #110c08;
+  border-radius: 22px;
   overflow: hidden;
-  cursor: pointer;
   display: flex;
   flex-direction: column;
-  transition: flex 0.4s cubic-bezier(0.25, 1, 0.35, 1), transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+  justifyContent: space-between; /* Header meta di atas, teks & tombol mengendap rapi di bawah */
+  min-height: 560px;
+  box-shadow: 0 16px 36px -8px rgba(13, 10, 7, 0.28);
+  border: 1px solid rgba(212, 175, 55, 0.22);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
   box-sizing: border-box;
 }
 
-.leaderboard-accordion-card.inactive {
-  flex: 1;
+.leaderboard-spotlight-stage:hover {
+  border-color: rgba(212, 175, 55, 0.38);
+  box-shadow: 0 20px 42px -6px rgba(13, 10, 7, 0.35);
 }
 
-.leaderboard-accordion-card.inactive:hover {
-  transform: translateY(-3px);
-  border-color: rgba(212, 175, 55, 0.3);
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
-}
-
-.leaderboard-accordion-card.active {
-  flex: 1.85;
-  transform: translateY(-4px);
-  border-color: rgba(212, 175, 55, 0.35);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.07);
-}
-
-/* Image Wrapper: Tampil di semua kondisi (baik lonjong maupun aktif) */
-.leaderboard-card-img-wrap {
-  width: 100%;
-  height: 190px;
-  overflow: hidden;
-  position: relative;
-  background: #090705;
-  flex-shrink: 0;
-}
-
-.leaderboard-card-img {
+.leaderboard-spotlight-bg-img {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center;
-  transition: transform 0.5s ease;
-  display: block;
+  object-position: center 25%;
+  transition: transform 0.7s cubic-bezier(0.2, 0.8, 0.2, 1);
+  filter: brightness(0.92) contrast(1.05);
 }
 
-.leaderboard-accordion-card:hover .leaderboard-card-img {
-  transform: scale(1.04);
+.leaderboard-spotlight-stage:hover .leaderboard-spotlight-bg-img {
+  transform: scale(1.03);
 }
 
-/* Card Body */
-.leaderboard-card-body {
-  padding: 18px 20px 20px 20px;
+/* Scrim: 100% transparan di area tengah (36% - 84%) agar subjek wayang & dalang tampil jernih tanpa tertutup kabut */
+.leaderboard-spotlight-scrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    rgba(10, 7, 5, 0.98) 0%,
+    rgba(10, 7, 5, 0.88) 22%,
+    rgba(10, 7, 5, 0.25) 36%,
+    transparent 48%,
+    transparent 84%,
+    rgba(10, 7, 5, 0.40) 100%
+  );
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Header Meta: Di bagian paling atas */
+.leaderboard-spotlight-header-meta {
+  position: relative;
+  z-index: 2;
+  padding: 24px 26px 0 26px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.leaderboard-spotlight-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 13px;
+  background: rgba(14, 10, 7, 0.65);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(212, 175, 55, 0.38);
+  border-radius: 9999px;
+  color: #f7d27e;
+  font-size: 11.5px;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.leaderboard-spotlight-epos {
+  font-size: 12px;
+  color: rgba(240, 230, 216, 0.85);
+  font-weight: 600;
+  background: rgba(14, 10, 7, 0.55);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  padding: 4px 12px;
+  border-radius: 9999px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Content: Mengendap di bagian bawah dengan ruang bernapas yang lega */
+.leaderboard-spotlight-content {
+  position: relative;
+  z-index: 2;
+  padding: 20px 28px 28px 28px;
+  margin-top: auto;
   display: flex;
   flex-direction: column;
-  flex: 1;
-  background: #ffffff;
   box-sizing: border-box;
 }
 
-/* Nomor Urut: Sesuai Palet Wayangverse (Prada Emas Heritage) */
-.leaderboard-rank-number {
-  font-size: 28px;
+.leaderboard-spotlight-title {
+  font-size: clamp(22px, 2.3vw, 30px);
   font-weight: 850;
-  color: #c59b27; /* Wayangverse Gold */
-  letter-spacing: -0.5px;
-  line-height: 1;
-  margin: 0 0 6px 0;
-  user-select: none;
-  transition: color 0.25s ease;
-}
-
-.leaderboard-accordion-card.active .leaderboard-rank-number {
-  color: #d4af37;
-}
-
-/* Judul */
-.leaderboard-card-title {
-  margin: 0 0 6px 0;
-  font-weight: 800;
-  color: #1a140e;
+  color: #ffffff;
   letter-spacing: -0.3px;
-  line-height: 1.3;
+  line-height: 1.18;
+  margin: 0 0 6px 0;
 }
 
-.leaderboard-card-title.inactive-title {
-  font-size: 16.5px;
-}
-
-.leaderboard-card-title.active-title {
-  font-size: 19.5px;
-  font-weight: 850;
-  margin-bottom: 8px;
-}
-
-/* Deskripsi Singkat */
-.leaderboard-card-desc {
-  margin: 0;
+.leaderboard-spotlight-dalang {
   font-size: 13px;
-  color: #6e5e4d;
+  color: #e8bb5c;
+  font-weight: 650;
+  margin: 0 0 8px 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.leaderboard-spotlight-desc {
+  font-size: 13.2px;
   line-height: 1.5;
+  color: rgba(248, 244, 236, 0.88);
+  margin: 0 0 18px 0;
+  max-width: 520px;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
 
-.leaderboard-card-desc.active-desc {
-  -webkit-line-clamp: 3;
-  margin-bottom: 16px;
+.leaderboard-spotlight-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
 }
 
-/* 2 Tombol Aksi Horizontal - Selalu Tampil Langsung Tanpa Hover */
-.leaderboard-btn-row {
+/* Sisi Kanan: Reel Stack of 4 Curated Performances */
+.leaderboard-reel-stack {
   display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 10px;
+  flex-direction: column;
+  gap: 12px;
   width: 100%;
-  margin-top: auto;
-  padding-top: 10px;
+  justify-content: space-between;
+}
+
+.leaderboard-reel-card {
+  position: relative;
+  background: #ffffff;
+  border: 1px solid rgba(40, 28, 16, 0.08);
+  border-radius: 16px;
+  padding: 13px 16px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(40, 28, 16, 0.03);
+  transition: all 0.22s ease;
   box-sizing: border-box;
 }
 
+.leaderboard-reel-card:hover {
+  transform: translateX(4px);
+  border-color: rgba(212, 175, 55, 0.35);
+  box-shadow: 0 6px 16px rgba(40, 28, 16, 0.07);
+}
+
+.leaderboard-reel-card.active {
+  background: #fbf7ee;
+  border-color: #d4af37;
+  box-shadow: 0 4px 18px rgba(212, 175, 55, 0.16);
+}
+
+.leaderboard-reel-rank {
+  font-size: 20px;
+  font-weight: 850;
+  color: #8b6820;
+  line-height: 1;
+  min-width: 28px;
+  letter-spacing: -0.5px;
+}
+
+.leaderboard-reel-card.active .leaderboard-reel-rank {
+  color: #c59b27;
+}
+
+.leaderboard-reel-img-thumb {
+  width: 68px;
+  height: 68px;
+  border-radius: 11px;
+  overflow: hidden;
+  flex-shrink: 0;
+  background: #140e0a;
+  position: relative;
+}
+
+.leaderboard-reel-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  transition: transform 0.4s ease;
+}
+
+.leaderboard-reel-card:hover .leaderboard-reel-img {
+  transform: scale(1.08);
+}
+
+.leaderboard-reel-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.leaderboard-reel-title {
+  font-size: 15px;
+  font-weight: 800;
+  color: #1a140e;
+  letter-spacing: -0.2px;
+  margin: 0 0 3px 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.leaderboard-reel-dalang {
+  font-size: 12.5px;
+  color: #8b4513;
+  font-weight: 650;
+  margin: 0 0 3px 0;
+}
+
+.leaderboard-reel-meta {
+  font-size: 11.5px;
+  color: #6e5e4d;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.leaderboard-reel-arrow {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #6e5e4d;
+  background: rgba(40, 28, 16, 0.04);
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+}
+
+.leaderboard-reel-card.active .leaderboard-reel-arrow,
+.leaderboard-reel-card:hover .leaderboard-reel-arrow {
+  background: #e8bb5c;
+  color: #0d0a07;
+  transform: translateX(2px);
+}
+
+/* 2 Tombol Aksi */
 .leaderboard-btn-primary,
 .leaderboard-btn-secondary {
-  flex: 1;
-  padding: 10px 14px;
+  padding: 10px 20px;
   margin: 0;
   border-radius: 9999px;
-  font-size: 12.8px;
+  font-size: 13px;
   font-weight: 750;
   letter-spacing: 0.01em;
   cursor: pointer;
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
   white-space: nowrap;
   box-sizing: border-box;
-  height: 40px;
+  height: 42px;
   transition: all 0.2s ease;
 }
 
@@ -1325,41 +1541,843 @@
 }
 
 .leaderboard-btn-secondary {
-  background: #fcfaf5;
-  border: 1px solid rgba(139, 69, 19, 0.2);
-  color: #1a140e;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  color: #ffffff;
   box-shadow: none;
 }
 
 .leaderboard-btn-secondary:hover {
-  background: rgba(232, 187, 92, 0.12);
-  border-color: #d4af37;
+  background: rgba(255, 255, 255, 0.22);
+  border-color: #ffffff;
   transform: translateY(-1px);
 }
 
 /* Responsiveness */
 @media (max-width: 960px) {
-  .leaderboard-accordion-container {
-    flex-direction: column;
-    gap: 16px;
+  .leaderboard-showcase-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
   }
-  .leaderboard-accordion-card.inactive,
-  .leaderboard-accordion-card.active {
-    flex: none;
-    width: 100%;
-    transform: none;
-  }
-  .leaderboard-card-title.inactive-title,
-  .leaderboard-card-title.active-title {
-    font-size: 18px;
-  }
-  .leaderboard-card-desc.inactive-desc,
-  .leaderboard-card-desc.active-desc {
-    -webkit-line-clamp: 3;
-    margin-bottom: 14px;
+  .leaderboard-spotlight-stage {
+    min-height: 420px;
   }
 }
 
+/* ==========================================================================
+   ANIMASI MOTIF AWAN TRADISIONAL JAWA (JAVANESE CLOUD BACKGROUND)
+   Gerakan mengambang & bergeser halus (organic multi-axis drifting & floating)
+   Menggunakan transform3d GPU-accelerated untuk performa 60 FPS tanpa jank
+   ========================================================================== */
+@keyframes javaneseCloudDriftLeft {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1) rotate(0deg);
+  }
+  25% {
+    transform: translate3d(26px, -14px, 0) scale(1.025) rotate(0.9deg);
+  }
+  50% {
+    transform: translate3d(12px, -24px, 0) scale(1.035) rotate(-0.5deg);
+  }
+  75% {
+    transform: translate3d(-16px, -10px, 0) scale(0.985) rotate(0.4deg);
+  }
+  100% {
+    transform: translate3d(0, 0, 0) scale(1) rotate(0deg);
+  }
+}
 
+@keyframes javaneseCloudDriftRight {
+  0% {
+    transform: scaleX(-1) translate3d(0, 0, 0) scale(1) rotate(0deg);
+  }
+  30% {
+    transform: scaleX(-1) translate3d(24px, 16px, 0) scale(1.03) rotate(-0.9deg);
+  }
+  60% {
+    transform: scaleX(-1) translate3d(10px, -18px, 0) scale(1.015) rotate(0.7deg);
+  }
+  85% {
+    transform: scaleX(-1) translate3d(-14px, 8px, 0) scale(0.98) rotate(-0.4deg);
+  }
+  100% {
+    transform: scaleX(-1) translate3d(0, 0, 0) scale(1) rotate(0deg);
+  }
+}
+
+@keyframes javaneseCloudFloatPanji {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1) rotate(0deg);
+  }
+  28% {
+    transform: translate3d(32px, -16px, 0) scale(1.03) rotate(1.2deg);
+  }
+  55% {
+    transform: translate3d(-20px, -26px, 0) scale(1.01) rotate(-0.8deg);
+  }
+  80% {
+    transform: translate3d(-34px, 12px, 0) scale(0.975) rotate(0.6deg);
+  }
+  100% {
+    transform: translate3d(0, 0, 0) scale(1) rotate(0deg);
+  }
+}
+
+@keyframes javaneseCloudFloatPanjiMirrored {
+  0% {
+    transform: scaleX(-1) translate3d(0, 0, 0) scale(1) rotate(0deg);
+  }
+  32% {
+    transform: scaleX(-1) translate3d(-28px, 18px, 0) scale(1.025) rotate(-1deg);
+  }
+  62% {
+    transform: scaleX(-1) translate3d(22px, -20px, 0) scale(1.015) rotate(0.8deg);
+  }
+  84% {
+    transform: scaleX(-1) translate3d(30px, 8px, 0) scale(0.98) rotate(-0.5deg);
+  }
+  100% {
+    transform: scaleX(-1) translate3d(0, 0, 0) scale(1) rotate(0deg);
+  }
+}
+
+@keyframes javaneseCloudDriftCenter {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  38% {
+    transform: translate3d(24px, -18px, 0) scale(1.025);
+  }
+  72% {
+    transform: translate3d(-18px, 12px, 0) scale(0.985);
+  }
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+.javanese-cloud-drift-left {
+  animation: javaneseCloudDriftLeft 24s cubic-bezier(0.42, 0, 0.58, 1) infinite;
+  will-change: transform;
+}
+
+.javanese-cloud-drift-right {
+  animation: javaneseCloudDriftRight 28s cubic-bezier(0.42, 0, 0.58, 1) infinite;
+  will-change: transform;
+}
+
+.javanese-cloud-float-panji {
+  animation: javaneseCloudFloatPanji 30s cubic-bezier(0.42, 0, 0.58, 1) infinite;
+  will-change: transform;
+}
+
+.javanese-cloud-float-panji-mirrored {
+  animation: javaneseCloudFloatPanjiMirrored 32s cubic-bezier(0.42, 0, 0.58, 1) infinite;
+  will-change: transform;
+}
+
+.javanese-cloud-drift-center {
+  animation: javaneseCloudDriftCenter 26s cubic-bezier(0.42, 0, 0.58, 1) infinite;
+  will-change: transform;
+}
+
+/* Responsif: skala awan tetap proporsional dan tidak kontras terhadap cardbox di layar mobile */
+@media (max-width: 768px) {
+  .javanese-cloud-container:not(.javanese-cloud-light-theme) {
+    opacity: 0.65 !important;
+  }
+  .javanese-cloud-container.javanese-cloud-light-theme {
+    opacity: 0.18 !important;
+  }
+}
+
+/* ==========================================================================
+   MODAL ENTRANCE ANIMATION & WAYANGVERSE POPUP DESIGN SYSTEM
+   ========================================================================== */
+@keyframes wayangModalScaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.96) translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.modal-enter-animation {
+  animation: wayangModalScaleIn 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  will-change: transform, opacity;
+}
+
+/* Kustomisasi scrollbar halus untuk konten modal */
+.modal-custom-scroll::-webkit-scrollbar {
+  width: 5px;
+}
+.modal-custom-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+.modal-custom-scroll::-webkit-scrollbar-thumb {
+  background: rgba(139, 69, 19, 0.2);
+  border-radius: 9999px;
+}
+.modal-custom-scroll::-webkit-scrollbar-thumb:hover {
+  background: rgba(139, 69, 19, 0.38);
+}
+
+/* ============================================================
+   HIGH-END WAYANGVERSE MODAL SYSTEM (WARM IVORY HERITAGE CRAFT)
+   Selaras persis dengan latar belakang #f5f0e4 / #fcfaf5 halaman lain
+   ============================================================ */
+
+/* 1. Backdrop Vignette */
+.wayang-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba(22, 16, 10, 0.62);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+/* 2. Seamless Outer Chassis - Warm Ivory Heritage Theme */
+.wayang-modal-chassis {
+  position: relative;
+  border-radius: 20px;
+  overflow: hidden;
+  border: none;
+  background: #f7f3ea;
+  color: #1a140e;
+  box-shadow: 
+    0 24px 64px -12px rgba(20, 14, 9, 0.35),
+    0 4px 20px rgba(0, 0, 0, 0.08);
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  animation: wayangModalScaleIn 0.32s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  will-change: transform, opacity;
+  box-sizing: border-box;
+}
+
+/* 3. Concentric Inner Core */
+.wayang-modal-inner {
+  position: relative;
+  overflow-y: auto;
+  overflow-x: hidden;
+  max-height: 90vh;
+  width: 100%;
+  color: #1a140e;
+  box-sizing: border-box;
+}
+
+/* 4. Top Golden Hairline Ornament (Disabled to eliminate AI-slop glowing stroke) */
+.wayang-modal-hairline {
+  display: none;
+}
+
+/* 5. Close Button (Hardware Pill 40px) */
+.wayang-modal-close-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(212, 175, 55, 0.42);
+  color: #1a140e;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 2px 8px rgba(40, 28, 16, 0.08);
+}
+.wayang-modal-close-btn:hover {
+  background: #ffffff;
+  border-color: #d4af37;
+  color: #8b4513;
+  transform: scale(1.05);
+}
+.wayang-modal-close-btn:active {
+  transform: scale(0.95);
+}
+
+/* 6. Eyebrow Tag Pill */
+.wayang-modal-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 12px;
+  border-radius: 9999px;
+  background: rgba(212, 175, 55, 0.14);
+  border: 1px solid rgba(212, 175, 55, 0.35);
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #8b4513;
+}
+
+/* 7. Button-in-Button CTA */
+.wayang-btn-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 6px 6px 6px 20px;
+  border-radius: 9999px;
+  background: linear-gradient(135deg, #e8bb5c 0%, #d4af37 100%);
+  color: #16100a;
+  font-weight: 800;
+  font-size: 13.5px;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(212, 175, 55, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.35);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  text-decoration: none;
+}
+.wayang-btn-cta:hover {
+  filter: brightness(1.06);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(212, 175, 55, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+}
+.wayang-btn-cta:active {
+  transform: translateY(0);
+}
+.wayang-btn-cta-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(22, 16, 10, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+}
+.wayang-btn-cta:hover .wayang-btn-cta-icon {
+  transform: translateX(2px);
+}
+
+/* 8. Secondary Ghost Button */
+.wayang-btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 24px;
+  border-radius: 9999px;
+  background: rgba(212, 175, 55, 0.08);
+  border: 1px solid rgba(212, 175, 55, 0.35);
+  color: #1a140e;
+  font-weight: 700;
+  font-size: 13.5px;
+  cursor: pointer;
+  min-height: 44px;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.wayang-btn-ghost:hover {
+  background: rgba(212, 175, 55, 0.18);
+  border-color: #d4af37;
+  color: #8b4513;
+}
+.wayang-btn-ghost:active {
+  transform: scale(0.98);
+}
+
+/* ==========================================================================
+   WAYANGVERSE ADMIN CMS & BALAI KURASI MASTER DATA DESIGN SYSTEM
+   Harmonious Two-Tier Architecture:
+   - Tier 1: Royal Dark Kelir Hero Stage with Floating Clouds & Gunungan Kayon
+   - Tier 2: Warm Ivory (#fcfaf5) Heritage Content Archive with Crisp White Cards
+   ========================================================================== */
+
+@keyframes adminSpin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.admin-spin-anim {
+  animation: adminSpin 1s linear infinite;
+}
+
+/* 1. Hero Stat Cards (Glass Soga Floating Cards in Hero Stage) */
+/* 1. Unified Floating Stats Card (Selaras dengan Hero Beranda & MyWorksView) */
+.admin-floating-stats-card {
+  max-width: 1180px;
+  width: 100%;
+  margin: 0 auto;
+  position: relative;
+  background: rgba(18, 13, 9, 0.78);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-radius: 18px;
+  border: 1px solid rgba(212, 175, 55, 0.25);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.38);
+  padding: 14px 20px;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 0;
+  align-items: center;
+  box-sizing: border-box;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease, background 0.3s ease;
+}
+
+.admin-floating-stats-card:hover {
+  transform: translateY(-2px);
+  background: rgba(24, 16, 11, 0.88);
+  border-color: rgba(212, 175, 55, 0.38);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45);
+}
+
+.admin-floating-stat-item {
+  text-align: center;
+  padding: 8px 12px;
+  position: relative;
+  box-sizing: border-box;
+  cursor: pointer;
+  border-radius: 12px;
+  transition: all 0.22s ease;
+}
+
+.admin-floating-stat-item:hover {
+  background: rgba(212, 175, 55, 0.08);
+  transform: translateY(-1px);
+}
+
+.admin-floating-stat-item.active {
+  background: rgba(212, 175, 55, 0.14);
+  box-shadow: inset 0 0 0 1px rgba(212, 175, 55, 0.38);
+}
+
+@media (min-width: 769px) {
+  .admin-floating-stat-item:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 15%;
+    height: 70%;
+    width: 1px;
+    background: linear-gradient(
+      to bottom,
+      rgba(212, 175, 55, 0.03),
+      rgba(212, 175, 55, 0.22) 50%,
+      rgba(212, 175, 55, 0.03)
+    );
+  }
+}
+
+@media (max-width: 900px) {
+  .admin-floating-stats-card {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    padding: 12px;
+  }
+}
+
+@media (max-width: 600px) {
+  .admin-floating-stats-card {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    padding: 10px;
+    border-radius: 14px;
+  }
+}
+
+/* 2. Unified Category Segmented Tabs (Anti-AI Slop: Clean & Grounded) */
+.admin-category-tabs-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 28px;
+}
+
+.admin-category-tab-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border-radius: 12px;
+  font-size: 13.5px;
+  font-weight: 650;
+  cursor: pointer;
+  background: #ffffff;
+  border: 1px solid rgba(212, 175, 55, 0.24);
+  color: #423122;
+  box-shadow: 0 2px 8px rgba(40, 28, 16, 0.04);
+  transition: all 0.2s ease;
+}
+
+.admin-category-tab-btn:hover {
+  border-color: #d4af37;
+  color: #1a140e;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(40, 28, 16, 0.08);
+}
+
+.admin-category-tab-btn.active {
+  background: #1a140e;
+  border-color: #1a140e;
+  color: #fcfaf2;
+  font-weight: 750;
+  box-shadow: 0 4px 16px rgba(26, 20, 14, 0.22);
+}
+
+.admin-tab-count-badge {
+  font-size: 11.5px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 6px;
+  background: #f5eedf;
+  color: #6e5e4d;
+  transition: all 0.2s ease;
+}
+
+.admin-category-tab-btn.active .admin-tab-count-badge {
+  background: rgba(212, 175, 55, 0.28);
+  color: #f5d378;
+}
+
+/* 3. Unified Control Bar (Aligned 100% with Table Grid) */
+.admin-control-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 22px;
+  flex-wrap: wrap;
+}
+
+.admin-control-search-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex: 1;
+  max-width: 440px;
+  min-width: 260px;
+  height: 44px;
+}
+
+.admin-control-search-input {
+  width: 100%;
+  height: 44px;
+  padding: 0 36px 0 42px;
+  background: #ffffff;
+  border: 1px solid rgba(212, 175, 55, 0.28);
+  border-radius: 12px;
+  color: #1a140e;
+  font-size: 13.5px;
+  outline: none;
+  box-sizing: border-box;
+  box-shadow: 0 2px 8px rgba(40, 28, 16, 0.03);
+  transition: all 0.2s ease;
+}
+
+.admin-control-search-input:focus {
+  border-color: #d4af37;
+  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.16);
+}
+
+.admin-control-select-wrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  height: 44px;
+}
+
+.admin-control-select {
+  height: 44px;
+  line-height: 42px;
+  padding: 0 38px 0 16px;
+  background: #ffffff;
+  border: 1px solid rgba(212, 175, 55, 0.28);
+  border-radius: 12px;
+  color: #2d1f14;
+  font-size: 13px;
+  font-weight: 650;
+  outline: none;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  box-sizing: border-box;
+  box-shadow: 0 2px 8px rgba(40, 28, 16, 0.03);
+  transition: all 0.2s ease;
+}
+
+.admin-control-select:hover {
+  border-color: #d4af37;
+  background: #fdfbf7;
+}
+
+.admin-control-select:focus {
+  border-color: #d4af37;
+  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.16);
+}
+
+.admin-control-select-chevron {
+  position: absolute;
+  right: 14px;
+  color: #8b5a1b;
+  pointer-events: none;
+}
+
+.admin-control-add-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 44px;
+  padding: 0 22px;
+  border-radius: 12px;
+  font-size: 13.5px;
+  font-weight: 750;
+  color: #1a120b;
+  background: linear-gradient(135deg, #e8bb5c 0%, #d4af37 100%);
+  border: 1px solid rgba(245, 215, 127, 0.50);
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+  white-space: nowrap;
+}
+
+.admin-control-add-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(212, 175, 55, 0.35);
+}
+
+/* 4. Luxury Archive Table Chassis */
+.admin-table-chassis {
+  background: #ffffff;
+  border: 1px solid rgba(212, 175, 55, 0.20);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(40, 28, 16, 0.05);
+}
+
+.admin-table-scroll {
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13.5px;
+  text-align: left;
+}
+
+.admin-table th {
+  padding: 14px 20px;
+  background: #fbf8f2;
+  color: #8b5a1b;
+  font-size: 11.5px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  border-bottom: 1px solid rgba(212, 175, 55, 0.18);
+}
+
+.admin-table td {
+  padding: 15px 20px;
+  vertical-align: middle;
+  border-bottom: 1px solid rgba(212, 175, 55, 0.08);
+  color: #1a140e;
+}
+
+.admin-table tr:hover td {
+  background: rgba(212, 175, 55, 0.03);
+}
+
+/* 5. Authentic Cultural Badges (Sesuai Gaya Label Galeri Publik) */
+.admin-badge-golongan-ksatria,
+.admin-badge-golongan-punakawan,
+.admin-badge-golongan-dewa,
+.admin-badge-golongan-raksasa,
+.admin-badge-golongan-generic {
+  display: inline-flex;
+  align-items: center;
+  background: #ffffff;
+  border: 1px solid rgba(212, 175, 55, 0.32);
+  color: #8b5a1b;
+  padding: 4px 12px;
+  border-radius: 8px;
+  font-size: 11.5px;
+  font-weight: 750;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  box-shadow: 0 1px 3px rgba(40, 28, 16, 0.04);
+  transition: all 0.2s ease;
+}
+
+.admin-badge-golongan-ksatria:hover,
+.admin-badge-golongan-punakawan:hover,
+.admin-badge-golongan-dewa:hover,
+.admin-badge-golongan-raksasa:hover,
+.admin-badge-golongan-generic:hover {
+  background: #fdfbf7;
+  border-color: #d4af37;
+}
+
+/* 6. Refined Action Buttons (Quiet Resting State) */
+.admin-btn-action-edit {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: #ffffff;
+  border: 1px solid rgba(212, 175, 55, 0.38);
+  color: #8b4513;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+
+.admin-btn-action-edit:hover {
+  background: #f7f3ea;
+  border-color: #d4af37;
+  transform: translateY(-1px);
+}
+
+.admin-btn-action-del {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.10);
+  color: #786554;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+
+.admin-btn-action-del:hover {
+  background: rgba(239, 68, 68, 0.08);
+  border-color: #ef4444;
+  color: #b91c1c;
+  transform: translateY(-1px);
+}
+
+.admin-btn-action-audio {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(14, 116, 144, 0.08);
+  border: 1px solid rgba(6, 182, 212, 0.35);
+  color: #0e7490;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+
+.admin-btn-action-audio:hover {
+  background: rgba(14, 116, 144, 0.15);
+  border-color: #0891b2;
+  transform: translateY(-1px);
+}
+
+.admin-btn-action-play {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(217, 119, 6, 0.08);
+  border: 1px solid rgba(245, 158, 11, 0.35);
+  color: #b45309;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+
+.admin-btn-action-play:hover {
+  background: rgba(217, 119, 6, 0.16);
+  border-color: #d97706;
+  transform: translateY(-1px);
+}
+
+/* 7. Quiet Inline Status Indicators */
+.admin-status-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12.5px;
+  font-weight: 650;
+}
+
+.admin-status-indicator.published {
+  color: #15803d;
+}
+
+.admin-status-indicator.draft {
+  color: #b45309;
+}
+
+.admin-status-dot {
+  width: 6.5px;
+  height: 6.5px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.admin-status-dot.published {
+  background: #16a34a;
+}
+
+.admin-status-dot.draft {
+  background: #d97706;
+}
+
+/* 8. Visibility Badge Button */
+.admin-badge-visibility {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 11.5px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+
+.admin-badge-visibility.public {
+  background: rgba(34, 197, 94, 0.08);
+  border: 1px solid rgba(34, 197, 94, 0.25);
+  color: #15803d;
+}
+
+.admin-badge-visibility.public:hover {
+  background: rgba(34, 197, 94, 0.16);
+  border-color: #16a34a;
+}
+
+.admin-badge-visibility.private {
+  background: rgba(120, 85, 50, 0.08);
+  border: 1px solid rgba(120, 85, 50, 0.25);
+  color: #78350f;
+}
+
+.admin-badge-visibility.private:hover {
+  background: rgba(120, 85, 50, 0.16);
+  border-color: #92400e;
+}
 
 

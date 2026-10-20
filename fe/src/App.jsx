@@ -58,7 +58,10 @@ function App() {
   };
 
   useEffect(() => {
-    testConnection();
+    async function initApp() {
+      await testConnection();
+    }
+    initApp();
 
     // Inisialisasi karya demo awal jika local storage masih kosong
     const initialDemoWork = {
@@ -112,7 +115,14 @@ function App() {
       <main
         style={{
           flex: 1,
-          paddingTop: activeTab === 'home' || activeTab === 'atlas' || activeTab === 'my-works' ? '0' : '112px',
+          paddingTop:
+            activeTab === 'home' ||
+            activeTab === 'atlas' ||
+            activeTab === 'my-works' ||
+            activeTab === 'archive' ||
+            activeTab === 'admin'
+              ? '0'
+              : '112px',
           paddingBottom: '0',
         }}
       >
@@ -138,8 +148,18 @@ function App() {
         {activeTab === 'archive' && (
           <ConnectedArchiveView
             onPlayPerformance={handlePlayPerformanceFromGallery}
-            onNavigateToCharacter={() => setActiveTab('atlas')}
-            onNavigateToStory={() => setActiveTab('atlas')}
+            onNavigateToCharacter={() => {
+              setActiveTab('atlas');
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+            onNavigateToStory={() => {
+              setActiveTab('atlas');
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+            onNavigate={(tab) => {
+              setActiveTab(tab);
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
           />
         )}
 
@@ -170,7 +190,7 @@ function App() {
         />
       )}
 
-      {/* Modal Autentikasi Pengguna & Demo (PR-05) */}
+      {/* Modal Autentikasi Pengguna & Akses Sanggar */}
       <AuthModal
         isOpen={showAuthModal}
         onClose={() => setShowAuthModal(false)}
