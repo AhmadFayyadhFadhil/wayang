@@ -29,6 +29,9 @@ import wayangCardGatotkaca from '../../assets/wayang_card_gatotkaca.jpg';
 import wayangCardArjuna from '../../assets/wayang_card_arjuna.jpg';
 import wayangCardShinta from '../../assets/wayang_card_shinta.jpg';
 import wayangCardBima from '../../assets/wayang_card_bima.jpg';
+import wayangCardKarna from '../../assets/wayang_card_karna.jpg';
+import wayangCardRahwana from '../../assets/wayang_card_rahwana.jpg';
+import wayangCardSemar from '../../assets/wayang_card_semar.jpg';
 
 const STORY_ASSETS = {
   'gugurnya-ghatotkaca': {
@@ -56,6 +59,9 @@ const CHAR_ASSETS = {
   arjuna: wayangCardArjuna,
   shinta: wayangCardShinta,
   bima: wayangCardBima,
+  karna: wayangCardKarna,
+  rahwana: wayangCardRahwana,
+  semar: wayangCardSemar,
 };
 
 const FILTER_CHIPS = [
