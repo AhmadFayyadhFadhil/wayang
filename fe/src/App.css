@@ -3915,6 +3915,177 @@ html, body {
   }
 }
 
+/* ============================================================
+   LATAR BELAKANG SILUET PERANG TANDING WAYANG (DUEL SHADOW BG)
+   Khusus Seksi Tokoh & Karakter Wayang - Story Atlas
+   ============================================================ */
+
+.wayang-tokoh-section-container {
+  position: relative;
+  overflow: hidden;
+  border-radius: 28px;
+  padding: clamp(20px, 2.5vw, 32px) clamp(12px, 2vw, 24px) clamp(24px, 3vw, 36px) clamp(12px, 2vw, 24px);
+  background: linear-gradient(180deg, rgba(254, 252, 248, 0.92) 0%, rgba(247, 243, 233, 0.96) 100%);
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  box-shadow: 0 4px 24px rgba(40, 28, 16, 0.04);
+}
+
+.wayang-duel-shadow-wrapper {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  user-select: none;
+  overflow: hidden;
+  z-index: 0;
+}
+
+/* Pendar Cahaya Minyak Blencong Dalang */
+.wayang-duel-blencong {
+  position: absolute;
+  top: 45%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: clamp(280px, 46vw, 640px);
+  height: clamp(280px, 46vw, 640px);
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(232, 187, 92, 0.13) 0%, rgba(212, 175, 55, 0.04) 45%, transparent 70%);
+  opacity: 0;
+  transition: opacity 1.2s ease;
+  filter: blur(28px);
+  pointer-events: none;
+}
+
+.wayang-duel-blencong.is-active {
+  opacity: 1;
+  animation: blencongAmbientPulse 5s ease-in-out infinite alternate;
+}
+
+@keyframes blencongAmbientPulse {
+  0% {
+    transform: translate(-50%, -50%) scale(0.96);
+    opacity: 0.85;
+  }
+  50% {
+    transform: translate(-50%, -49%) scale(1.05);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(0.98);
+    opacity: 0.88;
+  }
+}
+
+/* Siluet Tokoh Wayang Duel */
+.wayang-duel-figure {
+  position: absolute;
+  top: 48%;
+  z-index: 0;
+  pointer-events: none;
+  filter: brightness(0) blur(1.6px);
+  opacity: 0;
+  will-change: transform, opacity;
+  transition: transform 0.95s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.85s ease;
+}
+
+/* Tokoh Kiri (Ksatria Protagonis) */
+.wayang-duel-left {
+  left: clamp(-40px, 1vw, 24px);
+  transform: translateY(-50%) translate3d(-150px, 0, 0) scale(1.15);
+}
+
+.wayang-duel-left.is-in-view {
+  transform: translateY(-50%) translate3d(0, 0, 0) scale(1.18);
+  opacity: 0.13;
+  animation: wayangDuelSwayLeft 5.2s ease-in-out infinite alternate 0.95s;
+}
+
+.wayang-duel-left.is-out-view {
+  transform: translateY(-50%) translate3d(-150px, 0, 0) scale(1.12);
+  opacity: 0;
+}
+
+/* Tokoh Kanan (Lawan / Rival) */
+.wayang-duel-right {
+  right: clamp(-40px, 1vw, 24px);
+  transform: translateY(-50%) translate3d(150px, 0, 0) scale(1.15);
+}
+
+.wayang-duel-right.is-in-view {
+  transform: translateY(-50%) translate3d(0, 0, 0) scale(1.18);
+  opacity: 0.13;
+  animation: wayangDuelSwayRight 5.2s ease-in-out infinite alternate 0.95s;
+}
+
+.wayang-duel-right.is-out-view {
+  transform: translateY(-50%) translate3d(150px, 0, 0) scale(1.12);
+  opacity: 0;
+}
+
+/* Ayunan Solah Perang Dalang Halus (Combat Tension Sway) */
+@keyframes wayangDuelSwayLeft {
+  0% {
+    transform: translateY(-50%) translate3d(0, 0, 0) scale(1.18) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-50%) translate3d(14px, -6px, 0) scale(1.2) rotate(1.2deg);
+  }
+  100% {
+    transform: translateY(-50%) translate3d(-6px, 4px, 0) scale(1.17) rotate(-0.8deg);
+  }
+}
+
+@keyframes wayangDuelSwayRight {
+  0% {
+    transform: translateY(-50%) translate3d(0, 0, 0) scale(1.18) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-50%) translate3d(-14px, -6px, 0) scale(1.2) rotate(-1.2deg);
+  }
+  100% {
+    transform: translateY(-50%) translate3d(6px, 4px, 0) scale(1.17) rotate(0.8deg);
+  }
+}
+
+/* Responsif Layar Kecil & Tablet */
+@media (max-width: 992px) {
+  .wayang-duel-figure {
+    filter: brightness(0) blur(1.4px);
+  }
+
+  .wayang-duel-left.is-in-view {
+    transform: translateY(-50%) translate3d(0, 0, 0) scale(0.96);
+    opacity: 0.10;
+  }
+
+  .wayang-duel-right.is-in-view {
+    transform: translateY(-50%) translate3d(0, 0, 0) scale(0.96);
+    opacity: 0.10;
+  }
+}
+
+@media (max-width: 640px) {
+  .wayang-duel-left {
+    left: -70px;
+  }
+
+  .wayang-duel-right {
+    right: -70px;
+  }
+
+  .wayang-duel-left.is-in-view {
+    transform: translateY(-50%) translate3d(0, 0, 0) scale(0.8);
+    opacity: 0.08;
+  }
+
+  .wayang-duel-right.is-in-view {
+    transform: translateY(-50%) translate3d(0, 0, 0) scale(0.8);
+    opacity: 0.08;
+  }
+}
+
+
 
 
 

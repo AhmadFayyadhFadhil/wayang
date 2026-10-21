@@ -19,6 +19,7 @@ import atlasGoldMotifStrip from '../../assets/atlas_gold_motif_strip.jpg';
 import gununganHd from '../../assets/gunungan_kayon_hd.png';
 import JavaneseCloudBackground from '../../components/ui/JavaneseCloudBackground';
 import WayangCoverflowCarousel from '../../components/ui/WayangCoverflowCarousel';
+import WayangDuelShadowBg from '../../components/ui/WayangDuelShadowBg';
 
 // Gambar Otentik Lakon & Tokoh Sesuai Cardbox Halaman Beranda
 import galleryCoverGatotkaca from '../../assets/gallery_cover_gatotkaca.jpg';
@@ -923,14 +924,24 @@ export default function AtlasView({ onPlayCharacterOnStage }) {
 
           {/* B. Bagian Tokoh Wayang */}
           {filteredCharacters.length > 0 && (
-            <div style={{ marginBottom: filteredAudio.length > 0 ? '56px' : '20px' }}>
+            <div
+              className="wayang-tokoh-section-container"
+              style={{
+                marginBottom: filteredAudio.length > 0 ? '56px' : '20px',
+              }}
+            >
+              {/* Latar Belakang Siluet Perang Tanding Kelir */}
+              <WayangDuelShadowBg leftSlug="gatotkaca" rightSlug="karna" />
+
               {activeFilter === 'all' && (
                 <div
                   style={{
+                    position: 'relative',
+                    zIndex: 2,
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'space-between',
-                    marginBottom: '22px',
+                    marginBottom: '18px',
                     borderBottom: '1px solid rgba(0, 0, 0, 0.08)',
                     paddingBottom: '12px',
                   }}
@@ -944,17 +955,19 @@ export default function AtlasView({ onPlayCharacterOnStage }) {
                 </div>
               )}
 
-              <WayangCoverflowCarousel
-                characters={filteredCharacters}
-                charAssets={CHAR_ASSETS}
-                onSelectCharacter={(char) => {
-                  setSelectedCharModal(char);
-                  setPreviewPose('default');
-                }}
-                onPlayOnStage={(charId) => {
-                  if (onPlayCharacterOnStage) onPlayCharacterOnStage(charId);
-                }}
-              />
+              <div style={{ position: 'relative', zIndex: 2 }}>
+                <WayangCoverflowCarousel
+                  characters={filteredCharacters}
+                  charAssets={CHAR_ASSETS}
+                  onSelectCharacter={(char) => {
+                    setSelectedCharModal(char);
+                    setPreviewPose('default');
+                  }}
+                  onPlayOnStage={(charId) => {
+                    if (onPlayCharacterOnStage) onPlayCharacterOnStage(charId);
+                  }}
+                />
+              </div>
             </div>
           )}
 
