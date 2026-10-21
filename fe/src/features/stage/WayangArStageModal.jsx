@@ -3,6 +3,7 @@ import handTrackingService from '../../services/vision/handTrackingService';
 import dalangKinematicsEngine from '../../services/vision/dalangKinematicsEngine';
 import soundEngine from '../../services/soundscape';
 import RealLeatherPuppet from '../../components/stage/RealLeatherPuppet';
+import ErrorBoundary from '../../components/ui/ErrorBoundary';
 import { CHARACTERS_MASTER } from '../../data/master/charactersMaster';
 import {
   X,
@@ -345,6 +346,25 @@ export default function WayangArStageModal({ isOpen, onClose, onOpenTutorial }) 
     };
   }, [isOpen, renderStageCanvas]);
 
+  // Paint latar kelir awal agar kanvas tidak hitam polos saat menunggu feed kamera
+  useEffect(() => {
+    if (!isOpen) return;
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const w = canvas.width;
+    const h = canvas.height;
+    ctx.fillStyle = '#0f0a07';
+    ctx.fillRect(0, 0, w, h);
+    // Cahaya lampu blencong di tengah panggung
+    const glow = ctx.createRadialGradient(w * 0.5, h * 0.45, 40, w * 0.5, h * 0.45, w * 0.55);
+    glow.addColorStop(0, 'rgba(212, 175, 55, 0.28)');
+    glow.addColorStop(0.5, 'rgba(120, 53, 15, 0.15)');
+    glow.addColorStop(1, 'rgba(15, 10, 7, 0)');
+    ctx.fillStyle = glow;
+    ctx.fillRect(0, 0, w, h);
+  }, [isOpen]);
+
   if (!isOpen) return null;
 
   // Gabungkan master characters dengan wayang custom dalang
@@ -380,7 +400,20 @@ export default function WayangArStageModal({ isOpen, onClose, onOpenTutorial }) 
       />
 
       {/* Video Webcam Tersembunyi (Disalurkan ke Kanvas) */}
-      <video ref={videoRef} playsInline muted style={{ display: 'none' }} />
+      <video
+        ref={videoRef}
+        playsInline
+        muted
+        style={{
+          position: 'fixed',
+          top: -9999,
+          left: -9999,
+          width: 320,
+          height: 240,
+          opacity: 0,
+          pointerEvents: 'none',
+        }}
+      />
 
       {/* =========================================================================
           1. HEADER ATAS BERSIH & BERWIBAWA (ZERO EMOJI)
@@ -596,15 +629,17 @@ export default function WayangArStageModal({ isOpen, onClose, onOpenTutorial }) 
             transition: 'left 0.04s linear, top 0.04s linear',
           }}
         >
-          <RealLeatherPuppet
-            slug={leftSlug}
-            customImageUrl={leftCharData?.customImageUrl}
-            facing={leftCharState.facing}
-            scale={leftScale}
-            fingerTargets={leftCharState.fingerTargets}
-            isKiprah={leftCharState.isKiprah}
-            depth={leftCharState.depth}
-          />
+          <ErrorBoundary>
+            <RealLeatherPuppet
+              slug={leftSlug}
+              customImageUrl={leftCharData?.customImageUrl}
+              facing={leftCharState.facing}
+              scale={leftScale}
+              fingerTargets={leftCharState.fingerTargets}
+              isKiprah={leftCharState.isKiprah}
+              depth={leftCharState.depth}
+            />
+          </ErrorBoundary>
         </div>
 
         {/* TOKOH WAYANG KANAN */}
@@ -619,15 +654,17 @@ export default function WayangArStageModal({ isOpen, onClose, onOpenTutorial }) 
             transition: 'left 0.04s linear, top 0.04s linear',
           }}
         >
-          <RealLeatherPuppet
-            slug={rightSlug}
-            customImageUrl={rightCharData?.customImageUrl}
-            facing={rightCharState.facing}
-            scale={rightScale}
-            fingerTargets={rightCharState.fingerTargets}
-            isKiprah={rightCharState.isKiprah}
-            depth={rightCharState.depth}
-          />
+          <ErrorBoundary>
+            <RealLeatherPuppet
+              slug={rightSlug}
+              customImageUrl={rightCharData?.customImageUrl}
+              facing={rightCharState.facing}
+              scale={rightScale}
+              fingerTargets={rightCharState.fingerTargets}
+              isKiprah={rightCharState.isKiprah}
+              depth={rightCharState.depth}
+            />
+          </ErrorBoundary>
         </div>
       </main>
 

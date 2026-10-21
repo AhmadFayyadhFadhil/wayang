@@ -157,27 +157,47 @@ export const useStageStore = create((set, get) => ({
   // ============ CHARACTER IN-SCENE ACTIONS ============
   setSelectedInstanceId: (instanceId) => set({ selectedInstanceId: instanceId }),
 
-  addCharacterToActiveScene: (characterMasterId) =>
+  addCharacterToActiveScene: (characterParam) =>
     set((state) => {
-      const charData = getCharacterById(characterMasterId);
-      if (!charData) return state;
-
       const currentScene = state.scenes[state.activeSceneIndex];
       if (!currentScene) return state;
 
-      const newInstance = {
-        instanceId: `inst-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
-        characterId: charData.id,
-        name: charData.name,
-        slug: charData.slug,
-        x: 0.50,
-        y: 0.68,
-        scale: charData.defaultScale || 1.0,
-        pose: 'default',
-        facing: 'right',
-        dialogue: `Sugeng rawuh, kulo ${charData.name}.`,
-        accentColor: charData.accentColor || '#f59e0b',
-      };
+      let newInstance = null;
+
+      // Jika custom puppet dari unggahan pengguna
+      if (typeof characterParam === 'object' && characterParam?.customImageUrl) {
+        newInstance = {
+          instanceId: `inst-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
+          characterId: null,
+          name: characterParam.name || 'Wayang Koleksi Dalang',
+          slug: 'custom',
+          customImageUrl: characterParam.customImageUrl,
+          x: 0.50,
+          y: 0.68,
+          scale: 1.0,
+          pose: 'default',
+          facing: 'right',
+          dialogue: 'Sugeng rawuh ing pagelaran wayang kelir digital.',
+          accentColor: '#d4af37',
+        };
+      } else {
+        const charData = getCharacterById(characterParam);
+        if (!charData) return state;
+
+        newInstance = {
+          instanceId: `inst-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
+          characterId: charData.id,
+          name: charData.name,
+          slug: charData.slug,
+          x: 0.50,
+          y: 0.68,
+          scale: charData.defaultScale || 1.0,
+          pose: 'default',
+          facing: 'right',
+          dialogue: `Sugeng rawuh, kulo ${charData.name}.`,
+          accentColor: charData.accentColor || '#f59e0b',
+        };
+      }
 
       const updatedScenes = [...state.scenes];
       updatedScenes[state.activeSceneIndex] = {

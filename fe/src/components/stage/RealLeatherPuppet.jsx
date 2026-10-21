@@ -162,8 +162,8 @@ export default function RealLeatherPuppet({
           <div
             style={{
               position: 'absolute',
-              left: `${shoulderR.x}px`,
-              top: `${shoulderR.y}px`,
+              left: `${SHOULDER_R.x}px`,
+              top: `${SHOULDER_R.y}px`,
               transform: `rotate(${ikBack.shoulderAngle}deg)`,
               transformOrigin: '0 0',
               zIndex: 1,
@@ -212,6 +212,129 @@ export default function RealLeatherPuppet({
             </div>
           </div>
 
+          {/* GAPIT TANDUK KERBAU PENOPANG BADAN UTAMA */}
+          <svg
+            style={{
+              position: 'absolute',
+              inset: 0,
+              width: '100%',
+              height: '100%',
+              zIndex: 1,
+              pointerEvents: 'none',
+            }}
+            viewBox="0 0 240 360"
+          >
+            <defs>
+              <linearGradient id="mainHornGapitGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stopColor="#2e1c12" />
+                <stop offset="40%" stopColor="#150a06" />
+                <stop offset="70%" stopColor="#3d2619" />
+                <stop offset="100%" stopColor="#1a0f0a" />
+              </linearGradient>
+              <linearGradient id="gatotPradaGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="#fef08a" />
+                <stop offset="40%" stopColor="#eab308" />
+                <stop offset="100%" stopColor="#854d0e" />
+              </linearGradient>
+              <linearGradient id="karnaPradaGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="#fdba74" />
+                <stop offset="50%" stopColor="#f97316" />
+                <stop offset="100%" stopColor="#7c2d12" />
+              </linearGradient>
+            </defs>
+            {/* Batang Gapit Tanduk Kerbau Hitam Mengkilap */}
+            <path
+              d="M117 70 Q120 200 116 355 L124 355 Q122 200 123 70 Z"
+              fill="url(#mainHornGapitGrad)"
+              stroke="#0d0704"
+              strokeWidth="0.8"
+            />
+            {/* Tali Pluntur Emas Pengikat Gapit ke Badan Kulit */}
+            <rect x="115" y="140" width="10" height="4" rx="1" fill="#d4af37" stroke="#78350f" strokeWidth="0.6" />
+            <rect x="115" y="220" width="10" height="4" rx="1" fill="#d4af37" stroke="#78350f" strokeWidth="0.6" />
+            <rect x="114" y="295" width="12" height="5" rx="1" fill="#d4af37" stroke="#78350f" strokeWidth="0.6" />
+          </svg>
+
+          {/* Ornamen Karakter Khas Wayang Kulit (Gatotkaca Sayap Praba, Karna Surya, dll) */}
+          {slug === 'gatotkaca' && (
+            <svg
+              style={{
+                position: 'absolute',
+                inset: 0,
+                width: '100%',
+                height: '100%',
+                zIndex: 2,
+                pointerEvents: 'none',
+              }}
+              viewBox="0 0 240 360"
+            >
+              {/* Praba Sayap Antakusuma Emas di Punggung Gatotkaca */}
+              <path
+                d="M105 130 C45 95, 10 140, 32 205 C48 245, 95 235, 100 215 Z"
+                fill="#18110b"
+                stroke="url(#gatotPradaGrad)"
+                strokeWidth="2.8"
+              />
+              <path
+                d="M95 140 C52 110, 25 150, 42 195 C55 228, 90 220, 94 205 Z"
+                fill="url(#gatotPradaGrad)"
+                opacity="0.85"
+              />
+              {/* Bintang Kotang Antakusuma di Dada */}
+              <polygon
+                points="120,150 124,162 136,162 126,170 130,182 120,174 110,182 114,170 104,162 116,162"
+                fill="url(#gatotPradaGrad)"
+                stroke="#451a03"
+                strokeWidth="1.2"
+              />
+            </svg>
+          )}
+
+          {slug === 'karna' && (
+            <svg
+              style={{
+                position: 'absolute',
+                inset: 0,
+                width: '100%',
+                height: '100%',
+                zIndex: 2,
+                pointerEvents: 'none',
+              }}
+              viewBox="0 0 240 360"
+            >
+              {/* Mahkota Narpatitama Jamang Emas Suryaputra */}
+              <polygon
+                points="120,38 128,15 136,36 142,42 112,42"
+                fill="url(#karnaPradaGrad)"
+                stroke="#431407"
+                strokeWidth="1.2"
+              />
+              {/* Surya Mandala Lambang Batara Surya di Dada */}
+              <circle cx="120" cy="165" r="14" fill="url(#karnaPradaGrad)" stroke="#431407" strokeWidth="1.4" />
+              <circle cx="120" cy="165" r="7" fill="#fef08a" />
+            </svg>
+          )}
+
+          {slug === 'shinta' && (
+            <svg
+              style={{
+                position: 'absolute',
+                inset: 0,
+                width: '100%',
+                height: '100%',
+                zIndex: 2,
+                pointerEvents: 'none',
+              }}
+              viewBox="0 0 240 360"
+            >
+              {/* Cunduk Mentul Putri Kencana */}
+              <line x1="126" y1="46" x2="132" y2="20" stroke="#eab308" strokeWidth="2" />
+              <circle cx="132" cy="20" r="4.5" fill="#fef08a" stroke="#854d0e" strokeWidth="1" />
+              <line x1="118" y1="48" x2="112" y2="25" stroke="#eab308" strokeWidth="1.8" />
+              <circle cx="112" cy="25" r="3.8" fill="#fef08a" stroke="#854d0e" strokeWidth="1" />
+            </svg>
+          )}
+
           {/* BADAN UTAMA KULIT ASLI (LAYER 2 - TENGAH) */}
           <img
             src={bodyPng}
@@ -233,8 +356,8 @@ export default function RealLeatherPuppet({
           <div
             style={{
               position: 'absolute',
-              left: `${shoulderL.x}px`,
-              top: `${shoulderL.y}px`,
+              left: `${SHOULDER_L.x}px`,
+              top: `${SHOULDER_L.y}px`,
               transform: `rotate(${ikFront.shoulderAngle}deg)`,
               transformOrigin: '0 0',
               zIndex: 3,

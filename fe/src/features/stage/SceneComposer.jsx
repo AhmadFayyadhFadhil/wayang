@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { CHARACTERS_MASTER } from '../../data/master/charactersMaster';
 import { getAllBackgrounds } from '../../data/master/stageConfigMaster';
 import { AUDIO_MASTER } from '../../data/master/audioMaster';
@@ -14,6 +14,7 @@ import {
   MessageSquare,
   X,
   UserPlus,
+  Upload,
 } from 'lucide-react';
 
 import avatarGatotkaca from '../../assets/avatar_gatotkaca.png';
@@ -43,6 +44,7 @@ export default function SceneComposer({
 }) {
   const [isAudioPlaying, setIsAudioPlaying] = useState(false);
   const [showAddCharModal, setShowAddCharModal] = useState(false);
+  const customFileInputRef = useRef(null);
 
   const currentScene = scenes[activeSceneIndex] || scenes[0];
   const currentAudio = AUDIO_MASTER.find((a) => a.id === currentScene.audioAssetId) || AUDIO_MASTER[0];
@@ -55,6 +57,21 @@ export default function SceneComposer({
       soundEngine.startBgm(currentAudio.synthType || 'srepeg', currentAudio.title);
       setIsAudioPlaying(true);
     }
+  };
+
+  const handleUploadCustomPuppet = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const url = URL.createObjectURL(file);
+    const cleanName = file.name.replace(/\.[^/.]+$/, '').replace(/[-_]/g, ' ');
+    onAddCharacter({
+      name: cleanName || 'Wayang Koleksi Dalang',
+      customImageUrl: url,
+    });
+    setShowAddCharModal(false);
+    try {
+      soundEngine.playDodogan();
+    } catch {}
   };
 
   return (
@@ -429,9 +446,42 @@ export default function SceneComposer({
                 </button>
               </div>
 
-            <p style={{ margin: '0 0 18px 0', fontSize: '13.5px', color: '#5c4738', lineHeight: '1.5' }}>
-              Pilih karakter wayang kulit yang ingin ditampilkan di atas kelir panggung untuk adegan babak ini.
-            </p>
+            {/* Input File Tersembunyi untuk Unggah Wayang Sendiri */}
+            <input
+              ref={customFileInputRef}
+              type="file"
+              accept="image/png,image/webp,image/jpeg"
+              onChange={handleUploadCustomPuppet}
+              style={{ display: 'none' }}
+            />
+
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px', flexWrap: 'wrap', gap: '10px' }}>
+              <p style={{ margin: 0, fontSize: '13.5px', color: '#5c4738', lineHeight: '1.5' }}>
+                Pilih karakter wayang kulit yang ingin ditampilkan di atas kelir panggung untuk adegan babak ini.
+              </p>
+              <button
+                type="button"
+                onClick={() => customFileInputRef.current?.click()}
+                style={{
+                  background: 'linear-gradient(135deg, #2a1c12 0%, #150d08 100%)',
+                  border: '1px solid rgba(212, 175, 55, 0.45)',
+                  borderRadius: '10px',
+                  color: '#fef08a',
+                  padding: '8px 14px',
+                  fontSize: '12px',
+                  fontWeight: 700,
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  cursor: 'pointer',
+                  transition: 'all 0.15s ease',
+                  boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
+                }}
+              >
+                <Upload size={14} style={{ color: '#eab308' }} />
+                <span>+ Unggah Wayang Sendiri</span>
+              </button>
+            </div>
 
             {/* Grid Tokoh Karakter */}
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(230px, 1fr))', gap: '12px' }}>

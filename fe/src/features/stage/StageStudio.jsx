@@ -8,6 +8,7 @@ import StageBackgroundModal from './StageBackgroundModal';
 import DalangVisionPip from './DalangVisionPip';
 import DalangVisionTutorialModal from './DalangVisionTutorialModal';
 import WayangArStageModal from './WayangArStageModal';
+import ErrorBoundary from '../../components/ui/ErrorBoundary';
 import { getBackgroundById } from '../../data/master/stageConfigMaster';
 import { RotateCcw, Play, Save, ArrowLeft, X, Palette, Hand, Sparkles } from 'lucide-react';
 
@@ -349,11 +350,13 @@ export default function StageStudio({ onNavigate }) {
       />
 
       {/* Panggung Wayang AR Interaktif Layar Penuh (Sesuai Foto Referensi Pengguna) */}
-      <WayangArStageModal
-        isOpen={showArStageModal}
-        onClose={() => setShowArStageModal(false)}
-        onOpenTutorial={() => setShowVisionTutorial(true)}
-      />
+      <ErrorBoundary onClose={() => setShowArStageModal(false)}>
+        <WayangArStageModal
+          isOpen={showArStageModal}
+          onClose={() => setShowArStageModal(false)}
+          onOpenTutorial={() => setShowVisionTutorial(true)}
+        />
+      </ErrorBoundary>
 
       {/* Modal Panduan Gestur Dalang */}
       <DalangVisionTutorialModal

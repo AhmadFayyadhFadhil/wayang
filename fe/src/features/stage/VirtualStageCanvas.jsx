@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect, useMemo, forwardRef, useImperativeHandle } from 'react';
-import WayangFigureSvg from '../../components/stage/WayangFigureSvg';
+import RealLeatherPuppet from '../../components/stage/RealLeatherPuppet';
 import { getBackgroundById, STAGE_CONFIG_MASTER } from '../../data/master/stageConfigMaster';
 import soundEngine from '../../services/soundscape';
 import { ZoomIn, ZoomOut, Trash2, Volume2, ArrowLeft, ArrowRight, ArrowUp, ArrowDown } from 'lucide-react';
@@ -36,14 +36,15 @@ const VirtualStageCanvas = forwardRef(function VirtualStageCanvas({
         el.style.top = `${(updates.y * 100).toFixed(2)}%`;
       }
       if (updates.facing !== undefined) {
-        const svgGroup = el.querySelector('svg > g');
-        if (svgGroup) {
+        const puppetEl = el.querySelector('.real-leather-puppet-container') || el.querySelector('svg > g');
+        if (puppetEl) {
           const char = characters.find((c) => c.instanceId === instanceId);
           const sc = char?.scale || 1.0;
-          svgGroup.setAttribute(
-            'transform',
-            `scale(${updates.facing === 'left' ? -sc : sc}, ${sc})`
-          );
+          if (puppetEl.tagName.toLowerCase() === 'div') {
+            puppetEl.style.transform = `scale(${updates.facing === 'left' ? -sc : sc}, ${sc})`;
+          } else {
+            puppetEl.setAttribute('transform', `scale(${updates.facing === 'left' ? -sc : sc}, ${sc})`);
+          }
         }
       }
     },
@@ -321,15 +322,16 @@ const VirtualStageCanvas = forwardRef(function VirtualStageCanvas({
                 </div>
               )}
 
-              {/* Komponen Wayang SVG — Animasi idle dimatikan saat Dalang Vision aktif agar tidak bentrok/nabrak */}
-              <WayangFigureSvg
+              {/* Komponen Wayang Kulit Beneran dengan Tekstur Asli, Gapit Tanduk, & Dukungan Unggah Sendiri */}
+              <RealLeatherPuppet
                 slug={char.slug}
-                pose={char.pose}
+                customImageUrl={char.customImageUrl}
                 facing={char.facing}
                 scale={char.scale}
                 isSelected={isSelected}
-                accentColor={char.accentColor}
-                animated={!isVisionActive && draggingId !== char.instanceId}
+                isKiprah={char.pose === 'perang'}
+                width={190}
+                height={290}
               />
             </div>
           );
