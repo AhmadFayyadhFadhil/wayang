@@ -7,8 +7,9 @@ import SavePerformanceModal from './SavePerformanceModal';
 import StageBackgroundModal from './StageBackgroundModal';
 import DalangVisionPip from './DalangVisionPip';
 import DalangVisionTutorialModal from './DalangVisionTutorialModal';
+import WayangArStageModal from './WayangArStageModal';
 import { getBackgroundById } from '../../data/master/stageConfigMaster';
-import { RotateCcw, Play, Save, ArrowLeft, X, Palette, Hand } from 'lucide-react';
+import { RotateCcw, Play, Save, ArrowLeft, X, Palette, Hand, Sparkles } from 'lucide-react';
 
 export default function StageStudio({ onNavigate }) {
   const stageCanvasRef = useRef(null);
@@ -42,6 +43,7 @@ export default function StageStudio({ onNavigate }) {
   const [showResetConfirmModal, setShowResetConfirmModal] = useState(false);
   const [isDalangVisionActive, setIsDalangVisionActive] = useState(false);
   const [showVisionTutorial, setShowVisionTutorial] = useState(false);
+  const [showArStageModal, setShowArStageModal] = useState(false);
 
   const currentScene = scenes[activeSceneIndex] || scenes[0];
   const currentBgConfig = getBackgroundById(currentScene?.background);
@@ -209,6 +211,35 @@ export default function StageStudio({ onNavigate }) {
             />
           </button>
 
+          {/* Tombol Panggung Wayang AR Interaktif (Sesuai Foto Referensi Pengguna) */}
+          <button
+            onClick={() => setShowArStageModal(true)}
+            title="Buka Panggung Wayang AR Interaktif Layar Penuh (2 Tokoh & Dual Hand Tracking)"
+            style={{
+              ...studioBtnStyle,
+              background: 'linear-gradient(135deg, rgba(212, 175, 55, 0.35) 0%, rgba(139, 69, 19, 0.45) 100%)',
+              border: '1.5px solid #facc15',
+              color: '#fef08a',
+              fontWeight: '800',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              boxShadow: '0 0 16px rgba(250, 204, 21, 0.35)',
+              transition: 'all 0.2s ease',
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.borderColor = '#fef08a';
+              e.currentTarget.style.boxShadow = '0 0 20px rgba(250, 204, 21, 0.55)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.borderColor = '#facc15';
+              e.currentTarget.style.boxShadow = '0 0 16px rgba(250, 204, 21, 0.35)';
+            }}
+          >
+            <Sparkles size={14} color="#facc15" />
+            <span>Panggung AR</span>
+          </button>
+
           <button
             onClick={() => setShowPreviewModal(true)}
             style={{
@@ -313,9 +344,14 @@ export default function StageStudio({ onNavigate }) {
         characters={currentScene?.characters || []}
         selectedInstanceId={selectedInstanceId}
         onUpdateCharacter={updateCharacter}
-        onDirectUpdate={(instanceId, updates) => {
-          stageCanvasRef.current?.directUpdate(instanceId, updates);
-        }}
+        onDirectUpdate={handleDirectUpdate}
+        onOpenTutorial={() => setShowVisionTutorial(true)}
+      />
+
+      {/* Panggung Wayang AR Interaktif Layar Penuh (Sesuai Foto Referensi Pengguna) */}
+      <WayangArStageModal
+        isOpen={showArStageModal}
+        onClose={() => setShowArStageModal(false)}
         onOpenTutorial={() => setShowVisionTutorial(true)}
       />
 

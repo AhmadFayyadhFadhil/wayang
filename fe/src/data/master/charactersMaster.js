@@ -111,6 +111,24 @@ export const CHARACTERS_MASTER = [
     status: 'published',
     accentColor: '#991b1b',
     silhouetteSvg: 'rahwana'
+  },
+  {
+    id: 7,
+    slug: 'shinta',
+    name: 'Dewi Shinta',
+    alias: 'Putri Mantili, Janaki',
+    type: 'putri',
+    typeName: 'Putri Luhur & Suci',
+    weapons: 'Kesucian Diri & Keteguhan Hati',
+    shortDesc: 'Putri Prabu Janaka dari Mantili, lambang kesucian, kesetiaan, dan keteguhan cinta sejati.',
+    description: 'Putri angkat Prabu Janaka dari Kerajaan Mantili yang menjadi permaisuri Sri Rama. Sosok putri berparas jelita, bertutur kata lembut, berwatak sabar, dan memiliki keteguhan hati luar biasa dalam menjaga kesucian diri di Taman Asoka saat diculik Rahwana.',
+    philosophy: 'Mewakili kesucian batin, ketabahan menghadapi cobaan hidup, serta kesetiaan tanpa pamrih pada kebenaran dan ikatan suci pernikahan (*patibrata*).',
+    tradition: 'Gaya Surakarta & Yogyakarta',
+    defaultScale: 0.92,
+    availablePoses: ['default', 'sembah', 'sedih', 'luruh'],
+    status: 'published',
+    accentColor: '#e0a96d',
+    silhouetteSvg: 'shinta'
   }
 ];
 

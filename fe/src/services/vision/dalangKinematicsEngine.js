@@ -1,20 +1,93 @@
 import soundEngine from '../soundscape';
 
 /**
+ * Filter Low-Pass Sederhana
+ */
+class LowPassFilter {
+  constructor(alpha = 0) {
+    this.s = null;
+    this.alpha = alpha;
+  }
+  filter(value, alpha = this.alpha) {
+    this.alpha = alpha;
+    if (this.s === null) {
+      this.s = value;
+    } else {
+      this.s = alpha * value + (1 - alpha) * this.s;
+    }
+    return this.s;
+  }
+  reset() {
+    this.s = null;
+  }
+}
+
+/**
+ * OneEuroFilter (Filter Adaptif Anti-Jitter & Zero-Lag)
+ * Mengeliminasi getaran saat tangan diam, dan memberikan respon seketika saat gerakan cepat
+ */
+class OneEuroFilter {
+  constructor(minCutoff = 1.4, beta = 7.5, dCutoff = 1.0) {
+    this.minCutoff = minCutoff;
+    this.beta = beta;
+    this.dCutoff = dCutoff;
+    this.x = new LowPassFilter();
+    this.dx = new LowPassFilter();
+    this.lastTime = null;
+  }
+  alpha(rate, cutoff) {
+    const tau = 1.0 / (2 * Math.PI * cutoff);
+    const te = 1.0 / rate;
+    return 1.0 / (1.0 + tau / te);
+  }
+  filter(value, timestamp) {
+    if (this.lastTime === null) {
+      this.lastTime = timestamp;
+      return this.x.filter(value, 1.0);
+    }
+    const dt = Math.max(0.001, (timestamp - this.lastTime) / 1000);
+    this.lastTime = timestamp;
+    const rate = 1.0 / dt;
+
+    const prevX = this.x.s !== null ? this.x.s : value;
+    const dvalue = (value - prevX) * rate;
+    const edvalue = this.dx.filter(dvalue, this.alpha(rate, this.dCutoff));
+
+    const cutoff = this.minCutoff + this.beta * Math.abs(edvalue);
+    return this.x.filter(value, this.alpha(rate, cutoff));
+  }
+  reset() {
+    this.x.reset();
+    this.dx.reset();
+    this.lastTime = null;
+  }
+}
+
+/**
  * DalangKinematicsEngine
  * Menerjemahkan 21 titik koordinat MediaPipe Hands ke kinematika wayang kulit
- * Mendukung Mode Dalang Tunggal (1 Tokoh Rinci) dan Mode Dalang Ganda (2 Tokoh Laga)
+ * Dilengkapi OneEuro Filter, Deteksi Kiprahan Kelingking, Z-Depth Blencong, dan Artikulasi Tudhing
  */
 class DalangKinematicsEngine {
   constructor() {
     this.mode = 'dual'; // 'solo' | 'dual'
     this.isMirrored = true;
-    this.alpha = 0.28; // Koefisien Low-Pass Filter Exponential Moving Average (EMA)
+
+    // Filter OneEuro Adaptif per slot tangan [tangan 0, tangan 1]
+    this.filters = [
+      { x: new OneEuroFilter(1.4, 7.5), y: new OneEuroFilter(1.4, 7.5) },
+      { x: new OneEuroFilter(1.4, 7.5), y: new OneEuroFilter(1.4, 7.5) },
+    ];
 
     // State Pelacakan Halus
     this.smoothedHands = [];
-    this.lastWayangStates = new Map(); // instanceId -> { x, y, pose, facing }
+    this.lastWayangStates = new Map(); // instanceId -> { x, y, pose, facing, scale, depth, isKiprah }
     this.grabbedMap = new Map(); // handIndex -> instanceId
+
+    // Solah Kiprahan via Jari Kelingking
+    this.pinkyHoldStart = [0, 0];
+    this.isKiprahActive = [false, false];
+    this.kiprahEndTimes = [0, 0];
 
     // Hentakan Dodogan Deteksi
     this.lastY = [0, 0];
@@ -51,7 +124,6 @@ class DalangKinematicsEngine {
 
   /**
    * Perhitungan cubitan jempol dan telunjuk (Cengkeram Cempurit)
-   * Landmark 4 = Thumb Tip, Landmark 8 = Index Tip
    */
   isPinching(landmarks) {
     if (!landmarks || landmarks.length < 9) return false;
@@ -65,12 +137,63 @@ class DalangKinematicsEngine {
   isFist(landmarks) {
     if (!landmarks || landmarks.length < 21) return false;
     const wrist = landmarks[0];
-    // Jarak ujung semua jari ke pergelangan tangan memendek
     const d8 = this.getDistance(landmarks[8], wrist);
     const d12 = this.getDistance(landmarks[12], wrist);
     const d16 = this.getDistance(landmarks[16], wrist);
     const d20 = this.getDistance(landmarks[20], wrist);
     return d8 < 0.28 && d12 < 0.28 && d16 < 0.28 && d20 < 0.28;
+  }
+
+  /**
+   * Deteksi gestur jari kelingking terangkat (Pinky Sign -> Kiprahan Joged Wayang)
+   */
+  isPinkySign(landmarks) {
+    if (!landmarks || landmarks.length < 21) return false;
+    const wrist = landmarks[0];
+    const dPinky = this.getDistance(landmarks[20], wrist);
+    const dPinkyBase = this.getDistance(landmarks[17], wrist);
+    const dIndex = this.getDistance(landmarks[8], wrist);
+    const dMiddle = this.getDistance(landmarks[12], wrist);
+    const dRing = this.getDistance(landmarks[16], wrist);
+
+    const pinkyExtended = dPinky > dPinkyBase * 1.32;
+    const othersCurled = dIndex < 0.29 && dMiddle < 0.29 && dRing < 0.33;
+    return pinkyExtended && othersCurled;
+  }
+
+  /**
+   * Deteksi kedalaman Z-Depth (jarak telapak tangan ke webcam)
+   */
+  getHandDepth(landmarks) {
+    if (!landmarks || landmarks.length < 21) return 0;
+    const palmSize = this.getDistance(landmarks[0], landmarks[9]);
+    const normalizedDepth = (palmSize - 0.15) / 0.16;
+    return Math.max(0, Math.min(1.0, Number(normalizedDepth.toFixed(2))));
+  }
+
+  /**
+   * Sudut kemiringan tudhing lengan berdasarkan posisi jempol dan telunjuk
+   */
+  calculateArmAngles(landmarks) {
+    if (!landmarks || landmarks.length < 21) return null;
+    const palmCenter = landmarks[9];
+    const thumbTip = landmarks[4];
+    const indexTip = landmarks[8];
+
+    const dxThumb = (this.isMirrored ? 1.0 - thumbTip.x : thumbTip.x) - (this.isMirrored ? 1.0 - palmCenter.x : palmCenter.x);
+    const dyThumb = thumbTip.y - palmCenter.y;
+    const dxIndex = (this.isMirrored ? 1.0 - indexTip.x : indexTip.x) - (this.isMirrored ? 1.0 - palmCenter.x : palmCenter.x);
+    const dyIndex = indexTip.y - palmCenter.y;
+
+    const angleThumb = (Math.atan2(dyThumb, dxThumb) * 180) / Math.PI;
+    const angleIndex = (Math.atan2(dyIndex, dxIndex) * 180) / Math.PI;
+
+    return {
+      frontShoulder: Math.max(-25, Math.min(35, (angleIndex + 45) * 0.35)),
+      frontElbow: Math.max(-30, Math.min(45, (angleThumb + 30) * 0.45)),
+      backShoulder: Math.max(-35, Math.min(25, -(angleIndex + 45) * 0.3)),
+      backElbow: Math.max(-40, Math.min(30, -(angleThumb + 30) * 0.35)),
+    };
   }
 
   /**
@@ -84,7 +207,6 @@ class DalangKinematicsEngine {
 
   /**
    * Memproses hasil deteksi MediaPipe pada setiap frame
-   * Mengembalikan daftar update karakter: [ { instanceId, updates: { x, y, pose, facing, ... } } ]
    */
   processFrame(results, characters = [], selectedInstanceId = null) {
     const rawHands = results?.landmarks || [];
@@ -97,32 +219,52 @@ class DalangKinematicsEngine {
       this.statusMessage = 'Tangan di luar kamera — Wayang tertancap di debog';
       this.statusTone = 'tancep';
       this.smoothedHands = [];
+      this.filters.forEach((f) => {
+        f.x.reset();
+        f.y.reset();
+      });
       return [];
     }
 
-    // Normalisasi dan Smoothing Landmark Tangan dengan Adaptive Damping & Time Scaling
-    const timeScale = Math.min(2.0, Math.max(0.5, dt / 16.67));
-
-    const hands = rawHands.map((landmarks, hIdx) => {
+    const hands = rawHands.slice(0, 2).map((landmarks, hIdx) => {
       // Pusat telapak (MCP tengah = #9)
       const rawX = this.isMirrored ? 1.0 - landmarks[9].x : landmarks[9].x;
       const rawY = landmarks[9].y;
 
+      // Filter OneEuro adaptif untuk kelembutan ekstra tinggi & zero-jitter
+      const filter = this.filters[hIdx] || this.filters[0];
+      const smoothX = filter.x.filter(rawX, now);
+      const smoothY = filter.y.filter(rawY, now);
+
       // Hitung orientasi kemiringan telapak tangan (Hand Tilt):
-      // Vektor horizontal dari pergelangan tangan (wrist = #0) ke pangkal jari tengah (MCP = #9)
       const wristRawX = this.isMirrored ? 1.0 - landmarks[0].x : landmarks[0].x;
-      const tiltX = rawX - wristRawX; // Positif jika telapak miring ke kanan, negatif jika miring ke kiri
+      const tiltX = rawX - wristRawX;
 
-      const prev = this.smoothedHands[hIdx] || { x: rawX, y: rawY };
-      const dx = rawX - prev.x;
-      const dy = rawY - prev.y;
-      const dist = Math.sqrt(dx * dx + dy * dy);
+      // Deteksi Kedalaman Z-Depth & Sudut Tudhing Lengan
+      const depth = this.getHandDepth(landmarks);
+      const armAngles = this.calculateArmAngles(landmarks);
 
-      // Adaptive Alpha: 0.14 saat santai/diam (nol getar) s/d 0.58 saat gerak cepat (nol lag)
-      const baseAlpha = dist > 0.08 ? 0.58 : dist > 0.02 ? 0.32 : 0.14;
-      const dynamicAlpha = Math.min(0.75, baseAlpha * timeScale);
-      const smoothX = dynamicAlpha * rawX + (1 - dynamicAlpha) * prev.x;
-      const smoothY = dynamicAlpha * rawY + (1 - dynamicAlpha) * prev.y;
+      // Deteksi Gestur Kelingking (Pinky Sign) untuk Tarian Kiprahan
+      const isPinky = this.isPinkySign(landmarks);
+      if (isPinky) {
+        if (!this.pinkyHoldStart[hIdx]) {
+          this.pinkyHoldStart[hIdx] = now;
+        } else if (now - this.pinkyHoldStart[hIdx] > 280) {
+          this.isKiprahActive[hIdx] = true;
+          this.kiprahEndTimes[hIdx] = now + 2400; // Kiprahan berlangsung 2.4 detik
+          try {
+            soundEngine.playKepyak();
+          } catch {
+            // Audio safe
+          }
+        }
+      } else {
+        this.pinkyHoldStart[hIdx] = 0;
+      }
+
+      if (this.isKiprahActive[hIdx] && now > this.kiprahEndTimes[hIdx]) {
+        this.isKiprahActive[hIdx] = false;
+      }
 
       // Cek kecepatan hentakan ke bawah (Dodogan SFX)
       const velY = (rawY - (this.lastY[hIdx] || rawY)) / (dt / 1000);
@@ -142,9 +284,12 @@ class DalangKinematicsEngine {
         x: Math.max(0.06, Math.min(0.94, smoothX)),
         y: Math.max(0.35, Math.min(0.85, smoothY)),
         tiltX,
+        depth,
+        armAngles,
+        isKiprah: this.isKiprahActive[hIdx],
         isPinching: this.isPinching(landmarks),
         isFist: this.isFist(landmarks),
-        isLocked: true, // Auto-Lock: Tangan terdeteksi langsung mengunci wayang tanpa syarat pinch
+        isLocked: true, // Auto-Lock instan
         targetChar: null,
         role: 'dalang',
       };
@@ -195,6 +340,9 @@ class DalangKinematicsEngine {
             y: Number(clampedY.toFixed(4)),
             facing,
             pose,
+            depth: primaryHand.depth,
+            armAngles: primaryHand.armAngles,
+            isKiprah: primaryHand.isKiprah,
           };
           this.lastWayangStates.set(targetChar.instanceId, newState);
           updates.push({
@@ -300,6 +448,9 @@ class DalangKinematicsEngine {
             y: Number(clampedY.toFixed(4)),
             facing,
             pose,
+            depth: hand.depth,
+            armAngles: hand.armAngles,
+            isKiprah: hand.isKiprah,
           };
           this.lastWayangStates.set(char.instanceId, newState);
           updates.push({

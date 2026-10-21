@@ -53,19 +53,30 @@ export default function DalangVisionPip({
 
   // Stable refs untuk mencegah re-run effect webcam saat props/state berubah
   const charactersRef = useRef(characters);
-  charactersRef.current = characters;
-
   const selectedInstanceIdRef = useRef(selectedInstanceId);
-  selectedInstanceIdRef.current = selectedInstanceId;
-
   const onUpdateCharacterRef = useRef(onUpdateCharacter);
-  onUpdateCharacterRef.current = onUpdateCharacter;
-
   const onDirectUpdateRef = useRef(onDirectUpdate);
-  onDirectUpdateRef.current = onDirectUpdate;
-
   const isMirroredRef = useRef(isMirrored);
-  isMirroredRef.current = isMirrored;
+
+  useEffect(() => {
+    charactersRef.current = characters;
+  }, [characters]);
+
+  useEffect(() => {
+    selectedInstanceIdRef.current = selectedInstanceId;
+  }, [selectedInstanceId]);
+
+  useEffect(() => {
+    onUpdateCharacterRef.current = onUpdateCharacter;
+  }, [onUpdateCharacter]);
+
+  useEffect(() => {
+    onDirectUpdateRef.current = onDirectUpdate;
+  }, [onDirectUpdate]);
+
+  useEffect(() => {
+    isMirroredRef.current = isMirrored;
+  }, [isMirrored]);
 
   // Pre-load avatar wayang untuk rendering instan 60 FPS di Canvas
   useEffect(() => {
@@ -271,7 +282,9 @@ export default function DalangVisionPip({
   }, []);
 
   const drawSkeletalOverlayRef = useRef(drawSkeletalOverlay);
-  drawSkeletalOverlayRef.current = drawSkeletalOverlay;
+  useEffect(() => {
+    drawSkeletalOverlayRef.current = drawSkeletalOverlay;
+  }, [drawSkeletalOverlay]);
 
   // Lifecycle hand tracking: hanya dimulai ketika isOpen aktif dan ditutup saat isOpen false
   useEffect(() => {

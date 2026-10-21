@@ -117,6 +117,8 @@ function renderAuthenticWayang(slug, pose, accent, animated) {
       return <AuthenticSemar pose={pose} accent={accent} animated={animated} />;
     case 'rahwana':
       return <AuthenticRahwana pose={pose} accent={accent} animated={animated} />;
+    case 'shinta':
+      return <AuthenticShinta pose={pose} accent={accent} animated={animated} />;
     default:
       return <AuthenticGatotkaca pose={pose} accent={accent} animated={animated} />;
   }
@@ -996,6 +998,129 @@ function AuthenticRahwana({ pose, accent, animated }) {
                 <path d="M0 0 Q-4 18 3 38" stroke="#1a0c0c" strokeWidth="5.5" strokeLinecap="round" fill="none" />
                 <circle cx="3" cy="38" r="4" fill="#991b1b" />
                 <TudhingStick x1="3" y1="38" x2="16" y2="188" />
+              </g>
+            </g>
+          </g>
+        </g>
+      )}
+    </g>
+  );
+}
+
+/* =========================================================================
+   7. DEWI SHINTA — PUTRI MANTILI (Putri Luruh Halus, Setia & Suci)
+   ========================================================================= */
+function AuthenticShinta({ pose, animated }) {
+  const isSembah = pose === 'sembah';
+  const isSedih = pose === 'sedih';
+
+  return (
+    <g className="wayang-shinta-authentic" transform="scale(0.92) translate(0, 10)">
+      {/* 1. LENGAN BELAKANG */}
+      <g transform="translate(-8, 52)">
+        <g className={animated ? 'wayang-arm-back-shld' : ''}>
+          <path d="M0 0 Q-12 18 -8 40" stroke="#24180e" strokeWidth="4.2" strokeLinecap="round" fill="none" />
+          <g transform="translate(-8, 40)">
+            <g className={animated ? 'wayang-arm-back-elbw' : ''}>
+              <path d="M0 0 Q-4 16 3 34" stroke="#24180e" strokeWidth="3.6" strokeLinecap="round" fill="none" />
+              <circle cx="3" cy="34" r="3" fill="#d4af37" />
+              <TudhingStick x1="3" y1="34" x2="-8" y2="185" />
+            </g>
+          </g>
+        </g>
+      </g>
+
+      {/* 2. SAMPUR KENCANA / SELENDANG PUTRI */}
+      <g opacity="0.9">
+        <path
+          d="M-10 65 Q-28 100 -24 160 Q-22 210 -12 250"
+          stroke="#d4af37"
+          strokeWidth="3.2"
+          fill="none"
+          strokeLinecap="round"
+        />
+        <path
+          d="M-8 75 Q-22 110 -18 165 Q-16 205 -8 245"
+          stroke="#b45309"
+          strokeWidth="1.2"
+          fill="none"
+        />
+      </g>
+
+      {/* 3. GAPIT UTAMA PENOPANG PUTRI */}
+      <MainGapit x={0} yStart={45} yEnd={265} stroke="#3e2723" />
+
+      {/* 4. DODOT KEMBEN BATIK SOGA PRADA & SAMPARAN */}
+      <g>
+        {/* Badan Ramping Putri Kuning Langsat */}
+        <path
+          d="M-10 42 Q-14 80 -10 115 L12 115 Q16 80 12 42 Z"
+          fill="#1c120c"
+          stroke="#d4af37"
+          strokeWidth="1.8"
+        />
+        {/* Kemben Prada Emas */}
+        <path
+          d="M-10 55 Q0 62 12 55 L11 88 Q0 96 -9 88 Z"
+          fill="#3d2314"
+          stroke="#e8bb5c"
+          strokeWidth="1.4"
+        />
+        {/* Kain Dodot Parang Klithik Samparan Panjang */}
+        <path
+          d="M-12 115 Q-16 160 -18 215 Q-12 245 4 250 Q16 245 16 215 Q18 160 14 115 Z"
+          fill="#2a160c"
+          stroke="#d4af37"
+          strokeWidth="1.8"
+        />
+        {/* Motif Garis Prada Dodot */}
+        <path d="M-10 135 L12 150 M-12 165 L10 180 M-14 195 L8 210 M-16 225 L6 240" stroke="#c59b27" strokeWidth="1.2" strokeDasharray="3 2" />
+      </g>
+
+      {/* 5. KEPALA PUTRI LURUH, CUNDUK MENTUL & JAMANG KENCANA */}
+      <g transform={isSedih ? 'rotate(5, 0, 20)' : ''}>
+        {/* Profil Muka Halus & Mata Jaitan Luruh */}
+        <path
+          d="M-8 12 Q-4 -8 14 -4 Q20 12 14 26 Q4 32 -6 24 Z"
+          fill="#1c120c"
+          stroke="#d4af37"
+          strokeWidth="1.2"
+        />
+        {/* Gelung Putri Kencana */}
+        <path
+          d="M-12 6 C-18 -10, -6 -24, 6 -18 C-2 -14, -6 0, -8 10 Z"
+          fill="#1a1008"
+          stroke="#d4af37"
+          strokeWidth="1.6"
+        />
+        {/* Cunduk Mentul Emas Bergoyang di Atas Gelung */}
+        <line x1="2" y1="-18" x2="6" y2="-32" stroke="#d4af37" strokeWidth="1.5" />
+        <circle cx="6" cy="-32" r="3.2" fill="#facc15" stroke="#92400e" strokeWidth="0.8" />
+        <line x1="-4" y1="-16" x2="-8" y2="-28" stroke="#d4af37" strokeWidth="1.5" />
+        <circle cx="-8" cy="-28" r="2.8" fill="#facc15" stroke="#92400e" strokeWidth="0.8" />
+        {/* Jamang Putri & Sumping Surengpati */}
+        <path d="M2 -6 Q12 -2 14 10" stroke="#facc15" strokeWidth="1.8" fill="none" />
+        <circle cx="2" cy="14" r="2.5" fill="#facc15" />
+      </g>
+
+      {/* 6. LENGAN DEPAN PUTRI & TUDHING */}
+      {isSembah ? (
+        <g transform="translate(10, 48)">
+          <path d="M0 0 Q14 12 18 -10" stroke="#24180e" strokeWidth="4.2" strokeLinecap="round" fill="none" />
+          <circle cx="18" cy="-10" r="3.2" fill="#d4af37" />
+          <TudhingStick x1="18" y1="-10" x2="22" y2="170" />
+        </g>
+      ) : (
+        <g transform="translate(10, 48)">
+          <g className={animated ? 'wayang-arm-front-shld' : ''}>
+            <circle cx="0" cy="0" r="3" fill="#d4af37" />
+            <path d="M0 0 Q14 18 10 38" stroke="#24180e" strokeWidth="4.2" strokeLinecap="round" fill="none" />
+            <g transform="translate(10, 38)">
+              <g className={animated ? 'wayang-arm-front-elbw' : ''}>
+                <circle cx="0" cy="0" r="2.5" fill="#facc15" />
+                <path d="M0 0 Q-3 16 3 32" stroke="#24180e" strokeWidth="3.8" strokeLinecap="round" fill="none" />
+                <circle cx="3" cy="32" r="3" fill="#d4af37" />
+                <TudhingStick x1="3" y1="32" x2="12" y2="185" />
               </g>
             </g>
           </g>
