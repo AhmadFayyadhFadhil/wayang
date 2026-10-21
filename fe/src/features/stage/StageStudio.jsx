@@ -261,6 +261,7 @@ export default function StageStudio({ onNavigate }) {
         onUpdateCharacter={updateCharacter}
         onRemoveCharacter={removeCharacterFromActiveScene}
         isInteractive={true}
+        isVisionActive={isDalangVisionActive}
       />
 
       {/* Scene Composer & Timeline */}

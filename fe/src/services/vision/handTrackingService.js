@@ -73,9 +73,10 @@ class HandTrackingService {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
         video: {
-          width: { ideal: 640 },
-          height: { ideal: 480 },
+          width: { ideal: 320, max: 480 },
+          height: { ideal: 240, max: 360 },
           facingMode: 'user',
+          frameRate: { ideal: 30, max: 60 },
         },
         audio: false,
       });
@@ -90,6 +91,7 @@ class HandTrackingService {
 
       this.isRunning = true;
       this.status = 'running';
+      this.lastVideoTime = -1;
       this.predictLoop();
       return true;
     } catch (err) {
@@ -100,19 +102,20 @@ class HandTrackingService {
   }
 
   /**
-   * Loop deteksi per frame render
+   * Loop deteksi per frame render efisien (hanya saat frame video baru tiba)
    */
   predictLoop() {
     if (!this.isRunning || !this.videoElement || !this.handLandmarker) return;
 
-    if (this.videoElement.readyState >= 2) {
+    if (this.videoElement.readyState >= 2 && this.videoElement.currentTime !== this.lastVideoTime) {
+      this.lastVideoTime = this.videoElement.currentTime;
       try {
         const startTimeMs = performance.now();
         const results = this.handLandmarker.detectForVideo(this.videoElement, startTimeMs);
         if (this.onResultsCallback) {
           this.onResultsCallback(results);
         }
-      } catch (_err) {
+      } catch {
         // Safe skip frame
       }
     }

@@ -11,6 +11,7 @@ export default function VirtualStageCanvas({
   onUpdateCharacter,
   onRemoveCharacter,
   isInteractive = true,
+  isVisionActive = false,
 }) {
   const containerRef = useRef(null);
   const [draggingId, setDraggingId] = useState(null);
@@ -19,6 +20,21 @@ export default function VirtualStageCanvas({
 
   const bgConfig = getBackgroundById(scene?.background);
   const characters = useMemo(() => scene?.characters || [], [scene?.characters]);
+  const selectedChar = characters.find((c) => c.instanceId === selectedInstanceId);
+
+  // Kontrol Skala Global Cepat Wayang (Memperbesar / Memperkecil)
+  const handleGlobalScaleChange = (delta) => {
+    if (characters.length === 0) return;
+    const current = (selectedChar || characters[0])?.scale || 1.0;
+    const newScale = Math.max(0.5, Math.min(2.2, Number((current + delta).toFixed(1))));
+    if (selectedInstanceId) {
+      onUpdateCharacter(selectedInstanceId, { scale: newScale });
+    } else {
+      characters.forEach((c) => {
+        onUpdateCharacter(c.instanceId, { scale: newScale });
+      });
+    }
+  };
 
   // Pemicu SFX Dalang
   const handlePlaySfx = (type) => {
@@ -107,8 +123,6 @@ export default function VirtualStageCanvas({
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [selectedInstanceId, isInteractive, characters, onUpdateCharacter]);
-
-  const selectedChar = characters.find((c) => c.instanceId === selectedInstanceId);
 
   return (
     <div
@@ -225,11 +239,16 @@ export default function VirtualStageCanvas({
                 top: topPercent,
                 transform: 'translate(-50%, -65%)',
                 zIndex: isSelected ? 10 : 5,
-                transition: draggingId === char.instanceId ? 'none' : 'filter 0.2s',
+                willChange: isVisionActive ? 'left, top' : 'auto',
+                transition: isVisionActive
+                  ? 'left 0.08s cubic-bezier(0.1, 0.9, 0.2, 1), top 0.08s cubic-bezier(0.1, 0.9, 0.2, 1)'
+                  : draggingId === char.instanceId
+                  ? 'none'
+                  : 'filter 0.2s, left 0.15s ease-out, top 0.15s ease-out',
               }}
             >
-              {/* Balon Dialog Wayang jika ada naskah */}
-              {char.dialogue && (
+              {/* Balon Dialog Wayang jika ada naskah (disembunyikan saat Dalang Vision aktif agar panggung tidak penuh sesak) */}
+              {char.dialogue && !isVisionActive && (
                 <div
                   style={{
                     position: 'absolute',
@@ -271,7 +290,7 @@ export default function VirtualStageCanvas({
                 </div>
               )}
 
-              {/* Komponen Wayang SVG */}
+              {/* Komponen Wayang SVG — Animasi idle dimatikan saat Dalang Vision aktif agar tidak bentrok/nabrak */}
               <WayangFigureSvg
                 slug={char.slug}
                 pose={char.pose}
@@ -279,6 +298,7 @@ export default function VirtualStageCanvas({
                 scale={char.scale}
                 isSelected={isSelected}
                 accentColor={char.accentColor}
+                animated={!isVisionActive && draggingId !== char.instanceId}
               />
             </div>
           );
@@ -373,6 +393,50 @@ export default function VirtualStageCanvas({
                 style={{ width: '50px', height: '4px', accentColor: '#f59e0b', cursor: 'pointer' }}
               />
             </div>
+          </div>
+        )}
+
+        {/* Tombol Skala Bentuk Wayang Cepat Mengambang di Pojok Kanan Atas Panggung */}
+        {isInteractive && characters.length > 0 && (
+          <div
+            style={{
+              position: 'absolute',
+              top: '12px',
+              right: '12px',
+              zIndex: 15,
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              background: 'rgba(15, 12, 8, 0.82)',
+              backdropFilter: 'blur(8px)',
+              padding: '5px 12px',
+              borderRadius: '24px',
+              border: '1px solid rgba(212, 175, 55, 0.35)',
+              boxShadow: '0 4px 12px rgba(0,0,0,0.4)',
+            }}
+          >
+            <span style={{ fontSize: '11px', color: '#e8bb5c', fontWeight: '700' }}>
+              Ukuran:
+            </span>
+            <button
+              type="button"
+              onClick={() => handleGlobalScaleChange(-0.1)}
+              title="Perkecil Ukuran Bentuk Wayang (-)"
+              style={stageScaleBtnStyle}
+            >
+              <ZoomOut size={12} color="#fef3c7" />
+            </button>
+            <span style={{ fontSize: '11px', fontWeight: '800', color: '#fef08a', minWidth: '28px', textAlign: 'center' }}>
+              {(selectedChar?.scale || characters[0]?.scale || 1.0).toFixed(1)}x
+            </span>
+            <button
+              type="button"
+              onClick={() => handleGlobalScaleChange(0.1)}
+              title="Perbesar Ukuran Bentuk Wayang (+)"
+              style={stageScaleBtnStyle}
+            >
+              <ZoomIn size={12} color="#fef3c7" />
+            </button>
           </div>
         )}
 
@@ -553,3 +617,17 @@ const miniNudgeBtnStyle = {
   alignItems: 'center',
   justifyContent: 'center',
 };
+
+const stageScaleBtnStyle = {
+  background: '#382313',
+  border: '1px solid #b45309',
+  color: '#fef3c7',
+  padding: '3px 6px',
+  borderRadius: '8px',
+  cursor: 'pointer',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  transition: 'all 0.15s ease',
+};
+

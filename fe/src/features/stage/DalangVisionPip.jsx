@@ -1,7 +1,23 @@
 import React, { useRef, useEffect, useState, useCallback } from 'react';
 import handTrackingService from '../../services/vision/handTrackingService';
 import dalangKinematicsEngine from '../../services/vision/dalangKinematicsEngine';
-import { X, Minimize2, Maximize2, RefreshCw, HelpCircle, Sparkles, Swords, User } from 'lucide-react';
+import {
+  X,
+  Minimize2,
+  Maximize2,
+  RefreshCw,
+  HelpCircle,
+  Sparkles,
+  Swords,
+  User,
+  ZoomIn,
+  ZoomOut,
+} from 'lucide-react';
+
+import avatarGatotkaca from '../../assets/avatar_gatotkaca.png';
+import avatarArjuna from '../../assets/avatar_arjuna.png';
+import avatarBima from '../../assets/avatar_bima.png';
+import avatarShinta from '../../assets/avatar_shinta.png';
 
 // Koneksi ruas tulang tangan MediaPipe
 const HAND_CONNECTIONS = [
@@ -23,12 +39,30 @@ export default function DalangVisionPip({
 }) {
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
+  const avatarImagesRef = useRef({});
+
   const [isMinimized, setIsMinimized] = useState(false);
   const [visionMode, setVisionMode] = useState('dual'); // 'solo' | 'dual'
   const [statusText, setStatusText] = useState('Menginisialisasi kamera...');
   const [statusTone, setStatusTone] = useState('idle');
   const [isMirrored, setIsMirrored] = useState(true);
   const [errorMessage, setErrorMessage] = useState(null);
+
+  // Pre-load avatar wayang untuk rendering instan 60 FPS di Canvas
+  useEffect(() => {
+    const sources = {
+      gatotkaca: avatarGatotkaca,
+      arjuna: avatarArjuna,
+      bima: avatarBima,
+      shinta: avatarShinta,
+    };
+
+    Object.entries(sources).forEach(([slug, src]) => {
+      const img = new Image();
+      img.src = src;
+      avatarImagesRef.current[slug] = img;
+    });
+  }, []);
 
   // Ganti mode kinematika
   const handleToggleMode = (mode) => {
@@ -43,8 +77,24 @@ export default function DalangVisionPip({
     dalangKinematicsEngine.setMirrored(nextMirror);
   };
 
-  // Render skeletal telapak tangan emas prada di atas kanvas
-  const drawSkeletalOverlay = useCallback((results) => {
+  // Kontrol Skala Cepat Wayang (Memperbesar / Memperkecil)
+  const activeChar = characters.find((c) => c.instanceId === selectedInstanceId) || characters[0];
+  const currentScale = activeChar?.scale || 1.0;
+
+  const handleScaleChange = (delta) => {
+    if (!characters || characters.length === 0) return;
+    const newScale = Math.max(0.5, Math.min(2.2, Number((currentScale + delta).toFixed(1))));
+    if (selectedInstanceId) {
+      onUpdateCharacter(selectedInstanceId, { scale: newScale });
+    } else {
+      characters.forEach((c) => {
+        onUpdateCharacter(c.instanceId, { scale: newScale });
+      });
+    }
+  };
+
+  // Render skeletal telapak tangan emas prada dan Avatar Wayang AR di atas kanvas
+  const drawSkeletalOverlay = useCallback((results, smoothedHands = []) => {
     const canvas = canvasRef.current;
     const video = videoRef.current;
     if (!canvas || !video) return;
@@ -63,21 +113,20 @@ export default function DalangVisionPip({
     }
     ctx.drawImage(video, 0, 0, width, height);
 
-    // Overlay gelap bernuansa soga agar skeletal kontras
-    ctx.fillStyle = 'rgba(18, 13, 9, 0.35)';
+    // Overlay gelap bernuansa soga agar skeletal dan avatar kontras
+    ctx.fillStyle = 'rgba(18, 13, 9, 0.4)';
     ctx.fillRect(0, 0, width, height);
 
-    // Kembalikan orientasi untuk skeletal jika di-mirror
     ctx.restore();
 
     const landmarksList = results?.landmarks || [];
     if (landmarksList.length === 0) return;
 
+    // 1. Gambar Skeletal Ruas Tulang dan Sendi
     landmarksList.forEach((landmarks) => {
-      // 1. Gambar Ruas Tulang (Bones)
-      ctx.lineWidth = 2.5;
+      ctx.lineWidth = 2.4;
       ctx.strokeStyle = 'rgba(212, 175, 55, 0.85)'; // Emas Prada
-      ctx.shadowColor = 'rgba(232, 187, 92, 0.9)';
+      ctx.shadowColor = 'rgba(232, 187, 92, 0.8)';
       ctx.shadowBlur = 6;
 
       HAND_CONNECTIONS.forEach(([i, j]) => {
@@ -96,15 +145,14 @@ export default function DalangVisionPip({
         ctx.stroke();
       });
 
-      // 2. Gambar Titik Sendi (Joints)
+      // Titik Sendi (Joints)
       landmarks.forEach((p, idx) => {
         const px = isMirrored ? (1 - p.x) * width : p.x * width;
         const py = p.y * height;
 
         ctx.beginPath();
-        // Ujung jempol (#4) dan telunjuk (#8) diberi aksen lebih besar
         const isTip = idx === 4 || idx === 8;
-        ctx.arc(px, py, isTip ? 4.5 : 2.8, 0, Math.PI * 2);
+        ctx.arc(px, py, isTip ? 4.5 : 2.6, 0, Math.PI * 2);
         ctx.fillStyle = isTip ? '#fef08a' : '#d4af37';
         ctx.fill();
         ctx.strokeStyle = '#1a120b';
@@ -112,7 +160,7 @@ export default function DalangVisionPip({
         ctx.stroke();
       });
 
-      // 3. Efek Khusus jika Cengkeram Cempurit (Pinch)
+      // Efek Cubitan Cempurit (Pinch Aura)
       if (dalangKinematicsEngine.isPinching(landmarks)) {
         const p4 = landmarks[4];
         const p8 = landmarks[8];
@@ -120,12 +168,82 @@ export default function DalangVisionPip({
         const pinchY = ((p4.y + p8.y) / 2) * height;
 
         ctx.beginPath();
-        ctx.arc(pinchX, pinchY, 9, 0, Math.PI * 2);
-        ctx.fillStyle = 'rgba(250, 204, 21, 0.65)';
+        ctx.arc(pinchX, pinchY, 10, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(250, 204, 21, 0.7)';
         ctx.shadowColor = '#facc15';
-        ctx.shadowBlur = 12;
+        ctx.shadowBlur = 14;
         ctx.fill();
       }
+    });
+
+    // 2. Gambar Avatar Wayang Mini di Atas Setiap Telapak Tangan yang Mengendalikan
+    (smoothedHands || []).forEach((hand) => {
+      if (!hand || !hand.targetChar) return;
+      const char = hand.targetChar;
+      const cx = hand.x * width;
+      const cy = Math.max(26, hand.y * height - 34);
+      const radius = 20;
+
+      // Glow Cempurit saat Menjepit
+      if (hand.isPinching) {
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(cx, cy, radius + 4, 0, Math.PI * 2);
+        ctx.strokeStyle = '#facc15';
+        ctx.lineWidth = 3;
+        ctx.shadowColor = '#facc15';
+        ctx.shadowBlur = 12;
+        ctx.stroke();
+        ctx.restore();
+      }
+
+      // Lingkaran Bingkai Avatar
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(cx, cy, radius, 0, Math.PI * 2);
+      ctx.fillStyle = '#1c140e';
+      ctx.fill();
+      ctx.strokeStyle = char.accentColor || '#d4af37';
+      ctx.lineWidth = 2.4;
+      ctx.stroke();
+      ctx.clip();
+
+      const imgObj = avatarImagesRef.current[char.slug];
+      if (imgObj && imgObj.complete && imgObj.naturalWidth > 0) {
+        ctx.drawImage(imgObj, cx - radius, cy - radius, radius * 2, radius * 2);
+      } else {
+        ctx.fillStyle = char.accentColor || '#d4af37';
+        ctx.font = 'bold 11px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText((char.name || 'W').substring(0, 2).toUpperCase(), cx, cy);
+      }
+      ctx.restore();
+
+      // Label Nama Tokoh & Peran di Bawah Avatar
+      ctx.save();
+      ctx.font = 'bold 9.5px sans-serif';
+      ctx.textAlign = 'center';
+      const roleText =
+        hand.role === 'tokoh_kiri'
+          ? ' (Kiri)'
+          : hand.role === 'tokoh_kanan'
+          ? ' (Kanan)'
+          : hand.role === 'cempurit'
+          ? ' (Cempurit)'
+          : '';
+      const fullLabel = (char.name || 'Wayang') + roleText;
+      const textWidth = ctx.measureText(fullLabel).width;
+
+      ctx.fillStyle = 'rgba(22, 16, 10, 0.9)';
+      ctx.fillRect(cx - textWidth / 2 - 4, cy + radius + 2, textWidth + 8, 14);
+      ctx.strokeStyle = 'rgba(212, 175, 55, 0.45)';
+      ctx.lineWidth = 0.8;
+      ctx.strokeRect(cx - textWidth / 2 - 4, cy + radius + 2, textWidth + 8, 14);
+
+      ctx.fillStyle = hand.isPinching ? '#fef08a' : '#e8bb5c';
+      ctx.fillText(fullLabel, cx, cy + radius + 12);
+      ctx.restore();
     });
   }, [isMirrored]);
 
@@ -150,16 +268,16 @@ export default function DalangVisionPip({
         await handTrackingService.start(videoRef.current, (results) => {
           if (!isSubscribed) return;
 
-          // Render skeletal
-          drawSkeletalOverlay(results);
-
-          // Terjemahkan koordinat ke wayang
+          // 1. Jalankan kalkulasi kinematika & tentukan karakter target
           const updates = dalangKinematicsEngine.processFrame(results, characters, selectedInstanceId);
           updates.forEach(({ instanceId, updates: u }) => {
             if (onUpdateCharacter) {
               onUpdateCharacter(instanceId, u);
             }
           });
+
+          // 2. Render skeletal beserta avatar wayang di atas tangan
+          drawSkeletalOverlay(results, dalangKinematicsEngine.smoothedHands);
 
           setStatusText(dalangKinematicsEngine.statusMessage);
           setStatusTone(dalangKinematicsEngine.statusTone);
@@ -189,7 +307,7 @@ export default function DalangVisionPip({
         bottom: '24px',
         right: '24px',
         zIndex: 1000,
-        width: isMinimized ? '220px' : '300px',
+        width: isMinimized ? '220px' : '320px',
         background: '#16100a',
         border: '1.5px solid rgba(212, 175, 55, 0.45)',
         borderRadius: '16px',
@@ -238,6 +356,40 @@ export default function DalangVisionPip({
           <span style={{ fontSize: '11px', fontWeight: '800', color: '#fcfaf2', letterSpacing: '0.05em' }}>
             DALANG VISION
           </span>
+
+          {/* Tombol Kontrol Cepat Skala Wayang (Ukuran Bentuk) */}
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '2px',
+              background: 'rgba(212, 175, 55, 0.12)',
+              padding: '1px 5px',
+              borderRadius: '6px',
+              border: '1px solid rgba(212, 175, 55, 0.25)',
+              marginLeft: '2px',
+            }}
+          >
+            <button
+              type="button"
+              onClick={() => handleScaleChange(-0.1)}
+              title="Perkecil Ukuran Bentuk Wayang (-)"
+              style={{ ...pipIconBtnStyle, padding: '2px 3px' }}
+            >
+              <ZoomOut size={11} color="#e8bb5c" />
+            </button>
+            <span style={{ fontSize: '9.5px', fontWeight: '800', color: '#fef08a', minWidth: '24px', textAlign: 'center' }}>
+              {currentScale.toFixed(1)}x
+            </span>
+            <button
+              type="button"
+              onClick={() => handleScaleChange(0.1)}
+              title="Perbesar Ukuran Bentuk Wayang (+)"
+              style={{ ...pipIconBtnStyle, padding: '2px 3px' }}
+            >
+              <ZoomIn size={11} color="#e8bb5c" />
+            </button>
+          </div>
         </div>
 
         {/* Tombol Kontrol Cepat PiP */}
@@ -284,7 +436,7 @@ export default function DalangVisionPip({
 
       {/* Konten PiP Kamera (Canvas Skeletal) */}
       {!isMinimized && (
-        <div style={{ position: 'relative', width: '100%', height: '170px', background: '#0d0a07' }}>
+        <div style={{ position: 'relative', width: '100%', height: '180px', background: '#0d0a07' }}>
           {errorMessage ? (
             <div
               style={{
@@ -310,8 +462,8 @@ export default function DalangVisionPip({
           ) : (
             <canvas
               ref={canvasRef}
-              width={300}
-              height={170}
+              width={320}
+              height={180}
               style={{
                 width: '100%',
                 height: '100%',
