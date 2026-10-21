@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useCallback } from 'react';
 import { useStageStore } from './useStageStore';
 import VirtualStageCanvas from './VirtualStageCanvas';
 import SceneComposer from './SceneComposer';
@@ -12,6 +12,9 @@ import { RotateCcw, Play, Save, ArrowLeft, X, Palette, Hand } from 'lucide-react
 
 export default function StageStudio({ onNavigate }) {
   const stageCanvasRef = useRef(null);
+  const handleDirectUpdate = useCallback((instanceId, updates) => {
+    stageCanvasRef.current?.directUpdate(instanceId, updates);
+  }, []);
   const {
     metadata,
     scenes,

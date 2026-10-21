@@ -63,6 +63,13 @@ class HandTrackingService {
    */
   async start(videoElement, onResultsCallback) {
     if (!videoElement) throw new Error('Video element diperlukan');
+
+    // Jika webcam sudah berjalan aktif pada elemen video yang sama, gunakan stream yang ada
+    if (this.isRunning && this.videoElement === videoElement && this.videoElement.srcObject) {
+      this.onResultsCallback = onResultsCallback;
+      return true;
+    }
+
     this.videoElement = videoElement;
     this.onResultsCallback = onResultsCallback;
 

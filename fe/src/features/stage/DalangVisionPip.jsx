@@ -51,6 +51,22 @@ export default function DalangVisionPip({
   const [isMirrored, setIsMirrored] = useState(true);
   const [errorMessage, setErrorMessage] = useState(null);
 
+  // Stable refs untuk mencegah re-run effect webcam saat props/state berubah
+  const charactersRef = useRef(characters);
+  charactersRef.current = characters;
+
+  const selectedInstanceIdRef = useRef(selectedInstanceId);
+  selectedInstanceIdRef.current = selectedInstanceId;
+
+  const onUpdateCharacterRef = useRef(onUpdateCharacter);
+  onUpdateCharacterRef.current = onUpdateCharacter;
+
+  const onDirectUpdateRef = useRef(onDirectUpdate);
+  onDirectUpdateRef.current = onDirectUpdate;
+
+  const isMirroredRef = useRef(isMirrored);
+  isMirroredRef.current = isMirrored;
+
   // Pre-load avatar wayang untuk rendering instan 60 FPS di Canvas
   useEffect(() => {
     const sources = {
@@ -105,12 +121,13 @@ export default function DalangVisionPip({
     const ctx = canvas.getContext('2d');
     const width = canvas.width;
     const height = canvas.height;
+    const mirrored = isMirroredRef.current;
 
     ctx.save();
     ctx.clearRect(0, 0, width, height);
 
     // Gambar frame video dengan efek cermin
-    if (isMirrored) {
+    if (mirrored) {
       ctx.translate(width, 0);
       ctx.scale(-1, 1);
     }
@@ -137,9 +154,9 @@ export default function DalangVisionPip({
         const p2 = landmarks[j];
         if (!p1 || !p2) return;
 
-        const x1 = isMirrored ? (1 - p1.x) * width : p1.x * width;
+        const x1 = mirrored ? (1 - p1.x) * width : p1.x * width;
         const y1 = p1.y * height;
-        const x2 = isMirrored ? (1 - p2.x) * width : p2.x * width;
+        const x2 = mirrored ? (1 - p2.x) * width : p2.x * width;
         const y2 = p2.y * height;
 
         ctx.beginPath();
@@ -150,7 +167,7 @@ export default function DalangVisionPip({
 
       // Titik Sendi (Joints)
       landmarks.forEach((p, idx) => {
-        const px = isMirrored ? (1 - p.x) * width : p.x * width;
+        const px = mirrored ? (1 - p.x) * width : p.x * width;
         const py = p.y * height;
 
         ctx.beginPath();
@@ -167,7 +184,7 @@ export default function DalangVisionPip({
       if (dalangKinematicsEngine.isPinching(landmarks)) {
         const p4 = landmarks[4];
         const p8 = landmarks[8];
-        const pinchX = isMirrored ? (1 - (p4.x + p8.x) / 2) * width : ((p4.x + p8.x) / 2) * width;
+        const pinchX = mirrored ? (1 - (p4.x + p8.x) / 2) * width : ((p4.x + p8.x) / 2) * width;
         const pinchY = ((p4.y + p8.y) / 2) * height;
 
         ctx.beginPath();
@@ -251,9 +268,12 @@ export default function DalangVisionPip({
       ctx.fillText(fullLabel, cx, cy + radius + 12);
       ctx.restore();
     });
-  }, [isMirrored]);
+  }, []);
 
-  // Lifecycle hand tracking
+  const drawSkeletalOverlayRef = useRef(drawSkeletalOverlay);
+  drawSkeletalOverlayRef.current = drawSkeletalOverlay;
+
+  // Lifecycle hand tracking: hanya dimulai ketika isOpen aktif dan ditutup saat isOpen false
   useEffect(() => {
     if (!isOpen) {
       handTrackingService.stop();
@@ -275,48 +295,55 @@ export default function DalangVisionPip({
         await handTrackingService.start(videoRef.current, (results) => {
           if (!isSubscribed) return;
 
-          // 1. Jalankan kalkulasi kinematika & tentukan karakter target
-          const updates = dalangKinematicsEngine.processFrame(results, characters, selectedInstanceId);
+          // 1. Jalankan kalkulasi kinematika & tentukan karakter target melalui ref stabil
+          const currentChars = charactersRef.current;
+          const currentSelId = selectedInstanceIdRef.current;
+          const directUpdateFn = onDirectUpdateRef.current;
+          const updateCharFn = onUpdateCharacterRef.current;
+
+          const updates = dalangKinematicsEngine.processFrame(results, currentChars, currentSelId);
 
           // 2. Manipulasi DOM langsung (0x React Re-render = 60/120 FPS Butter Smooth)
-          if (onDirectUpdate && updates.length > 0) {
+          if (directUpdateFn && updates.length > 0) {
             updates.forEach(({ instanceId, updates: u }) => {
-              onDirectUpdate(instanceId, u);
+              directUpdateFn(instanceId, u);
             });
           }
 
           // 3. Simpan pembaruan ke buffer untuk sinkronisasi Zustand store secara hemat (tiap 200ms)
           if (updates.length > 0) {
             updates.forEach(({ instanceId, updates: u }) => {
-              pendingUpdatesRef.current.set(instanceId, {
-                ...(pendingUpdatesRef.current.get(instanceId) || {}),
+              pendingUpdates.set(instanceId, {
+                ...(pendingUpdates.get(instanceId) || {}),
                 ...u,
               });
             });
 
             if (!commitTimeoutRef.current) {
               commitTimeoutRef.current = setTimeout(() => {
-                if (onUpdateCharacter && pendingUpdatesRef.current.size > 0) {
-                  pendingUpdatesRef.current.forEach((u, id) => {
-                    onUpdateCharacter(id, u);
+                if (updateCharFn && pendingUpdates.size > 0) {
+                  pendingUpdates.forEach((u, id) => {
+                    updateCharFn(id, u);
                   });
-                  pendingUpdatesRef.current.clear();
+                  pendingUpdates.clear();
                 }
                 commitTimeoutRef.current = null;
               }, 200);
             }
           } else if (results?.landmarks?.length === 0) {
             // Tancep Debog: tangan keluar kamera, segera commit posisi terakhir ke store
-            if (pendingUpdatesRef.current.size > 0 && onUpdateCharacter) {
-              pendingUpdatesRef.current.forEach((u, id) => {
-                onUpdateCharacter(id, u);
+            if (pendingUpdates.size > 0 && updateCharFn) {
+              pendingUpdates.forEach((u, id) => {
+                updateCharFn(id, u);
               });
-              pendingUpdatesRef.current.clear();
+              pendingUpdates.clear();
             }
           }
 
           // 4. Render skeletal beserta avatar wayang di atas tangan
-          drawSkeletalOverlay(results, dalangKinematicsEngine.smoothedHands);
+          if (drawSkeletalOverlayRef.current) {
+            drawSkeletalOverlayRef.current(results, dalangKinematicsEngine.smoothedHands);
+          }
 
           setStatusText(dalangKinematicsEngine.statusMessage);
           setStatusTone(dalangKinematicsEngine.statusTone);
@@ -337,15 +364,15 @@ export default function DalangVisionPip({
         clearTimeout(commitTimeoutRef.current);
         commitTimeoutRef.current = null;
       }
-      if (pendingUpdates.size > 0 && onUpdateCharacter) {
+      if (pendingUpdates.size > 0 && onUpdateCharacterRef.current) {
         pendingUpdates.forEach((u, id) => {
-          onUpdateCharacter(id, u);
+          onUpdateCharacterRef.current(id, u);
         });
         pendingUpdates.clear();
       }
       handTrackingService.stop();
     };
-  }, [isOpen, characters, selectedInstanceId, onUpdateCharacter, onDirectUpdate, drawSkeletalOverlay]);
+  }, [isOpen]);
 
   if (!isOpen) return null;
 
