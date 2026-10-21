@@ -299,14 +299,14 @@ class DalangKinematicsEngine {
       const idxRawX = (idxScreenX - palmScreenX) / palmSize;
       const idxRawY = (idxScreenY - palmScreenY) / palmSize;
 
-      // Filter Low-Pass / EMA untuk kelembutan gerak jempol dan telunjuk (Super Smooth Finger IK)
+      // Filter Low-Pass / EMA untuk kelembutan gerak jempol dan telunjuk (Super Smooth & Instant Finger IK)
       if (!this.smoothedFingers) this.smoothedFingers = [{}, {}];
       const prevF = this.smoothedFingers[hIdx] || {};
 
-      const smoothThbX = prevF.thbX !== undefined ? 0.35 * thbRawX + 0.65 * prevF.thbX : thbRawX;
-      const smoothThbY = prevF.thbY !== undefined ? 0.35 * thbRawY + 0.65 * prevF.thbY : thbRawY;
-      const smoothIdxX = prevF.idxX !== undefined ? 0.35 * idxRawX + 0.65 * prevF.idxX : idxRawX;
-      const smoothIdxY = prevF.idxY !== undefined ? 0.35 * idxRawY + 0.65 * prevF.idxY : idxRawY;
+      const smoothThbX = prevF.thbX !== undefined ? 0.55 * thbRawX + 0.45 * prevF.thbX : thbRawX;
+      const smoothThbY = prevF.thbY !== undefined ? 0.55 * thbRawY + 0.45 * prevF.thbY : thbRawY;
+      const smoothIdxX = prevF.idxX !== undefined ? 0.55 * idxRawX + 0.45 * prevF.idxX : idxRawX;
+      const smoothIdxY = prevF.idxY !== undefined ? 0.55 * idxRawY + 0.45 * prevF.idxY : idxRawY;
 
       this.smoothedFingers[hIdx] = {
         thbX: smoothThbX,
@@ -368,12 +368,24 @@ class DalangKinematicsEngine {
     if (this.mode === 'solo') {
       if (characters.length === 0) return [];
 
-      let targetChar = characters.find((c) => c.instanceId === selectedInstanceId);
-      if (!targetChar) targetChar = characters[0];
-      if (!targetChar) return [];
-
       const primaryHand = hands[0];
       const secondaryHand = hands[1];
+
+      let targetChar = characters.find((c) => c.instanceId === selectedInstanceId);
+      if (!targetChar && characters.length > 0) {
+        // Auto-target wayang terdekat berdasarkan posisi tangan dalang di kamera (misal wayang sebelah kanan jika tangan di kanan)
+        if (primaryHand && characters.length > 1) {
+          const sortedByDist = [...characters].sort((a, b) => {
+            const distA = Math.hypot(a.x - primaryHand.x, a.y - primaryHand.y);
+            const distB = Math.hypot(b.x - primaryHand.x, b.y - primaryHand.y);
+            return distA - distB;
+          });
+          targetChar = sortedByDist[0];
+        } else {
+          targetChar = characters[0];
+        }
+      }
+      if (!targetChar) return [];
 
       if (primaryHand) {
         primaryHand.targetChar = targetChar;
@@ -412,7 +424,17 @@ class DalangKinematicsEngine {
         const dy = lastState ? Math.abs(clampedY - lastState.y) : 1;
         const poseChanged = !lastState || lastState.pose !== pose || lastState.facing !== facing;
 
-        if (dx > 0.0003 || dy > 0.0003 || poseChanged) {
+        const dfThb = Math.hypot(
+          (primaryHand.fingerTargets?.thumb?.dx || 0) - (lastState?.fingerTargets?.thumb?.dx || 0),
+          (primaryHand.fingerTargets?.thumb?.dy || 0) - (lastState?.fingerTargets?.thumb?.dy || 0)
+        );
+        const dfIdx = Math.hypot(
+          (primaryHand.fingerTargets?.index?.dx || 0) - (lastState?.fingerTargets?.index?.dx || 0),
+          (primaryHand.fingerTargets?.index?.dy || 0) - (lastState?.fingerTargets?.index?.dy || 0)
+        );
+        const fingerChanged = dfThb > 0.002 || dfIdx > 0.002;
+
+        if (dx > 0.0003 || dy > 0.0003 || poseChanged || fingerChanged) {
           const newState = {
             x: Number(clampedX.toFixed(4)),
             y: Number(clampedY.toFixed(4)),
@@ -430,7 +452,7 @@ class DalangKinematicsEngine {
           });
         }
 
-        this.statusMessage = `Wayang ${targetChar.name || 'Wayang'} aktif (${facing === 'right' ? 'Hadap Kanan' : 'Hadap Kiri'}): geser / miringkan telapak, atau tekan 'F'`;
+        this.statusMessage = `Wayang ${targetChar.name || 'Wayang'} aktif (${facing === 'right' ? 'Kanan' : 'Kiri'}): Jempol & Telunjuk menggerakkan tangan 360°`;
         this.statusTone = 'grabbing';
       }
 
@@ -524,7 +546,17 @@ class DalangKinematicsEngine {
         const dy = lastState ? Math.abs(clampedY - lastState.y) : 1;
         const poseChanged = !lastState || lastState.pose !== pose || lastState.facing !== facing;
 
-        if (dx > 0.0003 || dy > 0.0003 || poseChanged) {
+        const dfThb = Math.hypot(
+          (hand.fingerTargets?.thumb?.dx || 0) - (lastState?.fingerTargets?.thumb?.dx || 0),
+          (hand.fingerTargets?.thumb?.dy || 0) - (lastState?.fingerTargets?.thumb?.dy || 0)
+        );
+        const dfIdx = Math.hypot(
+          (hand.fingerTargets?.index?.dx || 0) - (lastState?.fingerTargets?.index?.dx || 0),
+          (hand.fingerTargets?.index?.dy || 0) - (lastState?.fingerTargets?.index?.dy || 0)
+        );
+        const fingerChanged = dfThb > 0.002 || dfIdx > 0.002;
+
+        if (dx > 0.0003 || dy > 0.0003 || poseChanged || fingerChanged) {
           const newState = {
             x: Number(clampedX.toFixed(4)),
             y: Number(clampedY.toFixed(4)),

@@ -11,7 +11,15 @@ export const DEFAULT_FRONT_TARGET = { x: 70, y: 220 };
 export const DEFAULT_BACK_TARGET = { x: 170, y: 220 };
 
 /**
- * 2-Bone Analytical Inverse Kinematics Solver
+ * Normalisasi selisih sudut modular ke rentang [-180°, +180°]
+ * Menghilangkan branch cut jump dari atan2 (mencegah patahan snap -271° ke +89°)
+ */
+export function normalizeAngleDiff(diffDeg) {
+  return ((diffDeg + 540) % 360) - 180;
+}
+
+/**
+ * 2-Bone Analytical Inverse Kinematics Solver (Full 360° Continuous Freedom)
  * Lu = 60px (Upper Arm), Lf = 52px (Forearm) sesuai proporsi multi-part rigging wayang kulit
  */
 export function solve2BoneIK(shoulder, target, Lu = 60, Lf = 52, bend = -1) {
@@ -29,35 +37,37 @@ export function solve2BoneIK(shoulder, target, Lu = 60, Lf = 52, bend = -1) {
 
   const foreAngle = Math.atan2(target.y - elbowY, target.x - elbowX);
 
+  const shoulderDeg = (upperAngle * 180) / Math.PI;
+  const foreDeg = (foreAngle * 180) / Math.PI;
+  const elbowDeg = normalizeAngleDiff(foreDeg - shoulderDeg);
+
   return {
-    shoulderAngle: (upperAngle * 180) / Math.PI,
-    foreAngle: (foreAngle * 180) / Math.PI,
+    shoulderAngle: shoulderDeg,
+    foreAngle: foreDeg,
+    elbowAngle: elbowDeg,
     elbow: { x: elbowX, y: elbowY },
     wrist: target,
   };
 }
 
 /**
- * Mapping koordinat gerak jempol & telunjuk dalang ke target tangan wayang (Full Dynamic Flexibility)
- * Tangan wayang terpaku langsung pada 2 jari dalang sehingga dapat bergerak fleksibel ke segala arah
+ * Mapping koordinat gerak jempol & telunjuk dalang ke target tangan wayang (Full 360° Dynamic Flexibility)
+ * Tangan wayang terpaku langsung pada 2 jari dalang sehingga dapat berputar bebas 360° ke segala arah
  */
 export function mapFingerToIkTarget(tip, defaultPos, isThumb = false) {
   if (!tip) return defaultPos;
 
-  // Jangkauan tangan fleksibel penuh: 92px radius dari bahu
-  const armReach = 92;
+  // Jangkauan tangan fleksibel penuh: 96px radius dari bahu (jangkauan max 110px)
+  const armReach = 96;
   const shoulder = isThumb ? SHOULDER_L : SHOULDER_R;
 
-  // Offset alami jempol & telunjuk
-  const neutralOffsetX = isThumb ? -0.2 : 0.2;
-  const neutralOffsetY = isThumb ? 0.45 : 0.6;
-
-  const targetX = shoulder.x + (tip.dx + neutralOffsetX) * armReach;
-  const targetY = shoulder.y + (tip.dy + neutralOffsetY) * armReach;
+  // Simpangan ujung jari relatif terhadap pusat telapak tangan (bisa berputar 360° bebas)
+  const targetX = shoulder.x + tip.dx * armReach;
+  const targetY = shoulder.y + tip.dy * armReach;
 
   return {
-    x: Math.max(15, Math.min(225, targetX)),
-    y: Math.max(25, Math.min(275, targetY)),
+    x: Math.max(10, Math.min(230, targetX)),
+    y: Math.max(15, Math.min(320, targetY)),
   };
 }
 
@@ -79,9 +89,9 @@ export function updatePuppetArmsDOM(containerEl, fingerTargets) {
   const backElbw = containerEl.querySelector('.real-puppet-arm-back-elbw');
 
   if (frontShld) frontShld.style.transform = `rotate(${ikFront.shoulderAngle.toFixed(1)}deg)`;
-  if (frontElbw) frontElbw.style.transform = `rotate(${(ikFront.foreAngle - ikFront.shoulderAngle).toFixed(1)}deg)`;
+  if (frontElbw) frontElbw.style.transform = `rotate(${ikFront.elbowAngle.toFixed(1)}deg)`;
   if (backShld) backShld.style.transform = `rotate(${ikBack.shoulderAngle.toFixed(1)}deg)`;
-  if (backElbw) backElbw.style.transform = `rotate(${(ikBack.foreAngle - ikBack.shoulderAngle).toFixed(1)}deg)`;
+  if (backElbw) backElbw.style.transform = `rotate(${ikBack.elbowAngle.toFixed(1)}deg)`;
 
   const frontLine = containerEl.querySelector('.real-puppet-tudhing-front-line');
   const frontJoint = containerEl.querySelector('.real-puppet-tudhing-front-joint');

@@ -145,7 +145,7 @@ const RealLeatherPuppet = React.memo(function RealLeatherPuppet({
                 position: 'absolute',
                 left: '60px',
                 top: '0px',
-                transform: `rotate(${ikBack.foreAngle - ikBack.shoulderAngle}deg)`,
+                transform: `rotate(${ikBack.elbowAngle}deg)`,
                 transformOrigin: '0 0',
               }}
             >
@@ -341,7 +341,7 @@ const RealLeatherPuppet = React.memo(function RealLeatherPuppet({
                 position: 'absolute',
                 left: '60px',
                 top: '0px',
-                transform: `rotate(${ikFront.foreAngle - ikFront.shoulderAngle}deg)`,
+                transform: `rotate(${ikFront.elbowAngle}deg)`,
                 transformOrigin: '0 0',
               }}
             >
