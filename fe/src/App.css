@@ -3494,6 +3494,41 @@ html, body {
   margin: 0 auto;
 }
 
+/* Giant Typographic Backdrop Watermark (Sesuai Referensi Visual) */
+.wayang-coverflow-watermark-bg {
+  position: absolute;
+  top: clamp(6px, 1.8vh, 26px);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1; /* Di belakang kartu (kartu: z-index 10-20, navigasi panah: z-index 30) */
+  pointer-events: none;
+  user-select: none;
+  white-space: nowrap;
+  text-align: center;
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.wayang-coverflow-watermark-text {
+  font-family: inherit;
+  font-size: clamp(48px, 9.5vw, 115px);
+  font-weight: 900;
+  letter-spacing: clamp(6px, 1.2vw, 16px);
+  text-transform: uppercase;
+  line-height: 1;
+  background: linear-gradient(180deg, rgba(212, 175, 55, 0.28) 0%, rgba(139, 90, 27, 0.05) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: rgba(212, 175, 55, 0.22); /* Fallback */
+  -webkit-text-stroke: 1px rgba(212, 175, 55, 0.16);
+  opacity: 0.95;
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
 .wayang-coverflow-card {
   position: absolute;
   width: clamp(280px, 27vw, 330px);
@@ -3868,6 +3903,15 @@ html, body {
     height: clamp(480px, 62vh, 530px);
   }
 
+  .wayang-coverflow-watermark-bg {
+    top: clamp(6px, 1.4vh, 18px);
+  }
+
+  .wayang-coverflow-watermark-text {
+    font-size: clamp(38px, 8.5vw, 76px);
+    letter-spacing: clamp(4px, 1vw, 10px);
+  }
+
   .wayang-coverflow-card {
     width: clamp(270px, 34vw, 310px);
     height: clamp(450px, 58vh, 490px);
@@ -3886,6 +3930,15 @@ html, body {
   .wayang-coverflow-card[data-offset="-2"],
   .wayang-coverflow-card[data-offset="2"] {
     display: none !important;
+  }
+
+  .wayang-coverflow-watermark-bg {
+    top: 8px;
+  }
+
+  .wayang-coverflow-watermark-text {
+    font-size: clamp(24px, 7vw, 38px);
+    letter-spacing: clamp(2px, 0.8vw, 6px);
   }
 
   .wayang-coverflow-card[data-offset="-1"] {

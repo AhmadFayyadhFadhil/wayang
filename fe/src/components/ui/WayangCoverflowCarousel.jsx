@@ -17,6 +17,7 @@ export default function WayangCoverflowCarousel({
   charAssets = {},
   onSelectCharacter,
   onPlayOnStage,
+  watermarkText = 'TOKOH WAYANG',
 }) {
   const [rawIndex, setRawIndex] = useState(0);
   const containerRef = useRef(null);
@@ -116,6 +117,13 @@ export default function WayangCoverflowCarousel({
     >
       {/* Panggung Perspektif 3D Utama */}
       <div className="wayang-coverflow-stage">
+        {/* Giant Typographic Backdrop Watermark (Sesuai Referensi Visual) */}
+        <div className="wayang-coverflow-watermark-bg" aria-hidden="true">
+          <span className="wayang-coverflow-watermark-text">
+            {watermarkText}
+          </span>
+        </div>
+
         {characters.map((char, index) => {
           const offset = getOffset(index);
           const isCenter = offset === 0;
