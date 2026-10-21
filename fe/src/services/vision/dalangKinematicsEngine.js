@@ -90,8 +90,9 @@ class DalangKinematicsEngine {
     this.isKiprahActive = [false, false];
     this.kiprahEndTimes = [0, 0];
 
-    // Hentakan Dodogan Deteksi
+    // Hentakan Dodogan & Kecepatan Horizontal
     this.lastY = [0, 0];
+    this.lastX = [0, 0];
     this.lastTimestamp = performance.now();
     this.lastDodoganTime = 0;
 
@@ -314,9 +315,11 @@ class DalangKinematicsEngine {
         },
       };
 
-      // Cek kecepatan hentakan ke bawah (Dodogan SFX)
+      // Cek kecepatan hentakan ke bawah (Dodogan SFX) dan kecepatan horizontal (Swipe Flip)
       const velY = (rawY - (this.lastY[hIdx] || rawY)) / (dt / 1000);
+      const velX = (rawX - (this.lastX[hIdx] || rawX)) / (dt / 1000);
       this.lastY[hIdx] = rawY;
+      this.lastX[hIdx] = rawX;
 
       if (velY > 2.6 && now - this.lastDodoganTime > 380) {
         try {
@@ -332,6 +335,7 @@ class DalangKinematicsEngine {
         x: Math.max(0.06, Math.min(0.94, smoothX)),
         y: Math.max(0.35, Math.min(0.85, smoothY)),
         tiltAngleDeg,
+        velX,
         depth,
         armAngles,
         fingerTargets,
@@ -364,12 +368,12 @@ class DalangKinematicsEngine {
         primaryHand.targetChar = targetChar;
         primaryHand.role = 'cempurit';
 
-        // Deteksi kemiringan telapak untuk membalik arah hadap (Flip)
+        // Deteksi kemiringan telapak / gesekan cepat untuk membalik arah hadap (Ultra Responsive Flip)
         const lastState = this.lastWayangStates.get(targetChar.instanceId);
         let facing = lastState?.facing || targetChar.facing || 'right';
-        if (primaryHand.tiltAngleDeg > 14) {
+        if (primaryHand.tiltAngleDeg > 6 || primaryHand.velX > 0.4) {
           facing = 'right';
-        } else if (primaryHand.tiltAngleDeg < -14) {
+        } else if (primaryHand.tiltAngleDeg < -6 || primaryHand.velX < -0.4) {
           facing = 'left';
         }
 
@@ -463,12 +467,12 @@ class DalangKinematicsEngine {
         const char = hand.targetChar;
         const isLeft = hand.role === 'tokoh_kiri';
 
-        // Deteksi kemiringan telapak untuk membalik arah hadap (Flip)
+        // Deteksi kemiringan telapak / gesekan cepat untuk membalik arah hadap (Ultra Responsive Flip)
         const lastState = this.lastWayangStates.get(char.instanceId);
         let facing = lastState?.facing || (isLeft ? 'right' : 'left');
-        if (hand.tiltAngleDeg > 14) {
+        if (hand.tiltAngleDeg > 6 || hand.velX > 0.4) {
           facing = 'right';
-        } else if (hand.tiltAngleDeg < -14) {
+        } else if (hand.tiltAngleDeg < -6 || hand.velX < -0.4) {
           facing = 'left';
         }
 

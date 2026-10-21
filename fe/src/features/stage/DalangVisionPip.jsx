@@ -269,9 +269,9 @@ export default function DalangVisionPip({
           ? ' (Cempurit)'
           : '';
       const tiltIndicator =
-        hand.tiltAngleDeg > 14
+        hand.tiltAngleDeg > 6
           ? ' →'
-          : hand.tiltAngleDeg < -14
+          : hand.tiltAngleDeg < -6
           ? ' ←'
           : '';
       const fullLabel = `🔒 ${(char.name || 'Wayang')}${roleText}${tiltIndicator}`;
@@ -425,12 +425,20 @@ export default function DalangVisionPip({
         transition: 'width 0.25s ease, height 0.25s ease',
       }}
     >
-      {/* Video element hidden (stream disalurkan ke Canvas) */}
+      {/* Video element hidden (stream disalurkan ke Canvas) - Hindari display:none agar decoder webcam aktif */}
       <video
         ref={videoRef}
         playsInline
         muted
-        style={{ display: 'none' }}
+        style={{
+          position: 'fixed',
+          top: -9999,
+          left: -9999,
+          width: 320,
+          height: 240,
+          opacity: 0,
+          pointerEvents: 'none',
+        }}
       />
 
       {/* Header Panel PiP */}

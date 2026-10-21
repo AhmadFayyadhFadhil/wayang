@@ -178,6 +178,11 @@ const VirtualStageCanvas = forwardRef(function VirtualStageCanvas({
         e.preventDefault();
         onUpdateCharacter(selectedInstanceId, { y: char.y + step });
         soundEngine.playDodogan();
+      } else if (e.key.toLowerCase() === 'f') {
+        e.preventDefault();
+        const nextFacing = char.facing === 'left' ? 'right' : 'left';
+        onUpdateCharacter(selectedInstanceId, { facing: nextFacing });
+        soundEngine.playDodogan();
       }
     };
 
@@ -298,6 +303,12 @@ const VirtualStageCanvas = forwardRef(function VirtualStageCanvas({
                 else delete charDomRefs.current[char.instanceId];
               }}
               onPointerDown={(e) => handlePointerDown(e, char)}
+              onDoubleClick={(e) => {
+                e.stopPropagation();
+                const nextFacing = char.facing === 'left' ? 'right' : 'left';
+                onUpdateCharacter(char.instanceId, { facing: nextFacing });
+                soundEngine.playDodogan();
+              }}
               style={{
                 position: 'absolute',
                 left: leftPercent,
@@ -312,6 +323,46 @@ const VirtualStageCanvas = forwardRef(function VirtualStageCanvas({
                   : 'filter 0.2s, left 0.15s ease-out, top 0.15s ease-out',
               }}
             >
+              {/* Tombol Aksi Cepat: Balik Arah Hadap (Flip) */}
+              {isSelected && !isVisionActive && (
+                <div
+                  style={{
+                    position: 'absolute',
+                    top: '-32px',
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                    zIndex: 25,
+                    pointerEvents: 'auto',
+                  }}
+                >
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      const nextFacing = char.facing === 'left' ? 'right' : 'left';
+                      onUpdateCharacter(char.instanceId, { facing: nextFacing });
+                      soundEngine.playDodogan();
+                    }}
+                    title="Balik Arah Hadap Wayang (Shortcut: F / Klik Dua Kali)"
+                    style={{
+                      background: '#23180f',
+                      border: '1px solid rgba(212, 175, 55, 0.65)',
+                      color: '#fef08a',
+                      borderRadius: '16px',
+                      padding: '3px 10px',
+                      fontSize: '10.5px',
+                      fontWeight: 700,
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '4px',
+                      boxShadow: '0 4px 12px rgba(0, 0, 0, 0.6)',
+                      whiteSpace: 'nowrap',
+                    }}
+                  >
+                    <span>⇄ Balik (F)</span>
+                  </button>
+                </div>
+              )}
               {/* Balon Dialog Wayang jika ada naskah (disembunyikan saat Dalang Vision aktif agar panggung tidak penuh sesak) */}
               {char.dialogue && !isVisionActive && (
                 <div

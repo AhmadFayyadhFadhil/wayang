@@ -90,10 +90,25 @@ class HandTrackingService {
 
       this.videoElement.srcObject = stream;
       await new Promise((resolve) => {
-        this.videoElement.onloadedmetadata = () => {
-          this.videoElement.play();
-          resolve();
+        let isDone = false;
+        const complete = async () => {
+          if (!isDone) {
+            isDone = true;
+            try {
+              await this.videoElement.play();
+            } catch {}
+            resolve();
+          }
         };
+
+        if (this.videoElement.readyState >= 2) {
+          complete();
+        } else {
+          this.videoElement.onloadeddata = complete;
+          this.videoElement.onloadedmetadata = complete;
+          this.videoElement.oncanplay = complete;
+          setTimeout(complete, 1500);
+        }
       });
 
       this.isRunning = true;
