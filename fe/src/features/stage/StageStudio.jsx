@@ -5,8 +5,10 @@ import SceneComposer from './SceneComposer';
 import StagePreviewModal from './StagePreviewModal';
 import SavePerformanceModal from './SavePerformanceModal';
 import StageBackgroundModal from './StageBackgroundModal';
+import DalangVisionPip from './DalangVisionPip';
+import DalangVisionTutorialModal from './DalangVisionTutorialModal';
 import { getBackgroundById } from '../../data/master/stageConfigMaster';
-import { RotateCcw, Play, Save, ArrowLeft, X, Palette } from 'lucide-react';
+import { RotateCcw, Play, Save, ArrowLeft, X, Palette, Hand } from 'lucide-react';
 
 export default function StageStudio({ onNavigate }) {
   const {
@@ -34,6 +36,8 @@ export default function StageStudio({ onNavigate }) {
   const [showSaveModal, setShowSaveModal] = useState(false);
   const [showBackgroundModal, setShowBackgroundModal] = useState(false);
   const [showResetConfirmModal, setShowResetConfirmModal] = useState(false);
+  const [isDalangVisionActive, setIsDalangVisionActive] = useState(false);
+  const [showVisionTutorial, setShowVisionTutorial] = useState(false);
 
   const currentScene = scenes[activeSceneIndex] || scenes[0];
   const currentBgConfig = getBackgroundById(currentScene?.background);
@@ -159,6 +163,48 @@ export default function StageStudio({ onNavigate }) {
             </span>
           </button>
 
+          {/* Tombol Digital Dalang Vision (Hand Tracking AI) */}
+          <button
+            onClick={() => setIsDalangVisionActive(!isDalangVisionActive)}
+            title="Kendalikan wayang dengan telapak tangan via webcam (Computer Vision AI)"
+            style={{
+              ...studioBtnStyle,
+              background: isDalangVisionActive
+                ? 'linear-gradient(135deg, rgba(212, 175, 55, 0.28) 0%, rgba(35, 26, 19, 0.95) 100%)'
+                : '#231a13',
+              border: `1px solid ${isDalangVisionActive ? '#d4af37' : 'rgba(212, 175, 55, 0.45)'}`,
+              color: isDalangVisionActive ? '#fef08a' : '#e8bb5c',
+              fontWeight: '750',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              boxShadow: isDalangVisionActive ? '0 0 14px rgba(212, 175, 55, 0.35)' : 'none',
+              transition: 'all 0.2s ease',
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.borderColor = '#d4af37';
+              e.currentTarget.style.background = '#2c2017';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.borderColor = isDalangVisionActive ? '#d4af37' : 'rgba(212, 175, 55, 0.45)';
+              e.currentTarget.style.background = isDalangVisionActive
+                ? 'linear-gradient(135deg, rgba(212, 175, 55, 0.28) 0%, rgba(35, 26, 19, 0.95) 100%)'
+                : '#231a13';
+            }}
+          >
+            <Hand size={14} color={isDalangVisionActive ? '#facc15' : '#e8bb5c'} />
+            <span>Dalang Vision</span>
+            <span
+              style={{
+                width: '7px',
+                height: '7px',
+                borderRadius: '50%',
+                background: isDalangVisionActive ? '#22c55e' : 'rgba(212, 175, 55, 0.4)',
+                boxShadow: isDalangVisionActive ? '0 0 8px #22c55e' : 'none',
+              }}
+            />
+          </button>
+
           <button
             onClick={() => setShowPreviewModal(true)}
             style={{
@@ -252,6 +298,22 @@ export default function StageStudio({ onNavigate }) {
             updateActiveScene({ background: bgId });
           }
         }}
+      />
+
+      {/* Panel Floating PiP Dalang Vision (Webcam & Skeletal Tracking) */}
+      <DalangVisionPip
+        isOpen={isDalangVisionActive}
+        onClose={() => setIsDalangVisionActive(false)}
+        characters={currentScene?.characters || []}
+        selectedInstanceId={selectedInstanceId}
+        onUpdateCharacter={updateCharacter}
+        onOpenTutorial={() => setShowVisionTutorial(true)}
+      />
+
+      {/* Modal Panduan Gestur Dalang */}
+      <DalangVisionTutorialModal
+        isOpen={showVisionTutorial}
+        onClose={() => setShowVisionTutorial(false)}
       />
 
       {/* Modal Simpan Karya */}
