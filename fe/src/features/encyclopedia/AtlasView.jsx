@@ -77,10 +77,6 @@ const FILTER_CHIPS = [
   { id: 'stories', label: 'Lakon Cerita' },
   { id: 'characters', label: 'Tokoh Wayang' },
   { id: 'audio', label: 'Tata Suara' },
-  { id: 'mahabharata', label: 'Mahabharata' },
-  { id: 'ramayana', label: 'Ramayana' },
-  { id: 'pandawa', label: 'Pandawa' },
-  { id: 'punakawan', label: 'Punakawan' },
 ];
 
 export default function AtlasView({ onPlayCharacterOnStage }) {
@@ -106,29 +102,6 @@ export default function AtlasView({ onPlayCharacterOnStage }) {
     if (!textMatch) return false;
 
     if (activeFilter === 'all' || activeFilter === 'stories') return true;
-    if (activeFilter === 'audio' || activeFilter === 'characters') return false;
-    if (activeFilter === 'mahabharata') {
-      return (
-        s.tradition.toLowerCase().includes('mataram') ||
-        s.title.toLowerCase().includes('bharatayuddha') ||
-        s.title.toLowerCase().includes('dewa ruci') ||
-        s.synopsis.toLowerCase().includes('kurusetra') ||
-        s.synopsis.toLowerCase().includes('pandawa')
-      );
-    }
-    if (activeFilter === 'ramayana') {
-      return (
-        s.title.toLowerCase().includes('ramayana') ||
-        s.synopsis.toLowerCase().includes('alengka') ||
-        s.synopsis.toLowerCase().includes('shinta')
-      );
-    }
-    if (activeFilter === 'pandawa') {
-      return s.synopsis.toLowerCase().includes('pandawa') || s.characterIds?.some((id) => [1, 2, 4].includes(id));
-    }
-    if (activeFilter === 'punakawan') {
-      return s.characterIds?.includes(5);
-    }
     return false;
   });
 
@@ -146,19 +119,6 @@ export default function AtlasView({ onPlayCharacterOnStage }) {
     if (!textMatch) return false;
 
     if (activeFilter === 'all' || activeFilter === 'characters') return true;
-    if (activeFilter === 'stories' || activeFilter === 'audio') return false;
-    if (activeFilter === 'mahabharata') {
-      return ['gatotkaca', 'arjuna', 'karna', 'bima', 'semar'].includes(c.slug);
-    }
-    if (activeFilter === 'ramayana') {
-      return ['rahwana', 'shinta'].includes(c.slug);
-    }
-    if (activeFilter === 'pandawa') {
-      return ['gatotkaca', 'arjuna', 'bima'].includes(c.slug);
-    }
-    if (activeFilter === 'punakawan') {
-      return c.type === 'punakawan' || c.slug === 'semar';
-    }
     return false;
   });
 
@@ -174,13 +134,6 @@ export default function AtlasView({ onPlayCharacterOnStage }) {
     if (!textMatch) return false;
 
     if (activeFilter === 'all' || activeFilter === 'audio') return true;
-    if (['stories', 'characters', 'pandawa', 'punakawan'].includes(activeFilter)) return false;
-    if (activeFilter === 'mahabharata') {
-      return a.title.toLowerCase().includes('mataram') || a.title.toLowerCase().includes('slendro');
-    }
-    if (activeFilter === 'ramayana') {
-      return a.title.toLowerCase().includes('alengka');
-    }
     return false;
   });
 
