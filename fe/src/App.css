@@ -2463,5 +2463,71 @@ html, body {
   max-width: 100vw;
 }
 
+/* ==========================================================================
+   6. HERITAGE FROSTED GLASS RIBBON & INFINITE BATIK CONVEYOR
+   Animasi geser kesamping terus-menerus tanpa henti dengan perulangan
+   matematis bulat sempurna (576px cycle, 60 FPS GPU-accelerated)
+   ========================================================================== */
+
+@keyframes infiniteBatikGliding {
+  0% {
+    background-position: 0px center;
+  }
+  100% {
+    background-position: -576px center;
+  }
+}
+
+.heritage-frosted-glass-ribbon {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 15;
+  display: flex;
+  flex-direction: column;
+  background: rgba(20, 14, 9, 0.65);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-top: 1px solid rgba(212, 175, 55, 0.32);
+  border-bottom: 1px solid rgba(212, 175, 55, 0.18);
+  box-shadow: 
+    0 -4px 18px rgba(0, 0, 0, 0.35),
+    0 4px 24px rgba(0, 0, 0, 0.45),
+    inset 0 1px 0 rgba(255, 235, 180, 0.22);
+  overflow: hidden;
+}
+
+.heritage-glass-specular-highlight {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    transparent 0%,
+    rgba(255, 235, 180, 0.12) 15%,
+    rgba(255, 235, 180, 0.55) 50%,
+    rgba(255, 235, 180, 0.12) 85%,
+    transparent 100%
+  );
+  pointer-events: none;
+  z-index: 2;
+}
+
+.infinite-batik-conveyor {
+  width: 100%;
+  height: 42px;
+  background-repeat: repeat-x;
+  background-position: 0px center;
+  background-size: auto 42px;
+  animation: infiniteBatikGliding 22s linear infinite;
+  will-change: background-position;
+  mask-image: linear-gradient(to bottom, transparent 0%, black 15%, black 85%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 15%, black 85%, transparent 100%);
+}
+
+
 
 

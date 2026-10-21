@@ -442,26 +442,16 @@ export default function AtlasView({ onPlayCharacterOnStage }) {
           </div>
         </div>
 
-        {/* Strip Motif Batik Emas di Bagian Bawah Hero dengan Transisi Lembut Organik */}
-        <div
-          style={{
-            position: 'absolute',
-            bottom: 0,
-            left: 0,
-            right: 0,
-            height: '42px',
-            backgroundImage: `url(${atlasGoldMotifStrip})`,
-            backgroundRepeat: 'repeat-x',
-            backgroundPosition: 'center bottom',
-            backgroundSize: 'auto 42px',
-            boxShadow: '0 4px 20px rgba(0, 0, 0, 0.4), 0 -2px 14px rgba(212, 175, 55, 0.2)',
-            zIndex: 15,
-            maskImage:
-              'linear-gradient(to bottom, transparent 0%, black 18%, black 82%, transparent 100%)',
-            WebkitMaskImage:
-              'linear-gradient(to bottom, transparent 0%, black 18%, black 82%, transparent 100%)',
-          }}
-        />
+        {/* Frosted Heritage Glass Ribbon & Continuous Gliding Batik Strip (Sesuai Permintaan User) */}
+        <div className="heritage-frosted-glass-ribbon">
+          <div className="heritage-glass-specular-highlight" />
+          <div
+            className="infinite-batik-conveyor"
+            style={{
+              backgroundImage: `url(${atlasGoldMotifStrip})`,
+            }}
+          />
+        </div>
       </section>
 
       {/* Konten Utama Story Atlas (Latar Belakang Hangat #f5f0e4 Sesuai Section Lakon Beranda) */}
