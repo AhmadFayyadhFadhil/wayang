@@ -388,7 +388,7 @@ export default function HomeView({ onNavigate, connectionStatus, onTestConnectio
             style={{
               margin: '0 0 20px 0',
               fontFamily: 'var(--font-sans)',
-              fontSize: 'clamp(34px, 4.8vw, 56px)',
+              fontSize: 'clamp(28px, 4.8vw, 56px)',
               fontWeight: '850',
               color: '#fcfaf2',
               letterSpacing: '-0.5px',

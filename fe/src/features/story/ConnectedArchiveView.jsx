@@ -440,9 +440,9 @@ export default function ConnectedArchiveView({
             bottom: 0,
             left: 0,
             right: 0,
-            height: '140px',
+            height: '220px',
             background:
-              'linear-gradient(to top, rgba(13, 10, 7, 0.85) 0%, rgba(13, 10, 7, 0.35) 60%, transparent 100%)',
+              'linear-gradient(to bottom, transparent 0%, rgba(13, 10, 7, 0.35) 35%, rgba(13, 10, 7, 0.88) 75%, #120b06 100%)',
             pointerEvents: 'none',
             zIndex: 2,
           }}
@@ -464,6 +464,10 @@ export default function ConnectedArchiveView({
             opacity: 0.78,
             pointerEvents: 'none',
             filter: 'none',
+            maskImage:
+              'linear-gradient(to bottom, black 65%, rgba(0, 0, 0, 0.5) 85%, transparent 98%)',
+            WebkitMaskImage:
+              'linear-gradient(to bottom, black 65%, rgba(0, 0, 0, 0.5) 85%, transparent 98%)',
           }}
         >
           <img
@@ -486,6 +490,10 @@ export default function ConnectedArchiveView({
             opacity: 0.78,
             pointerEvents: 'none',
             filter: 'none',
+            maskImage:
+              'linear-gradient(to bottom, black 65%, rgba(0, 0, 0, 0.5) 85%, transparent 98%)',
+            WebkitMaskImage:
+              'linear-gradient(to bottom, black 65%, rgba(0, 0, 0, 0.5) 85%, transparent 98%)',
           }}
         >
           <img
@@ -537,7 +545,7 @@ export default function ConnectedArchiveView({
             style={{
               margin: '0 0 20px 0',
               fontFamily: 'var(--font-sans)',
-              fontSize: 'clamp(34px, 4.8vw, 56px)',
+              fontSize: 'clamp(28px, 4.8vw, 56px)',
               fontWeight: '850',
               color: '#fcfaf2',
               letterSpacing: '-0.5px',
@@ -600,21 +608,24 @@ export default function ConnectedArchiveView({
           </button>
         </div>
 
-        {/* Strip Motif Batik Emas di Bagian Bawah Hero Sesuai Desain Atlas */}
+        {/* Strip Motif Batik Emas di Bagian Bawah Hero dengan Transisi Lembut Organik */}
         <div
           style={{
             position: 'absolute',
             bottom: 0,
             left: 0,
             right: 0,
-            height: '40px',
+            height: '42px',
             backgroundImage: `url(${atlasGoldMotifStrip})`,
             backgroundRepeat: 'repeat-x',
             backgroundPosition: 'center bottom',
-            backgroundSize: 'auto 40px',
-            borderTop: '1px solid rgba(212, 175, 55, 0.65)',
-            boxShadow: '0 -2px 10px rgba(0, 0, 0, 0.15)',
+            backgroundSize: 'auto 42px',
+            boxShadow: '0 4px 20px rgba(0, 0, 0, 0.4), 0 -2px 14px rgba(212, 175, 55, 0.2)',
             zIndex: 15,
+            maskImage:
+              'linear-gradient(to bottom, transparent 0%, black 18%, black 82%, transparent 100%)',
+            WebkitMaskImage:
+              'linear-gradient(to bottom, transparent 0%, black 18%, black 82%, transparent 100%)',
           }}
         />
       </section>
@@ -637,6 +648,20 @@ export default function ConnectedArchiveView({
           overflow: 'hidden',
         }}
       >
+        {/* Top Soft Gradient: Transisi lembut dari kelir soga gelap ke kanvas gading hangat */}
+        <div
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            height: '70px',
+            background:
+              'linear-gradient(to bottom, rgba(18, 11, 6, 0.12) 0%, rgba(212, 175, 55, 0.04) 40%, transparent 100%)',
+            pointerEvents: 'none',
+            zIndex: 3,
+          }}
+        />
         {/* Motif Awan Tradisional Jawa Halus (Hanya di margin tepi, tidak menabrak cardbox) */}
         <JavaneseCloudBackground variant="flanking" theme="light" opacity={0.20} animated={true} />
 
@@ -905,8 +930,8 @@ export default function ConnectedArchiveView({
             <div
               style={{
                 display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))',
-                gap: '32px',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 320px), 1fr))',
+                gap: '28px',
               }}
             >
               {filteredPerformances.map((item) => {

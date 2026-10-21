@@ -109,7 +109,7 @@ export default function StageStudio({ onNavigate }) {
         </div>
 
         {/* Toolbar Tombol Aksi Studio */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '8px' }}>
           <button
             onClick={() => setShowResetConfirmModal(true)}
             title="Reset Panggung ke Adegan Awal"
