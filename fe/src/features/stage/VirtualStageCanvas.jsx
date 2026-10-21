@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect, useMemo } from 'react';
 import WayangFigureSvg from '../../components/stage/WayangFigureSvg';
 import { getBackgroundById, STAGE_CONFIG_MASTER } from '../../data/master/stageConfigMaster';
 import soundEngine from '../../services/soundscape';
@@ -18,7 +18,7 @@ export default function VirtualStageCanvas({
   const [volume, setVolume] = useState(70);
 
   const bgConfig = getBackgroundById(scene?.background);
-  const characters = scene?.characters || [];
+  const characters = useMemo(() => scene?.characters || [], [scene?.characters]);
 
   // Pemicu SFX Dalang
   const handlePlaySfx = (type) => {
@@ -141,6 +141,26 @@ export default function VirtualStageCanvas({
           background: `radial-gradient(ellipse at 50% 25%, ${bgConfig.glowColor}44 0%, ${bgConfig.kelirColor} 45%, ${bgConfig.bgColor} 100%)`,
         }}
       >
+        {/* Latar Gambar Panggung Otentik jika tersedia */}
+        {bgConfig.bgImage && (
+          <img
+            src={bgConfig.bgImage}
+            alt={bgConfig.name}
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover',
+              opacity: bgConfig.imageOpacity || 0.9,
+              filter: 'contrast(1.08) brightness(0.95)',
+              pointerEvents: 'none',
+              zIndex: 0,
+            }}
+          />
+        )}
+
         {/* Lampu Blencong Keemasan di Atas Kelir */}
         <div
           style={{

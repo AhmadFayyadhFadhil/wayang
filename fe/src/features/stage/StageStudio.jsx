@@ -4,7 +4,9 @@ import VirtualStageCanvas from './VirtualStageCanvas';
 import SceneComposer from './SceneComposer';
 import StagePreviewModal from './StagePreviewModal';
 import SavePerformanceModal from './SavePerformanceModal';
-import { RotateCcw, Play, Save, ArrowLeft, X } from 'lucide-react';
+import StageBackgroundModal from './StageBackgroundModal';
+import { getBackgroundById } from '../../data/master/stageConfigMaster';
+import { RotateCcw, Play, Save, ArrowLeft, X, Palette } from 'lucide-react';
 
 export default function StageStudio({ onNavigate }) {
   const {
@@ -19,6 +21,7 @@ export default function StageStudio({ onNavigate }) {
     removeScene,
     reorderScene,
     updateActiveScene,
+    updateAllScenes,
     setSelectedInstanceId,
     addCharacterToActiveScene,
     removeCharacterFromActiveScene,
@@ -29,9 +32,11 @@ export default function StageStudio({ onNavigate }) {
 
   const [showPreviewModal, setShowPreviewModal] = useState(false);
   const [showSaveModal, setShowSaveModal] = useState(false);
+  const [showBackgroundModal, setShowBackgroundModal] = useState(false);
   const [showResetConfirmModal, setShowResetConfirmModal] = useState(false);
 
   const currentScene = scenes[activeSceneIndex] || scenes[0];
+  const currentBgConfig = getBackgroundById(currentScene?.background);
 
   return (
     <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '20px 16px', color: '#fcfaf2' }}>
@@ -109,6 +114,49 @@ export default function StageStudio({ onNavigate }) {
           >
             <RotateCcw size={13} />
             <span>Reset</span>
+          </button>
+
+          {/* Tombol Ganti Kelir Panggung */}
+          <button
+            onClick={() => setShowBackgroundModal(true)}
+            title={`Ganti latar kelir panggung (Saat ini: ${currentBgConfig.name})`}
+            style={{
+              ...studioBtnStyle,
+              background: '#231a13',
+              border: '1px solid rgba(212, 175, 55, 0.45)',
+              color: '#e8bb5c',
+              fontWeight: '700',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.borderColor = '#d4af37';
+              e.currentTarget.style.background = '#2c2017';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.borderColor = 'rgba(212, 175, 55, 0.45)';
+              e.currentTarget.style.background = '#231a13';
+            }}
+          >
+            <Palette size={14} />
+            <span>Ganti Kelir</span>
+            <span
+              style={{
+                fontSize: '11px',
+                color: '#d4af37',
+                background: 'rgba(212, 175, 55, 0.12)',
+                padding: '2px 8px',
+                borderRadius: '10px',
+                border: '1px solid rgba(212, 175, 55, 0.25)',
+                maxWidth: '120px',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap',
+              }}
+            >
+              {currentBgConfig.name}
+            </span>
           </button>
 
           <button
@@ -190,6 +238,20 @@ export default function StageStudio({ onNavigate }) {
         onClose={() => setShowPreviewModal(false)}
         scenes={scenes}
         metadata={metadata}
+      />
+
+      {/* Modal Pemilih Latar Kelir Panggung */}
+      <StageBackgroundModal
+        isOpen={showBackgroundModal}
+        onClose={() => setShowBackgroundModal(false)}
+        currentBackgroundId={currentScene?.background}
+        onSelectBackground={(bgId, applyToAll) => {
+          if (applyToAll) {
+            updateAllScenes({ background: bgId });
+          } else {
+            updateActiveScene({ background: bgId });
+          }
+        }}
       />
 
       {/* Modal Simpan Karya */}

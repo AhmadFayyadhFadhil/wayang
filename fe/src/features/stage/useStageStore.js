@@ -149,6 +149,11 @@ export const useStageStore = create((set, get) => ({
       return { scenes: updatedScenes };
     }),
 
+  updateAllScenes: (updates) =>
+    set((state) => ({
+      scenes: state.scenes.map((sc) => ({ ...sc, ...updates })),
+    })),
+
   // ============ CHARACTER IN-SCENE ACTIONS ============
   setSelectedInstanceId: (instanceId) => set({ selectedInstanceId: instanceId }),
 

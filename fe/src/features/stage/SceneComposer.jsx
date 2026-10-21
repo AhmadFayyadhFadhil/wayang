@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { CHARACTERS_MASTER } from '../../data/master/charactersMaster';
-import { STAGE_CONFIG_MASTER } from '../../data/master/stageConfigMaster';
+import { getAllBackgrounds } from '../../data/master/stageConfigMaster';
 import { AUDIO_MASTER } from '../../data/master/audioMaster';
 import soundEngine from '../../services/soundscape';
 import {
@@ -230,7 +230,7 @@ export default function SceneComposer({
                 onChange={(e) => onUpdateScene({ background: e.target.value })}
                 style={inputStyle}
               >
-                {STAGE_CONFIG_MASTER.backgrounds.map((bg) => (
+                {getAllBackgrounds().map((bg) => (
                   <option key={bg.id} value={bg.id}>
                     {bg.name}
                   </option>

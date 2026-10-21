@@ -1921,7 +1921,7 @@
   box-shadow: 0 12px 32px rgba(0, 0, 0, 0.38);
   padding: 14px 20px;
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(6, 1fr);
   gap: 0;
   align-items: center;
   box-sizing: border-box;

@@ -3,6 +3,11 @@ import { apiClient } from '../../services/api';
 import { CHARACTERS_MASTER } from '../../data/master/charactersMaster';
 import { STORIES_MASTER } from '../../data/master/storiesMaster';
 import { AUDIO_MASTER } from '../../data/master/audioMaster';
+import {
+  getAllBackgrounds,
+  saveCustomBackground,
+  deleteCustomBackground,
+} from '../../data/master/stageConfigMaster';
 import persistenceService from '../../services/persistenceService';
 import { soundEngine } from '../../services/soundscape';
 import JavaneseCloudBackground from '../../components/ui/JavaneseCloudBackground';
@@ -29,10 +34,12 @@ import {
   CheckCircle2,
   AlertCircle,
   ChevronDown,
+  Layers,
+  Upload,
 } from 'lucide-react';
 
 export default function AdminCmsView({ onPlayPerformance }) {
-  const [activeTab, setActiveTab] = useState('karakter'); // 'karakter' | 'cerita' | 'audio' | 'karya' | 'users'
+  const [activeTab, setActiveTab] = useState('karakter'); // 'karakter' | 'cerita' | 'audio' | 'panggung' | 'karya' | 'users'
   const [isSyncing, setIsSyncing] = useState(false);
   const [stats, setStats] = useState(null);
   const [characters, setCharacters] = useState([]);
@@ -40,6 +47,7 @@ export default function AdminCmsView({ onPlayPerformance }) {
   const [audioAssets, setAudioAssets] = useState([]);
   const [performances, setPerformances] = useState([]);
   const [usersList, setUsersList] = useState([]);
+  const [stageBackgrounds, setStageBackgrounds] = useState([]);
   const [notice, setNotice] = useState(null);
   const [isServerConnected, setIsServerConnected] = useState(false);
 
@@ -161,6 +169,8 @@ export default function AdminCmsView({ onPlayPerformance }) {
           },
         });
       }
+      // 4. Muat Master Data Kelir Panggung
+      setStageBackgrounds(getAllBackgrounds());
     } catch {
       showNotice('Menggunakan data preservasi lokal.', false);
     } finally {
@@ -232,6 +242,11 @@ export default function AdminCmsView({ onPlayPerformance }) {
       } else if (type === 'performance') {
         await apiClient.delete(`/admin/performances/${id}`);
         setPerformances((prev) => prev.filter((i) => i.id !== id));
+      } else if (type === 'stage') {
+        deleteCustomBackground(id);
+        setStageBackgrounds(getAllBackgrounds());
+        showNotice(`Kelir panggung "${title}" berhasil dihapus.`);
+        return;
       }
       showNotice(`Data "${title}" berhasil dihapus.`);
       loadData(false);
@@ -289,6 +304,16 @@ export default function AdminCmsView({ onPlayPerformance }) {
           mood: 'Atmosferik',
           status: 'active',
         });
+      } else if (type === 'stage') {
+        setForm({
+          name: '',
+          category: 'image',
+          bgImage: '',
+          gradient: 'radial-gradient(ellipse at 50% 30%, #4a2810 0%, #170d06 65%, #080402 100%)',
+          atmosphere: 'Jejer Kraton / Siang',
+          blencongColor: 'rgba(255, 200, 100, 0.55)',
+          isCustom: true,
+        });
       }
     }
   };
@@ -314,6 +339,29 @@ export default function AdminCmsView({ onPlayPerformance }) {
         } else {
           await apiClient.post('/admin/audio-assets', form);
         }
+      } else if (modalType === 'stage') {
+        if (!form.name || !form.name.trim()) {
+          showNotice('Nama kelir panggung wajib diisi', true);
+          return;
+        }
+        if (form.category === 'image' && (!form.bgImage || !form.bgImage.trim())) {
+          showNotice('URL gambar atau berkas gambar latar wajib diisi', true);
+          return;
+        }
+        saveCustomBackground({
+          id: editingItem?.id,
+          name: form.name.trim(),
+          category: form.category || 'image',
+          bgImage: form.category === 'image' ? form.bgImage : null,
+          gradient: form.category === 'gradient' ? form.gradient : null,
+          atmosphere: form.atmosphere || 'Jejer Kraton / Siang',
+          blencongColor: form.blencongColor || 'rgba(255, 200, 100, 0.55)',
+          isCustom: true,
+        });
+        setStageBackgrounds(getAllBackgrounds());
+        showNotice(`Kelir panggung "${form.name}" berhasil disimpan ke Master Data.`);
+        setModalType(null);
+        return;
       }
       showNotice('Data kurasi berhasil disimpan.');
       setModalType(null);
@@ -367,6 +415,25 @@ export default function AdminCmsView({ onPlayPerformance }) {
       return matchSearch && matchCat;
     });
   }, [audioAssets, searchQuery, filterCategory]);
+
+  const filteredStages = useMemo(() => {
+    return stageBackgrounds.filter((s) => {
+      const q = searchQuery.toLowerCase().trim();
+      const matchSearch =
+        !q ||
+        (s.name && s.name.toLowerCase().includes(q)) ||
+        (s.atmosphere && s.atmosphere.toLowerCase().includes(q)) ||
+        (s.id && s.id.toLowerCase().includes(q));
+
+      const matchCat =
+        filterCategory === 'all' ||
+        (filterCategory === 'image' && s.category === 'image') ||
+        (filterCategory === 'gradient' && s.category === 'gradient') ||
+        (filterCategory === 'custom' && s.isCustom);
+
+      return matchSearch && matchCat;
+    });
+  }, [stageBackgrounds, searchQuery, filterCategory]);
 
   const filteredPerformances = useMemo(() => {
     return performances.filter((p) => {
@@ -724,7 +791,37 @@ export default function AdminCmsView({ onPlayPerformance }) {
               </div>
             </div>
 
-            {/* Metrik 4: Karya */}
+            {/* Metrik 4: Kelir Panggung */}
+            <div
+              className={`admin-floating-stat-item ${activeTab === 'panggung' ? 'active' : ''}`}
+              onClick={() => {
+                setActiveTab('panggung');
+                setSearchQuery('');
+                setFilterCategory('all');
+              }}
+            >
+              <div
+                style={{
+                  fontSize: '25px',
+                  fontWeight: '850',
+                  color: '#e8bb5c',
+                  letterSpacing: '-0.3px',
+                  lineHeight: '1.15',
+                  marginBottom: '3px',
+                  fontVariantNumeric: 'tabular-nums',
+                }}
+              >
+                {stageBackgrounds.length}
+              </div>
+              <div style={{ fontSize: '13px', fontWeight: '750', color: '#fdfbf7', marginBottom: '2px', letterSpacing: '0.15px' }}>
+                Kelir Panggung
+              </div>
+              <div style={{ fontSize: '11px', color: '#bfae9c', fontWeight: '400', lineHeight: '1.3' }}>
+                Latar Tradisi & HD
+              </div>
+            </div>
+
+            {/* Metrik 5: Karya */}
             <div
               className={`admin-floating-stat-item ${activeTab === 'karya' ? 'active' : ''}`}
               onClick={() => {
@@ -898,6 +995,7 @@ export default function AdminCmsView({ onPlayPerformance }) {
               { id: 'karakter', label: 'Tokoh Wayang', count: characters.length, icon: Users },
               { id: 'cerita', label: 'Lakon Cerita', count: stories.length, icon: BookOpen },
               { id: 'audio', label: 'Tata Suara / SFX', count: audioAssets.length, icon: Music },
+              { id: 'panggung', label: 'Kelir Panggung', count: stageBackgrounds.length, icon: Layers },
               { id: 'karya', label: 'Karya Pagelaran', count: performances.length, icon: Film },
               { id: 'users', label: 'Pengguna', count: usersList.length, icon: ShieldCheck },
             ].map((tab) => {
@@ -942,6 +1040,8 @@ export default function AdminCmsView({ onPlayPerformance }) {
                       ? 'Cari lakon wiracarita, tradisi, gending...'
                       : activeTab === 'audio'
                       ? 'Cari instrumen gamelan, nada, tempo...'
+                      : activeTab === 'panggung'
+                      ? 'Cari nama kelir, suasana, lakon, atau id panggung...'
                       : activeTab === 'karya'
                       ? 'Cari judul lakon atau dalang...'
                       : 'Cari nama kurator atau surel...'
@@ -1006,6 +1106,23 @@ export default function AdminCmsView({ onPlayPerformance }) {
                 </div>
               )}
 
+              {/* Filter Kategori Kelir Panggung */}
+              {activeTab === 'panggung' && (
+                <div className="admin-control-select-wrap">
+                  <select
+                    value={filterCategory}
+                    onChange={(e) => setFilterCategory(e.target.value)}
+                    className="admin-control-select"
+                  >
+                    <option value="all">Semua Jenis Kelir</option>
+                    <option value="image">Latar Bergambar HD</option>
+                    <option value="gradient">Gradasi Soga Tradisional</option>
+                    <option value="custom">Karya Kustom Dalang</option>
+                  </select>
+                  <ChevronDown size={14} className="admin-control-select-chevron" />
+                </div>
+              )}
+
               {/* Filter Status / Visibilitas */}
               {(activeTab === 'karakter' || activeTab === 'cerita' || activeTab === 'karya') && (
                 <div className="admin-control-select-wrap">
@@ -1042,6 +1159,7 @@ export default function AdminCmsView({ onPlayPerformance }) {
                   if (activeTab === 'karakter') openModal('character');
                   else if (activeTab === 'cerita') openModal('story');
                   else if (activeTab === 'audio') openModal('audio');
+                  else if (activeTab === 'panggung') openModal('stage');
                 }}
                 className="admin-control-add-btn"
               >
@@ -1051,7 +1169,9 @@ export default function AdminCmsView({ onPlayPerformance }) {
                     ? 'Tambah Tokoh'
                     : activeTab === 'cerita'
                     ? 'Tambah Lakon'
-                    : 'Tambah Audio'}
+                    : activeTab === 'audio'
+                    ? 'Tambah Audio'
+                    : 'Tambah Kelir'}
                 </span>
               </button>
             )}
@@ -1315,6 +1435,164 @@ export default function AdminCmsView({ onPlayPerformance }) {
                 </table>
               )}
 
+              {/* TAB: KELIR PANGGUNG (MASTER DATA & KARYA KUSTOM) */}
+              {activeTab === 'panggung' && (
+                <table className="admin-table">
+                  <thead>
+                    <tr>
+                      <th style={{ width: '130px' }}>Pratinjau Kelir</th>
+                      <th>Nama & Suasana Latar</th>
+                      <th>Tipe Kelir</th>
+                      <th>Cahaya Blencong</th>
+                      <th style={{ textAlign: 'right' }}>Aksi</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filteredStages.length === 0 ? (
+                      <tr>
+                        <td colSpan={5} style={{ textAlign: 'center', padding: '52px 24px', color: '#6e5e4d' }}>
+                          <div style={{ fontSize: '15px', fontWeight: '800', color: '#1a140e', marginBottom: '6px' }}>
+                            Tidak Ada Kelir Panggung
+                          </div>
+                          <div style={{ fontSize: '13px' }}>
+                            Tidak ditemukan kelir panggung yang cocok dengan filter pencarian "{searchQuery}".
+                          </div>
+                        </td>
+                      </tr>
+                    ) : (
+                      filteredStages.map((stage) => {
+                        const isImage = stage.category === 'image' && Boolean(stage.bgImage);
+                        return (
+                          <tr key={stage.id}>
+                            <td>
+                              <div
+                                style={{
+                                  width: '104px',
+                                  height: '58px',
+                                  borderRadius: '6px',
+                                  overflow: 'hidden',
+                                  position: 'relative',
+                                  border: '1px solid rgba(212, 175, 55, 0.35)',
+                                  boxShadow: '0 2px 8px rgba(0, 0, 0, 0.15)',
+                                  background: stage.gradient || '#17110c',
+                                }}
+                              >
+                                {isImage && (
+                                  <img
+                                    src={stage.bgImage}
+                                    alt={stage.name}
+                                    style={{
+                                      width: '100%',
+                                      height: '100%',
+                                      objectFit: 'cover',
+                                      display: 'block',
+                                    }}
+                                  />
+                                )}
+                                {/* Mini Blencong Glow Accent */}
+                                <div
+                                  style={{
+                                    position: 'absolute',
+                                    top: '4px',
+                                    left: '50%',
+                                    transform: 'translateX(-50%)',
+                                    width: '18px',
+                                    height: '18px',
+                                    borderRadius: '50%',
+                                    background: stage.blencongColor || 'rgba(255, 200, 100, 0.65)',
+                                    filter: 'blur(4px)',
+                                    pointerEvents: 'none',
+                                  }}
+                                />
+                              </div>
+                            </td>
+                            <td>
+                              <div>
+                                <div style={{ fontWeight: '800', color: '#1a140e', fontSize: '14.5px', letterSpacing: '-0.01em' }}>
+                                  {stage.name}
+                                </div>
+                                <div style={{ fontSize: '12px', color: '#786554', marginTop: '3px', display: 'flex', gap: '8px', alignItems: 'center' }}>
+                                  <span>ID: <code style={{ color: '#8b4513', fontSize: '11.5px', fontWeight: '600' }}>{stage.id}</code></span>
+                                  <span>•</span>
+                                  <span>{stage.atmosphere || 'Suasana Umum'}</span>
+                                </div>
+                              </div>
+                            </td>
+                            <td>
+                              <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', alignItems: 'flex-start' }}>
+                                <span className={stage.category === 'image' ? 'admin-badge-golongan-ksatria' : 'admin-badge-golongan-punakawan'}>
+                                  {stage.category === 'image' ? 'Bergambar HD' : 'Gradasi Soga'}
+                                </span>
+                                {stage.isCustom ? (
+                                  <span style={{ fontSize: '10.5px', color: '#d97706', fontWeight: '700', padding: '1px 6px', background: 'rgba(245, 158, 11, 0.12)', borderRadius: '4px', border: '1px solid rgba(245, 158, 11, 0.25)' }}>
+                                    Karya Kustom
+                                  </span>
+                                ) : (
+                                  <span style={{ fontSize: '10.5px', color: '#059669', fontWeight: '700', padding: '1px 6px', background: 'rgba(16, 185, 129, 0.10)', borderRadius: '4px', border: '1px solid rgba(16, 185, 129, 0.25)' }}>
+                                    Preset Pakem
+                                  </span>
+                                )}
+                              </div>
+                            </td>
+                            <td>
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                <span
+                                  style={{
+                                    display: 'inline-block',
+                                    width: '16px',
+                                    height: '16px',
+                                    borderRadius: '50%',
+                                    background: stage.blencongColor || 'rgba(255, 200, 100, 0.55)',
+                                    border: '1px solid rgba(0, 0, 0, 0.2)',
+                                    boxShadow: '0 0 6px rgba(212, 175, 55, 0.4)',
+                                  }}
+                                />
+                                <span style={{ fontSize: '12px', color: '#423122', fontFamily: 'monospace' }}>
+                                  {stage.blencongColor ? stage.blencongColor.substring(0, 22) : 'rgba(255, 200, 100)'}
+                                </span>
+                              </div>
+                            </td>
+                            <td style={{ textAlign: 'right' }}>
+                              <div style={{ display: 'inline-flex', gap: '8px' }}>
+                                <button
+                                  onClick={() => openModal('stage', stage)}
+                                  className="admin-btn-action-edit"
+                                >
+                                  <Pencil size={13} />
+                                  <span>Ubah</span>
+                                </button>
+                                {stage.isCustom ? (
+                                  <button
+                                    onClick={() => handleDelete('stage', stage.id, stage.name)}
+                                    className="admin-btn-action-del"
+                                  >
+                                    <Trash2 size={13} />
+                                    <span>Hapus</span>
+                                  </button>
+                                ) : (
+                                  <span
+                                    title="Preset pakem dilindungi sistem"
+                                    style={{
+                                      fontSize: '11px',
+                                      color: '#9ca3af',
+                                      padding: '5px 8px',
+                                      borderRadius: '6px',
+                                      border: '1px dashed #d1d5db',
+                                    }}
+                                  >
+                                    Terkunci
+                                  </span>
+                                )}
+                              </div>
+                            </td>
+                          </tr>
+                        );
+                      })
+                    )}
+                  </tbody>
+                </table>
+              )}
+
               {/* TAB 4: MODERASI KARYA PAGELARAN DALANG */}
               {activeTab === 'karya' && (
                 <table className="admin-table">
@@ -1488,6 +1766,8 @@ export default function AdminCmsView({ onPlayPerformance }) {
                     ? filteredStories.length
                     : activeTab === 'audio'
                     ? filteredAudio.length
+                    : activeTab === 'panggung'
+                    ? filteredStages.length
                     : activeTab === 'karya'
                     ? filteredPerformances.length
                     : filteredUsers.length}
@@ -1547,7 +1827,9 @@ export default function AdminCmsView({ onPlayPerformance }) {
                         ? 'TOKOH WAYANG'
                         : modalType === 'story'
                         ? 'LAKON CERITA'
-                        : 'TATA SUARA'}
+                        : modalType === 'audio'
+                        ? 'TATA SUARA'
+                        : 'KELIR PANGGUNG'}
                     </span>
                   </div>
                   <h3
@@ -1806,6 +2088,241 @@ export default function AdminCmsView({ onPlayPerformance }) {
                         placeholder="Contoh: Pertempuran / Dialog Syahdu / Jejer"
                         style={modalInputStyle}
                       />
+                    </div>
+                  </div>
+                )}
+
+                {/* 4. Form Kelir Panggung */}
+                {modalType === 'stage' && (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                    {/* Live 16:9 Thumbnail Preview */}
+                    <div>
+                      <label style={modalLabelStyle}>Pratinjau Kelir Panggung (Rasio 16:9)</label>
+                      <div
+                        style={{
+                          width: '100%',
+                          height: '140px',
+                          borderRadius: '10px',
+                          overflow: 'hidden',
+                          position: 'relative',
+                          border: '1px solid rgba(212, 175, 55, 0.4)',
+                          background: form.category === 'gradient' ? (form.gradient || '#17110c') : '#17110c',
+                          boxShadow: '0 4px 16px rgba(0, 0, 0, 0.3)',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                        }}
+                      >
+                        {form.category === 'image' && form.bgImage && (
+                          <img
+                            src={form.bgImage}
+                            alt="Pratinjau Latar"
+                            style={{
+                              position: 'absolute',
+                              inset: 0,
+                              width: '100%',
+                              height: '100%',
+                              objectFit: 'cover',
+                            }}
+                          />
+                        )}
+                        {/* Blencong Glow Simulator */}
+                        <div
+                          style={{
+                            position: 'absolute',
+                            top: '10px',
+                            left: '50%',
+                            transform: 'translateX(-50%)',
+                            width: '40px',
+                            height: '40px',
+                            borderRadius: '50%',
+                            background: form.blencongColor || 'rgba(255, 200, 100, 0.55)',
+                            filter: 'blur(8px)',
+                            pointerEvents: 'none',
+                          }}
+                        />
+                        <div
+                          style={{
+                            position: 'absolute',
+                            bottom: '8px',
+                            left: '12px',
+                            background: 'rgba(18, 13, 9, 0.75)',
+                            backdropFilter: 'blur(4px)',
+                            padding: '3px 10px',
+                            borderRadius: '4px',
+                            fontSize: '11px',
+                            color: '#fdfbf7',
+                            border: '1px solid rgba(212, 175, 55, 0.3)',
+                          }}
+                        >
+                          {form.name || 'Nama Kelir Panggung'} • {form.atmosphere || 'Suasana Panggung'}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div>
+                      <label style={modalLabelStyle}>Nama Kelir Panggung</label>
+                      <input
+                        type="text"
+                        value={form.name || ''}
+                        onChange={(e) => setForm({ ...form, name: e.target.value })}
+                        required
+                        placeholder="Contoh: Gowok Alas Robana HD, Jejer Ayodya, dll."
+                        style={modalInputStyle}
+                      />
+                    </div>
+
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
+                      <div>
+                        <label style={modalLabelStyle}>Tipe Latar Kelir</label>
+                        <select
+                          value={form.category || 'image'}
+                          onChange={(e) => setForm({ ...form, category: e.target.value })}
+                          style={modalInputStyle}
+                        >
+                          <option value="image">Gambar Latar HD (URL / Berkas)</option>
+                          <option value="gradient">Gradasi Soga Tradisional (CSS)</option>
+                        </select>
+                      </div>
+
+                      <div>
+                        <label style={modalLabelStyle}>Suasana Lakon / Adegan</label>
+                        <input
+                          type="text"
+                          value={form.atmosphere || ''}
+                          onChange={(e) => setForm({ ...form, atmosphere: e.target.value })}
+                          placeholder="Contoh: Siang / Perang / Jejer Kraton / Hutan"
+                          style={modalInputStyle}
+                        />
+                      </div>
+                    </div>
+
+                    {form.category === 'image' ? (
+                      <div>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
+                          <label style={{ ...modalLabelStyle, marginBottom: 0 }}>URL Gambar Latar HD</label>
+                          <label
+                            style={{
+                              display: 'inline-flex',
+                              alignItems: 'center',
+                              gap: '6px',
+                              fontSize: '11px',
+                              color: '#8b4513',
+                              fontWeight: '750',
+                              cursor: 'pointer',
+                              background: 'rgba(212, 175, 55, 0.12)',
+                              padding: '3px 8px',
+                              borderRadius: '6px',
+                              border: '1px solid rgba(212, 175, 55, 0.3)',
+                            }}
+                          >
+                            <Upload size={12} />
+                            <span>Unggah dari Komputer</span>
+                            <input
+                              type="file"
+                              accept="image/*"
+                              style={{ display: 'none' }}
+                              onChange={(e) => {
+                                const file = e.target.files?.[0];
+                                if (file) {
+                                  const reader = new FileReader();
+                                  reader.onload = (event) => {
+                                    setForm((prev) => ({ ...prev, bgImage: event.target?.result }));
+                                  };
+                                  reader.readAsDataURL(file);
+                                }
+                              }}
+                            />
+                          </label>
+                        </div>
+                        <input
+                          type="text"
+                          value={form.bgImage || ''}
+                          onChange={(e) => setForm({ ...form, bgImage: e.target.value })}
+                          required={form.category === 'image'}
+                          placeholder="https://... atau tempel tautan/data URL gambar"
+                          style={modalInputStyle}
+                        />
+                      </div>
+                    ) : (
+                      <div>
+                        <label style={modalLabelStyle}>CSS Gradient Latar</label>
+                        <input
+                          type="text"
+                          value={form.gradient || ''}
+                          onChange={(e) => setForm({ ...form, gradient: e.target.value })}
+                          placeholder="radial-gradient(...) atau linear-gradient(...)"
+                          style={modalInputStyle}
+                        />
+                        {/* Preset Gradient Chips */}
+                        <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', marginTop: '8px' }}>
+                          <span style={{ fontSize: '11px', color: '#786554', alignSelf: 'center' }}>Preset:</span>
+                          {[
+                            { name: 'Soga Klasik', grad: 'radial-gradient(ellipse at 50% 30%, #4a2810 0%, #170d06 65%, #080402 100%)' },
+                            { name: 'Prabanggana Senja', grad: 'linear-gradient(180deg, #1f0d06 0%, #4a1e0b 35%, #8c3a10 65%, #2a1005 100%)' },
+                            { name: 'Kurusetra Merah', grad: 'radial-gradient(circle at 50% 40%, #701c08 0%, #300c04 55%, #100402 100%)' },
+                            { name: 'Malam Mistik', grad: 'radial-gradient(ellipse at 50% 25%, #16243b 0%, #0c1422 60%, #05080f 100%)' },
+                            { name: 'Alas Rimba', grad: 'radial-gradient(ellipse at 50% 30%, #1a3818 0%, #0e1e0d 60%, #050b05 100%)' },
+                          ].map((p) => (
+                            <button
+                              key={p.name}
+                              type="button"
+                              onClick={() => setForm({ ...form, gradient: p.grad })}
+                              style={{
+                                fontSize: '10.5px',
+                                padding: '3px 8px',
+                                borderRadius: '4px',
+                                background: '#f5eedf',
+                                border: '1px solid rgba(212, 175, 55, 0.3)',
+                                color: '#423122',
+                                cursor: 'pointer',
+                              }}
+                            >
+                              {p.name}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
+                      <div>
+                        <label style={modalLabelStyle}>Cahaya Blencong (Warna)</label>
+                        <input
+                          type="text"
+                          value={form.blencongColor || ''}
+                          onChange={(e) => setForm({ ...form, blencongColor: e.target.value })}
+                          placeholder="rgba(255, 200, 100, 0.55)"
+                          style={modalInputStyle}
+                        />
+                      </div>
+                      <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-end' }}>
+                        <div style={{ display: 'flex', gap: '6px' }}>
+                          {[
+                            { label: 'Emas', color: 'rgba(255, 200, 100, 0.55)' },
+                            { label: 'Merah', color: 'rgba(255, 120, 60, 0.55)' },
+                            { label: 'Perak', color: 'rgba(160, 200, 255, 0.45)' },
+                          ].map((bc) => (
+                            <button
+                              key={bc.label}
+                              type="button"
+                              onClick={() => setForm({ ...form, blencongColor: bc.color })}
+                              style={{
+                                flex: 1,
+                                fontSize: '11px',
+                                padding: '8px 4px',
+                                borderRadius: '6px',
+                                border: '1px solid rgba(212, 175, 55, 0.3)',
+                                background: '#ffffff',
+                                color: '#423122',
+                                cursor: 'pointer',
+                              }}
+                            >
+                              {bc.label}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
                     </div>
                   </div>
                 )}
