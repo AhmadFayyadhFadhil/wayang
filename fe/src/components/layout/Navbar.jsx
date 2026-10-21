@@ -16,7 +16,7 @@ import {
 export default function Navbar({ activeTab, onNavigate, _backendConnected, currentUser, onOpenAuth }) {
   const [isLightMode, setIsLightMode] = useState(false);
   const [isMobile, setIsMobile] = useState(
-    typeof window !== 'undefined' ? window.innerWidth < 860 : false
+    typeof window !== 'undefined' ? window.innerWidth < 900 : false
   );
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -25,7 +25,7 @@ export default function Navbar({ activeTab, onNavigate, _backendConnected, curre
     let ticking = false;
 
     const checkViewport = () => {
-      const mobile = window.innerWidth < 860;
+      const mobile = window.innerWidth < 900;
       setIsMobile(mobile);
       if (!mobile) {
         setIsMobileMenuOpen(false);
@@ -150,14 +150,14 @@ export default function Navbar({ activeTab, onNavigate, _backendConnected, curre
               ? '1px solid rgba(212, 175, 55, 0.28)'
               : '1px solid rgba(212, 175, 55, 0.22)',
             borderRadius: '9999px',
-            padding: isMobile ? '8px 12px 8px 18px' : '10px 14px 10px 26px',
+            padding: isMobile ? '8px 12px 8px 18px' : '9px clamp(10px, 1.3vw, 14px) 9px clamp(14px, 1.8vw, 26px)',
             boxShadow: isLightMode
               ? '0 8px 24px rgba(40, 28, 16, 0.06), 0 1px 4px rgba(212, 175, 55, 0.06)'
               : '0 8px 28px rgba(0, 0, 0, 0.32)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
-            gap: isMobile ? '12px' : '24px',
+            gap: isMobile ? '12px' : 'clamp(8px, 1.5vw, 24px)',
             pointerEvents: 'auto',
             transition: 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
           }}
@@ -179,7 +179,7 @@ export default function Navbar({ activeTab, onNavigate, _backendConnected, curre
           >
             <span
               style={{
-                fontSize: isMobile ? '17px' : '18.5px',
+                fontSize: isMobile ? '17px' : 'clamp(16px, 1.3vw, 18.5px)',
                 fontWeight: '850',
                 letterSpacing: '-0.4px',
                 color: isLightMode ? '#1a140e' : '#fcfaf2',
@@ -191,15 +191,15 @@ export default function Navbar({ activeTab, onNavigate, _backendConnected, curre
             </span>
           </div>
 
-          {/* 2. Menu Navigasi Desktop (Tengah) - Ditampilkan saat Layar Lebar (>= 860px) */}
+          {/* 2. Menu Navigasi Desktop (Tengah) - Ditampilkan saat Layar Lebar (>= 900px) */}
           {!isMobile && (
             <nav
               style={{
                 display: 'flex',
                 alignItems: 'center',
-                gap: '6px',
-                overflowX: 'auto',
-                scrollbarWidth: 'none',
+                gap: 'clamp(3px, 0.5vw, 6px)',
+                flexShrink: 1,
+                minWidth: 0,
               }}
             >
               {navItems.map((item) => {
@@ -221,15 +221,16 @@ export default function Navbar({ activeTab, onNavigate, _backendConnected, curre
                       background: isActive ? activeBg : 'transparent',
                       border: isActive ? `1px solid ${activeBorder}` : '1px solid transparent',
                       color: isActive ? activeColor : inactiveColor,
-                      padding: '7px 16px',
+                      padding: '7px clamp(8px, 1vw, 16px)',
                       borderRadius: '9999px',
-                      fontSize: '13.5px',
+                      fontSize: 'clamp(12px, 0.9vw, 13.5px)',
                       fontWeight: isActive ? '750' : '600',
                       cursor: 'pointer',
                       whiteSpace: 'nowrap',
                       transition: 'all 0.18s ease',
                       display: 'inline-flex',
                       alignItems: 'center',
+                      flexShrink: 0,
                     }}
                     onMouseEnter={(e) => {
                       if (!isActive) {
@@ -271,9 +272,9 @@ export default function Navbar({ activeTab, onNavigate, _backendConnected, curre
                       ? '1px solid rgba(212, 175, 55, 0.32)'
                       : '1px solid rgba(212, 175, 55, 0.35)',
                     color: isLightMode ? '#1a140e' : '#fcfaf2',
-                    padding: '8px 20px',
+                    padding: '8px clamp(12px, 1.4vw, 20px)',
                     borderRadius: '20px',
-                    fontSize: '13px',
+                    fontSize: 'clamp(12px, 0.9vw, 13px)',
                     fontWeight: '750',
                     cursor: 'pointer',
                     display: 'inline-flex',
@@ -325,9 +326,9 @@ export default function Navbar({ activeTab, onNavigate, _backendConnected, curre
                     background: isLightMode ? '#c27827' : '#e8bb5c',
                     border: 'none',
                     color: isLightMode ? '#ffffff' : '#0d0a07',
-                    padding: '8px 22px',
+                    padding: '8px clamp(12px, 1.4vw, 22px)',
                     borderRadius: '20px',
-                    fontSize: '13.5px',
+                    fontSize: 'clamp(12px, 0.9vw, 13.5px)',
                     fontWeight: '750',
                     cursor: 'pointer',
                     display: 'inline-flex',

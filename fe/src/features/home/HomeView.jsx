@@ -238,7 +238,7 @@ export default function HomeView({ onNavigate, connectionStatus, onTestConnectio
           alignItems: 'center',
           justifyContent: 'center',
           position: 'relative',
-          padding: '120px 24px 80px 24px',
+          padding: 'clamp(70px, 10vh, 120px) clamp(16px, 3vw, 24px) clamp(35px, 5vh, 80px) clamp(16px, 3vw, 24px)',
           overflow: 'hidden',
           background: '#0d0a07',
           boxSizing: 'border-box',
@@ -313,8 +313,8 @@ export default function HomeView({ onNavigate, connectionStatus, onTestConnectio
             position: 'absolute',
             left: '-15px',
             bottom: '0',
-            height: '530px',
-            width: '330px',
+            height: 'clamp(340px, 55vh, 530px)',
+            width: 'clamp(200px, 32vh, 330px)',
             zIndex: 4,
             opacity: 0.78,
             pointerEvents: 'none',
@@ -334,8 +334,8 @@ export default function HomeView({ onNavigate, connectionStatus, onTestConnectio
             position: 'absolute',
             right: '-15px',
             bottom: '0',
-            height: '530px',
-            width: '330px',
+            height: 'clamp(340px, 55vh, 530px)',
+            width: 'clamp(200px, 32vh, 330px)',
             zIndex: 4,
             opacity: 0.78,
             pointerEvents: 'none',
@@ -386,9 +386,9 @@ export default function HomeView({ onNavigate, connectionStatus, onTestConnectio
           {/* Main Headline - Selaras dengan Standar Tipografi Atlas & Karya Saya */}
           <h1
             style={{
-              margin: '0 0 20px 0',
+              margin: '0 0 clamp(12px, 1.8vh, 20px) 0',
               fontFamily: 'var(--font-sans)',
-              fontSize: 'clamp(28px, 4.8vw, 56px)',
+              fontSize: 'clamp(26px, 4.2vw, 56px)',
               fontWeight: '850',
               color: '#fcfaf2',
               letterSpacing: '-0.5px',
@@ -401,10 +401,10 @@ export default function HomeView({ onNavigate, connectionStatus, onTestConnectio
           {/* Subtitle Sesuai PRD 1.2 Proposisi Nilai */}
           <p
             style={{
-              margin: '0 auto 34px auto',
-              fontSize: 'clamp(15px, 1.5vw, 17px)',
+              margin: '0 auto clamp(16px, 2.5vh, 34px) auto',
+              fontSize: 'clamp(14px, 1.3vw, 17px)',
               color: '#f0e6d8',
-              lineHeight: '1.8',
+              lineHeight: '1.7',
               maxWidth: '740px',
               fontWeight: '450',
             }}
@@ -430,7 +430,7 @@ export default function HomeView({ onNavigate, connectionStatus, onTestConnectio
                 background: 'linear-gradient(135deg, #e8bb5c 0%, #d4af37 100%)',
                 border: '1px solid rgba(245, 215, 127, 0.45)',
                 color: '#1a120b',
-                padding: '13px 30px',
+                padding: 'clamp(10px, 1.4vh, 13px) clamp(20px, 2vw, 30px)',
                 borderRadius: '12px',
                 fontSize: '14px',
                 fontWeight: '750',
@@ -463,7 +463,7 @@ export default function HomeView({ onNavigate, connectionStatus, onTestConnectio
                 WebkitBackdropFilter: 'blur(10px)',
                 border: '1px solid rgba(212, 175, 55, 0.28)',
                 color: '#fdfbf7',
-                padding: '13px 28px',
+                padding: 'clamp(10px, 1.4vh, 13px) clamp(18px, 1.8vw, 28px)',
                 borderRadius: '12px',
                 fontSize: '14px',
                 fontWeight: '650',
@@ -508,7 +508,7 @@ export default function HomeView({ onNavigate, connectionStatus, onTestConnectio
               transform: statsInView ? 'translateY(0)' : 'translateY(-12px)',
             }}
           >
-            <div style={statNumberStyle}>
+            <div className="hero-stat-number" style={statNumberStyle}>
               <AnimatedCounter
                 start={3000}
                 target={2400}
@@ -518,8 +518,8 @@ export default function HomeView({ onNavigate, connectionStatus, onTestConnectio
                 shouldStart={statsInView}
               />
             </div>
-            <div style={statLabelStyle}>Pementasan Diciptakan</div>
-            <div style={statSubStyle}>Karya dalang & generasi muda</div>
+            <div className="hero-stat-label" style={statLabelStyle}>Pementasan Diciptakan</div>
+            <div className="hero-stat-sub" style={statSubStyle}>Karya dalang & generasi muda</div>
           </div>
 
           {/* Metrik 2: Tokoh Tatah-Sungging Klasik (Countdown Serentak dari 50 ke 15+) */}
@@ -531,7 +531,7 @@ export default function HomeView({ onNavigate, connectionStatus, onTestConnectio
               transform: statsInView ? 'translateY(0)' : 'translateY(-12px)',
             }}
           >
-            <div style={statNumberStyle}>
+            <div className="hero-stat-number" style={statNumberStyle}>
               <AnimatedCounter
                 start={50}
                 target={15}
@@ -541,8 +541,8 @@ export default function HomeView({ onNavigate, connectionStatus, onTestConnectio
                 shouldStart={statsInView}
               />
             </div>
-            <div style={statLabelStyle}>Tokoh Wayang Klasik</div>
-            <div style={statSubStyle}>Tatah-sungging otentik HD</div>
+            <div className="hero-stat-label" style={statLabelStyle}>Tokoh Wayang Klasik</div>
+            <div className="hero-stat-sub" style={statSubStyle}>Tatah-sungging otentik HD</div>
           </div>
 
           {/* Metrik 3: Naskah Rujukan Terkurasi Sanad Purwa (Countdown Serentak dari 150% ke 100%) */}
@@ -554,7 +554,7 @@ export default function HomeView({ onNavigate, connectionStatus, onTestConnectio
               transform: statsInView ? 'translateY(0)' : 'translateY(-12px)',
             }}
           >
-            <div style={statNumberStyle}>
+            <div className="hero-stat-number" style={statNumberStyle}>
               <AnimatedCounter
                 start={150}
                 target={100}
@@ -564,8 +564,8 @@ export default function HomeView({ onNavigate, connectionStatus, onTestConnectio
                 shouldStart={statsInView}
               />
             </div>
-            <div style={statLabelStyle}>Sanad Pakem Tradisi</div>
-            <div style={statSubStyle}>Kakawin & Serat Purwa terkurasi</div>
+            <div className="hero-stat-label" style={statLabelStyle}>Sanad Pakem Tradisi</div>
+            <div className="hero-stat-sub" style={statSubStyle}>Kakawin & Serat Purwa terkurasi</div>
           </div>
         </div>
       </div>
@@ -1323,24 +1323,24 @@ export default function HomeView({ onNavigate, connectionStatus, onTestConnectio
 // ============================================================
 
 const statNumberStyle = {
-  fontSize: '36px',
+  fontSize: 'clamp(28px, 2.5vw, 36px)',
   fontWeight: '800',
   color: '#e8bb5c',
   letterSpacing: '-0.5px',
   lineHeight: '1.1',
-  marginBottom: '6px',
+  marginBottom: 'clamp(3px, 0.5vh, 6px)',
 };
 
 const statLabelStyle = {
-  fontSize: '14.5px',
+  fontSize: 'clamp(12.5px, 1.1vw, 14.5px)',
   fontWeight: '700',
   color: '#fdfbf7',
-  marginBottom: '4px',
+  marginBottom: '3px',
   letterSpacing: '0.2px',
 };
 
 const statSubStyle = {
-  fontSize: '12.5px',
+  fontSize: 'clamp(10.5px, 0.9vw, 12.5px)',
   color: '#c7b7a6',
   fontWeight: '400',
   lineHeight: '1.4',

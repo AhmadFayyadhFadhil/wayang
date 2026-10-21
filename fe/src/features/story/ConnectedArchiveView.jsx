@@ -380,7 +380,7 @@ export default function ConnectedArchiveView({
           position: 'relative',
           overflow: 'hidden',
           background: '#0d0a07',
-          padding: '130px 24px 90px 24px',
+          padding: 'clamp(70px, 10vh, 120px) clamp(16px, 3vw, 24px) clamp(35px, 5vh, 80px) clamp(16px, 3vw, 24px)',
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
@@ -458,8 +458,8 @@ export default function ConnectedArchiveView({
             position: 'absolute',
             left: '-15px',
             bottom: '0',
-            height: '530px',
-            width: '330px',
+            height: 'clamp(340px, 55vh, 530px)',
+            width: 'clamp(200px, 32vh, 330px)',
             zIndex: 4,
             opacity: 0.78,
             pointerEvents: 'none',
@@ -484,8 +484,8 @@ export default function ConnectedArchiveView({
             position: 'absolute',
             right: '-15px',
             bottom: '0',
-            height: '530px',
-            width: '330px',
+            height: 'clamp(340px, 55vh, 530px)',
+            width: 'clamp(200px, 32vh, 330px)',
             zIndex: 4,
             opacity: 0.78,
             pointerEvents: 'none',
@@ -532,7 +532,7 @@ export default function ConnectedArchiveView({
               fontWeight: '700',
               letterSpacing: '2.5px',
               textTransform: 'uppercase',
-              marginBottom: '18px',
+              marginBottom: 'clamp(10px, 1.6vh, 18px)',
             }}
           >
             <span style={{ width: '5px', height: '5px', borderRadius: '50%', background: '#d4af37' }} />
@@ -543,9 +543,9 @@ export default function ConnectedArchiveView({
           {/* Headline Utama Selaras Tipografi Atlas & Beranda */}
           <h1
             style={{
-              margin: '0 0 20px 0',
+              margin: '0 0 clamp(12px, 1.8vh, 20px) 0',
               fontFamily: 'var(--font-sans)',
-              fontSize: 'clamp(28px, 4.8vw, 56px)',
+              fontSize: 'clamp(26px, 4.2vw, 56px)',
               fontWeight: '850',
               color: '#fcfaf2',
               letterSpacing: '-0.5px',
@@ -559,10 +559,10 @@ export default function ConnectedArchiveView({
           {/* Subjudul Narasi Singkat, Padat, dan Jelas */}
           <p
             style={{
-              margin: '0 auto 34px auto',
-              fontSize: 'clamp(15px, 1.5vw, 17px)',
+              margin: '0 auto clamp(16px, 2.5vh, 34px) auto',
+              fontSize: 'clamp(14px, 1.3vw, 17px)',
               color: '#f0e6d8',
-              lineHeight: '1.8',
+              lineHeight: '1.7',
               maxWidth: '720px',
               fontWeight: '450',
               textAlign: 'center',
@@ -581,7 +581,7 @@ export default function ConnectedArchiveView({
               background: 'linear-gradient(135deg, #e8bb5c 0%, #d4af37 100%)',
               border: '1px solid rgba(245, 215, 127, 0.45)',
               color: '#1a120b',
-              padding: '13px 32px',
+              padding: 'clamp(10px, 1.4vh, 13px) clamp(20px, 2.2vw, 32px)',
               borderRadius: '12px',
               fontSize: '14px',
               fontWeight: '750',

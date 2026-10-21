@@ -618,6 +618,35 @@
   }
 }
 
+/* Responsif untuk Layar Laptop Ketinggian Standar (misal 1366x768 atau 1080p scale 125%) */
+@media (max-height: 800px) and (min-width: 641px) {
+  .hero-floating-card {
+    margin: -125px auto 0 auto;
+    padding: 12px 20px;
+  }
+  .hero-floating-stat-item {
+    padding: 2px 12px;
+  }
+  .hero-stat-number .animated-counter-num,
+  .hero-stat-number {
+    font-size: 26px !important;
+  }
+  .hero-stat-label {
+    font-size: 12px !important;
+    margin-bottom: 2px !important;
+  }
+  .hero-stat-sub {
+    font-size: 10px !important;
+  }
+  .myworks-floating-stats-card {
+    padding: 8px 18px;
+    margin-top: 14px !important;
+  }
+  .myworks-floating-stat-item {
+    padding: 2px 10px;
+  }
+}
+
 /* ============================================================
    Cardbox Numerik Karya Saya (Selaras dengan Hero Beranda)
    ============================================================ */

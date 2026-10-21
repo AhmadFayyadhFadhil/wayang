@@ -602,7 +602,7 @@ export default function MyWorksView({ onOpenStudio, onPlayPerformance }) {
           position: 'relative',
           overflow: 'hidden',
           background: '#0d0a07',
-          padding: '130px 24px 90px 24px',
+          padding: 'clamp(70px, 9vh, 120px) clamp(16px, 3vw, 24px) clamp(30px, 4vh, 70px) clamp(16px, 3vw, 24px)',
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
@@ -680,8 +680,8 @@ export default function MyWorksView({ onOpenStudio, onPlayPerformance }) {
             position: 'absolute',
             left: '-15px',
             bottom: '0',
-            height: '530px',
-            width: '330px',
+            height: 'clamp(340px, 55vh, 530px)',
+            width: 'clamp(200px, 32vh, 330px)',
             zIndex: 4,
             opacity: 0.78,
             pointerEvents: 'none',
@@ -706,8 +706,8 @@ export default function MyWorksView({ onOpenStudio, onPlayPerformance }) {
             position: 'absolute',
             right: '-15px',
             bottom: '0',
-            height: '530px',
-            width: '330px',
+            height: 'clamp(340px, 55vh, 530px)',
+            width: 'clamp(200px, 32vh, 330px)',
             zIndex: 3,
             opacity: 0.78,
             pointerEvents: 'none',
@@ -742,7 +742,7 @@ export default function MyWorksView({ onOpenStudio, onPlayPerformance }) {
               fontWeight: '700',
               letterSpacing: '2.5px',
               textTransform: 'uppercase',
-              marginBottom: '18px',
+              marginBottom: 'clamp(8px, 1.4vh, 18px)',
             }}
           >
             <span style={{ width: '5px', height: '5px', borderRadius: '50%', background: '#d4af37' }} />
@@ -753,10 +753,10 @@ export default function MyWorksView({ onOpenStudio, onPlayPerformance }) {
           {/* Headline Utama */}
           <h1
             style={{
-              margin: '0 auto 20px auto',
+              margin: '0 auto clamp(10px, 1.6vh, 20px) auto',
               maxWidth: '850px',
               fontFamily: 'var(--font-sans)',
-              fontSize: 'clamp(28px, 4.8vw, 56px)',
+              fontSize: 'clamp(26px, 4.2vw, 56px)',
               fontWeight: '850',
               color: '#fcfaf2',
               letterSpacing: '-0.5px',
@@ -770,10 +770,10 @@ export default function MyWorksView({ onOpenStudio, onPlayPerformance }) {
           {/* Subjudul Sesuai Narasi Heritage */}
           <p
             style={{
-              margin: '0 auto 34px auto',
-              fontSize: 'clamp(15px, 1.5vw, 17px)',
+              margin: '0 auto clamp(14px, 2.2vh, 34px) auto',
+              fontSize: 'clamp(14px, 1.3vw, 17px)',
               color: '#f0e6d8',
-              lineHeight: '1.8',
+              lineHeight: '1.65',
               maxWidth: '740px',
               fontWeight: '450',
               textAlign: 'center',
@@ -800,7 +800,7 @@ export default function MyWorksView({ onOpenStudio, onPlayPerformance }) {
                 background: 'linear-gradient(135deg, #e8bb5c 0%, #d4af37 100%)',
                 border: '1px solid rgba(245, 215, 127, 0.45)',
                 color: '#1a120b',
-                padding: '13px 30px',
+                padding: 'clamp(9px, 1.3vh, 13px) clamp(18px, 2vw, 30px)',
                 borderRadius: '12px',
                 fontSize: '14px',
                 fontWeight: '750',
@@ -836,7 +836,7 @@ export default function MyWorksView({ onOpenStudio, onPlayPerformance }) {
                 WebkitBackdropFilter: 'blur(10px)',
                 border: '1px solid rgba(212, 175, 55, 0.28)',
                 color: '#fdfbf7',
-                padding: '13px 26px',
+                padding: 'clamp(9px, 1.3vh, 13px) clamp(16px, 1.8vw, 26px)',
                 borderRadius: '12px',
                 fontSize: '14px',
                 fontWeight: '650',
@@ -873,7 +873,7 @@ export default function MyWorksView({ onOpenStudio, onPlayPerformance }) {
                 background: 'rgba(212, 175, 55, 0.12)',
                 border: '1px solid rgba(212, 175, 55, 0.35)',
                 color: '#e8bb5c',
-                padding: '13px 22px',
+                padding: 'clamp(9px, 1.3vh, 13px) clamp(14px, 1.6vw, 22px)',
                 borderRadius: '12px',
                 fontSize: '14px',
                 fontWeight: '650',
@@ -900,7 +900,7 @@ export default function MyWorksView({ onOpenStudio, onPlayPerformance }) {
           </div>
 
           {/* Cardbox Numerik Floating (Selaras dengan Hero Beranda & Panjang Menyesuaikan Navbar 1180px) */}
-          <div className="myworks-floating-stats-card" style={{ marginTop: '38px', marginBottom: '8px' }}>
+          <div className="myworks-floating-stats-card" style={{ marginTop: 'clamp(16px, 2.8vh, 38px)', marginBottom: '8px' }}>
             {/* Metrik 1: Total Lakon */}
             <div className="myworks-floating-stat-item">
               <div
