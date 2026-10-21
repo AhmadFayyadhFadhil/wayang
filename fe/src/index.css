@@ -39,6 +39,30 @@ html, body {
   scroll-behavior: smooth;
 }
 
+/* ============================================================
+   RESPONSIVE ADAPTIVE SCALE (Proporsi Skala 90% Bersih & Rapi)
+   Menjamin tampilan laptop standar & besar memiliki breathing room
+   editorial yang elegan seperti tampilan zoom 90%, sementara
+   di layar HP/mobile tetap dipertahankan pada skala 100% (touch target >= 44px).
+   ============================================================ */
+@media screen and (min-width: 1025px) {
+  html {
+    zoom: 0.9;
+  }
+}
+
+@media screen and (min-width: 769px) and (max-width: 1024px) {
+  html {
+    zoom: 0.95;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  html {
+    zoom: 1;
+  }
+}
+
 #root {
   width: 100%;
   min-height: 100vh;
