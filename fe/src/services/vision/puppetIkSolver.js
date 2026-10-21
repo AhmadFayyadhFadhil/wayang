@@ -72,13 +72,49 @@ export function mapFingerToIkTarget(tip, defaultPos, isThumb = false) {
 }
 
 /**
- * Manipulasi DOM Langsung 60-120 FPS tanpa React re-render
+ * Menghitung target tangan wayang langsung dari koordinat piksel nyata kamera (Snap to Finger Landmark)
+ * Memetakan posisi piksel ujung jari (Landmark 4 untuk jempol, Landmark 8 untuk telunjuk) ke ruang koordinat lokal wayang
  */
-export function updatePuppetArmsDOM(containerEl, fingerTargets) {
-  if (!containerEl || !fingerTargets) return;
+export function mapScreenLandmarkToPuppet(fingerScreen, palmScreen, scale = 1.0, facing = 'right') {
+  if (!fingerScreen || !palmScreen) return null;
 
-  const frontTarget = mapFingerToIkTarget(fingerTargets.thumb, DEFAULT_FRONT_TARGET, true);
-  const backTarget = mapFingerToIkTarget(fingerTargets.index, DEFAULT_BACK_TARGET, false);
+  const facingSign = facing === 'left' ? -1 : 1;
+  // Selisih piksel nyata kamera dari pusat telapak (Landmark 9) ke ujung jari
+  const deltaX = fingerScreen.x - palmScreen.x;
+  const deltaY = fingerScreen.y - palmScreen.y;
+
+  // Titik jangkar telapak di lokal wayang (pinggul / pangkal cempurit di x:120, y:190)
+  const ANCHOR_X = 120;
+  const ANCHOR_Y = 190;
+
+  const targetLocalX = ANCHOR_X + (deltaX / scale) * facingSign;
+  const targetLocalY = ANCHOR_Y + (deltaY / scale);
+
+  return {
+    x: Math.max(5, Math.min(235, targetLocalX)),
+    y: Math.max(10, Math.min(340, targetLocalY)),
+  };
+}
+
+/**
+ * Manipulasi DOM Langsung 60-120 FPS tanpa React re-render
+ * Mendukung fingerTargets relatif maupun directTargets (snap piksel kamera)
+ */
+export function updatePuppetArmsDOM(containerEl, fingerTargets, directTargets = null) {
+  if (!containerEl) return;
+
+  let frontTarget;
+  let backTarget;
+
+  if (directTargets?.front && directTargets?.back) {
+    frontTarget = directTargets.front;
+    backTarget = directTargets.back;
+  } else if (fingerTargets) {
+    frontTarget = mapFingerToIkTarget(fingerTargets.thumb, DEFAULT_FRONT_TARGET, true);
+    backTarget = mapFingerToIkTarget(fingerTargets.index, DEFAULT_BACK_TARGET, false);
+  } else {
+    return;
+  }
 
   const ikFront = solve2BoneIK(SHOULDER_L, frontTarget, 60, 52, -1);
   const ikBack = solve2BoneIK(SHOULDER_R, backTarget, 60, 52, 1);

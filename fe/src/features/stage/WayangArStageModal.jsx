@@ -3,7 +3,7 @@ import handTrackingService from '../../services/vision/handTrackingService';
 import dalangKinematicsEngine from '../../services/vision/dalangKinematicsEngine';
 import soundEngine from '../../services/soundscape';
 import RealLeatherPuppet from '../../components/stage/RealLeatherPuppet';
-import { updatePuppetArmsDOM } from '../../services/vision/puppetIkSolver';
+import { updatePuppetArmsDOM, mapScreenLandmarkToPuppet } from '../../services/vision/puppetIkSolver';
 import ErrorBoundary from '../../components/ui/ErrorBoundary';
 import { CHARACTERS_MASTER } from '../../data/master/charactersMaster';
 import {
@@ -82,6 +82,10 @@ export default function WayangArStageModal({ isOpen, onClose, onOpenTutorial }) 
   // Stable refs untuk menghindari re-run effect webcam
   const leftSlugRef = useRef(leftSlug);
   const rightSlugRef = useRef(rightSlug);
+  const leftScaleRef = useRef(leftScale);
+  const rightScaleRef = useRef(rightScale);
+  const leftFacingRef = useRef('right');
+  const rightFacingRef = useRef('left');
   const moodRef = useRef(mood);
   const isWeatherActiveRef = useRef(isWeatherActive);
 
@@ -92,6 +96,14 @@ export default function WayangArStageModal({ isOpen, onClose, onOpenTutorial }) 
   useEffect(() => {
     rightSlugRef.current = rightSlug;
   }, [rightSlug]);
+
+  useEffect(() => {
+    leftScaleRef.current = leftScale;
+  }, [leftScale]);
+
+  useEffect(() => {
+    rightScaleRef.current = rightScale;
+  }, [rightScale]);
 
   useEffect(() => {
     moodRef.current = mood;
@@ -315,25 +327,36 @@ export default function WayangArStageModal({ isOpen, onClose, onOpenTutorial }) 
           { instanceId: 'char-right', slug: rightSlugRef.current, x: 0.72, y: 0.65, scale: 1.0 },
         ];
 
+        dalangKinematicsEngine.setMode('dual');
+
         await handTrackingService.start(videoRef.current, (results) => {
           if (!isSubscribed) return;
 
+          const canvas = canvasRef.current;
+          const stageW = canvas?.width || 1280;
+          const stageH = canvas?.height || 720;
+
+          // 1. Jalankan kinematics engine dual-hand
           const updates = dalangKinematicsEngine.processFrame(results, dummyChars, null);
 
-          // 1. Direct DOM Hardware Acceleration 60-120 FPS
+          // 2. Direct DOM Hardware Acceleration 60-120 FPS
           updates.forEach(({ instanceId, updates: u }) => {
-            const puppetEl = instanceId === 'char-left' ? leftPuppetRef.current : rightPuppetRef.current;
+            const isLeft = instanceId === 'char-left';
+            const puppetEl = isLeft ? leftPuppetRef.current : rightPuppetRef.current;
+            const currentScale = isLeft ? leftScaleRef.current : rightScaleRef.current;
+
             if (puppetEl) {
-              if (u.x !== undefined) puppetEl.style.left = `${u.x * 100}%`;
-              if (u.y !== undefined) puppetEl.style.top = `${u.y * 100}%`;
+              if (u.x !== undefined) puppetEl.style.left = `${(u.x * 100).toFixed(2)}%`;
+              if (u.y !== undefined) puppetEl.style.top = `${(u.y * 100).toFixed(2)}%`;
               if (u.facing !== undefined) {
+                if (isLeft) leftFacingRef.current = u.facing;
+                else rightFacingRef.current = u.facing;
+
                 const inner = puppetEl.querySelector('.real-leather-puppet-container');
                 if (inner) {
-                  inner.style.transform = `scaleX(${u.facing === 'left' ? -1 : 1})`;
+                  const scX = u.facing === 'left' ? -currentScale : currentScale;
+                  inner.style.transform = `scale(${scX}, ${currentScale})`;
                 }
-              }
-              if (u.fingerTargets) {
-                updatePuppetArmsDOM(puppetEl, u.fingerTargets);
               }
             }
 
@@ -346,6 +369,42 @@ export default function WayangArStageModal({ isOpen, onClose, onOpenTutorial }) 
               if (u.isKiprah !== undefined) {
                 setRightCharState((prev) => (prev.isKiprah !== u.isKiprah ? { ...prev, isKiprah: u.isKiprah } : prev));
               }
+            }
+          });
+
+          // 3. Precise Finger Snapping: Hitung target tangan wayang langsung dari koordinat nyata Landmark 4 & 8
+          const landmarksList = results?.landmarks || [];
+          landmarksList.forEach((landmarks) => {
+            const palmScreenX = (1.0 - landmarks[9].x) * stageW;
+            const palmScreenY = landmarks[9].y * stageH;
+            const isLeftHand = palmScreenX < stageW * 0.5;
+
+            const puppetEl = isLeftHand ? leftPuppetRef.current : rightPuppetRef.current;
+            if (!puppetEl) return;
+
+            const currentScale = isLeftHand ? leftScaleRef.current : rightScaleRef.current;
+            const currentFacing = isLeftHand ? leftFacingRef.current : rightFacingRef.current;
+
+            // Landmark 4 = Ujung Jempol (Thumb Tip)
+            const thumbScreen = {
+              x: (1.0 - landmarks[4].x) * stageW,
+              y: landmarks[4].y * stageH,
+            };
+            // Landmark 8 = Ujung Telunjuk (Index Tip)
+            const indexScreen = {
+              x: (1.0 - landmarks[8].x) * stageW,
+              y: landmarks[8].y * stageH,
+            };
+            const palmScreen = {
+              x: palmScreenX,
+              y: palmScreenY,
+            };
+
+            const frontTarget = mapScreenLandmarkToPuppet(thumbScreen, palmScreen, currentScale, currentFacing);
+            const backTarget = mapScreenLandmarkToPuppet(indexScreen, palmScreen, currentScale, currentFacing);
+
+            if (frontTarget && backTarget) {
+              updatePuppetArmsDOM(puppetEl, null, { front: frontTarget, back: backTarget });
             }
           });
 
@@ -374,6 +433,7 @@ export default function WayangArStageModal({ isOpen, onClose, onOpenTutorial }) 
     return () => {
       isSubscribed = false;
       handTrackingService.stop();
+      dalangKinematicsEngine.setMode('solo');
     };
   }, [isOpen, renderStageCanvas]);
 
@@ -655,7 +715,7 @@ export default function WayangArStageModal({ isOpen, onClose, onOpenTutorial }) 
             position: 'absolute',
             left: `${leftCharState.x * 100}%`,
             top: `${leftCharState.y * 100}%`,
-            transform: 'translate(-50%, -80%)',
+            transform: 'translate(-50%, -52%)',
             pointerEvents: 'none',
             zIndex: 5,
             willChange: 'left, top',
@@ -681,7 +741,7 @@ export default function WayangArStageModal({ isOpen, onClose, onOpenTutorial }) 
             position: 'absolute',
             left: `${rightCharState.x * 100}%`,
             top: `${rightCharState.y * 100}%`,
-            transform: 'translate(-50%, -80%)',
+            transform: 'translate(-50%, -52%)',
             pointerEvents: 'none',
             zIndex: 6,
             willChange: 'left, top',
