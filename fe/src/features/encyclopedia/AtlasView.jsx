@@ -187,7 +187,7 @@ export default function AtlasView({ onPlayCharacterOnStage }) {
           alignItems: 'center',
           justifyContent: 'center',
           position: 'relative',
-          padding: 'clamp(70px, 10vh, 120px) clamp(16px, 3vw, 24px) clamp(35px, 5vh, 80px) clamp(16px, 3vw, 24px)',
+          padding: 'clamp(45px, 6.5vh, 75px) clamp(16px, 2.5vw, 24px) clamp(25px, 4vh, 50px) clamp(16px, 2.5vw, 24px)',
           overflow: 'hidden',
           background: '#0d0a07',
           boxSizing: 'border-box',
@@ -217,9 +217,9 @@ export default function AtlasView({ onPlayCharacterOnStage }) {
             top: 0,
             left: 0,
             right: 0,
-            height: '200px',
+            height: '180px',
             background:
-              'linear-gradient(to bottom, rgba(13, 10, 7, 0.92) 0%, rgba(13, 10, 7, 0.60) 90px, transparent 100%)',
+              'linear-gradient(to bottom, rgba(13, 10, 7, 0.92) 0%, rgba(13, 10, 7, 0.60) 80px, transparent 100%)',
             pointerEvents: 'none',
             zIndex: 2,
           }}
@@ -255,15 +255,15 @@ export default function AtlasView({ onPlayCharacterOnStage }) {
         {/* Motif Awan Tradisional Jawa Otentik dengan Animasi Mengambang & Bergeser Halus (Berada di atas backdrop layer 2) */}
         <JavaneseCloudBackground variant="hero" theme="dark" opacity={0.55} animated={true} style={{ zIndex: 2 }} />
 
-        {/* Ornamen Gunungan HD di Kiri & Kanan (Mengipas Perlahan & Menyatu dengan Latar Persis Beranda) */}
+        {/* Ornamen Gunungan HD di Kiri & Kanan (Fluid Scaling Sesuai Tinggi Layar Laptop) */}
         <div
           className="hero-gunungan-frame-left"
           style={{
             position: 'absolute',
             left: '-15px',
             bottom: '0',
-            height: 'clamp(340px, 55vh, 530px)',
-            width: 'clamp(200px, 32vh, 330px)',
+            height: 'clamp(260px, 46vh, 460px)',
+            width: 'clamp(160px, 27vh, 280px)',
             zIndex: 4,
             opacity: 0.78,
             pointerEvents: 'none',
@@ -285,8 +285,8 @@ export default function AtlasView({ onPlayCharacterOnStage }) {
             position: 'absolute',
             right: '-15px',
             bottom: '0',
-            height: 'clamp(340px, 55vh, 530px)',
-            width: 'clamp(200px, 32vh, 330px)',
+            height: 'clamp(260px, 46vh, 460px)',
+            width: 'clamp(160px, 27vh, 280px)',
             zIndex: 4,
             opacity: 0.78,
             pointerEvents: 'none',
@@ -312,7 +312,7 @@ export default function AtlasView({ onPlayCharacterOnStage }) {
           style={{
             position: 'relative',
             zIndex: 10,
-            maxWidth: '920px',
+            maxWidth: '880px',
             width: '100%',
             margin: '0 auto',
             textAlign: 'center',
@@ -326,17 +326,17 @@ export default function AtlasView({ onPlayCharacterOnStage }) {
             style={{
               display: 'inline-flex',
               alignItems: 'center',
-              gap: '10px',
-              padding: '6px 16px',
+              gap: '8px',
+              padding: '5px 14px',
               borderRadius: '9999px',
               background: 'rgba(212, 175, 55, 0.08)',
               border: '1px solid rgba(212, 175, 55, 0.22)',
               color: '#d4af37',
-              fontSize: '11px',
+              fontSize: '10.5px',
               fontWeight: '700',
-              letterSpacing: '2.5px',
+              letterSpacing: '2.2px',
               textTransform: 'uppercase',
-              marginBottom: 'clamp(10px, 1.6vh, 18px)',
+              marginBottom: 'clamp(8px, 1.4vh, 16px)',
             }}
           >
             <span style={{ width: '5px', height: '5px', borderRadius: '50%', background: '#d4af37' }} />
@@ -347,13 +347,13 @@ export default function AtlasView({ onPlayCharacterOnStage }) {
           {/* Judul Besar Klasik Sesuai Tipografi PRD & SRS (Plus Jakarta Sans) - Terpusat */}
           <h1
             style={{
-              margin: '0 0 clamp(12px, 1.8vh, 20px) 0',
+              margin: '0 0 clamp(8px, 1.4vh, 16px) 0',
               fontFamily: 'var(--font-sans)',
-              fontSize: 'clamp(28px, 4.2vw, 56px)',
+              fontSize: 'clamp(24px, min(3.8vw, 5.2vh), 48px)',
               fontWeight: '850',
               color: '#fcfaf2',
               letterSpacing: '-0.5px',
-              lineHeight: '1.22',
+              lineHeight: '1.2',
               textAlign: 'center',
             }}
           >
@@ -363,11 +363,11 @@ export default function AtlasView({ onPlayCharacterOnStage }) {
           {/* Deskripsi Subtitle Elegan - Terpusat */}
           <p
             style={{
-              margin: '0 auto clamp(16px, 2.5vh, 34px) auto',
-              fontSize: 'clamp(14px, 1.3vw, 17px)',
+              margin: '0 auto clamp(12px, 2vh, 24px) auto',
+              fontSize: 'clamp(13px, min(1.15vw, 1.8vh), 15.5px)',
               color: '#f0e6d8',
-              lineHeight: '1.7',
-              maxWidth: '740px',
+              lineHeight: '1.65',
+              maxWidth: '700px',
               fontWeight: '450',
               textAlign: 'center',
             }}
@@ -381,7 +381,7 @@ export default function AtlasView({ onPlayCharacterOnStage }) {
               display: 'flex',
               justifyContent: 'center',
               alignItems: 'center',
-              gap: '14px',
+              gap: '12px',
               flexWrap: 'wrap',
               marginBottom: '0',
             }}
@@ -395,9 +395,9 @@ export default function AtlasView({ onPlayCharacterOnStage }) {
                 background: 'linear-gradient(135deg, #e8bb5c 0%, #d4af37 100%)',
                 border: '1px solid rgba(245, 215, 127, 0.45)',
                 color: '#1a120b',
-                padding: 'clamp(10px, 1.4vh, 13px) clamp(20px, 2vw, 30px)',
+                padding: 'clamp(8px, 1.2vh, 12px) clamp(18px, 1.8vw, 26px)',
                 borderRadius: '12px',
-                fontSize: '14px',
+                fontSize: '13.5px',
                 fontWeight: '750',
                 letterSpacing: '0.2px',
                 cursor: 'pointer',
