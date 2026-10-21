@@ -4,6 +4,7 @@ import { useStageStore } from './useStageStore';
 import { getStoryById } from '../../data/master/storiesMaster';
 import { AUDIO_MASTER } from '../../data/master/audioMaster';
 import soundEngine from '../../services/soundscape';
+import { triggerWayangLoading } from '../../services/loadingService';
 import AnimatedCounter from '../../components/ui/AnimatedCounter';
 import {
   Film,
@@ -447,18 +448,34 @@ export default function MyWorksView({ onOpenStudio, onPlayPerformance }) {
 
   // Aksi Buka di Studio
   const handleReopenInStudio = (perf) => {
+    triggerWayangLoading({
+      message: 'MEMUAT LAKON...',
+      subtitle: `Membuka panggung kelir: ${perf.title || 'Karya Dalang'}`,
+      duration: 1200,
+    });
     loadPerformanceFromData(perf);
     if (onOpenStudio) onOpenStudio();
   };
 
   // Aksi Rancang Lakon Baru Kosong
   const handleCreateNew = () => {
+    triggerWayangLoading({
+      message: 'MENYIAPKAN PANGGUNG...',
+      subtitle: 'Merancang lembar lakon baru dari awal',
+      duration: 1000,
+    });
     resetStudio();
     if (onOpenStudio) onOpenStudio();
   };
 
   // Aksi Mulai dari Template Inspirasi Pakem
   const handleUseTemplate = async (template) => {
+    triggerWayangLoading({
+      message: 'MENYIAPKAN TEMPLATE PAKEM...',
+      subtitle: `Memuat adegan & tokoh: ${template.title}`,
+      duration: 1200,
+    });
+
     const newWorkData = {
       id: null,
       title: template.title,

@@ -9,6 +9,8 @@ import MyWorksView from './features/stage/MyWorksView';
 import AdminCmsView from './features/admin/AdminCmsView';
 import StagePreviewModal from './features/stage/StagePreviewModal';
 import AuthModal from './features/auth/AuthModal';
+import WayangLoadingScreen from './components/ui/WayangLoadingScreen';
+import { triggerWayangLoading } from './services/loadingService';
 import { useStageStore } from './features/stage/useStageStore';
 import persistenceService from './services/persistenceService';
 import { checkApiStatus } from './services/api';
@@ -79,13 +81,67 @@ function App() {
     persistenceService.seedInitialDemoWorks(initialDemoWork);
   }, []);
 
+  // Loading Screen State (Initial App Load & Cross-Module Trigger)
+  const [loadingConfig, setLoadingConfig] = useState({
+    show: true,
+    message: 'MEMUAT... MOHON SABAR',
+    subtitle: 'Menyiapkan panggung kelir & wiracarita Nusantara',
+    duration: 2200,
+  });
+
+  // Global listener untuk memicu loading screen dari modul mana pun
+  useEffect(() => {
+    const handleShowLoading = (e) => {
+      setLoadingConfig({
+        show: true,
+        message: e.detail?.message || 'MEMUAT... MOHON SABAR',
+        subtitle: e.detail?.subtitle || '',
+        duration: typeof e.detail?.duration === 'number' ? e.detail.duration : 1800,
+      });
+    };
+
+    const handleHideLoading = () => {
+      setLoadingConfig((prev) => ({ ...prev, show: false }));
+    };
+
+    window.addEventListener('wayang-show-loading', handleShowLoading);
+    window.addEventListener('wayang-hide-loading', handleHideLoading);
+
+    return () => {
+      window.removeEventListener('wayang-show-loading', handleShowLoading);
+      window.removeEventListener('wayang-hide-loading', handleHideLoading);
+    };
+  }, []);
+
+  const handleNavigate = (tab) => {
+    if (tab === 'stage' && activeTab !== 'stage') {
+      triggerWayangLoading({
+        message: 'MEMUAT... MOHON SABAR',
+        subtitle: 'Mempersiapkan Panggung Kelir Virtual & Lakon Pedalangan',
+        duration: 1200,
+      });
+    }
+    setActiveTab(tab);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   // Handler interaksi lintas modul (Connected by Design)
   const handlePlayCharacterOnStage = (characterId) => {
+    triggerWayangLoading({
+      message: 'MEMUAT TOKOH WAYANG...',
+      subtitle: 'Memasukkan tokoh ke panggung kelir virtual',
+      duration: 1000,
+    });
     addCharacterToActiveScene(characterId);
     setActiveTab('stage');
   };
 
   const handlePlayPerformanceFromGallery = (performance) => {
+    triggerWayangLoading({
+      message: 'MEMUAT PAGELARAN...',
+      subtitle: `Mempersiapkan pementasan: ${performance?.title || 'Lakon Wayang'}`,
+      duration: 1000,
+    });
     setSelectedPerformanceForWatch(performance);
   };
 
@@ -99,13 +155,21 @@ function App() {
         flexDirection: 'column',
       }}
     >
+      {/* 0. Layar Pemuatan Kultural Autentik (Gatotkaca & Cakra Surya Majapahit) */}
+      <WayangLoadingScreen
+        isVisible={loadingConfig.show}
+        message={loadingConfig.message}
+        subtitle={loadingConfig.subtitle}
+        minDuration={loadingConfig.duration}
+        onComplete={() => setLoadingConfig((prev) => ({ ...prev, show: false }))}
+        allowSkip={true}
+        playAudio={true}
+      />
+
       {/* 1. Header & Navigasi Global */}
       <Navbar
         activeTab={activeTab}
-        onNavigate={(tab) => {
-          setActiveTab(tab);
-          window.scrollTo({ top: 0, behavior: 'smooth' });
-        }}
+        onNavigate={handleNavigate}
         backendConnected={connection.connected}
         currentUser={currentUser}
         onOpenAuth={() => setShowAuthModal(true)}
@@ -128,10 +192,7 @@ function App() {
       >
         {activeTab === 'home' && (
           <HomeView
-            onNavigate={(tab) => {
-              setActiveTab(tab);
-              window.scrollTo({ top: 0, behavior: 'smooth' });
-            }}
+            onNavigate={handleNavigate}
             connectionStatus={connection}
             onTestConnection={testConnection}
           />
@@ -142,30 +203,25 @@ function App() {
         )}
 
         {activeTab === 'stage' && (
-          <StageStudio onNavigate={(tab) => setActiveTab(tab)} />
+          <StageStudio onNavigate={handleNavigate} />
         )}
 
         {activeTab === 'archive' && (
           <ConnectedArchiveView
             onPlayPerformance={handlePlayPerformanceFromGallery}
             onNavigateToCharacter={() => {
-              setActiveTab('atlas');
-              window.scrollTo({ top: 0, behavior: 'smooth' });
+              handleNavigate('atlas');
             }}
             onNavigateToStory={() => {
-              setActiveTab('atlas');
-              window.scrollTo({ top: 0, behavior: 'smooth' });
+              handleNavigate('atlas');
             }}
-            onNavigate={(tab) => {
-              setActiveTab(tab);
-              window.scrollTo({ top: 0, behavior: 'smooth' });
-            }}
+            onNavigate={handleNavigate}
           />
         )}
 
         {activeTab === 'my-works' && (
           <MyWorksView
-            onOpenStudio={() => setActiveTab('stage')}
+            onOpenStudio={() => handleNavigate('stage')}
             onPlayPerformance={handlePlayPerformanceFromGallery}
           />
         )}
@@ -198,23 +254,20 @@ function App() {
         onAuthSuccess={(user) => {
           setCurrentUser(user);
           if (user?.role === 'admin') {
-            setActiveTab('admin');
+            handleNavigate('admin');
           }
         }}
         onLogout={() => {
           setCurrentUser(null);
           if (activeTab === 'admin') {
-            setActiveTab('home');
+            handleNavigate('home');
           }
         }}
       />
 
       {/* 4. Footer Resmi Wayangverse (Ditampilkan Seragam di Semua Halaman) */}
       <Footer
-        onNavigate={(tab) => {
-          setActiveTab(tab);
-          window.scrollTo({ top: 0, behavior: 'smooth' });
-        }}
+        onNavigate={handleNavigate}
       />
     </div>
   );

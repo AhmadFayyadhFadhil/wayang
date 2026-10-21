@@ -3229,6 +3229,242 @@ html, body {
   }
 }
 
+/* ============================================================
+   WAYANG LOADING SCREEN ANIMATIONS & STYLES (Gatotkaca & Cakra)
+   ============================================================ */
+@keyframes gatotkacaFloat {
+  0%, 100% {
+    transform: translateY(0px) scale(1);
+  }
+  50% {
+    transform: translateY(-8px) scale(1.008);
+  }
+}
+
+@keyframes blencongAuraPulse {
+  0%, 100% {
+    opacity: 0.62;
+    transform: translate(-50%, -50%) scale(0.96);
+  }
+  50% {
+    opacity: 0.95;
+    transform: translate(-50%, -50%) scale(1.06);
+  }
+}
+
+@keyframes cakraMandalaCounter {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(-360deg);
+  }
+}
+
+@keyframes cakraArcSpin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes goldSheenSweep {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes sparkFloatSlow {
+  0% {
+    transform: translateY(0) scale(0.6);
+    opacity: 0;
+  }
+  30% {
+    opacity: 0.85;
+  }
+  80% {
+    opacity: 0.6;
+  }
+  100% {
+    transform: translateY(-90px) scale(1.1);
+    opacity: 0;
+  }
+}
+
+.wayang-loading-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  background: radial-gradient(ellipse 90% 85% at 50% 45%, #18120b 0%, #0d0a07 65%, #050403 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  pointer-events: auto;
+  transition: opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1), transform 0.75s ease;
+  box-sizing: border-box;
+}
+
+.wayang-loading-backdrop.is-exiting {
+  opacity: 0;
+  pointer-events: none;
+  transform: scale(1.02);
+}
+
+.wayang-loading-hero-wrapper {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  max-width: 92vw;
+  z-index: 10;
+  box-sizing: border-box;
+  text-align: center;
+}
+
+.wayang-loading-figure-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: gatotkacaFloat 3.8s ease-in-out infinite;
+  will-change: transform;
+}
+
+.wayang-loading-figure-img {
+  max-height: clamp(200px, 40vh, 320px);
+  width: auto;
+  object-fit: contain;
+  display: block;
+  filter: drop-shadow(0 0 24px rgba(212, 175, 55, 0.28));
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.wayang-loading-blencong-aura {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: clamp(220px, 38vh, 320px);
+  height: clamp(220px, 38vh, 320px);
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(232, 187, 92, 0.35) 0%, rgba(212, 175, 55, 0.16) 42%, transparent 70%);
+  filter: blur(28px);
+  pointer-events: none;
+  z-index: -1;
+  animation: blencongAuraPulse 3.8s ease-in-out infinite;
+}
+
+.wayang-loading-text {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-top: clamp(8px, 1.8vh, 18px);
+  font-family: var(--font-sans);
+  font-size: clamp(13px, 1.4vw, 16px);
+  font-weight: 800;
+  letter-spacing: 2.8px;
+  text-transform: uppercase;
+  color: #f5dfa8;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.6);
+  user-select: none;
+}
+
+.wayang-loading-text-gold {
+  background: linear-gradient(90deg, #d4af37 0%, #fff2b2 35%, #e8bb5c 55%, #d4af37 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: goldSheenSweep 3.5s linear infinite;
+  display: inline-block;
+}
+
+.wayang-loading-flourish {
+  color: #d4af37;
+  font-size: clamp(13px, 1.4vw, 17px);
+  opacity: 0.85;
+  filter: drop-shadow(0 0 4px rgba(212, 175, 55, 0.4));
+  user-select: none;
+}
+
+.wayang-loading-subtitle {
+  margin-top: 4px;
+  font-size: clamp(11.5px, 1vw, 13px);
+  color: #bfad9b;
+  font-weight: 400;
+  letter-spacing: 0.5px;
+  max-width: 500px;
+  line-height: 1.5;
+}
+
+.wayang-loading-spinner-box {
+  position: relative;
+  width: clamp(48px, 6.5vh, 58px);
+  height: clamp(48px, 6.5vh, 58px);
+  margin-top: clamp(12px, 2vh, 20px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.wayang-loading-cakra-img {
+  width: 68%;
+  height: 68%;
+  object-fit: contain;
+  animation: cakraMandalaCounter 16s linear infinite;
+  filter: drop-shadow(0 0 6px rgba(212, 175, 55, 0.35));
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.wayang-loading-arc-ring {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  animation: cakraArcSpin 1.6s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+.wayang-loading-skip-btn {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  z-index: 50;
+  background: rgba(28, 20, 13, 0.72);
+  border: 1px solid rgba(212, 175, 55, 0.32);
+  border-radius: 9999px;
+  padding: 8px 18px;
+  color: #fcfaf2;
+  font-size: 12.5px;
+  font-weight: 650;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  min-height: 44px;
+  min-width: 44px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+  transition: all 0.2s ease;
+}
+
+.wayang-loading-skip-btn:hover {
+  background: rgba(45, 32, 20, 0.88);
+  border-color: rgba(212, 175, 55, 0.55);
+  transform: translateY(-1px);
+}
+
+
 
 
 
