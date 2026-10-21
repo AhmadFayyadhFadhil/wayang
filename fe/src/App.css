@@ -3983,105 +3983,120 @@ html, body {
   top: 48%;
   z-index: 0;
   pointer-events: none;
-  filter: brightness(0) blur(1.6px);
   opacity: 0;
   will-change: transform, opacity;
   transition: transform 0.95s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.85s ease;
 }
 
-/* Tokoh Kiri (Ksatria Protagonis) */
+.wayang-duel-puppet-img {
+  width: clamp(240px, 28vw, 380px);
+  height: clamp(340px, 48vh, 520px);
+  object-fit: contain;
+  user-select: none;
+  pointer-events: none;
+  -webkit-user-drag: none;
+  filter: drop-shadow(0 6px 20px rgba(40, 24, 12, 0.12));
+}
+
+/* Tokoh Kiri (Ksatria Menghadap Kanan) */
 .wayang-duel-left {
-  left: clamp(-40px, 1vw, 24px);
-  transform: translateY(-50%) translate3d(-150px, 0, 0) scale(1.15);
+  left: clamp(-30px, 1.5vw, 36px);
+  transform: translateY(-50%) translate3d(-160px, 0, 0) scale(1.05);
 }
 
 .wayang-duel-left.is-in-view {
-  transform: translateY(-50%) translate3d(0, 0, 0) scale(1.18);
-  opacity: 0.13;
+  transform: translateY(-50%) translate3d(0, 0, 0) scale(1.05);
+  opacity: 0.22;
   animation: wayangDuelSwayLeft 5.2s ease-in-out infinite alternate 0.95s;
 }
 
 .wayang-duel-left.is-out-view {
-  transform: translateY(-50%) translate3d(-150px, 0, 0) scale(1.12);
+  transform: translateY(-50%) translate3d(-160px, 0, 0) scale(1.0);
   opacity: 0;
 }
 
-/* Tokoh Kanan (Lawan / Rival) */
+/* Tokoh Kanan (Ksatria Menghadap Kiri) */
 .wayang-duel-right {
-  right: clamp(-40px, 1vw, 24px);
-  transform: translateY(-50%) translate3d(150px, 0, 0) scale(1.15);
+  right: clamp(-30px, 1.5vw, 36px);
+  transform: translateY(-50%) translate3d(160px, 0, 0) scale(1.05);
 }
 
 .wayang-duel-right.is-in-view {
-  transform: translateY(-50%) translate3d(0, 0, 0) scale(1.18);
-  opacity: 0.13;
+  transform: translateY(-50%) translate3d(0, 0, 0) scale(1.05);
+  opacity: 0.22;
   animation: wayangDuelSwayRight 5.2s ease-in-out infinite alternate 0.95s;
 }
 
 .wayang-duel-right.is-out-view {
-  transform: translateY(-50%) translate3d(150px, 0, 0) scale(1.12);
+  transform: translateY(-50%) translate3d(160px, 0, 0) scale(1.0);
   opacity: 0;
 }
 
 /* Ayunan Solah Perang Dalang Halus (Combat Tension Sway) */
 @keyframes wayangDuelSwayLeft {
   0% {
-    transform: translateY(-50%) translate3d(0, 0, 0) scale(1.18) rotate(0deg);
+    transform: translateY(-50%) translate3d(0, 0, 0) scale(1.05) rotate(0deg);
   }
   50% {
-    transform: translateY(-50%) translate3d(14px, -6px, 0) scale(1.2) rotate(1.2deg);
+    transform: translateY(-50%) translate3d(12px, -6px, 0) scale(1.07) rotate(1.2deg);
   }
   100% {
-    transform: translateY(-50%) translate3d(-6px, 4px, 0) scale(1.17) rotate(-0.8deg);
+    transform: translateY(-50%) translate3d(-6px, 4px, 0) scale(1.04) rotate(-0.8deg);
   }
 }
 
 @keyframes wayangDuelSwayRight {
   0% {
-    transform: translateY(-50%) translate3d(0, 0, 0) scale(1.18) rotate(0deg);
+    transform: translateY(-50%) translate3d(0, 0, 0) scale(1.05) rotate(0deg);
   }
   50% {
-    transform: translateY(-50%) translate3d(-14px, -6px, 0) scale(1.2) rotate(-1.2deg);
+    transform: translateY(-50%) translate3d(-12px, -6px, 0) scale(1.07) rotate(-1.2deg);
   }
   100% {
-    transform: translateY(-50%) translate3d(6px, 4px, 0) scale(1.17) rotate(0.8deg);
+    transform: translateY(-50%) translate3d(6px, 4px, 0) scale(1.04) rotate(0.8deg);
   }
 }
 
 /* Responsif Layar Kecil & Tablet */
 @media (max-width: 992px) {
-  .wayang-duel-figure {
-    filter: brightness(0) blur(1.4px);
+  .wayang-duel-puppet-img {
+    width: clamp(200px, 30vw, 290px);
+    height: clamp(280px, 40vh, 400px);
   }
 
   .wayang-duel-left.is-in-view {
-    transform: translateY(-50%) translate3d(0, 0, 0) scale(0.96);
-    opacity: 0.10;
+    transform: translateY(-50%) translate3d(0, 0, 0) scale(0.95);
+    opacity: 0.16;
   }
 
   .wayang-duel-right.is-in-view {
-    transform: translateY(-50%) translate3d(0, 0, 0) scale(0.96);
-    opacity: 0.10;
+    transform: translateY(-50%) translate3d(0, 0, 0) scale(0.95);
+    opacity: 0.16;
   }
 }
 
 @media (max-width: 640px) {
+  .wayang-duel-puppet-img {
+    width: 200px;
+    height: 290px;
+  }
+
   .wayang-duel-left {
-    left: -70px;
+    left: -60px;
   }
 
   .wayang-duel-right {
-    right: -70px;
+    right: -60px;
   }
 
   .wayang-duel-left.is-in-view {
-    transform: translateY(-50%) translate3d(0, 0, 0) scale(0.8);
-    opacity: 0.08;
+    transform: translateY(-50%) translate3d(0, 0, 0) scale(0.82);
+    opacity: 0.12;
   }
 
   .wayang-duel-right.is-in-view {
-    transform: translateY(-50%) translate3d(0, 0, 0) scale(0.8);
-    opacity: 0.08;
+    transform: translateY(-50%) translate3d(0, 0, 0) scale(0.82);
+    opacity: 0.12;
   }
 }
 
