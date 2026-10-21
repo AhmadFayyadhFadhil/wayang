@@ -354,7 +354,8 @@ export default function WayangArStageModal({ isOpen, onClose, onOpenTutorial }) 
 
                 const inner = puppetEl.querySelector('.real-leather-puppet-container');
                 if (inner) {
-                  const scX = u.facing === 'left' ? -currentScale : currentScale;
+                  const isFlipped = u.facing === 'right';
+                  const scX = isFlipped ? -currentScale : currentScale;
                   inner.style.transform = `scale(${scX}, ${currentScale})`;
                 }
               }

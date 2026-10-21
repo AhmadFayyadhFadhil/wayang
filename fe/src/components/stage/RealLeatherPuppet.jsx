@@ -30,8 +30,15 @@ const RealLeatherPuppet = React.memo(function RealLeatherPuppet({
   width = 240,
   height = 360,
 }) {
-  const isFlipped = facing === 'left';
-  const effectiveScale = scale * (1 + depth * 0.12);
+  // body.png secara alami menghadap ke kiri.
+  // Jika facing === 'right', balik (flip) horizontal agar menghadap ke kanan.
+  const isFlipped = facing === 'right';
+
+  // Base canvas wayang kulit selalu 240 x 360 agar koordinat rigging pundak/siku tetap presisi
+  const BASE_WIDTH = 240;
+  const BASE_HEIGHT = 360;
+  const dimensionScale = Math.min(width / BASE_WIDTH, height / BASE_HEIGHT);
+  const effectiveScale = scale * dimensionScale * (1 + depth * 0.12);
 
   // Perhitungan filter bayangan lampu blencong
   const shadowBlur = Math.round(8 + depth * 16);
@@ -64,8 +71,8 @@ const RealLeatherPuppet = React.memo(function RealLeatherPuppet({
       className="real-leather-puppet-container"
       style={{
         display: 'inline-block',
-        width: `${width}px`,
-        height: `${height}px`,
+        width: `${BASE_WIDTH}px`,
+        height: `${BASE_HEIGHT}px`,
         position: 'relative',
         transform: `scale(${isFlipped ? -effectiveScale : effectiveScale}, ${effectiveScale})`,
         transformOrigin: 'bottom center',

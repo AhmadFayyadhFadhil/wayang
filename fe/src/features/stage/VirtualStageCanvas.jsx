@@ -44,7 +44,8 @@ const VirtualStageCanvas = forwardRef(function VirtualStageCanvas({
           const char = characters.find((c) => c.instanceId === instanceId);
           const sc = char?.scale || 1.0;
           if (puppetEl.tagName.toLowerCase() === 'div') {
-            puppetEl.style.transform = `scale(${updates.facing === 'left' ? -sc : sc}, ${sc})`;
+            const isFlipped = updates.facing === 'right';
+            puppetEl.style.transform = `scale(${isFlipped ? -sc : sc}, ${sc})`;
           } else {
             puppetEl.setAttribute('transform', `scale(${updates.facing === 'left' ? -sc : sc}, ${sc})`);
           }

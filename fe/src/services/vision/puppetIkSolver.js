@@ -3,13 +3,13 @@
  * Menghitung sudut sendi pundak-siku dan menggerakkan tudhing lengan wayang kulit
  */
 
-// Posisi pundak dalam sistem koordinat lokal wayang 240 x 360 (menghadap ke kanan secara default)
-// Dada/Depan berada di sisi kanan (x > 120), Punggung/Belakang berada di sisi kiri (x < 120)
-export const SHOULDER_L = { x: 148, y: 122 }; // Pundak Lengan Depan (Dada)
-export const SHOULDER_R = { x: 92, y: 122 };  // Pundak Lengan Belakang (Punggung)
+// Posisi pundak dalam sistem koordinat lokal wayang 240 x 360
+// (body.png secara alami menghadap ke kiri: dada di sisi kiri x ≈ 92, punggung di sisi kanan x ≈ 148, soket pundak di y ≈ 106)
+export const SHOULDER_L = { x: 92, y: 106 };  // Pundak Lengan Depan (Dada)
+export const SHOULDER_R = { x: 148, y: 106 }; // Pundak Lengan Belakang (Punggung)
 
-export const DEFAULT_FRONT_TARGET = { x: 170, y: 220 }; // Menjuntai di depan dada
-export const DEFAULT_BACK_TARGET = { x: 70, y: 220 };   // Menjuntai di belakang punggung
+export const DEFAULT_FRONT_TARGET = { x: 70, y: 220 };  // Menjuntai alami di depan dada (sisi kiri)
+export const DEFAULT_BACK_TARGET = { x: 170, y: 220 }; // Menjuntai alami di belakang punggung (sisi kanan)
 
 /**
  * Normalisasi selisih sudut modular ke rentang [-180°, +180°]
@@ -79,7 +79,9 @@ export function mapFingerToIkTarget(tip, defaultPos, isThumb = false) {
 export function mapScreenLandmarkToPuppet(fingerScreen, palmScreen, scale = 1.0, facing = 'right') {
   if (!fingerScreen || !palmScreen) return null;
 
-  const facingSign = facing === 'left' ? -1 : 1;
+  // body.png secara alami menghadap ke kiri.
+  // Jika facing === 'right', container dibalik dengan scale(-1, 1), sehingga arah deltaX diinversi (-1).
+  const facingSign = facing === 'right' ? -1 : 1;
   // Selisih piksel nyata kamera dari pusat telapak (Landmark 9) ke ujung jari
   const deltaX = fingerScreen.x - palmScreen.x;
   const deltaY = fingerScreen.y - palmScreen.y;
