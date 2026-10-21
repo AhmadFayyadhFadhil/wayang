@@ -23,6 +23,9 @@ import gamelanOrchestraHeritage from '../../assets/gamelan_orchestra_heritage.jp
 import ctaGununganGoldenBg from '../../assets/cta_gunungan_golden_bg.jpg';
 import lakonCoverDewaRuci from '../../assets/lakon_cover_dewa_ruci.jpg';
 import lakonCoverShintaObong from '../../assets/lakon_cover_shinta_obong.jpg';
+import pilarPanggungKelir from '../../assets/pilar_panggung_kelir.jpg';
+import pilarPustakaPakem from '../../assets/pilar_pustaka_pakem.jpg';
+import pilarTataSuara from '../../assets/pilar_tata_suara.jpg';
 
 // 4 Pementasan Unggulan Terpopuler Sesuai Format Leaderboard Top 4
 const HOME_TOP_4_PERFORMANCES = [
@@ -76,7 +79,7 @@ const HOME_TOP_4_PERFORMANCES = [
   },
 ];
 
-export default function HomeView({ onNavigate, connectionStatus, onTestConnection }) {
+export default function HomeView({ onNavigate, connectionStatus: _connectionStatus, onTestConnection: _onTestConnection }) {
   // State animasi countdown & kemunculan bergiliran untuk cardbox floating numerik
   const [statsInView, setStatsInView] = useState(false);
   const statsSectionRef = useRef(null);
@@ -112,6 +115,31 @@ export default function HomeView({ onNavigate, connectionStatus, onTestConnectio
 
   // State hover interaktif untuk pilar fondasi (default null: semua button outline pada kondisi resting)
   const [hoveredPillar, setHoveredPillar] = useState(null);
+
+  // Dynamic mouse spotlight & subtle 3D tilt tracking for ecosystem cards
+  const handlePillarMouseMove = (e) => {
+    const card = e.currentTarget;
+    const rect = card.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    card.style.setProperty('--mouse-x', `${x}px`);
+    card.style.setProperty('--mouse-y', `${y}px`);
+
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
+    const tiltX = ((y - centerY) / centerY) * -5;
+    const tiltY = ((x - centerX) / centerX) * 5;
+    card.style.setProperty('--tilt-x', `${tiltX.toFixed(2)}deg`);
+    card.style.setProperty('--tilt-y', `${tiltY.toFixed(2)}deg`);
+  };
+
+  const handlePillarMouseLeave = (e) => {
+    const card = e.currentTarget;
+    card.style.removeProperty('--mouse-x');
+    card.style.removeProperty('--mouse-y');
+    card.style.removeProperty('--tilt-x');
+    card.style.removeProperty('--tilt-y');
+  };
   // 4 Lakon terkurasi utama untuk showcase sesuai spesifikasi Bento Grid
   const featuredStories = [
     {
@@ -630,32 +658,38 @@ export default function HomeView({ onNavigate, connectionStatus, onTestConnectio
             </p>
           </div>
 
-          {/* Grid 3 Pilar Cardbox dengan Gradien Cantik Sesuai Referensi Desain Wayangverse */}
+          {/* Grid 3 Pilar Cardbox dengan Spotlight & Background Wayang Asli Pengguna */}
           <div className="fondasi-ecosystem-grid">
             {[
               {
                 id: 'pilar-1',
                 nav: 'stage',
-                icon: <Film size={26} color="#8b4513" />,
+                icon: <Film size={24} color="#8b4513" />,
                 title: 'Studio Panggung Kelir',
                 desc: 'Kanvas kelir digital interaktif untuk menata lakon adegan, menggerakkan tudhing tokoh, merangkai babak, serta memimpin pagelaran secara visual.',
                 btnLabel: 'Masuk ke Panggung',
+                bgImage: pilarPanggungKelir,
+                tag: 'Interaktif 16:9',
               },
               {
                 id: 'pilar-2',
                 nav: 'atlas',
-                icon: <BookOpen size={26} color="#8b4513" />,
+                icon: <BookOpen size={24} color="#8b4513" />,
                 title: 'Pustaka & Sanad Pakem',
                 desc: 'Ensiklopedia naskah wiracarita terkurasi yang mengupas silsilah, filosofi watak luhur para ksatria, serta kajian naskah bersejarah Nusantara.',
                 btnLabel: 'Jelajahi Pustaka',
+                bgImage: pilarPustakaPakem,
+                tag: 'Sanad Sastra',
               },
               {
                 id: 'pilar-3',
-                nav: 'stage',
-                icon: <Music size={26} color="#8b4513" />,
+                nav: 'atlas',
+                icon: <Music size={24} color="#8b4513" />,
                 title: 'Tata Suara Gamelan Slendro',
                 desc: 'Sintesis tata suara peramban real-time untuk gending laras slendro, ritme kendhang, hingga hentakan dodogan cempala dan kepyak dalang.',
                 btnLabel: 'Dengarkan Suara',
+                bgImage: pilarTataSuara,
+                tag: 'Web Audio Gamelan',
               },
             ].map((pilar, idx) => {
               const isHovered = hoveredPillar === idx;
@@ -663,27 +697,55 @@ export default function HomeView({ onNavigate, connectionStatus, onTestConnectio
               return (
                 <div
                   key={pilar.id}
-                  className="fondasi-ecosystem-card"
+                  className={`fondasi-ecosystem-card ${isHovered ? 'is-hovered' : ''}`}
                   onMouseEnter={() => setHoveredPillar(idx)}
-                  onMouseLeave={() => setHoveredPillar(null)}
+                  onMouseMove={handlePillarMouseMove}
+                  onMouseLeave={(e) => {
+                    setHoveredPillar(null);
+                    handlePillarMouseLeave(e);
+                  }}
                   onClick={() => onNavigate(pilar.nav)}
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      onNavigate(pilar.nav);
+                    }
+                  }}
                 >
-                  {/* Lingkaran Ikon di Sudut Kiri Atas Sesuai Desain */}
-                  <div className="fondasi-card-icon-wrap">
-                    {pilar.icon}
+                  {/* 1. Watermark Background Foto Wayang Tradisi Pilihan Pengguna */}
+                  <img
+                    src={pilar.bgImage}
+                    alt={pilar.title}
+                    className="fondasi-card-wayang-bg"
+                    loading="lazy"
+                  />
+
+                  {/* 2. Layer Sorot Lampu Blencong Dinamis (Mouse Spotlight) */}
+                  <div className="fondasi-card-spotlight" aria-hidden="true" />
+
+                  {/* 3. Baris Header: Ikon + Tag Kultural */}
+                  <div className="fondasi-card-top-row">
+                    <div className="fondasi-card-icon-wrap">
+                      {pilar.icon}
+                    </div>
+                    <span className="fondasi-card-tag">
+                      {pilar.tag}
+                    </span>
                   </div>
 
-                  {/* Judul Pilar (Kiri Rata) */}
-                  <h3 className="fondasi-card-title">
-                    {pilar.title}
-                  </h3>
+                  {/* 4. Konten Teks Utama */}
+                  <div className="fondasi-card-body">
+                    <h3 className="fondasi-card-title">
+                      {pilar.title}
+                    </h3>
+                    <p className="fondasi-card-desc">
+                      {pilar.desc}
+                    </p>
+                  </div>
 
-                  {/* Deskripsi Pilar */}
-                  <p className="fondasi-card-desc">
-                    {pilar.desc}
-                  </p>
-
-                  {/* Tombol Solid Pill Bernuansa Emas Wayangverse Sesuai Screenshot */}
+                  {/* 5. Tombol Solid Pill Bernuansa Emas Prada */}
                   <button
                     className="fondasi-card-btn"
                     onClick={(e) => {
@@ -692,7 +754,7 @@ export default function HomeView({ onNavigate, connectionStatus, onTestConnectio
                     }}
                   >
                     <span>{pilar.btnLabel}</span>
-                    <ArrowRight size={14} />
+                    <ArrowRight size={14} className="fondasi-card-btn-arrow" />
                   </button>
                 </div>
               );
@@ -1378,20 +1440,7 @@ const selengkapnyaBtnStyle = {
   flexShrink: 0,
 };
 
-// Feature Cards
-const featureCardStyle = {
-  background: '#ffffff',
-  borderRadius: '20px',
-  padding: '30px 26px',
-  border: 'none',
-  boxShadow: '0 6px 20px rgba(0, 0, 0, 0.04)',
-  transition: 'all 0.2s ease',
-  display: 'flex',
-  flexDirection: 'column',
-  justifyContent: 'space-between',
-  gap: '12px',
-  cursor: 'pointer',
-};
+
 
 
 
