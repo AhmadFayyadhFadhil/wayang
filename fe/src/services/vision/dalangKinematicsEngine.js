@@ -275,27 +275,38 @@ class DalangKinematicsEngine {
         this.isKiprahActive[hIdx] = false;
       }
 
-      // 2. Target Posisi Ujung Jempol (Landmark 4) & Telunjuk (Landmark 8) untuk IK Lengan
-      const palmSize = Math.max(0.06, Math.hypot(landmarks[9].x - landmarks[0].x, landmarks[9].y - landmarks[0].y));
+      // 2. Target Posisi Ujung Jempol (Landmark 4) & Telunjuk (Landmark 8) untuk IK Lengan Fleksibel Penuh
+      // Diukur langsung dari pusat telapak tangan (Landmark 9) dengan jangkauan dinamis penuh (-1.5 s/d +1.5)
+      const palmCenter = landmarks[9];
+      const wrist = landmarks[0];
+      const palmSize = Math.max(0.06, Math.hypot(palmCenter.x - wrist.x, palmCenter.y - wrist.y));
+
       const thumbTip = landmarks[4];
-      const thumbMcp = landmarks[2];
       const indexTip = landmarks[8];
-      const indexMcp = landmarks[5];
 
-      const thbRawX = ((this.isMirrored ? 1.0 - thumbTip.x : thumbTip.x) - (this.isMirrored ? 1.0 - thumbMcp.x : thumbMcp.x)) / palmSize;
-      const thbRawY = (thumbTip.y - thumbMcp.y) / palmSize;
+      const palmScreenX = this.isMirrored ? 1.0 - palmCenter.x : palmCenter.x;
+      const palmScreenY = palmCenter.y;
 
-      const idxRawX = ((this.isMirrored ? 1.0 - indexTip.x : indexTip.x) - (this.isMirrored ? 1.0 - indexMcp.x : indexMcp.x)) / palmSize;
-      const idxRawY = (indexTip.y - indexMcp.y) / palmSize;
+      const thbScreenX = this.isMirrored ? 1.0 - thumbTip.x : thumbTip.x;
+      const thbScreenY = thumbTip.y;
+
+      const idxScreenX = this.isMirrored ? 1.0 - indexTip.x : indexTip.x;
+      const idxScreenY = indexTip.y;
+
+      const thbRawX = (thbScreenX - palmScreenX) / palmSize;
+      const thbRawY = (thbScreenY - palmScreenY) / palmSize;
+
+      const idxRawX = (idxScreenX - palmScreenX) / palmSize;
+      const idxRawY = (idxScreenY - palmScreenY) / palmSize;
 
       // Filter Low-Pass / EMA untuk kelembutan gerak jempol dan telunjuk (Super Smooth Finger IK)
       if (!this.smoothedFingers) this.smoothedFingers = [{}, {}];
       const prevF = this.smoothedFingers[hIdx] || {};
 
-      const smoothThbX = prevF.thbX !== undefined ? 0.28 * thbRawX + 0.72 * prevF.thbX : thbRawX;
-      const smoothThbY = prevF.thbY !== undefined ? 0.28 * thbRawY + 0.72 * prevF.thbY : thbRawY;
-      const smoothIdxX = prevF.idxX !== undefined ? 0.28 * idxRawX + 0.72 * prevF.idxX : idxRawX;
-      const smoothIdxY = prevF.idxY !== undefined ? 0.28 * idxRawY + 0.72 * prevF.idxY : idxRawY;
+      const smoothThbX = prevF.thbX !== undefined ? 0.35 * thbRawX + 0.65 * prevF.thbX : thbRawX;
+      const smoothThbY = prevF.thbY !== undefined ? 0.35 * thbRawY + 0.65 * prevF.thbY : thbRawY;
+      const smoothIdxX = prevF.idxX !== undefined ? 0.35 * idxRawX + 0.65 * prevF.idxX : idxRawX;
+      const smoothIdxY = prevF.idxY !== undefined ? 0.35 * idxRawY + 0.65 * prevF.idxY : idxRawY;
 
       this.smoothedFingers[hIdx] = {
         thbX: smoothThbX,
@@ -368,14 +379,28 @@ class DalangKinematicsEngine {
         primaryHand.targetChar = targetChar;
         primaryHand.role = 'cempurit';
 
-        // Deteksi kemiringan telapak / gesekan cepat untuk membalik arah hadap (Ultra Responsive Flip)
+        // Deteksi multi-faktor super responsif untuk membalik arah hadap wayang (Effortless Flip):
+        // 1. Sedikit kemiringan telapak tangan (> 4.5° atau < -4.5°)
+        // 2. Sapuan geser gerak horizontal tangan (|velX| > 0.15)
+        // 3. Arah tunjukan jari telunjuk relatif terhadap pangkal telunjuk
+        // 4. Arah bentangan jempol relatif terhadap pusat telapak tangan
         const lastState = this.lastWayangStates.get(targetChar.instanceId);
         let facing = lastState?.facing || targetChar.facing || 'right';
-        if (primaryHand.tiltAngleDeg > 6 || primaryHand.velX > 0.4) {
+
+        const idxTipX = this.isMirrored ? 1.0 - primaryHand.rawLandmarks[8].x : primaryHand.rawLandmarks[8].x;
+        const idxBaseX = this.isMirrored ? 1.0 - primaryHand.rawLandmarks[5].x : primaryHand.rawLandmarks[5].x;
+        const thbTipX = this.isMirrored ? 1.0 - primaryHand.rawLandmarks[4].x : primaryHand.rawLandmarks[4].x;
+        const plmX = this.isMirrored ? 1.0 - primaryHand.rawLandmarks[9].x : primaryHand.rawLandmarks[9].x;
+
+        const isPointingRight = (idxTipX > idxBaseX + 0.025) || (thbTipX > plmX + 0.04);
+        const isPointingLeft = (idxTipX < idxBaseX - 0.025) || (thbTipX < plmX - 0.04);
+
+        if (primaryHand.tiltAngleDeg > 4.5 || primaryHand.velX > 0.15 || (isPointingRight && primaryHand.velX >= -0.08)) {
           facing = 'right';
-        } else if (primaryHand.tiltAngleDeg < -6 || primaryHand.velX < -0.4) {
+        } else if (primaryHand.tiltAngleDeg < -4.5 || primaryHand.velX < -0.15 || (isPointingLeft && primaryHand.velX <= 0.08)) {
           facing = 'left';
         }
+        primaryHand.facing = facing;
 
         let pose = targetChar.pose || 'default';
         if (primaryHand.isFist) pose = 'perang';
@@ -405,7 +430,7 @@ class DalangKinematicsEngine {
           });
         }
 
-        this.statusMessage = `Wayang ${targetChar.name || 'Wayang'} aktif: miringkan telapak untuk hadap kiri atau kanan`;
+        this.statusMessage = `Wayang ${targetChar.name || 'Wayang'} aktif (${facing === 'right' ? 'Hadap Kanan' : 'Hadap Kiri'}): geser / miringkan telapak, atau tekan 'F'`;
         this.statusTone = 'grabbing';
       }
 
@@ -467,14 +492,24 @@ class DalangKinematicsEngine {
         const char = hand.targetChar;
         const isLeft = hand.role === 'tokoh_kiri';
 
-        // Deteksi kemiringan telapak / gesekan cepat untuk membalik arah hadap (Ultra Responsive Flip)
+        // Deteksi multi-faktor super responsif untuk membalik arah hadap wayang (Effortless Flip)
         const lastState = this.lastWayangStates.get(char.instanceId);
         let facing = lastState?.facing || (isLeft ? 'right' : 'left');
-        if (hand.tiltAngleDeg > 6 || hand.velX > 0.4) {
+
+        const idxTipX = this.isMirrored ? 1.0 - hand.rawLandmarks[8].x : hand.rawLandmarks[8].x;
+        const idxBaseX = this.isMirrored ? 1.0 - hand.rawLandmarks[5].x : hand.rawLandmarks[5].x;
+        const thbTipX = this.isMirrored ? 1.0 - hand.rawLandmarks[4].x : hand.rawLandmarks[4].x;
+        const plmX = this.isMirrored ? 1.0 - hand.rawLandmarks[9].x : hand.rawLandmarks[9].x;
+
+        const isPointingRight = (idxTipX > idxBaseX + 0.025) || (thbTipX > plmX + 0.04);
+        const isPointingLeft = (idxTipX < idxBaseX - 0.025) || (thbTipX < plmX - 0.04);
+
+        if (hand.tiltAngleDeg > 4.5 || hand.velX > 0.15 || (isPointingRight && hand.velX >= -0.08)) {
           facing = 'right';
-        } else if (hand.tiltAngleDeg < -6 || hand.velX < -0.4) {
+        } else if (hand.tiltAngleDeg < -4.5 || hand.velX < -0.15 || (isPointingLeft && hand.velX <= 0.08)) {
           facing = 'left';
         }
+        hand.facing = facing;
 
         let pose = 'default';
         if (isDualSembah) pose = 'sembah';

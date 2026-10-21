@@ -12,11 +12,13 @@ export const DEFAULT_BACK_TARGET = { x: 170, y: 220 };
 
 /**
  * 2-Bone Analytical Inverse Kinematics Solver
+ * Lu = 60px (Upper Arm), Lf = 52px (Forearm) sesuai proporsi multi-part rigging wayang kulit
  */
-export function solve2BoneIK(shoulder, target, Lu = 75, Lf = 70, bend = -1) {
+export function solve2BoneIK(shoulder, target, Lu = 60, Lf = 52, bend = -1) {
   const dx = target.x - shoulder.x;
   const dy = target.y - shoulder.y;
-  const dist = Math.max(20, Math.min(Lu + Lf - 2, Math.hypot(dx, dy)));
+  const maxReach = Lu + Lf - 2; // 110px
+  const dist = Math.max(15, Math.min(maxReach, Math.hypot(dx, dy)));
   const baseAngle = Math.atan2(dy, dx);
 
   const cosAngle = Math.max(-1, Math.min(1, (Lu * Lu + dist * dist - Lf * Lf) / (2 * Lu * dist)));
@@ -36,19 +38,26 @@ export function solve2BoneIK(shoulder, target, Lu = 75, Lf = 70, bend = -1) {
 }
 
 /**
- * Mapping koordinat gerak jempol/telunjuk dalang ke target jangkauan tangan wayang
+ * Mapping koordinat gerak jempol & telunjuk dalang ke target tangan wayang (Full Dynamic Flexibility)
+ * Tangan wayang terpaku langsung pada 2 jari dalang sehingga dapat bergerak fleksibel ke segala arah
  */
 export function mapFingerToIkTarget(tip, defaultPos, isThumb = false) {
   if (!tip) return defaultPos;
-  // Offset alami ujung jari diukur dari resting pose dalang
-  const restX = isThumb ? -0.4 : 0.0;
-  const restY = isThumb ? -0.4 : -0.8;
-  const deltaX = (tip.dx - restX) * 110;
-  const deltaY = (tip.dy - restY) * 110;
+
+  // Jangkauan tangan fleksibel penuh: 92px radius dari bahu
+  const armReach = 92;
+  const shoulder = isThumb ? SHOULDER_L : SHOULDER_R;
+
+  // Offset alami jempol & telunjuk
+  const neutralOffsetX = isThumb ? -0.2 : 0.2;
+  const neutralOffsetY = isThumb ? 0.45 : 0.6;
+
+  const targetX = shoulder.x + (tip.dx + neutralOffsetX) * armReach;
+  const targetY = shoulder.y + (tip.dy + neutralOffsetY) * armReach;
 
   return {
-    x: Math.max(25, Math.min(215, defaultPos.x + deltaX)),
-    y: Math.max(65, Math.min(275, defaultPos.y + deltaY)),
+    x: Math.max(15, Math.min(225, targetX)),
+    y: Math.max(25, Math.min(275, targetY)),
   };
 }
 
@@ -61,8 +70,8 @@ export function updatePuppetArmsDOM(containerEl, fingerTargets) {
   const frontTarget = mapFingerToIkTarget(fingerTargets.thumb, DEFAULT_FRONT_TARGET, true);
   const backTarget = mapFingerToIkTarget(fingerTargets.index, DEFAULT_BACK_TARGET, false);
 
-  const ikFront = solve2BoneIK(SHOULDER_L, frontTarget, 75, 70, -1);
-  const ikBack = solve2BoneIK(SHOULDER_R, backTarget, 75, 70, 1);
+  const ikFront = solve2BoneIK(SHOULDER_L, frontTarget, 60, 52, -1);
+  const ikBack = solve2BoneIK(SHOULDER_R, backTarget, 60, 52, 1);
 
   const frontShld = containerEl.querySelector('.real-puppet-arm-front-shld');
   const frontElbw = containerEl.querySelector('.real-puppet-arm-front-elbw');

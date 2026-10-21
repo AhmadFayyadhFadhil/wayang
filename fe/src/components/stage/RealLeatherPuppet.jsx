@@ -50,12 +50,12 @@ const RealLeatherPuppet = React.memo(function RealLeatherPuppet({
   }, [fingerTargets]);
 
   const ikFront = useMemo(
-    () => solve2BoneIK(SHOULDER_L, ikTargets.front, 75, 70, -1),
+    () => solve2BoneIK(SHOULDER_L, ikTargets.front, 60, 52, -1),
     [ikTargets.front]
   );
 
   const ikBack = useMemo(
-    () => solve2BoneIK(SHOULDER_R, ikTargets.back, 75, 70, 1),
+    () => solve2BoneIK(SHOULDER_R, ikTargets.back, 60, 52, 1),
     [ikTargets.back]
   );
 
