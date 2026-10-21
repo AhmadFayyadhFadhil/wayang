@@ -20,6 +20,7 @@ import gununganHd from '../../assets/gunungan_kayon_hd.png';
 import JavaneseCloudBackground from '../../components/ui/JavaneseCloudBackground';
 import WayangCoverflowCarousel from '../../components/ui/WayangCoverflowCarousel';
 import WayangDuelShadowBg from '../../components/ui/WayangDuelShadowBg';
+import Wayang3DImageCover from '../../components/ui/Wayang3DImageCover';
 
 // Gambar Otentik Lakon & Tokoh Sesuai Cardbox Halaman Beranda
 import galleryCoverGatotkaca from '../../assets/gallery_cover_gatotkaca.jpg';
@@ -755,53 +756,12 @@ export default function AtlasView({ onPlayCharacterOnStage }) {
                         e.currentTarget.style.boxShadow = '0 2px 10px rgba(40, 28, 16, 0.04)';
                       }}
                     >
-                      {/* 1. Visual Cover Gambar dengan Badge Tradisi Pakem di Kiri Atas (Tanpa Ikon) */}
-                      <div
-                        style={{
-                          position: 'relative',
-                          width: '100%',
-                          height: '220px',
-                          borderRadius: '20px',
-                          overflow: 'hidden',
-                          background: '#090705',
-                          marginBottom: '22px',
-                        }}
-                      >
-                        <img
-                          src={asset.coverImg}
-                          alt={story.title}
-                          style={{
-                            width: '100%',
-                            height: '100%',
-                            objectFit: 'cover',
-                            objectPosition: 'center',
-                            display: 'block',
-                            transition: 'transform 0.4s ease',
-                          }}
-                        />
-
-                        {/* Badge Tradisi Pakem Sesuai SRS tradition (Tanpa Ikon) */}
-                        <div
-                          style={{
-                            position: 'absolute',
-                            top: '14px',
-                            left: '14px',
-                            background: 'rgba(255, 255, 255, 0.96)',
-                            backdropFilter: 'blur(8px)',
-                            borderRadius: '9999px',
-                            padding: '6px 14px',
-                            boxShadow: '0 2px 10px rgba(0, 0, 0, 0.14)',
-                            fontSize: '11px',
-                            fontWeight: '800',
-                            color: '#1a140e',
-                            letterSpacing: '0.04em',
-                            textTransform: 'uppercase',
-                            pointerEvents: 'none',
-                          }}
-                        >
-                          {asset.traditionBadge}
-                        </div>
-                      </div>
+                      {/* 1. Visual Cover Gambar dengan 3D Interactive Tilt & Parallax Glare khusus Wayang/Dalang */}
+                      <Wayang3DImageCover
+                        coverImg={asset.coverImg}
+                        title={story.title}
+                        traditionBadge={asset.traditionBadge}
+                      />
 
                       {/* 2. Informasi Konten Teks & Tombol Aksi dengan Spasi Lega dan Rapi */}
                       <div
