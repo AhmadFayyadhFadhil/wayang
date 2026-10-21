@@ -1005,42 +1005,12 @@ export default function HomeView({ onNavigate, connectionStatus, onTestConnectio
       {/* ============================================================
           5. GALERI KARYA PUBLIK / LEADERBOARD TOP 4 PEMENTASAN WAYANG
           ============================================================ */}
-      <section
-        style={{
-          width: '100%',
-          minHeight: '100vh',
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'center',
-          boxSizing: 'border-box',
-          background: '#f5f0e4',
-          border: 'none',
-          padding: '100px 24px',
-        }}
-      >
+      <section className="leaderboard-section-wrapper" id="leaderboard-showcase">
         <div style={{ maxWidth: '1240px', width: '100%', margin: '0 auto' }}>
           {/* Header Section */}
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              marginBottom: '38px',
-              flexWrap: 'wrap',
-              gap: '20px',
-            }}
-          >
-            <div style={{ maxWidth: '780px' }}>
-              <div
-                style={{
-                  fontSize: '11.5px',
-                  fontWeight: '800',
-                  letterSpacing: '0.08em',
-                  textTransform: 'uppercase',
-                  color: '#8b4513',
-                  marginBottom: '8px',
-                }}
-              >
+          <div className="leaderboard-section-header">
+            <div className="leaderboard-section-header-text">
+              <div className="leaderboard-section-pretitle">
                 PAGELARAN KOMUNITAS TERPILIH
               </div>
               <h2
@@ -1064,17 +1034,10 @@ export default function HomeView({ onNavigate, connectionStatus, onTestConnectio
 
             <button
               onClick={() => onNavigate('archive')}
-              style={selengkapnyaBtnStyle}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.background = '#dcae4d';
-                e.currentTarget.style.transform = 'translateY(-2px)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.background = '#e8bb5c';
-                e.currentTarget.style.transform = 'translateY(0)';
-              }}
+              className="leaderboard-header-btn"
+              aria-label="Buka Seluruh Galeri Karya"
             >
-              Buka Seluruh Galeri Karya
+              <span>Buka Seluruh Galeri Karya</span>
               <ArrowRight size={14} />
             </button>
           </div>
@@ -1180,9 +1143,9 @@ export default function HomeView({ onNavigate, connectionStatus, onTestConnectio
                           <h4 className="leaderboard-reel-title">{item.title}</h4>
                           <div className="leaderboard-reel-dalang">Oleh {item.dalang}</div>
                           <div className="leaderboard-reel-meta">
-                            <span>{item.epos}</span>
-                            <span>•</span>
-                            <span>{item.views}</span>
+                            <span className="leaderboard-reel-epos">{item.epos}</span>
+                            <span className="leaderboard-reel-dot">•</span>
+                            <span className="leaderboard-reel-views">{item.views}</span>
                           </div>
                         </div>
 
