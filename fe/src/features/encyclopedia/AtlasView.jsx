@@ -20,12 +20,13 @@ import gununganHd from '../../assets/gunungan_kayon_hd.png';
 import JavaneseCloudBackground from '../../components/ui/JavaneseCloudBackground';
 import WayangCoverflowCarousel from '../../components/ui/WayangCoverflowCarousel';
 import WayangDuelShadowBg from '../../components/ui/WayangDuelShadowBg';
-import Wayang3DImageCover from '../../components/ui/Wayang3DImageCover';
+import AtlasStoryShowcase from './AtlasStoryShowcase';
 
 // Gambar Otentik Lakon & Tokoh Sesuai Cardbox Halaman Beranda
 import galleryCoverGatotkaca from '../../assets/gallery_cover_gatotkaca.jpg';
 import lakonCoverDewaRuci from '../../assets/lakon_cover_dewa_ruci.jpg';
 import lakonCoverShintaObong from '../../assets/lakon_cover_shinta_obong.jpg';
+import dalangPerformanceHeritage from '../../assets/dalang_performance_heritage.jpg';
 import wayangCardGatotkaca from '../../assets/wayang_card_gatotkaca.jpg';
 import wayangCardArjuna from '../../assets/wayang_card_arjuna.jpg';
 import wayangCardShinta from '../../assets/wayang_card_shinta.jpg';
@@ -37,6 +38,12 @@ import wayangCardSemar from '../../assets/wayang_card_semar.jpg';
 const STORY_ASSETS = {
   'gugurnya-ghatotkaca': {
     coverImg: galleryCoverGatotkaca,
+    traditionBadge: 'Gagrag Mataram',
+    versionPakem: 'Serat Bharatayuddha',
+    provenanceSource: 'Reksa Pustaka',
+  },
+  'karno-tanding': {
+    coverImg: dalangPerformanceHeritage,
     traditionBadge: 'Gagrag Mataram',
     versionPakem: 'Serat Bharatayuddha',
     provenanceSource: 'Reksa Pustaka',
@@ -718,173 +725,20 @@ export default function AtlasView({ onPlayCharacterOnStage }) {
                     Lakon Cerita Wayang
                   </h3>
                   <span style={{ fontSize: '12px', color: '#8b5a1b', background: '#ffffff', border: '1px solid rgba(212, 175, 55, 0.25)', padding: '4px 14px', borderRadius: '14px', fontWeight: '750' }}>
-                    {filteredStories.length} Naskah
+                    {filteredStories.length} Naskah Pakem
                   </span>
                 </div>
               )}
 
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 320px), 1fr))', gap: '28px' }}>
-                {filteredStories.map((story) => {
-                  const asset = STORY_ASSETS[story.slug] || {
-                    coverImg: galleryCoverGatotkaca,
-                    traditionBadge: story.tradition || 'Gagrag Mataram',
-                    versionPakem: story.versionLabel || 'Naskah Pakem',
-                    provenanceSource: story.sources?.[0]?.title || 'Reksa Pustaka',
-                  };
-
-                  return (
-                    <div
-                      key={story.id}
-                      style={{
-                        background: '#ffffff',
-                        borderRadius: '20px',
-                        border: '1px solid rgba(0, 0, 0, 0.06)',
-                        padding: '24px',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        transition: 'transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease',
-                        boxShadow: '0 2px 10px rgba(40, 28, 16, 0.04)',
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.borderColor = 'rgba(212, 175, 55, 0.35)';
-                        e.currentTarget.style.transform = 'translateY(-4px)';
-                        e.currentTarget.style.boxShadow = '0 8px 24px rgba(40, 28, 16, 0.08)';
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.borderColor = 'rgba(0, 0, 0, 0.06)';
-                        e.currentTarget.style.transform = 'translateY(0)';
-                        e.currentTarget.style.boxShadow = '0 2px 10px rgba(40, 28, 16, 0.04)';
-                      }}
-                    >
-                      {/* 1. Visual Cover Gambar dengan 3D Interactive Tilt & Parallax Glare khusus Wayang/Dalang */}
-                      <Wayang3DImageCover
-                        coverImg={asset.coverImg}
-                        title={story.title}
-                        traditionBadge={asset.traditionBadge}
-                      />
-
-                      {/* 2. Informasi Konten Teks & Tombol Aksi dengan Spasi Lega dan Rapi */}
-                      <div
-                        style={{
-                          display: 'flex',
-                          flexDirection: 'column',
-                          flex: 1,
-                          justifyContent: 'space-between',
-                        }}
-                      >
-                        <div>
-                          {/* Meta Stack: Label Teks Vertikal Seragam untuk Semua Kartu (Pakem di atas, Sumber di bawah) */}
-                          <div
-                            style={{
-                              display: 'flex',
-                              flexDirection: 'column',
-                              gap: '6px',
-                              marginBottom: '16px',
-                              fontSize: '13px',
-                              lineHeight: '1.45',
-                            }}
-                          >
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                              <span
-                                style={{
-                                  color: '#8b5a1b',
-                                  fontWeight: '750',
-                                  fontSize: '12px',
-                                  textTransform: 'uppercase',
-                                  letterSpacing: '0.03em',
-                                }}
-                              >
-                                Pakem:
-                              </span>
-                              <span style={{ color: '#2b2118', fontWeight: '600' }}>
-                                {asset.versionPakem}
-                              </span>
-                            </div>
-
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                              <span
-                                style={{
-                                  color: '#8b5a1b',
-                                  fontWeight: '750',
-                                  fontSize: '12px',
-                                  textTransform: 'uppercase',
-                                  letterSpacing: '0.03em',
-                                }}
-                              >
-                                Sumber:
-                              </span>
-                              <span style={{ color: '#2b2118', fontWeight: '600' }}>
-                                {asset.provenanceSource}
-                              </span>
-                            </div>
-                          </div>
-
-                          {/* Judul Lakon (Warna Teks Soga Charcoal Bersih & Kontras) */}
-                          <h3
-                            style={{
-                              margin: '0 0 14px 0',
-                              fontSize: '20px',
-                              fontWeight: '800',
-                              color: '#1a140e',
-                              letterSpacing: '-0.3px',
-                              lineHeight: '1.35',
-                              minHeight: '54px',
-                            }}
-                          >
-                            {story.title}
-                          </h3>
-
-                          {/* Deskripsi / Sinopsis Naskah Singkat, Padat, Jelas, & Informatif (Warna Abu Lembut Tidak Kontras) */}
-                          <p
-                            style={{
-                              margin: '0 0 24px 0',
-                              fontSize: '13.5px',
-                              color: '#6b7280',
-                              lineHeight: '1.6',
-                              minHeight: '44px',
-                            }}
-                          >
-                            {story.shortSynopsis || story.shortDesc || story.synopsis}
-                          </p>
-                        </div>
-
-                        {/* 3. Tombol Aksi Sesuai PRD PR-01 / SRS FR-01: Buka Naskah Pakem */}
-                        <button
-                          onClick={() => setSelectedStoryModal(story)}
-                          style={{
-                            width: '100%',
-                            background: '#e8bb5c',
-                            border: 'none',
-                            color: '#0d0a07',
-                            padding: '14px 24px',
-                            borderRadius: '9999px',
-                            fontSize: '14px',
-                            fontWeight: '750',
-                            letterSpacing: '0.01em',
-                            cursor: 'pointer',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            boxShadow: 'none',
-                            transition: 'background 0.2s ease, transform 0.2s ease',
-                            marginTop: 'auto',
-                          }}
-                          onMouseEnter={(e) => {
-                            e.currentTarget.style.background = '#dcae4d';
-                            e.currentTarget.style.transform = 'translateY(-1px)';
-                          }}
-                          onMouseLeave={(e) => {
-                            e.currentTarget.style.background = '#e8bb5c';
-                            e.currentTarget.style.transform = 'translateY(0)';
-                          }}
-                        >
-                          Buka Naskah Pakem
-                        </button>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
+              {/* Theatrical Master Spotlight & 3D Playlist Grid Sesuai Referensi Visual Pengguna */}
+              <AtlasStoryShowcase
+                stories={filteredStories}
+                storyAssets={STORY_ASSETS}
+                onSelectStoryModal={(story) => setSelectedStoryModal(story)}
+                onPlayCharacterOnStage={(charId) => {
+                  if (onPlayCharacterOnStage) onPlayCharacterOnStage(charId);
+                }}
+              />
             </div>
           )}
 

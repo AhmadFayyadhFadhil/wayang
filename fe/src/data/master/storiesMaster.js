@@ -75,6 +75,34 @@ export const STORIES_MASTER = [
     ],
     recommendedBackground: 'kelir-blencong-default',
     themeSong: 'Gamelan Sampak Alengka'
+  },
+  {
+    id: 4,
+    slug: 'karno-tanding',
+    title: 'Mahabharata: Perang Tanding Karno Tanding',
+    shortSynopsis: 'Puncak duel takdir dua ksatria bersaudara seibu di palagan Kurusetra bersenjatakan panah Kyai Pasopati.',
+    shortDesc: 'Puncak duel takdir dua ksatria bersaudara seibu di palagan Kurusetra bersenjatakan panah Kyai Pasopati.',
+    synopsis: 'Pertarungan sengit antara Raden Arjuna dan Adipati Karna pada hari ke-17 Baratayuda. Keduanya saling berhadapan di atas kereta perang dengan panah-panah sakti, mempertemukan takdir persaudaraan sedarah dalam kepatuhan sumpah kesatria yang tak terelakkan.',
+    philosophy: 'Keluhuran dharma dan keteguhan memegang sumpah ksatria di atas ikatan darah keluarga. Pengorbanan sejati demi memegang teguh kehormatan janji diri hingga akhir hayat.',
+    tradition: 'Gaya Surakarta & Yogyakarta (Gagrag Mataram)',
+    versionLabel: 'Serat Bharatayuddha - Babak Karna Parwa',
+    characterIds: [2, 3], // Arjuna, Karna
+    sources: [
+      {
+        title: 'Serat Bharatayuddha Purwa',
+        author: 'Pujangga Kasunanan Surakarta',
+        reference: 'Reksa Pustaka Mangkunegaran',
+        rightsNote: 'Warisan Budaya Nusantara / Domain Publik'
+      },
+      {
+        title: 'Naskah Lakon Karno Tanding Ki Manteb Soedharsono',
+        author: 'Ki Manteb Soedharsono (Adaptasi 1995)',
+        reference: 'Dokumentasi Pedalangan Kasunanan',
+        rightsNote: 'Arsip Kurasi Pedalangan'
+      }
+    ],
+    recommendedBackground: 'kelir-kurusetra-perang',
+    themeSong: 'Gamelan Srepeg Manyura'
   }
 ];
 
