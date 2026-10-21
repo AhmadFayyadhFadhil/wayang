@@ -7,7 +7,6 @@ import soundEngine from '../../services/soundscape';
 import {
   Search,
   Play,
-  Square,
   ChevronDown,
   Shield,
   X,
@@ -21,12 +20,15 @@ import JavaneseCloudBackground from '../../components/ui/JavaneseCloudBackground
 import WayangCoverflowCarousel from '../../components/ui/WayangCoverflowCarousel';
 import WayangDuelShadowBg from '../../components/ui/WayangDuelShadowBg';
 import AtlasStoryShowcase from './AtlasStoryShowcase';
+import WayangTopAudioCarousel from '../../components/ui/WayangTopAudioCarousel';
 
 // Gambar Otentik Lakon & Tokoh Sesuai Cardbox Halaman Beranda
 import galleryCoverGatotkaca from '../../assets/gallery_cover_gatotkaca.jpg';
 import lakonCoverDewaRuci from '../../assets/lakon_cover_dewa_ruci.jpg';
 import lakonCoverShintaObong from '../../assets/lakon_cover_shinta_obong.jpg';
 import dalangPerformanceHeritage from '../../assets/dalang_performance_heritage.jpg';
+import gamelanOrchestraHeritage from '../../assets/gamelan_orchestra_heritage.jpg';
+import tatahSunggingCraft from '../../assets/tatah_sungging_craft.jpg';
 import wayangCardGatotkaca from '../../assets/wayang_card_gatotkaca.jpg';
 import wayangCardArjuna from '../../assets/wayang_card_arjuna.jpg';
 import wayangCardShinta from '../../assets/wayang_card_shinta.jpg';
@@ -34,6 +36,15 @@ import wayangCardBima from '../../assets/wayang_card_bima.jpg';
 import wayangCardKarna from '../../assets/wayang_card_karna.jpg';
 import wayangCardRahwana from '../../assets/wayang_card_rahwana.jpg';
 import wayangCardSemar from '../../assets/wayang_card_semar.jpg';
+
+const AUDIO_POSTERS = {
+  1: gamelanOrchestraHeritage,
+  2: dalangPerformanceHeritage,
+  3: lakonCoverShintaObong,
+  4: tatahSunggingCraft,
+  5: galleryCoverGatotkaca,
+  6: lakonCoverDewaRuci,
+};
 
 const STORY_ASSETS = {
   'gugurnya-ghatotkaca': {
@@ -744,16 +755,16 @@ export default function AtlasView({ onPlayCharacterOnStage }) {
             </div>
           )}
 
-          {/* C. Bagian Tata Suara */}
+          {/* C. Bagian Tata Suara — Netflix Top 10 Style Horizontal Carousel */}
           {filteredAudio.length > 0 && (
-            <div style={{ marginBottom: '30px' }}>
+            <div style={{ marginBottom: '36px' }}>
               {activeFilter === 'all' && (
                 <div
                   style={{
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'space-between',
-                    marginBottom: '22px',
+                    marginBottom: '18px',
                     borderBottom: '1px solid rgba(0, 0, 0, 0.08)',
                     paddingBottom: '12px',
                   }}
@@ -762,195 +773,17 @@ export default function AtlasView({ onPlayCharacterOnStage }) {
                     Tata Suara & Soundscape Tradisi
                   </h3>
                   <span style={{ fontSize: '12px', color: '#8b5a1b', background: '#ffffff', border: '1px solid rgba(212, 175, 55, 0.25)', padding: '4px 14px', borderRadius: '14px', fontWeight: '750' }}>
-                    {filteredAudio.length} Gamelan
+                    {filteredAudio.length} Gamelan & SFX
                   </span>
                 </div>
               )}
 
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 340px), 1fr))', gap: '20px' }}>
-                {filteredAudio.map((audio) => {
-                  const isPlaying = playingAudioId === audio.id;
-                  return (
-                    <div
-                      key={audio.id}
-                      style={{
-                        background: '#ffffff',
-                        borderRadius: '18px',
-                        border: '1px solid rgba(0, 0, 0, 0.06)',
-                        padding: '18px 24px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'space-between',
-                        gap: '18px',
-                        height: '100%',
-                        minHeight: '96px',
-                        boxSizing: 'border-box',
-                        boxShadow: '0 2px 10px rgba(40, 28, 16, 0.03)',
-                        transition: 'transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease',
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.borderColor = 'rgba(212, 175, 55, 0.35)';
-                        e.currentTarget.style.transform = 'translateY(-2px)';
-                        e.currentTarget.style.boxShadow = '0 6px 18px rgba(40, 28, 16, 0.06)';
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.borderColor = 'rgba(0, 0, 0, 0.06)';
-                        e.currentTarget.style.transform = 'translateY(0)';
-                        e.currentTarget.style.boxShadow = '0 2px 10px rgba(40, 28, 16, 0.03)';
-                      }}
-                    >
-                      {/* 1. Ikon Waveform Audio Sesuai Screenshot */}
-                      <div
-                        style={{
-                          width: '48px',
-                          height: '48px',
-                          borderRadius: '16px',
-                          background: isPlaying ? 'rgba(180, 138, 40, 0.16)' : 'rgba(212, 175, 55, 0.10)',
-                          border: '1px solid rgba(212, 175, 55, 0.22)',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          flexShrink: 0,
-                        }}
-                      >
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '3px', height: '24px' }}>
-                          <span
-                            style={{
-                              width: '3.5px',
-                              height: isPlaying ? '14px' : '10px',
-                              background: '#b48a28',
-                              borderRadius: '9999px',
-                              transition: 'height 0.25s ease',
-                            }}
-                          />
-                          <span
-                            style={{
-                              width: '3.5px',
-                              height: isPlaying ? '20px' : '18px',
-                              background: '#d4af37',
-                              borderRadius: '9999px',
-                              transition: 'height 0.25s ease',
-                            }}
-                          />
-                          <span
-                            style={{
-                              width: '3.5px',
-                              height: isPlaying ? '16px' : '24px',
-                              background: '#b48a28',
-                              borderRadius: '9999px',
-                              transition: 'height 0.25s ease',
-                            }}
-                          />
-                          <span
-                            style={{
-                              width: '3.5px',
-                              height: isPlaying ? '22px' : '14px',
-                              background: '#d4af37',
-                              borderRadius: '9999px',
-                              transition: 'height 0.25s ease',
-                            }}
-                          />
-                          <span
-                            style={{
-                              width: '3.5px',
-                              height: isPlaying ? '12px' : '8px',
-                              background: '#b48a28',
-                              borderRadius: '9999px',
-                              transition: 'height 0.25s ease',
-                            }}
-                          />
-                        </div>
-                      </div>
-
-                      {/* 2. Judul (Soga Charcoal) & Deskripsi Singkat Padat (Warna Abu Lembut) - Teks Penuh Tanpa Terpotong */}
-                      <div style={{ flex: 1, minWidth: 0, paddingRight: '8px' }}>
-                        <h4
-                          style={{
-                            margin: '0 0 4px 0',
-                            fontSize: '17px',
-                            color: '#1a140e',
-                            fontWeight: '800',
-                            letterSpacing: '-0.2px',
-                            lineHeight: '1.3',
-                          }}
-                        >
-                          {audio.title}
-                        </h4>
-                        <p
-                          style={{
-                            margin: 0,
-                            fontSize: '13px',
-                            color: '#6b7280',
-                            lineHeight: '1.45',
-                          }}
-                        >
-                          {audio.shortDesc || audio.description}
-                        </p>
-                      </div>
-
-                      {/* 3. Aksi: Teks "Play Demo" + Tombol Bulat Putih dengan Ikon Play Sesuai Screenshot */}
-                      <button
-                        onClick={() => handleToggleAudio(audio)}
-                        style={{
-                          background: 'transparent',
-                          border: 'none',
-                          padding: '4px 0',
-                          cursor: 'pointer',
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '12px',
-                          flexShrink: 0,
-                        }}
-                      >
-                        <span
-                          style={{
-                            fontSize: '13.5px',
-                            fontWeight: '700',
-                            color: isPlaying ? '#991b1b' : '#b48a28',
-                            letterSpacing: '0.01em',
-                            whiteSpace: 'nowrap',
-                          }}
-                        >
-                          {isPlaying ? 'Hentikan' : 'Play Demo'}
-                        </span>
-                        <div
-                          style={{
-                            width: '42px',
-                            height: '42px',
-                            borderRadius: '50%',
-                            background: isPlaying ? '#991b1b' : '#ffffff',
-                            border: isPlaying ? 'none' : '1.5px solid rgba(212, 175, 55, 0.40)',
-                            boxShadow: '0 3px 10px rgba(0, 0, 0, 0.08)',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            color: isPlaying ? '#ffffff' : '#b48a28',
-                            transition: 'all 0.2s ease',
-                          }}
-                          onMouseEnter={(e) => {
-                            if (!isPlaying) {
-                              e.currentTarget.style.background = '#b48a28';
-                              e.currentTarget.style.color = '#ffffff';
-                            }
-                          }}
-                          onMouseLeave={(e) => {
-                            if (!isPlaying) {
-                              e.currentTarget.style.background = '#ffffff';
-                              e.currentTarget.style.color = '#b48a28';
-                            }
-                          }}
-                        >
-                          {isPlaying ? (
-                            <Square size={16} />
-                          ) : (
-                            <Play size={16} style={{ marginLeft: '2px' }} />
-                          )}
-                        </div>
-                      </button>
-                    </div>
-                  );
-                })}
-              </div>
+              <WayangTopAudioCarousel
+                audioList={filteredAudio}
+                playingAudioId={playingAudioId}
+                onToggleAudio={handleToggleAudio}
+                audioPosters={AUDIO_POSTERS}
+              />
             </div>
           )}
         </div>

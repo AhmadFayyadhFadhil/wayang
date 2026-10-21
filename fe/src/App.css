@@ -4256,6 +4256,348 @@ html, body {
   box-shadow: 0 8px 22px rgba(0, 0, 0, 0.28);
 }
 
+/* ============================================================
+   NETFLIX TOP 10 STYLE CAROUSEL - TATA SUARA & SOUNDSCAPE TRADISI
+   Format Slider Horizontal dengan Giant Hollow Outline Numbers
+   ============================================================ */
+
+.wayang-top-audio-container {
+  position: relative;
+  width: 100%;
+  margin: 12px 0 28px 0;
+}
+
+.wayang-top-audio-track {
+  display: flex;
+  gap: 22px;
+  overflow-x: auto;
+  padding: 16px 20px 28px 12px;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+.wayang-top-audio-track::-webkit-scrollbar {
+  display: none;
+}
+
+.wayang-top-audio-card-wrapper {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  flex-shrink: 0;
+  min-width: 250px;
+  width: 250px;
+  height: 350px;
+  scroll-snap-align: start;
+  cursor: pointer;
+}
+
+/* Kartu Poster Vertikal */
+.wayang-top-audio-poster {
+  position: relative;
+  width: 195px;
+  height: 310px;
+  border-radius: 18px;
+  overflow: hidden;
+  margin-left: 55px; /* Memberi ruang bagi nomor urut raksasa di sebelah kiri */
+  background: #120e0a;
+  border: 1px solid rgba(212, 175, 55, 0.24);
+  box-shadow: 0 8px 24px -4px rgba(13, 10, 7, 0.38);
+  transition: all 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  outline: none;
+}
+
+.wayang-top-audio-card-wrapper:hover .wayang-top-audio-poster {
+  transform: translateY(-6px) scale(1.02);
+  border-color: rgba(212, 175, 55, 0.58);
+  box-shadow: 0 16px 36px -4px rgba(13, 10, 7, 0.48);
+}
+
+.wayang-top-audio-card-wrapper.is-playing .wayang-top-audio-poster {
+  border-color: #d4af37;
+  box-shadow: 0 0 0 1px #d4af37, 0 16px 36px -4px rgba(212, 175, 55, 0.32);
+}
+
+.wayang-top-audio-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 25%;
+  transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.wayang-top-audio-card-wrapper:hover .wayang-top-audio-img {
+  transform: scale(1.07);
+}
+
+.wayang-top-audio-img-placeholder {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #1a140e;
+}
+
+/* Scrim Gradient Gelap */
+.wayang-top-audio-scrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    rgba(10, 7, 5, 0.98) 0%,
+    rgba(10, 7, 5, 0.85) 38%,
+    rgba(10, 7, 5, 0.15) 60%,
+    rgba(10, 7, 5, 0.55) 100%
+  );
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Header Poster (Crest Logo W + Kategori) */
+.wayang-top-audio-header {
+  position: relative;
+  z-index: 2;
+  padding: 13px 13px 0 13px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.wayang-top-audio-crest-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.wayang-top-audio-crest-logo {
+  font-size: 16px;
+  font-weight: 900;
+  color: #e8bb5c;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.7);
+  line-height: 1;
+  font-family: var(--font-sans);
+}
+
+.wayang-top-audio-badge-category {
+  font-size: 9.5px;
+  font-weight: 800;
+  color: #f0e6d8;
+  background: rgba(18, 12, 8, 0.65);
+  border: 1px solid rgba(212, 175, 55, 0.32);
+  border-radius: 9999px;
+  padding: 2px 7px;
+  letter-spacing: 0.05em;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+.wayang-top-audio-tempo-tag {
+  font-size: 9.5px;
+  font-weight: 650;
+  color: #e8bb5c;
+  background: rgba(18, 12, 8, 0.65);
+  border-radius: 9999px;
+  padding: 2px 8px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  white-space: nowrap;
+}
+
+/* Konten Teks di Bagian Bawah */
+.wayang-top-audio-content {
+  position: relative;
+  z-index: 2;
+  padding: 0 13px 15px 13px;
+  display: flex;
+  flex-direction: column;
+}
+
+.wayang-top-audio-title {
+  font-size: 14.5px;
+  font-weight: 800;
+  color: #ffffff;
+  margin: 0 0 3px 0;
+  letter-spacing: -0.2px;
+  line-height: 1.25;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.wayang-top-audio-instrument {
+  font-size: 11px;
+  color: #e8bb5c;
+  margin: 0 0 10px 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  opacity: 0.92;
+}
+
+.wayang-top-audio-footer-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.wayang-top-audio-play-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.wayang-top-audio-play-btn {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: #e8bb5c;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  flex-shrink: 0;
+}
+
+.wayang-top-audio-play-btn.playing {
+  background: #991b1b;
+}
+
+.wayang-top-audio-card-wrapper:hover .wayang-top-audio-play-btn:not(.playing) {
+  background: #f7d27e;
+  transform: scale(1.08);
+}
+
+.wayang-top-audio-play-label {
+  font-size: 11.5px;
+  font-weight: 750;
+  color: #ffffff;
+  letter-spacing: 0.02em;
+}
+
+/* Animasi Equalizer Bars */
+.wayang-top-audio-equalizer {
+  display: flex;
+  align-items: flex-end;
+  gap: 3px;
+  height: 16px;
+}
+
+.wayang-top-audio-equalizer .eq-bar {
+  width: 3px;
+  background: #e8bb5c;
+  border-radius: 9999px;
+  animation: wayangAudioEq 0.75s infinite ease-in-out alternate;
+}
+
+.wayang-top-audio-equalizer .eq-bar-1 { height: 12px; animation-delay: 0.1s; }
+.wayang-top-audio-equalizer .eq-bar-2 { height: 16px; animation-delay: 0.3s; }
+.wayang-top-audio-equalizer .eq-bar-3 { height: 8px;  animation-delay: 0.2s; }
+.wayang-top-audio-equalizer .eq-bar-4 { height: 14px; animation-delay: 0.4s; }
+
+@keyframes wayangAudioEq {
+  0% { transform: scaleY(0.3); }
+  100% { transform: scaleY(1); }
+}
+
+/* ============================================================
+   GIANT HOLLOW OUTLINE NUMBER (NETFLIX TOP 10 STYLE)
+   ============================================================ */
+.wayang-top-audio-rank-number {
+  position: absolute;
+  bottom: -6px;
+  left: 0;
+  z-index: 10;
+  pointer-events: none;
+  user-select: none;
+  font-family: var(--font-sans);
+  font-size: clamp(96px, 9.5vw, 134px);
+  font-weight: 900;
+  line-height: 0.82;
+  letter-spacing: -6px;
+  -webkit-text-stroke: 3.5px #d4af37;
+  color: #120e0a;
+  filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.65));
+  transition: all 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.wayang-top-audio-card-wrapper:hover .wayang-top-audio-rank-number {
+  transform: translateY(-4px) scale(1.03);
+  -webkit-text-stroke-color: #f7d27e;
+  filter: drop-shadow(0 8px 18px rgba(212, 175, 55, 0.38));
+}
+
+/* Tombol Navigasi Panah Geser (Glass Chevron Buttons) */
+.wayang-top-audio-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 30;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(212, 175, 55, 0.38);
+  box-shadow: 0 4px 18px rgba(40, 28, 16, 0.16);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.22s ease;
+}
+
+.wayang-top-audio-nav:hover {
+  background: #ffffff;
+  border-color: #d4af37;
+  transform: translateY(-50%) scale(1.08);
+  box-shadow: 0 6px 22px rgba(40, 28, 16, 0.22);
+}
+
+.wayang-top-audio-nav-left {
+  left: 2px;
+}
+
+.wayang-top-audio-nav-right {
+  right: 2px;
+}
+
+/* Responsivitas Layar Ponsel & Tablet */
+@media (max-width: 640px) {
+  .wayang-top-audio-card-wrapper {
+    min-width: 215px;
+    width: 215px;
+    height: 310px;
+  }
+
+  .wayang-top-audio-poster {
+    width: 170px;
+    height: 275px;
+    margin-left: 45px;
+  }
+
+  .wayang-top-audio-rank-number {
+    font-size: 88px;
+    -webkit-text-stroke: 3px #d4af37;
+  }
+
+  .wayang-top-audio-nav {
+    display: none; /* Swipe sentuh alami di mobile */
+  }
+}
+
+
 
 
 
