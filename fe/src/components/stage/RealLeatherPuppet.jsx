@@ -9,35 +9,14 @@ import upperArmRPng from '../../assets/puppets/upper-arm-r.png';
 import forearmRPng from '../../assets/puppets/forearm-r.png';
 import handRPng from '../../assets/puppets/hand-r.png';
 
-/**
- * 2-Bone Analytical Inverse Kinematics Solver
- * Menghitung sudut rotasi pundak dan siku secara instan dan alami
- */
-function solve2BoneIK(shoulder, target, Lu = 85, Lf = 80, bend = -1) {
-  const dx = target.x - shoulder.x;
-  const dy = target.y - shoulder.y;
-  const dist = Math.max(20, Math.min(Lu + Lf - 2, Math.hypot(dx, dy)));
-  const baseAngle = Math.atan2(dy, dx);
-
-  const cosAngle = Math.max(-1, Math.min(1, (Lu * Lu + dist * dist - Lf * Lf) / (2 * Lu * dist)));
-  const upperAngle = baseAngle + bend * Math.acos(cosAngle);
-
-  const elbowX = shoulder.x + Lu * Math.cos(upperAngle);
-  const elbowY = shoulder.y + Lu * Math.sin(upperAngle);
-
-  const foreAngle = Math.atan2(target.y - elbowY, target.x - elbowX);
-
-  return {
-    shoulderAngle: (upperAngle * 180) / Math.PI,
-    foreAngle: (foreAngle * 180) / Math.PI,
-    elbow: { x: elbowX, y: elbowY },
-    wrist: target,
-  };
-}
-
-// Posisi pundak dalam sistem koordinat lokal 240 x 360
-const SHOULDER_L = { x: 92, y: 122 };
-const SHOULDER_R = { x: 148, y: 122 };
+import {
+  SHOULDER_L,
+  SHOULDER_R,
+  DEFAULT_FRONT_TARGET,
+  DEFAULT_BACK_TARGET,
+  solve2BoneIK,
+  mapFingerToIkTarget,
+} from '../../services/vision/puppetIkSolver';
 
 export default function RealLeatherPuppet({
   slug = 'arjuna',
@@ -64,29 +43,9 @@ export default function RealLeatherPuppet({
 
   // Target jempol (tangan depan) dan telunjuk (tangan belakang)
   const ikTargets = useMemo(() => {
-    // Posisi istirahat alami jika jari belum terdeteksi
-    const defaultThumbTarget = { x: 70, y: 220 };
-    const defaultIndexTarget = { x: 170, y: 220 };
-
-    if (!fingerTargets) {
-      return {
-        front: defaultThumbTarget,
-        back: defaultIndexTarget,
-      };
-    }
-
-    // Mapping koordinat jari normalisasi dalang ke rentang gerak wayang
-    const mapFinger = (tip, defaultPos) => {
-      if (!tip) return defaultPos;
-      // Offset relatif dikalikan faktor jangkauan wayang
-      const targetX = Math.max(20, Math.min(220, defaultPos.x + tip.dx * 160));
-      const targetY = Math.max(60, Math.min(280, defaultPos.y + tip.dy * 160));
-      return { x: targetX, y: targetY };
-    };
-
     return {
-      front: mapFinger(fingerTargets.thumb, defaultThumbTarget),
-      back: mapFinger(fingerTargets.index, defaultIndexTarget),
+      front: mapFingerToIkTarget(fingerTargets?.thumb, DEFAULT_FRONT_TARGET, true),
+      back: mapFingerToIkTarget(fingerTargets?.index, DEFAULT_BACK_TARGET, false),
     };
   }, [fingerTargets]);
 
@@ -160,6 +119,7 @@ export default function RealLeatherPuppet({
         >
           {/* LENGAN BELAKANG (LAYER 1 - PALING BELAKANG) */}
           <div
+            className="real-puppet-arm-back-shld"
             style={{
               position: 'absolute',
               left: `${SHOULDER_R.x}px`,
@@ -180,6 +140,7 @@ export default function RealLeatherPuppet({
             />
             {/* Siku & Lengan Bawah Belakang */}
             <div
+              className="real-puppet-arm-back-elbw"
               style={{
                 position: 'absolute',
                 left: '60px',
@@ -354,6 +315,7 @@ export default function RealLeatherPuppet({
 
           {/* LENGAN DEPAN (LAYER 3 - PALING DEPAN) */}
           <div
+            className="real-puppet-arm-front-shld"
             style={{
               position: 'absolute',
               left: `${SHOULDER_L.x}px`,
@@ -374,6 +336,7 @@ export default function RealLeatherPuppet({
             />
             {/* Siku & Lengan Bawah Depan */}
             <div
+              className="real-puppet-arm-front-elbw"
               style={{
                 position: 'absolute',
                 left: '60px',
@@ -420,6 +383,7 @@ export default function RealLeatherPuppet({
           >
             {/* Tudhing Tangan Depan */}
             <line
+              className="real-puppet-tudhing-front-line"
               x1={ikTargets.front.x}
               y1={ikTargets.front.y}
               x2={ikTargets.front.x + 8}
@@ -429,6 +393,7 @@ export default function RealLeatherPuppet({
               strokeLinecap="round"
             />
             <circle
+              className="real-puppet-tudhing-front-joint"
               cx={ikTargets.front.x}
               cy={ikTargets.front.y}
               r="3.2"
@@ -439,6 +404,7 @@ export default function RealLeatherPuppet({
 
             {/* Tudhing Tangan Belakang */}
             <line
+              className="real-puppet-tudhing-back-line"
               x1={ikTargets.back.x}
               y1={ikTargets.back.y}
               x2={ikTargets.back.x + 8}
@@ -448,6 +414,7 @@ export default function RealLeatherPuppet({
               strokeLinecap="round"
             />
             <circle
+              className="real-puppet-tudhing-back-joint"
               cx={ikTargets.back.x}
               cy={ikTargets.back.y}
               r="3.2"

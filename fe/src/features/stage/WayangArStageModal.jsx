@@ -3,6 +3,7 @@ import handTrackingService from '../../services/vision/handTrackingService';
 import dalangKinematicsEngine from '../../services/vision/dalangKinematicsEngine';
 import soundEngine from '../../services/soundscape';
 import RealLeatherPuppet from '../../components/stage/RealLeatherPuppet';
+import { updatePuppetArmsDOM } from '../../services/vision/puppetIkSolver';
 import ErrorBoundary from '../../components/ui/ErrorBoundary';
 import { CHARACTERS_MASTER } from '../../data/master/charactersMaster';
 import {
@@ -31,6 +32,8 @@ export default function WayangArStageModal({ isOpen, onClose, onOpenTutorial }) 
   const canvasRef = useRef(null);
   const fileInputRef = useRef(null);
   const particlesRef = useRef([]);
+  const leftPuppetRef = useRef(null);
+  const rightPuppetRef = useRef(null);
 
   // Koleksi wayang custom yang diunggah dalang
   const [customPuppets, setCustomPuppets] = useState([]);
@@ -322,6 +325,21 @@ export default function WayangArStageModal({ isOpen, onClose, onOpenTutorial }) 
           const updates = dalangKinematicsEngine.processFrame(results, dummyChars, null);
 
           updates.forEach(({ instanceId, updates: u }) => {
+            const puppetEl = instanceId === 'char-left' ? leftPuppetRef.current : rightPuppetRef.current;
+            if (puppetEl) {
+              if (u.x !== undefined) puppetEl.style.left = `${u.x * 100}%`;
+              if (u.y !== undefined) puppetEl.style.top = `${u.y * 100}%`;
+              if (u.facing !== undefined) {
+                const inner = puppetEl.querySelector('.real-leather-puppet-container');
+                if (inner) {
+                  inner.style.transform = `scaleX(${u.facing === 'left' ? -1 : 1})`;
+                }
+              }
+              if (u.fingerTargets) {
+                updatePuppetArmsDOM(puppetEl, u.fingerTargets);
+              }
+            }
+
             if (instanceId === 'char-left') {
               setLeftCharState((prev) => ({ ...prev, ...u }));
             } else if (instanceId === 'char-right') {
@@ -619,6 +637,7 @@ export default function WayangArStageModal({ isOpen, onClose, onOpenTutorial }) 
 
         {/* TOKOH WAYANG KIRI */}
         <div
+          ref={leftPuppetRef}
           style={{
             position: 'absolute',
             left: `${leftCharState.x * 100}%`,
@@ -626,7 +645,7 @@ export default function WayangArStageModal({ isOpen, onClose, onOpenTutorial }) 
             transform: 'translate(-50%, -80%)',
             pointerEvents: 'none',
             zIndex: 5,
-            transition: 'left 0.04s linear, top 0.04s linear',
+            willChange: 'left, top',
           }}
         >
           <ErrorBoundary>
@@ -644,6 +663,7 @@ export default function WayangArStageModal({ isOpen, onClose, onOpenTutorial }) 
 
         {/* TOKOH WAYANG KANAN */}
         <div
+          ref={rightPuppetRef}
           style={{
             position: 'absolute',
             left: `${rightCharState.x * 100}%`,
@@ -651,7 +671,7 @@ export default function WayangArStageModal({ isOpen, onClose, onOpenTutorial }) 
             transform: 'translate(-50%, -80%)',
             pointerEvents: 'none',
             zIndex: 6,
-            transition: 'left 0.04s linear, top 0.04s linear',
+            willChange: 'left, top',
           }}
         >
           <ErrorBoundary>

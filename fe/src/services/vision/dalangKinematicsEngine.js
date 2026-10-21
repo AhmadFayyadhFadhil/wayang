@@ -73,11 +73,12 @@ class DalangKinematicsEngine {
     this.mode = 'dual'; // 'solo' | 'dual'
     this.isMirrored = true;
 
-    // Filter OneEuro Adaptif per slot tangan [tangan 0, tangan 1]
+    // Filter OneEuro Adaptif per slot tangan [tangan 0, tangan 1] (Super Silky Smooth Motion)
     this.filters = [
-      { x: new OneEuroFilter(1.4, 7.5), y: new OneEuroFilter(1.4, 7.5) },
-      { x: new OneEuroFilter(1.4, 7.5), y: new OneEuroFilter(1.4, 7.5) },
+      { x: new OneEuroFilter(0.75, 3.5), y: new OneEuroFilter(0.75, 3.5) },
+      { x: new OneEuroFilter(0.75, 3.5), y: new OneEuroFilter(0.75, 3.5) },
     ];
+    this.smoothedFingers = [{}, {}];
 
     // State Pelacakan Halus
     this.smoothedHands = [];
@@ -236,9 +237,16 @@ class DalangKinematicsEngine {
       const smoothX = filter.x.filter(rawX, now);
       const smoothY = filter.y.filter(rawY, now);
 
-      // Hitung orientasi kemiringan telapak tangan (Hand Tilt):
+      // 1. Hitung orientasi kemiringan telapak tangan (Hand Tilt Angle dalam derajat)
       const wristRawX = this.isMirrored ? 1.0 - landmarks[0].x : landmarks[0].x;
-      const tiltX = rawX - wristRawX;
+      const wristRawY = landmarks[0].y;
+      const midRawX = this.isMirrored ? 1.0 - landmarks[9].x : landmarks[9].x;
+      const midRawY = landmarks[9].y;
+
+      const vX = midRawX - wristRawX;
+      const vY = midRawY - wristRawY;
+      // Derajat kemiringan: positif = miring ke kanan, negatif = miring ke kiri
+      const tiltAngleDeg = Math.atan2(vX, -vY) * (180 / Math.PI);
 
       // Deteksi Kedalaman Z-Depth & Sudut Tudhing Lengan
       const depth = this.getHandDepth(landmarks);
@@ -266,20 +274,43 @@ class DalangKinematicsEngine {
         this.isKiprahActive[hIdx] = false;
       }
 
-      // Target Posisi Ujung Jempol & Telunjuk untuk IK Lengan
-      const palmSize = Math.max(0.08, this.getDistance(landmarks[0], landmarks[9]));
+      // 2. Target Posisi Ujung Jempol (Landmark 4) & Telunjuk (Landmark 8) untuk IK Lengan
+      const palmSize = Math.max(0.06, Math.hypot(landmarks[9].x - landmarks[0].x, landmarks[9].y - landmarks[0].y));
       const thumbTip = landmarks[4];
+      const thumbMcp = landmarks[2];
       const indexTip = landmarks[8];
-      const palmCenter = landmarks[9];
+      const indexMcp = landmarks[5];
+
+      const thbRawX = ((this.isMirrored ? 1.0 - thumbTip.x : thumbTip.x) - (this.isMirrored ? 1.0 - thumbMcp.x : thumbMcp.x)) / palmSize;
+      const thbRawY = (thumbTip.y - thumbMcp.y) / palmSize;
+
+      const idxRawX = ((this.isMirrored ? 1.0 - indexTip.x : indexTip.x) - (this.isMirrored ? 1.0 - indexMcp.x : indexMcp.x)) / palmSize;
+      const idxRawY = (indexTip.y - indexMcp.y) / palmSize;
+
+      // Filter Low-Pass / EMA untuk kelembutan gerak jempol dan telunjuk (Super Smooth Finger IK)
+      if (!this.smoothedFingers) this.smoothedFingers = [{}, {}];
+      const prevF = this.smoothedFingers[hIdx] || {};
+
+      const smoothThbX = prevF.thbX !== undefined ? 0.35 * thbRawX + 0.65 * prevF.thbX : thbRawX;
+      const smoothThbY = prevF.thbY !== undefined ? 0.35 * thbRawY + 0.65 * prevF.thbY : thbRawY;
+      const smoothIdxX = prevF.idxX !== undefined ? 0.35 * idxRawX + 0.65 * prevF.idxX : idxRawX;
+      const smoothIdxY = prevF.idxY !== undefined ? 0.35 * idxRawY + 0.65 * prevF.idxY : idxRawY;
+
+      this.smoothedFingers[hIdx] = {
+        thbX: smoothThbX,
+        thbY: smoothThbY,
+        idxX: smoothIdxX,
+        idxY: smoothIdxY,
+      };
 
       const fingerTargets = {
         thumb: {
-          dx: ((this.isMirrored ? 1.0 - thumbTip.x : thumbTip.x) - (this.isMirrored ? 1.0 - palmCenter.x : palmCenter.x)) / palmSize,
-          dy: (thumbTip.y - palmCenter.y) / palmSize,
+          dx: Number(smoothThbX.toFixed(3)),
+          dy: Number(smoothThbY.toFixed(3)),
         },
         index: {
-          dx: ((this.isMirrored ? 1.0 - indexTip.x : indexTip.x) - (this.isMirrored ? 1.0 - palmCenter.x : palmCenter.x)) / palmSize,
-          dy: (indexTip.y - palmCenter.y) / palmSize,
+          dx: Number(smoothIdxX.toFixed(3)),
+          dy: Number(smoothIdxY.toFixed(3)),
         },
       };
 
@@ -300,7 +331,7 @@ class DalangKinematicsEngine {
         rawLandmarks: landmarks,
         x: Math.max(0.06, Math.min(0.94, smoothX)),
         y: Math.max(0.35, Math.min(0.85, smoothY)),
-        tiltX,
+        tiltAngleDeg,
         depth,
         armAngles,
         fingerTargets,
@@ -336,9 +367,9 @@ class DalangKinematicsEngine {
         // Deteksi kemiringan telapak untuk membalik arah hadap (Flip)
         const lastState = this.lastWayangStates.get(targetChar.instanceId);
         let facing = lastState?.facing || targetChar.facing || 'right';
-        if (primaryHand.tiltX > 0.032) {
+        if (primaryHand.tiltAngleDeg > 14) {
           facing = 'right';
-        } else if (primaryHand.tiltX < -0.032) {
+        } else if (primaryHand.tiltAngleDeg < -14) {
           facing = 'left';
         }
 
@@ -435,9 +466,9 @@ class DalangKinematicsEngine {
         // Deteksi kemiringan telapak untuk membalik arah hadap (Flip)
         const lastState = this.lastWayangStates.get(char.instanceId);
         let facing = lastState?.facing || (isLeft ? 'right' : 'left');
-        if (hand.tiltX > 0.032) {
+        if (hand.tiltAngleDeg > 14) {
           facing = 'right';
-        } else if (hand.tiltX < -0.032) {
+        } else if (hand.tiltAngleDeg < -14) {
           facing = 'left';
         }
 

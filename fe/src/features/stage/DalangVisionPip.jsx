@@ -265,7 +265,12 @@ export default function DalangVisionPip({
           : hand.role === 'cempurit'
           ? ' (Cempurit)'
           : '';
-      const tiltIndicator = hand.tiltX > 0.032 ? ' →' : hand.tiltX < -0.032 ? ' ←' : '';
+      const tiltIndicator =
+        hand.tiltAngleDeg > 14
+          ? ' →'
+          : hand.tiltAngleDeg < -14
+          ? ' ←'
+          : '';
       const fullLabel = `🔒 ${(char.name || 'Wayang')}${roleText}${tiltIndicator}`;
       const textWidth = ctx.measureText(fullLabel).width;
 

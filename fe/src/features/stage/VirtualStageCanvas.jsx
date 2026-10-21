@@ -1,5 +1,6 @@
 import React, { useRef, useState, useEffect, useMemo, forwardRef, useImperativeHandle } from 'react';
 import RealLeatherPuppet from '../../components/stage/RealLeatherPuppet';
+import { updatePuppetArmsDOM } from '../../services/vision/puppetIkSolver';
 import { getBackgroundById, STAGE_CONFIG_MASTER } from '../../data/master/stageConfigMaster';
 import soundEngine from '../../services/soundscape';
 import { ZoomIn, ZoomOut, Trash2, Volume2, ArrowLeft, ArrowRight, ArrowUp, ArrowDown } from 'lucide-react';
@@ -46,6 +47,9 @@ const VirtualStageCanvas = forwardRef(function VirtualStageCanvas({
             puppetEl.setAttribute('transform', `scale(${updates.facing === 'left' ? -sc : sc}, ${sc})`);
           }
         }
+      }
+      if (updates.fingerTargets) {
+        updatePuppetArmsDOM(el, updates.fingerTargets);
       }
     },
   }), [characters]);
@@ -328,6 +332,7 @@ const VirtualStageCanvas = forwardRef(function VirtualStageCanvas({
                 customImageUrl={char.customImageUrl}
                 facing={char.facing}
                 scale={char.scale}
+                fingerTargets={char.fingerTargets}
                 isSelected={isSelected}
                 isKiprah={char.pose === 'perang'}
                 width={190}
