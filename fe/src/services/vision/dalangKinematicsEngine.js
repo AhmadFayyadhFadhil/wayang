@@ -266,6 +266,23 @@ class DalangKinematicsEngine {
         this.isKiprahActive[hIdx] = false;
       }
 
+      // Target Posisi Ujung Jempol & Telunjuk untuk IK Lengan
+      const palmSize = Math.max(0.08, this.getDistance(landmarks[0], landmarks[9]));
+      const thumbTip = landmarks[4];
+      const indexTip = landmarks[8];
+      const palmCenter = landmarks[9];
+
+      const fingerTargets = {
+        thumb: {
+          dx: ((this.isMirrored ? 1.0 - thumbTip.x : thumbTip.x) - (this.isMirrored ? 1.0 - palmCenter.x : palmCenter.x)) / palmSize,
+          dy: (thumbTip.y - palmCenter.y) / palmSize,
+        },
+        index: {
+          dx: ((this.isMirrored ? 1.0 - indexTip.x : indexTip.x) - (this.isMirrored ? 1.0 - palmCenter.x : palmCenter.x)) / palmSize,
+          dy: (indexTip.y - palmCenter.y) / palmSize,
+        },
+      };
+
       // Cek kecepatan hentakan ke bawah (Dodogan SFX)
       const velY = (rawY - (this.lastY[hIdx] || rawY)) / (dt / 1000);
       this.lastY[hIdx] = rawY;
@@ -286,6 +303,7 @@ class DalangKinematicsEngine {
         tiltX,
         depth,
         armAngles,
+        fingerTargets,
         isKiprah: this.isKiprahActive[hIdx],
         isPinching: this.isPinching(landmarks),
         isFist: this.isFist(landmarks),
@@ -342,6 +360,7 @@ class DalangKinematicsEngine {
             pose,
             depth: primaryHand.depth,
             armAngles: primaryHand.armAngles,
+            fingerTargets: primaryHand.fingerTargets,
             isKiprah: primaryHand.isKiprah,
           };
           this.lastWayangStates.set(targetChar.instanceId, newState);
@@ -351,7 +370,7 @@ class DalangKinematicsEngine {
           });
         }
 
-        this.statusMessage = `🔒 Wayang ${targetChar.name || 'Wayang'} Terkunci — Miringkan telapak untuk hadap kiri/kanan`;
+        this.statusMessage = `Wayang ${targetChar.name || 'Wayang'} aktif: miringkan telapak untuk hadap kiri atau kanan`;
         this.statusTone = 'grabbing';
       }
 
@@ -361,7 +380,7 @@ class DalangKinematicsEngine {
 
         if (this.isSembah(primaryHand.rawLandmarks, secondaryHand.rawLandmarks)) {
           updates[0].updates.pose = 'sembah';
-          this.statusMessage = `🙏 ${targetChar.name || 'Wayang'} bersikap Sembah Takzim`;
+          this.statusMessage = `${targetChar.name || 'Wayang'} bersikap Sembah Takzim`;
         } else if (secondaryHand.isFist) {
           updates[0].updates.pose = 'perang';
         }
@@ -450,6 +469,7 @@ class DalangKinematicsEngine {
             pose,
             depth: hand.depth,
             armAngles: hand.armAngles,
+            fingerTargets: hand.fingerTargets,
             isKiprah: hand.isKiprah,
           };
           this.lastWayangStates.set(char.instanceId, newState);
@@ -460,20 +480,20 @@ class DalangKinematicsEngine {
         }
       });
 
-      // Perbarui pesan status HUD
+      // Perbarui pesan status HUD bersih tanpa emoticon
       if (isClashing) {
-        this.statusMessage = '⚔️ Laga Sabetan: Kedua tokoh berbenturan senjata!';
+        this.statusMessage = 'Laga Sabetan: Kedua tokoh berbenturan senjata';
         this.statusTone = 'grabbing';
       } else if (isDualSembah) {
-        this.statusMessage = '🙏 Sembah Bersama: Kedua ksatria saling menghormat.';
+        this.statusMessage = 'Sembah Bersama: Kedua ksatria saling menghormat';
         this.statusTone = 'grabbing';
       } else if (hands.length >= 2) {
-        this.statusMessage = '🔒 2 Tokoh Terkunci — Gerakkan telapak & jari, miringkan untuk hadap kiri/kanan';
+        this.statusMessage = 'Dua tokoh terhubung: gerakkan jempol dan telunjuk untuk memainkan tudhing';
         this.statusTone = 'grabbing';
       } else if (hands.length === 1) {
         const h = hands[0];
         const targetName = h.targetChar?.name || (h.role === 'tokoh_kiri' ? 'Tokoh Kiri' : 'Tokoh Kanan');
-        this.statusMessage = `🔒 ${targetName} Terkunci — Gerakkan telapak bebas`;
+        this.statusMessage = `${targetName} terhubung: gerakkan tangan bebas`;
         this.statusTone = 'grabbing';
       } else {
         this.statusMessage = 'Mencari telapak tangan dalang di depan kamera...';

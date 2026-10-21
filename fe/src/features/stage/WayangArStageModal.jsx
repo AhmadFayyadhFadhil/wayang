@@ -2,7 +2,7 @@ import React, { useRef, useEffect, useState, useCallback } from 'react';
 import handTrackingService from '../../services/vision/handTrackingService';
 import dalangKinematicsEngine from '../../services/vision/dalangKinematicsEngine';
 import soundEngine from '../../services/soundscape';
-import AuthenticLeatherWayang from '../../components/stage/AuthenticLeatherWayang';
+import RealLeatherPuppet from '../../components/stage/RealLeatherPuppet';
 import { CHARACTERS_MASTER } from '../../data/master/charactersMaster';
 import {
   X,
@@ -10,11 +10,8 @@ import {
   Minimize2,
   Volume2,
   VolumeX,
-  Sparkles,
-  Swords,
-  Droplets,
-  Sun,
   HelpCircle,
+  Upload,
 } from 'lucide-react';
 
 // Koneksi ruas tulang tangan MediaPipe
@@ -31,19 +28,23 @@ export default function WayangArStageModal({ isOpen, onClose, onOpenTutorial }) 
   const containerRef = useRef(null);
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
-  const animFrameRef = useRef(null);
+  const fileInputRef = useRef(null);
   const particlesRef = useRef([]);
 
+  // Koleksi wayang custom yang diunggah dalang
+  const [customPuppets, setCustomPuppets] = useState([]);
+
   // Karakter yang dipilih untuk tangan kiri dan kanan
-  const [leftSlug, setLeftSlug] = useState('rahwana');
+  const [leftSlug, setLeftSlug] = useState('arjuna');
   const [rightSlug, setRightSlug] = useState('shinta');
 
-  // Skala ukuran wayang independen untuk tangan kiri dan kanan (sesuai referensi: 1.3x kiri & 1.0x kanan)
-  const [leftScale, setLeftScale] = useState(1.3);
+  // Skala ukuran wayang independen untuk tangan kiri dan kanan
+  const [leftScale, setLeftScale] = useState(1.2);
   const [rightScale, setRightScale] = useState(1.0);
 
-  // Mode Suasana / Mood Lakon ('netral' | 'damai' | 'sedih' | 'perang')
-  const [mood, setMood] = useState('sedih'); // Default sedih dengan efek hujan rintik persis foto referensi
+  // Mode Suasana / Mood Lakon ('netral' | 'damai' | 'sendu' | 'perang')
+  const [mood, setMood] = useState('sendu');
+  const [isWeatherActive, setIsWeatherActive] = useState(true);
 
   // Status Dalang & Audio
   const [isAudioOn, setIsAudioOn] = useState(true);
@@ -58,7 +59,7 @@ export default function WayangArStageModal({ isOpen, onClose, onOpenTutorial }) 
     facing: 'right',
     pose: 'default',
     depth: 0,
-    armAngles: null,
+    fingerTargets: null,
     isKiprah: false,
   });
 
@@ -68,7 +69,7 @@ export default function WayangArStageModal({ isOpen, onClose, onOpenTutorial }) 
     facing: 'left',
     pose: 'default',
     depth: 0,
-    armAngles: null,
+    fingerTargets: null,
     isKiprah: false,
   });
 
@@ -76,6 +77,7 @@ export default function WayangArStageModal({ isOpen, onClose, onOpenTutorial }) 
   const leftSlugRef = useRef(leftSlug);
   const rightSlugRef = useRef(rightSlug);
   const moodRef = useRef(mood);
+  const isWeatherActiveRef = useRef(isWeatherActive);
 
   useEffect(() => {
     leftSlugRef.current = leftSlug;
@@ -89,23 +91,44 @@ export default function WayangArStageModal({ isOpen, onClose, onOpenTutorial }) 
     moodRef.current = mood;
   }, [mood]);
 
-  // Inisialisasi partikel cuaca (Hujan, Bara Api, Kabut Damai)
+  useEffect(() => {
+    isWeatherActiveRef.current = isWeatherActive;
+  }, [isWeatherActive]);
+
+  // Inisialisasi partikel cuaca lembut (hujan gerimis tenang)
   useEffect(() => {
     const particles = [];
-    const count = 120;
+    const count = 50;
     for (let i = 0; i < count; i++) {
       particles.push({
         x: Math.random(),
         y: Math.random(),
-        speed: 0.012 + Math.random() * 0.024,
-        length: 12 + Math.random() * 22,
-        opacity: 0.25 + Math.random() * 0.55,
-        size: 1 + Math.random() * 3,
-        sway: Math.random() * Math.PI * 2,
+        speed: 0.01 + Math.random() * 0.016,
+        length: 10 + Math.random() * 16,
+        opacity: 0.18 + Math.random() * 0.35,
       });
     }
     particlesRef.current = particles;
   }, []);
+
+  // Upload Wayang Koleksi Sendiri (Format PNG Transparan)
+  const handleUploadCustomPuppet = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const url = URL.createObjectURL(file);
+    const cleanName = file.name.replace(/\.[^/.]+$/, '').replace(/[-_]/g, ' ');
+    const newPuppet = {
+      id: `custom-${Date.now()}`,
+      slug: `custom-${Date.now()}`,
+      name: cleanName || 'Wayang Koleksi Sendiri',
+      customImageUrl: url,
+    };
+    setCustomPuppets((prev) => [newPuppet, ...prev]);
+    setLeftSlug(newPuppet.slug);
+    try {
+      soundEngine.playDodogan();
+    } catch {}
+  };
 
   // Toggle Layar Penuh
   const handleToggleFullscreen = () => {
@@ -169,176 +192,109 @@ export default function WayangArStageModal({ isOpen, onClose, onOpenTutorial }) 
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isOpen, handleToggleAudio]);
 
-  // Loop Render Panggung Canvas AR & Partikel Cuaca
-  const renderStageCanvas = useCallback(
-    (results) => {
-      const canvas = canvasRef.current;
-      const video = videoRef.current;
-      if (!canvas || !video) return;
+  // Render Panggung Canvas AR: Bersih, Jernih, Tanpa Tirai Merah Menutupi Wajah
+  const renderStageCanvas = useCallback((results) => {
+    const canvas = canvasRef.current;
+    const video = videoRef.current;
+    if (!canvas || !video) return;
 
-      const ctx = canvas.getContext('2d');
-      const width = canvas.width;
-      const height = canvas.height;
-      const currentMood = moodRef.current;
+    const ctx = canvas.getContext('2d');
+    const width = canvas.width;
+    const height = canvas.height;
+    const currentMood = moodRef.current;
+    const weatherOn = isWeatherActiveRef.current;
 
-      ctx.save();
-      ctx.clearRect(0, 0, width, height);
+    ctx.save();
+    ctx.clearRect(0, 0, width, height);
 
-      // 1. Gambar Feed Kamera Webcam dengan Cermin (Mirrored AR Background)
-      ctx.save();
-      ctx.translate(width, 0);
-      ctx.scale(-1, 1);
-      ctx.drawImage(video, 0, 0, width, height);
-      ctx.restore();
+    // 1. Gambar Feed Kamera Webcam Jernih & Asli (Mirrored)
+    ctx.save();
+    ctx.translate(width, 0);
+    ctx.scale(-1, 1);
+    ctx.drawImage(video, 0, 0, width, height);
+    ctx.restore();
 
-      // 2. Overlay Suasana Gelap Kelir Jawa & Sorotan Lampu Blencong
-      let overlayColor = 'rgba(10, 7, 5, 0.48)';
-      if (currentMood === 'sedih') overlayColor = 'rgba(14, 18, 28, 0.52)';
-      else if (currentMood === 'perang') overlayColor = 'rgba(28, 10, 8, 0.55)';
-      else if (currentMood === 'damai') overlayColor = 'rgba(12, 16, 12, 0.44)';
+    // 2. Vignette Alami Halus di Tepian Layar (Wajah Dalang di Tengah Tetap Bersih & Terang)
+    const vignette = ctx.createRadialGradient(
+      width * 0.5,
+      height * 0.5,
+      width * 0.38,
+      width * 0.5,
+      height * 0.5,
+      width * 0.72
+    );
+    vignette.addColorStop(0, 'rgba(0, 0, 0, 0)');
+    vignette.addColorStop(1, 'rgba(10, 6, 3, 0.45)');
+    ctx.fillStyle = vignette;
+    ctx.fillRect(0, 0, width, height);
 
-      ctx.fillStyle = overlayColor;
-      ctx.fillRect(0, 0, width, height);
-
-      // Pendaran Cahaya Lampu Minyak Blencong di Tengah Kelir
-      const blencongGrad = ctx.createRadialGradient(
-        width * 0.5,
-        height * 0.38,
-        30,
-        width * 0.5,
-        height * 0.45,
-        width * 0.65
-      );
-      if (currentMood === 'sedih') {
-        blencongGrad.addColorStop(0, 'rgba(186, 230, 253, 0.28)');
-        blencongGrad.addColorStop(0.5, 'rgba(56, 189, 248, 0.08)');
-        blencongGrad.addColorStop(1, 'rgba(0, 0, 0, 0.55)');
-      } else if (currentMood === 'perang') {
-        blencongGrad.addColorStop(0, 'rgba(254, 215, 170, 0.35)');
-        blencongGrad.addColorStop(0.4, 'rgba(239, 68, 68, 0.18)');
-        blencongGrad.addColorStop(1, 'rgba(0, 0, 0, 0.6)');
-      } else {
-        blencongGrad.addColorStop(0, 'rgba(254, 240, 138, 0.32)');
-        blencongGrad.addColorStop(0.45, 'rgba(212, 175, 55, 0.12)');
-        blencongGrad.addColorStop(1, 'rgba(0, 0, 0, 0.55)');
-      }
-      ctx.fillStyle = blencongGrad;
-      ctx.fillRect(0, 0, width, height);
-
-      // 3. Efek Partikel Cuaca Dinamis (Hujan Sedih / Bara Perang / Semilir Damai)
+    // 3. Efek Cuaca Sangat Lembut & Tenang (Hanya jika diaktifkan)
+    if (weatherOn && currentMood === 'sendu') {
       const particles = particlesRef.current || [];
+      ctx.lineWidth = 1;
       particles.forEach((p) => {
-        if (currentMood === 'sedih') {
-          // Efek Hujan Gerimis Rintik Vertikal (Persis foto referensi user!)
-          p.y += p.speed * 2.2;
-          p.x += 0.0015;
-          if (p.y > 1.0) {
-            p.y = 0;
-            p.x = Math.random();
-          }
-
-          const px = p.x * width;
-          const py = p.y * height;
-          ctx.beginPath();
-          ctx.moveTo(px, py);
-          ctx.lineTo(px + 1.2, py + p.length);
-          ctx.strokeStyle = `rgba(186, 230, 253, ${p.opacity * 0.85})`;
-          ctx.lineWidth = 1.2;
-          ctx.stroke();
-        } else if (currentMood === 'perang') {
-          // Bara Api Melayang Naik
-          p.y -= p.speed * 0.9;
-          p.x += Math.sin(p.sway) * 0.002;
-          p.sway += 0.08;
-          if (p.y < 0) {
-            p.y = 1.0;
-            p.x = Math.random();
-          }
-
-          const px = p.x * width;
-          const py = p.y * height;
-          ctx.beginPath();
-          ctx.arc(px, py, p.size, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(249, 115, 22, ${p.opacity})`;
-          ctx.shadowColor = '#ef4444';
-          ctx.shadowBlur = 8;
-          ctx.fill();
-        } else if (currentMood === 'damai') {
-          // Semilir Kelopak Bunga Melayang Pelan
-          p.y += p.speed * 0.45;
-          p.x += Math.cos(p.sway) * 0.003;
-          p.sway += 0.04;
-          if (p.y > 1.0) {
-            p.y = 0;
-            p.x = Math.random();
-          }
-
-          const px = p.x * width;
-          const py = p.y * height;
-          ctx.beginPath();
-          ctx.arc(px, py, p.size * 1.2, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(253, 224, 71, ${p.opacity * 0.75})`;
-          ctx.shadowColor = '#eab308';
-          ctx.shadowBlur = 6;
-          ctx.fill();
+        p.y += p.speed;
+        if (p.y > 1.0) {
+          p.y = 0;
+          p.x = Math.random();
         }
+
+        const px = p.x * width;
+        const py = p.y * height;
+        ctx.beginPath();
+        ctx.moveTo(px, py);
+        ctx.lineTo(px, py + p.length);
+        ctx.strokeStyle = `rgba(186, 230, 253, ${p.opacity})`;
+        ctx.stroke();
       });
+    }
 
-      // 4. Render Dual Skeletal Ruas Tulang di Atas Kanvas Panggung
-      // Tangan Kiri = Kuning Emas (#facc15) | Tangan Kanan = Biru Cyan (#38bdf8)
-      const landmarksList = results?.landmarks || [];
-      if (landmarksList.length > 0) {
-        landmarksList.forEach((landmarks) => {
-          // Tentukan apakah ini tangan kiri atau kanan berdasar posisi X
-          const palmCenterX = 1.0 - landmarks[9].x;
-          const isLeftHand = palmCenterX < 0.5;
+    // 4. Render Dual Skeletal Garis Halus di Bawah Wayang
+    // Tangan Kiri = Emas Prada (#d4af37) | Tangan Kanan = Biru Kelir Halus (#38bdf8)
+    const landmarksList = results?.landmarks || [];
+    if (landmarksList.length > 0) {
+      landmarksList.forEach((landmarks) => {
+        const palmCenterX = 1.0 - landmarks[9].x;
+        const isLeftHand = palmCenterX < 0.5;
 
-          const strokeCol = isLeftHand ? 'rgba(250, 204, 21, 0.95)' : 'rgba(56, 189, 248, 0.95)';
-          const jointCol = isLeftHand ? '#fef08a' : '#bae6fd';
-          const glowCol = isLeftHand ? '#eab308' : '#0284c7';
+        const strokeCol = isLeftHand ? 'rgba(212, 175, 55, 0.85)' : 'rgba(56, 189, 248, 0.85)';
+        const jointCol = isLeftHand ? '#fef08a' : '#bae6fd';
 
-          ctx.lineWidth = 2.4;
-          ctx.strokeStyle = strokeCol;
-          ctx.shadowColor = glowCol;
-          ctx.shadowBlur = 8;
+        ctx.lineWidth = 1.8;
+        ctx.strokeStyle = strokeCol;
+        ctx.shadowBlur = 0;
 
-          HAND_CONNECTIONS.forEach(([i, j]) => {
-            const p1 = landmarks[i];
-            const p2 = landmarks[j];
-            if (!p1 || !p2) return;
+        HAND_CONNECTIONS.forEach(([i, j]) => {
+          const p1 = landmarks[i];
+          const p2 = landmarks[j];
+          if (!p1 || !p2) return;
 
-            const x1 = (1.0 - p1.x) * width;
-            const y1 = p1.y * height;
-            const x2 = (1.0 - p2.x) * width;
-            const y2 = p2.y * height;
+          const x1 = (1.0 - p1.x) * width;
+          const y1 = p1.y * height;
+          const x2 = (1.0 - p2.x) * width;
+          const y2 = p2.y * height;
 
-            ctx.beginPath();
-            ctx.moveTo(x1, y1);
-            ctx.lineTo(x2, y2);
-            ctx.stroke();
-          });
-
-          // Titik-titik sendi
-          landmarks.forEach((p, idx) => {
-            const px = (1.0 - p.x) * width;
-            const py = p.y * height;
-
-            ctx.beginPath();
-            const isTip = idx === 4 || idx === 8 || idx === 20;
-            ctx.arc(px, py, isTip ? 4.8 : 2.8, 0, Math.PI * 2);
-            ctx.fillStyle = jointCol;
-            ctx.fill();
-            ctx.strokeStyle = '#120a05';
-            ctx.lineWidth = 1;
-            ctx.stroke();
-          });
+          ctx.beginPath();
+          ctx.moveTo(x1, y1);
+          ctx.lineTo(x2, y2);
+          ctx.stroke();
         });
-      }
 
-      ctx.restore();
-    },
-    []
-  );
+        landmarks.forEach((p, idx) => {
+          const px = (1.0 - p.x) * width;
+          const py = p.y * height;
+
+          ctx.beginPath();
+          const isTip = idx === 4 || idx === 8;
+          ctx.arc(px, py, isTip ? 3.8 : 2.2, 0, Math.PI * 2);
+          ctx.fillStyle = jointCol;
+          ctx.fill();
+        });
+      });
+    }
+
+    ctx.restore();
+  }, []);
 
   // Lifecycle Tracking Kamera Webcam
   useEffect(() => {
@@ -348,25 +304,22 @@ export default function WayangArStageModal({ isOpen, onClose, onOpenTutorial }) 
 
     const startStageVision = async () => {
       try {
-        setStatusMessage('Memuat model MediaPipe Vision...');
+        setStatusMessage('Menyiapkan panggung dalang...');
         await handTrackingService.init();
 
         if (!isSubscribed || !videoRef.current) return;
-        setStatusMessage('Menghubungkan kamera webcam panggung...');
+        setStatusMessage('Menghubungkan kamera...');
 
-        // Dummy karakter array untuk proses frame kinematika
         const dummyChars = [
-          { instanceId: 'char-left', slug: leftSlugRef.current, x: 0.28, y: 0.65, scale: 1.3 },
+          { instanceId: 'char-left', slug: leftSlugRef.current, x: 0.28, y: 0.65, scale: 1.2 },
           { instanceId: 'char-right', slug: rightSlugRef.current, x: 0.72, y: 0.65, scale: 1.0 },
         ];
 
         await handTrackingService.start(videoRef.current, (results) => {
           if (!isSubscribed) return;
 
-          // Proses kinematika OneEuro
           const updates = dalangKinematicsEngine.processFrame(results, dummyChars, null);
 
-          // Update koordinat karakter kiri & kanan
           updates.forEach(({ instanceId, updates: u }) => {
             if (instanceId === 'char-left') {
               setLeftCharState((prev) => ({ ...prev, ...u }));
@@ -375,13 +328,12 @@ export default function WayangArStageModal({ isOpen, onClose, onOpenTutorial }) 
             }
           });
 
-          // Render canvas AR + cuaca + skeletal
           renderStageCanvas(results);
           setStatusMessage(dalangKinematicsEngine.statusMessage);
         });
       } catch (err) {
         if (!isSubscribed) return;
-        setStatusMessage(`Webcam tidak aktif: ${err?.message || 'Izin ditolak'}`);
+        setStatusMessage(`Kamera tidak aktif: ${err?.message || 'Izin ditolak'}`);
       }
     };
 
@@ -389,18 +341,16 @@ export default function WayangArStageModal({ isOpen, onClose, onOpenTutorial }) 
 
     return () => {
       isSubscribed = false;
-      if (animFrameRef.current) {
-        cancelAnimationFrame(animFrameRef.current);
-        animFrameRef.current = null;
-      }
       handTrackingService.stop();
     };
   }, [isOpen, renderStageCanvas]);
 
   if (!isOpen) return null;
 
-  const leftCharData = CHARACTERS_MASTER.find((c) => c.slug === leftSlug) || CHARACTERS_MASTER[5];
-  const rightCharData = CHARACTERS_MASTER.find((c) => c.slug === rightSlug) || CHARACTERS_MASTER[6];
+  // Gabungkan master characters dengan wayang custom dalang
+  const allAvailableCharacters = [...customPuppets, ...CHARACTERS_MASTER];
+  const leftCharData = allAvailableCharacters.find((c) => c.slug === leftSlug) || CHARACTERS_MASTER[1];
+  const rightCharData = allAvailableCharacters.find((c) => c.slug === rightSlug) || CHARACTERS_MASTER[6];
 
   return (
     <div
@@ -410,245 +360,204 @@ export default function WayangArStageModal({ isOpen, onClose, onOpenTutorial }) 
         position: 'fixed',
         inset: 0,
         zIndex: 2000,
-        background: '#070503',
+        background: '#0a0705',
         color: '#fcfaf2',
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'space-between',
         userSelect: 'none',
         overflow: 'hidden',
-        fontFamily: "'Inter', sans-serif",
+        fontFamily: "'Inter', -apple-system, sans-serif",
       }}
     >
-      {/* Video Element Tersembunyi (Disalurkan ke Canvas AR) */}
-      <video
-        ref={videoRef}
-        playsInline
-        muted
+      {/* Input File Tersembunyi untuk Unggah Wayang Sendiri */}
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="image/png,image/webp,image/jpeg"
+        onChange={handleUploadCustomPuppet}
         style={{ display: 'none' }}
       />
 
+      {/* Video Webcam Tersembunyi (Disalurkan ke Kanvas) */}
+      <video ref={videoRef} playsInline muted style={{ display: 'none' }} />
+
       {/* =========================================================================
-          1. HEADER BAR ATAS (STATUS AR & MOOD FILTER TABS)
+          1. HEADER ATAS BERSIH & BERWIBAWA (ZERO EMOJI)
           ========================================================================= */}
       <header
         style={{
           position: 'relative',
           zIndex: 10,
           display: 'flex',
-          flexDirection: 'column',
           alignItems: 'center',
-          gap: '8px',
+          justifyContent: 'space-between',
           padding: '12px 24px',
-          background: 'linear-gradient(180deg, rgba(12, 8, 4, 0.95) 0%, rgba(12, 8, 4, 0.4) 80%, transparent 100%)',
-          borderBottom: '1px solid rgba(212, 175, 55, 0.25)',
+          background: 'linear-gradient(180deg, rgba(14, 10, 6, 0.9) 0%, rgba(14, 10, 6, 0.2) 80%, transparent 100%)',
+          borderBottom: '1px solid rgba(212, 175, 55, 0.15)',
           opacity: isUiHidden ? 0 : 1,
           transition: 'opacity 0.25s ease',
         }}
       >
-        <div style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          {/* Status AR Aktif */}
+        {/* Status Kamera & Dalang */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
           <div
             style={{
               display: 'flex',
               alignItems: 'center',
-              gap: '8px',
-              padding: '6px 14px',
+              gap: '6px',
+              padding: '4px 12px',
               borderRadius: '999px',
-              background: 'rgba(20, 14, 8, 0.85)',
-              border: '1px solid rgba(34, 197, 94, 0.5)',
-              boxShadow: '0 0 14px rgba(34, 197, 94, 0.25)',
+              background: 'rgba(20, 14, 9, 0.85)',
+              border: '1px solid rgba(34, 197, 94, 0.45)',
             }}
           >
             <span
               style={{
-                width: '8px',
-                height: '8px',
+                width: '7px',
+                height: '7px',
                 borderRadius: '50%',
                 background: '#22c55e',
-                boxShadow: '0 0 8px #22c55e',
+                boxShadow: '0 0 6px #22c55e',
                 display: 'inline-block',
-                animation: 'pulse 1.8s infinite',
               }}
             />
-            <span style={{ fontSize: '12px', fontWeight: 700, letterSpacing: '0.06em', color: '#86efac' }}>
-              AR AKTIF: SIAP BERMAIN
+            <span style={{ fontSize: '11px', fontWeight: 600, letterSpacing: '0.04em', color: '#86efac' }}>
+              AR Aktif
             </span>
           </div>
 
-          {/* 4 Mood Selector Tabs */}
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px',
-              background: 'rgba(26, 18, 11, 0.9)',
-              padding: '4px',
-              borderRadius: '12px',
-              border: '1px solid rgba(212, 175, 55, 0.35)',
-            }}
-          >
-            {[
-              { id: 'netral', label: 'NETRAL', icon: Sun },
-              { id: 'damai', label: 'DAMAI', icon: Sparkles },
-              { id: 'sedih', label: 'SEDIH', icon: Droplets },
-              { id: 'perang', label: 'PERANG', icon: Swords },
-            ].map((tab) => {
-              const Icon = tab.icon;
-              const isActive = mood === tab.id;
-              const isSedihActive = isActive && tab.id === 'sedih';
-              const isPerangActive = isActive && tab.id === 'perang';
-
-              let activeBg = 'linear-gradient(180deg, #d4af37 0%, #b45309 100%)';
-              let activeBorder = 'rgba(250, 204, 21, 0.8)';
-              let activeColor = '#160d06';
-
-              if (isSedihActive) {
-                activeBg = 'linear-gradient(180deg, #38bdf8 0%, #0369a1 100%)';
-                activeBorder = '#7dd3fc';
-                activeColor = '#082f49';
-              } else if (isPerangActive) {
-                activeBg = 'linear-gradient(180deg, #ef4444 0%, #991b1b 100%)';
-                activeBorder = '#fca5a5';
-                activeColor = '#450a0a';
-              }
-
-              return (
-                <button
-                  key={tab.id}
-                  onClick={() => {
-                    setMood(tab.id);
-                    try {
-                      soundEngine.playDodogan();
-                    } catch {}
-                  }}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '6px',
-                    padding: '6px 14px',
-                    borderRadius: '8px',
-                    fontSize: '11.5px',
-                    fontWeight: 700,
-                    letterSpacing: '0.04em',
-                    cursor: 'pointer',
-                    transition: 'all 0.2s ease',
-                    border: isActive ? `1.5px solid ${activeBorder}` : '1px solid transparent',
-                    background: isActive ? activeBg : 'transparent',
-                    color: isActive ? activeColor : '#d1c7b7',
-                    boxShadow: isActive ? '0 4px 14px rgba(0, 0, 0, 0.4)' : 'none',
-                  }}
-                >
-                  <Icon size={13} />
-                  <span>{tab.label}</span>
-                </button>
-              );
-            })}
-          </div>
-
-          {/* Quick Action Utilities */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <button
-              onClick={handleToggleAudio}
-              style={{
-                background: 'rgba(28, 20, 12, 0.8)',
-                border: '1px solid rgba(212, 175, 55, 0.4)',
-                borderRadius: '8px',
-                padding: '7px 10px',
-                color: isAudioOn ? '#facc15' : '#9ca3af',
-                cursor: 'pointer',
-              }}
-              title="Toggle Audio Gamelan (M)"
-            >
-              {isAudioOn ? <Volume2 size={16} /> : <VolumeX size={16} />}
-            </button>
-            <button
-              onClick={onOpenTutorial}
-              style={{
-                background: 'rgba(28, 20, 12, 0.8)',
-                border: '1px solid rgba(212, 175, 55, 0.4)',
-                borderRadius: '8px',
-                padding: '7px 10px',
-                color: '#e5d5be',
-                cursor: 'pointer',
-              }}
-              title="Panduan Dalang AR"
-            >
-              <HelpCircle size={16} />
-            </button>
-            <button
-              onClick={handleToggleFullscreen}
-              style={{
-                background: 'rgba(28, 20, 12, 0.8)',
-                border: '1px solid rgba(212, 175, 55, 0.4)',
-                borderRadius: '8px',
-                padding: '7px 10px',
-                color: '#e5d5be',
-                cursor: 'pointer',
-              }}
-              title="Layar Penuh"
-            >
-              {isFullscreen ? <Minimize2 size={16} /> : <Maximize2 size={16} />}
-            </button>
-            <button
-              onClick={onClose}
-              style={{
-                background: 'rgba(185, 28, 28, 0.35)',
-                border: '1px solid rgba(239, 68, 68, 0.6)',
-                borderRadius: '8px',
-                padding: '7px 10px',
-                color: '#fecaca',
-                cursor: 'pointer',
-              }}
-              title="Kembali ke Studio Panggung"
-            >
-              <X size={16} />
-            </button>
-          </div>
+          <span style={{ fontSize: '12px', color: '#bfae9c' }}>
+            {statusMessage}
+          </span>
         </div>
 
-        {/* Sub-bar: Status Deteksi Tangan Dalang Kiri & Kanan */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px',
-              padding: '3px 12px',
-              borderRadius: '999px',
-              background: 'rgba(26, 18, 10, 0.85)',
-              border: '1px solid rgba(250, 204, 21, 0.7)',
-              fontSize: '11px',
-              fontWeight: 700,
-              color: '#facc15',
-            }}
-          >
-            <span>👈 KIRI:</span>
-            <span>✋ Jari ({leftCharData?.name?.split(' ')[1] || 'Rahwana'})</span>
-          </div>
+        {/* Pemilih Suasana Bersih Tanpa Emoticon */}
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '4px',
+            background: 'rgba(24, 17, 11, 0.85)',
+            padding: '3px',
+            borderRadius: '10px',
+            border: '1px solid rgba(212, 175, 55, 0.25)',
+          }}
+        >
+          {[
+            { id: 'netral', label: 'Netral' },
+            { id: 'damai', label: 'Damai' },
+            { id: 'sendu', label: 'Sendu' },
+            { id: 'perang', label: 'Perang' },
+          ].map((tab) => {
+            const isActive = mood === tab.id;
+            return (
+              <button
+                key={tab.id}
+                onClick={() => {
+                  setMood(tab.id);
+                  try {
+                    soundEngine.playDodogan();
+                  } catch {}
+                }}
+                style={{
+                  padding: '5px 14px',
+                  borderRadius: '7px',
+                  fontSize: '11px',
+                  fontWeight: 600,
+                  letterSpacing: '0.02em',
+                  cursor: 'pointer',
+                  transition: 'all 0.15s ease',
+                  border: isActive ? '1px solid rgba(212, 175, 55, 0.65)' : '1px solid transparent',
+                  background: isActive ? '#382515' : 'transparent',
+                  color: isActive ? '#fef08a' : '#c5b8a5',
+                }}
+              >
+                {tab.label}
+              </button>
+            );
+          })}
+        </div>
 
-          <div
+        {/* Utilitas Panggung */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <button
+            onClick={() => setIsWeatherActive((prev) => !prev)}
             style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px',
-              padding: '3px 12px',
-              borderRadius: '999px',
-              background: 'rgba(12, 22, 34, 0.85)',
-              border: '1px solid rgba(56, 189, 248, 0.7)',
+              background: 'rgba(24, 17, 11, 0.8)',
+              border: '1px solid rgba(212, 175, 55, 0.3)',
+              borderRadius: '7px',
+              padding: '6px 12px',
               fontSize: '11px',
-              fontWeight: 700,
-              color: '#38bdf8',
+              fontWeight: 600,
+              color: isWeatherActive ? '#e8bb5c' : '#78716c',
+              cursor: 'pointer',
             }}
+            title="Nyalakan / Matikan Efek Cuaca"
           >
-            <span>👉 KANAN:</span>
-            <span>✋ Jari ({rightCharData?.name?.split(' ')[1] || 'Sinta'})</span>
-          </div>
+            Cuaca: {isWeatherActive ? 'Aktif' : 'Nonaktif'}
+          </button>
+          <button
+            onClick={handleToggleAudio}
+            style={{
+              background: 'rgba(24, 17, 11, 0.8)',
+              border: '1px solid rgba(212, 175, 55, 0.3)',
+              borderRadius: '7px',
+              padding: '6px 10px',
+              color: isAudioOn ? '#e8bb5c' : '#78716c',
+              cursor: 'pointer',
+            }}
+            title="Toggle Audio (M)"
+          >
+            {isAudioOn ? <Volume2 size={15} /> : <VolumeX size={15} />}
+          </button>
+          <button
+            onClick={onOpenTutorial}
+            style={{
+              background: 'rgba(24, 17, 11, 0.8)',
+              border: '1px solid rgba(212, 175, 55, 0.3)',
+              borderRadius: '7px',
+              padding: '6px 10px',
+              color: '#d1c7b7',
+              cursor: 'pointer',
+            }}
+            title="Panduan Dalang"
+          >
+            <HelpCircle size={15} />
+          </button>
+          <button
+            onClick={handleToggleFullscreen}
+            style={{
+              background: 'rgba(24, 17, 11, 0.8)',
+              border: '1px solid rgba(212, 175, 55, 0.3)',
+              borderRadius: '7px',
+              padding: '6px 10px',
+              color: '#d1c7b7',
+              cursor: 'pointer',
+            }}
+            title="Layar Penuh"
+          >
+            {isFullscreen ? <Minimize2 size={15} /> : <Maximize2 size={15} />}
+          </button>
+          <button
+            onClick={onClose}
+            style={{
+              background: 'rgba(127, 29, 29, 0.3)',
+              border: '1px solid rgba(239, 68, 68, 0.4)',
+              borderRadius: '7px',
+              padding: '6px 10px',
+              color: '#fca5a5',
+              cursor: 'pointer',
+            }}
+            title="Kembali ke Studio"
+          >
+            <X size={15} />
+          </button>
         </div>
       </header>
 
       {/* =========================================================================
-          2. KELIR STAGE AREA (CANVAS AR + WAYANG KULIT BENERAN)
+          2. KELIR STAGE AREA (KANVAS KAMERA JERNIH + WAYANG ASLI DENGAN IK)
           ========================================================================= */}
       <main
         style={{
@@ -662,7 +571,6 @@ export default function WayangArStageModal({ isOpen, onClose, onOpenTutorial }) 
           justifyContent: 'center',
         }}
       >
-        {/* Canvas Render AR Feed, Partikel Hujan & Dual Skeletal */}
         <canvas
           ref={canvasRef}
           width={1280}
@@ -676,120 +584,55 @@ export default function WayangArStageModal({ isOpen, onClose, onOpenTutorial }) 
           }}
         />
 
-        {/* TOKOH WAYANG KIRI (PRABU RAHWANA) */}
+        {/* TOKOH WAYANG KIRI */}
         <div
           style={{
             position: 'absolute',
             left: `${leftCharState.x * 100}%`,
             top: `${leftCharState.y * 100}%`,
-            transform: 'translate(-50%, -75%)',
+            transform: 'translate(-50%, -80%)',
             pointerEvents: 'none',
             zIndex: 5,
-            transition: 'left 0.05s linear, top 0.05s linear',
+            transition: 'left 0.04s linear, top 0.04s linear',
           }}
         >
-          <AuthenticLeatherWayang
+          <RealLeatherPuppet
             slug={leftSlug}
+            customImageUrl={leftCharData?.customImageUrl}
             facing={leftCharState.facing}
             scale={leftScale}
-            armAngles={leftCharState.armAngles}
+            fingerTargets={leftCharState.fingerTargets}
             isKiprah={leftCharState.isKiprah}
             depth={leftCharState.depth}
-            renderMode="color"
-            animated={true}
           />
-          {/* Label Nama Tokoh Kiri */}
-          <div
-            style={{
-              position: 'absolute',
-              bottom: '-24px',
-              left: '50%',
-              transform: 'translateX(-50%)',
-              padding: '2px 10px',
-              borderRadius: '4px',
-              background: 'rgba(18, 12, 7, 0.92)',
-              border: '1px solid rgba(250, 204, 21, 0.65)',
-              color: '#facc15',
-              fontSize: '11px',
-              fontWeight: 800,
-              letterSpacing: '0.08em',
-              textTransform: 'uppercase',
-              boxShadow: '0 4px 10px rgba(0,0,0,0.6)',
-              whiteSpace: 'nowrap',
-            }}
-          >
-            {leftCharData?.name?.toUpperCase() || 'RAHWANA'}
-          </div>
         </div>
 
-        {/* TOKOH WAYANG KANAN (DEWI SHINTA) */}
+        {/* TOKOH WAYANG KANAN */}
         <div
           style={{
             position: 'absolute',
             left: `${rightCharState.x * 100}%`,
             top: `${rightCharState.y * 100}%`,
-            transform: 'translate(-50%, -75%)',
+            transform: 'translate(-50%, -80%)',
             pointerEvents: 'none',
             zIndex: 6,
-            transition: 'left 0.05s linear, top 0.05s linear',
+            transition: 'left 0.04s linear, top 0.04s linear',
           }}
         >
-          <AuthenticLeatherWayang
+          <RealLeatherPuppet
             slug={rightSlug}
+            customImageUrl={rightCharData?.customImageUrl}
             facing={rightCharState.facing}
             scale={rightScale}
-            armAngles={rightCharState.armAngles}
+            fingerTargets={rightCharState.fingerTargets}
             isKiprah={rightCharState.isKiprah}
             depth={rightCharState.depth}
-            renderMode="color"
-            animated={true}
           />
-          {/* Label Nama Tokoh Kanan */}
-          <div
-            style={{
-              position: 'absolute',
-              bottom: '-24px',
-              left: '50%',
-              transform: 'translateX(-50%)',
-              padding: '2px 10px',
-              borderRadius: '4px',
-              background: 'rgba(8, 18, 28, 0.92)',
-              border: '1px solid rgba(56, 189, 248, 0.65)',
-              color: '#38bdf8',
-              fontSize: '11px',
-              fontWeight: 800,
-              letterSpacing: '0.08em',
-              textTransform: 'uppercase',
-              boxShadow: '0 4px 10px rgba(0,0,0,0.6)',
-              whiteSpace: 'nowrap',
-            }}
-          >
-            {rightCharData?.name?.toUpperCase() || 'SINTA'}
-          </div>
-        </div>
-
-        {/* Status Text Melayang Lembut di Bawah Kanvas */}
-        <div
-          style={{
-            position: 'absolute',
-            bottom: '12px',
-            padding: '5px 16px',
-            borderRadius: '999px',
-            background: 'rgba(14, 10, 6, 0.75)',
-            border: '1px solid rgba(212, 175, 55, 0.3)',
-            fontSize: '11.5px',
-            color: '#d4af37',
-            backdropFilter: 'blur(8px)',
-            opacity: isUiHidden ? 0 : 0.9,
-            transition: 'opacity 0.25s ease',
-          }}
-        >
-          {statusMessage}
         </div>
       </main>
 
       {/* =========================================================================
-          3. PEDURUNGAN KONTROL BAWAH (PERSIS SEPERTI FOTO LAYAR TABLET PENGGUNA)
+          3. BILAH KONTROL BAWAH RAMPIANG & BERSIH (ZERO EMOJI)
           ========================================================================= */}
       <footer
         style={{
@@ -798,35 +641,33 @@ export default function WayangArStageModal({ isOpen, onClose, onOpenTutorial }) 
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          padding: '12px 24px',
-          background: 'linear-gradient(0deg, rgba(14, 10, 6, 0.98) 0%, rgba(18, 12, 8, 0.92) 80%, transparent 100%)',
-          borderTop: '1.5px solid rgba(212, 175, 55, 0.45)',
-          boxShadow: '0 -8px 24px rgba(0, 0, 0, 0.75)',
+          padding: '10px 24px',
+          background: 'linear-gradient(0deg, rgba(14, 10, 6, 0.95) 0%, rgba(14, 10, 6, 0.8) 80%, transparent 100%)',
+          borderTop: '1px solid rgba(212, 175, 55, 0.25)',
           opacity: isUiHidden ? 0 : 1,
           transition: 'opacity 0.25s ease',
         }}
       >
-        {/* Kontrol Sisi Kiri: Tokoh Kiri + Slider Ukuran Kiri */}
+        {/* Kontrol Sisi Kiri: Pilihan Tokoh Kiri + Slider Ukuran */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-          {/* Dropdown Tokoh Kiri */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-            <span style={{ fontSize: '12px', fontWeight: 700, color: '#facc15' }}>👈 Kiri:</span>
+            <span style={{ fontSize: '11px', fontWeight: 600, color: '#e5c158' }}>Sisi Kiri:</span>
             <select
               value={leftSlug}
               onChange={(e) => setLeftSlug(e.target.value)}
               style={{
-                background: '#23170e',
+                background: '#20160e',
                 color: '#fef08a',
-                border: '1px solid rgba(250, 204, 21, 0.6)',
-                borderRadius: '8px',
-                padding: '6px 10px',
-                fontSize: '12px',
-                fontWeight: 700,
+                border: '1px solid rgba(212, 175, 55, 0.4)',
+                borderRadius: '6px',
+                padding: '5px 8px',
+                fontSize: '11px',
+                fontWeight: 600,
                 outline: 'none',
                 cursor: 'pointer',
               }}
             >
-              {CHARACTERS_MASTER.map((c) => (
+              {allAvailableCharacters.map((c) => (
                 <option key={c.slug} value={c.slug}>
                   {c.name}
                 </option>
@@ -834,138 +675,151 @@ export default function WayangArStageModal({ isOpen, onClose, onOpenTutorial }) 
             </select>
           </div>
 
-          {/* Slider Ukuran Kiri (Default 1.3x seperti di foto) */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <span style={{ fontSize: '11.5px', color: '#c5b8a5' }}>Ukuran:</span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <span style={{ fontSize: '11px', color: '#a89a8a' }}>Ukuran:</span>
             <input
               type="range"
               min="0.5"
-              max="2.2"
-              step="0.1"
+              max="2.0"
+              step="0.05"
               value={leftScale}
               onChange={(e) => setLeftScale(parseFloat(e.target.value))}
-              style={{
-                width: '90px',
-                accentColor: '#facc15',
-                cursor: 'pointer',
-              }}
+              style={{ width: '80px', accentColor: '#d4af37', cursor: 'pointer' }}
             />
-            <span style={{ fontSize: '12px', fontWeight: 800, color: '#facc15', minWidth: '32px' }}>
+            <span style={{ fontSize: '11px', color: '#fef08a', minWidth: '30px' }}>
               {leftScale.toFixed(1)}x
             </span>
           </div>
         </div>
 
-        {/* Bagian Tengah: Judul Gelar Emas & SFX Dalang Cepat */}
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px' }}>
-          <div
+        {/* Bagian Tengah: Audio Dalang & Panduan Cepat Tanpa Simbol Berlebih */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <button
+            onClick={() => {
+              try {
+                soundEngine.playDodogan();
+              } catch {}
+            }}
             style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '8px',
-              fontSize: '13px',
-              fontWeight: 800,
-              letterSpacing: '0.12em',
-              color: '#facc15',
-              textShadow: '0 0 12px rgba(250, 204, 21, 0.5)',
+              padding: '4px 10px',
+              borderRadius: '6px',
+              background: '#281c12',
+              border: '1px solid rgba(212, 175, 55, 0.35)',
+              color: '#e5c158',
+              fontSize: '10.5px',
+              fontWeight: 600,
+              cursor: 'pointer',
             }}
           >
-            <span>❖</span>
-            <span>WAYANG AR INTERAKTIF</span>
-            <span>❖</span>
-          </div>
-
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <button
-              onClick={() => {
-                try {
-                  soundEngine.playDodogan();
-                } catch {}
-              }}
-              style={{
-                padding: '4px 10px',
-                borderRadius: '6px',
-                background: 'rgba(38, 26, 16, 0.85)',
-                border: '1px solid rgba(212, 175, 55, 0.4)',
-                color: '#e5c158',
-                fontSize: '10.5px',
-                fontWeight: 700,
-                cursor: 'pointer',
-              }}
-            >
-              🥁 Dodogan
-            </button>
-            <button
-              onClick={() => {
-                try {
-                  soundEngine.playKepyak();
-                } catch {}
-              }}
-              style={{
-                padding: '4px 10px',
-                borderRadius: '6px',
-                background: 'rgba(38, 26, 16, 0.85)',
-                border: '1px solid rgba(212, 175, 55, 0.4)',
-                color: '#e5c158',
-                fontSize: '10.5px',
-                fontWeight: 700,
-                cursor: 'pointer',
-              }}
-            >
-              🔔 Kepyak
-            </button>
-            <span style={{ fontSize: '10px', color: '#9ca3af' }}>[D] Joged · [F/G] Balik · [H] Zen</span>
-          </div>
+            Dodogan
+          </button>
+          <button
+            onClick={() => {
+              try {
+                soundEngine.playKepyak();
+              } catch {}
+            }}
+            style={{
+              padding: '4px 10px',
+              borderRadius: '6px',
+              background: '#281c12',
+              border: '1px solid rgba(212, 175, 55, 0.35)',
+              color: '#e5c158',
+              fontSize: '10.5px',
+              fontWeight: 600,
+              cursor: 'pointer',
+            }}
+          >
+            Kepyak
+          </button>
+          <button
+            onClick={() => {
+              try {
+                soundEngine.playGong();
+              } catch {}
+            }}
+            style={{
+              padding: '4px 10px',
+              borderRadius: '6px',
+              background: '#281c12',
+              border: '1px solid rgba(212, 175, 55, 0.35)',
+              color: '#e5c158',
+              fontSize: '10.5px',
+              fontWeight: 600,
+              cursor: 'pointer',
+            }}
+          >
+            Gong
+          </button>
+          <span style={{ fontSize: '10px', color: '#78716c', marginLeft: '6px' }}>
+            Tekan H untuk mode panggung bersih
+          </span>
         </div>
 
-        {/* Kontrol Sisi Kanan: Slider Ukuran Kanan + Tokoh Kanan */}
+        {/* Kontrol Sisi Kanan: Slider Ukuran + Pilihan Tokoh Kanan + Tombol Unggah */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-          {/* Slider Ukuran Kanan (Default 1.0x seperti di foto) */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <span style={{ fontSize: '11.5px', color: '#c5b8a5' }}>Ukuran:</span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <span style={{ fontSize: '11px', color: '#a89a8a' }}>Ukuran:</span>
             <input
               type="range"
               min="0.5"
-              max="2.2"
-              step="0.1"
+              max="2.0"
+              step="0.05"
               value={rightScale}
               onChange={(e) => setRightScale(parseFloat(e.target.value))}
-              style={{
-                width: '90px',
-                accentColor: '#38bdf8',
-                cursor: 'pointer',
-              }}
+              style={{ width: '80px', accentColor: '#38bdf8', cursor: 'pointer' }}
             />
-            <span style={{ fontSize: '12px', fontWeight: 800, color: '#38bdf8', minWidth: '32px' }}>
+            <span style={{ fontSize: '11px', color: '#bae6fd', minWidth: '30px' }}>
               {rightScale.toFixed(1)}x
             </span>
           </div>
 
-          {/* Dropdown Tokoh Kanan */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <span style={{ fontSize: '11px', fontWeight: 600, color: '#38bdf8' }}>Sisi Kanan:</span>
             <select
               value={rightSlug}
               onChange={(e) => setRightSlug(e.target.value)}
               style={{
                 background: '#121e2c',
                 color: '#bae6fd',
-                border: '1px solid rgba(56, 189, 248, 0.6)',
-                borderRadius: '8px',
-                padding: '6px 10px',
-                fontSize: '12px',
-                fontWeight: 700,
+                border: '1px solid rgba(56, 189, 248, 0.4)',
+                borderRadius: '6px',
+                padding: '5px 8px',
+                fontSize: '11px',
+                fontWeight: 600,
                 outline: 'none',
                 cursor: 'pointer',
               }}
             >
-              {CHARACTERS_MASTER.map((c) => (
+              {allAvailableCharacters.map((c) => (
                 <option key={c.slug} value={c.slug}>
                   {c.name}
                 </option>
               ))}
             </select>
-            <span style={{ fontSize: '12px', fontWeight: 700, color: '#38bdf8' }}>👉 Kanan</span>
           </div>
+
+          {/* Tombol Unggah Wayang Sendiri */}
+          <button
+            onClick={() => fileInputRef.current?.click()}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '5px',
+              padding: '5px 10px',
+              borderRadius: '6px',
+              background: 'linear-gradient(135deg, rgba(212, 175, 55, 0.25) 0%, rgba(32, 22, 14, 0.9) 100%)',
+              border: '1px solid rgba(212, 175, 55, 0.5)',
+              color: '#fef08a',
+              fontSize: '11px',
+              fontWeight: 600,
+              cursor: 'pointer',
+            }}
+            title="Unggah file gambar wayang kulit (PNG transparan) milik Anda sendiri"
+          >
+            <Upload size={12} />
+            <span>Unggah Wayang</span>
+          </button>
         </div>
       </footer>
     </div>
