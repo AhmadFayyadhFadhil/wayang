@@ -18,6 +18,7 @@ import heroParchmentWideBg from '../../assets/hero_parchment_clouds_widescreen_h
 import atlasGoldMotifStrip from '../../assets/atlas_gold_motif_strip.jpg';
 import gununganHd from '../../assets/gunungan_kayon_hd.png';
 import JavaneseCloudBackground from '../../components/ui/JavaneseCloudBackground';
+import WayangCoverflowCarousel from '../../components/ui/WayangCoverflowCarousel';
 
 // Gambar Otentik Lakon & Tokoh Sesuai Cardbox Halaman Beranda
 import galleryCoverGatotkaca from '../../assets/gallery_cover_gatotkaca.jpg';
@@ -135,7 +136,7 @@ export default function AtlasView({ onPlayCharacterOnStage }) {
       return ['gatotkaca', 'arjuna', 'karna', 'bima', 'semar'].includes(c.slug);
     }
     if (activeFilter === 'ramayana') {
-      return ['rahwana'].includes(c.slug);
+      return ['rahwana', 'shinta'].includes(c.slug);
     }
     if (activeFilter === 'pandawa') {
       return ['gatotkaca', 'arjuna', 'bima'].includes(c.slug);
@@ -943,220 +944,17 @@ export default function AtlasView({ onPlayCharacterOnStage }) {
                 </div>
               )}
 
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))', gap: '28px' }}>
-                {filteredCharacters.map((char) => {
-                  const charImg = CHAR_ASSETS[char.slug];
-
-                  return (
-                    <div
-                      key={char.id}
-                      style={{
-                        background: '#ffffff',
-                        borderRadius: '20px',
-                        border: '1px solid rgba(0, 0, 0, 0.06)',
-                        padding: '24px',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        transition: 'transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease',
-                        boxShadow: '0 2px 10px rgba(40, 28, 16, 0.04)',
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.borderColor = 'rgba(212, 175, 55, 0.35)';
-                        e.currentTarget.style.transform = 'translateY(-4px)';
-                        e.currentTarget.style.boxShadow = '0 8px 24px rgba(40, 28, 16, 0.08)';
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.borderColor = 'rgba(0, 0, 0, 0.06)';
-                        e.currentTarget.style.transform = 'translateY(0)';
-                        e.currentTarget.style.boxShadow = '0 2px 10px rgba(40, 28, 16, 0.04)';
-                      }}
-                    >
-                      {/* Visual Tokoh */}
-                      <div
-                        style={{
-                          position: 'relative',
-                          width: '100%',
-                          height: '240px',
-                          borderRadius: '20px',
-                          overflow: 'hidden',
-                          background: '#140e09',
-                          marginBottom: '20px',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                        }}
-                      >
-                        {charImg ? (
-                          <img
-                            src={charImg}
-                            alt={char.name}
-                            style={{
-                              width: '100%',
-                              height: '100%',
-                              objectFit: 'cover',
-                              objectPosition: 'center 15%',
-                            }}
-                          />
-                        ) : (
-                          <WayangFigureSvg
-                            slug={char.slug}
-                            scale={0.7}
-                            width={120}
-                            height={180}
-                            accentColor={char.accentColor}
-                          />
-                        )}
-
-                        <div
-                          style={{
-                            position: 'absolute',
-                            top: '14px',
-                            left: '14px',
-                            background: 'rgba(255, 255, 255, 0.96)',
-                            backdropFilter: 'blur(8px)',
-                            borderRadius: '9999px',
-                            padding: '6px 14px',
-                            boxShadow: '0 2px 10px rgba(0, 0, 0, 0.14)',
-                            fontSize: '11px',
-                            fontWeight: '800',
-                            color: '#1a140e',
-                            letterSpacing: '0.04em',
-                            textTransform: 'uppercase',
-                            pointerEvents: 'none',
-                          }}
-                        >
-                          {char.typeName}
-                        </div>
-                      </div>
-
-                      <div
-                        style={{
-                          display: 'flex',
-                          flexDirection: 'column',
-                          flex: 1,
-                          justifyContent: 'space-between',
-                        }}
-                      >
-                        <div>
-                          <div
-                            style={{
-                              display: 'flex',
-                              flexDirection: 'column',
-                              gap: '6px',
-                              marginBottom: '14px',
-                              fontSize: '13px',
-                              lineHeight: '1.45',
-                            }}
-                          >
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                              <span style={{ color: '#8b5a1b', fontWeight: '750', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '0.03em' }}>
-                                Gelar:
-                              </span>
-                              <span style={{ color: '#2b2118', fontWeight: '600' }}>{char.alias}</span>
-                            </div>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                              <span style={{ color: '#8b5a1b', fontWeight: '750', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '0.03em' }}>
-                                Pusaka:
-                              </span>
-                              <span style={{ color: '#2b2118', fontWeight: '600', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                                {char.weapons}
-                              </span>
-                            </div>
-                          </div>
-
-                          {/* Judul Tokoh (Warna Teks Soga Charcoal Bersih & Kontras) */}
-                          <h3
-                            style={{
-                              margin: '0 0 10px 0',
-                              fontSize: '20px',
-                              fontWeight: '800',
-                              color: '#1a140e',
-                              letterSpacing: '-0.3px',
-                              lineHeight: '1.3',
-                            }}
-                          >
-                            {char.name}
-                          </h3>
-
-                          {/* Deskripsi Tokoh Singkat, Padat, Jelas, & Informatif (Warna Abu Lembut Tidak Kontras) */}
-                          <p
-                            style={{
-                              margin: '0 0 24px 0',
-                              fontSize: '13.5px',
-                              color: '#6b7280',
-                              lineHeight: '1.6',
-                              minHeight: '44px',
-                            }}
-                          >
-                            {char.shortDesc || char.description}
-                          </p>
-                        </div>
-
-                        <div style={{ display: 'flex', gap: '10px', marginTop: 'auto' }}>
-                          <button
-                            onClick={() => {
-                              setSelectedCharModal(char);
-                              setPreviewPose('default');
-                            }}
-                            style={{
-                              flex: 1,
-                              background: '#f5f0e4',
-                              border: '1px solid rgba(212, 175, 55, 0.45)',
-                              color: '#1a140e',
-                              padding: '12px 16px',
-                              borderRadius: '9999px',
-                              fontSize: '13px',
-                              fontWeight: '750',
-                              cursor: 'pointer',
-                              display: 'flex',
-                              alignItems: 'center',
-                              justifyContent: 'center',
-                              transition: 'all 0.2s ease',
-                            }}
-                            onMouseEnter={(e) => {
-                              e.currentTarget.style.background = '#ebe4d3';
-                              e.currentTarget.style.transform = 'translateY(-1px)';
-                            }}
-                            onMouseLeave={(e) => {
-                              e.currentTarget.style.background = '#f5f0e4';
-                              e.currentTarget.style.transform = 'translateY(0)';
-                            }}
-                          >
-                            Profil & Pose
-                          </button>
-                          <button
-                            onClick={() => onPlayCharacterOnStage && onPlayCharacterOnStage(char.id)}
-                            style={{
-                              flex: 1,
-                              background: '#e8bb5c',
-                              border: 'none',
-                              color: '#0d0a07',
-                              padding: '12px 16px',
-                              borderRadius: '9999px',
-                              fontSize: '13px',
-                              fontWeight: '750',
-                              cursor: 'pointer',
-                              display: 'flex',
-                              alignItems: 'center',
-                              justifyContent: 'center',
-                              boxShadow: 'none',
-                              transition: 'background 0.2s ease',
-                            }}
-                            onMouseEnter={(e) => {
-                              e.currentTarget.style.background = '#dcae4d';
-                            }}
-                            onMouseLeave={(e) => {
-                              e.currentTarget.style.background = '#e8bb5c';
-                            }}
-                          >
-                            Mainkan
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
+              <WayangCoverflowCarousel
+                characters={filteredCharacters}
+                charAssets={CHAR_ASSETS}
+                onSelectCharacter={(char) => {
+                  setSelectedCharModal(char);
+                  setPreviewPose('default');
+                }}
+                onPlayOnStage={(charId) => {
+                  if (onPlayCharacterOnStage) onPlayCharacterOnStage(charId);
+                }}
+              />
             </div>
           )}
 
