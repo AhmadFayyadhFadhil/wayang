@@ -2798,6 +2798,408 @@ html, body {
   -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 15%, black 85%, transparent 100%);
 }
 
+/* ==========================================================================
+   VIRTUAL KELIR STAGE & STUDIO - MOBILE-FIRST RESPONSIVE CRAFT
+   Tata letak studio pedalangan yang ergonomis, bersih, dan bebas tabrakan
+   ========================================================================== */
+
+.stage-studio-wrapper-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px 16px;
+  color: #fcfaf2;
+  box-sizing: border-box;
+}
+
+.stage-studio-header-card {
+  background: #16100a;
+  border: 1px solid rgba(212, 175, 55, 0.25);
+  border-radius: 16px;
+  padding: 14px 20px;
+  margin-bottom: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  box-sizing: border-box;
+}
+
+.stage-studio-top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  gap: 12px;
+}
+
+.stage-studio-left-group {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
+  flex: 1;
+}
+
+.stage-studio-back-btn {
+  background: #231a13;
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  color: #e8bb5c;
+  padding: 8px 16px;
+  border-radius: 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12.5px;
+  font-weight: 700;
+  min-height: 40px;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.stage-studio-back-btn:hover {
+  border-color: #d4af37;
+  background: #2c2017;
+}
+
+.stage-studio-title-block {
+  min-width: 0;
+  flex: 1;
+}
+
+.stage-studio-title {
+  margin: 0;
+  font-size: 18px;
+  color: #fcfaf2;
+  font-weight: 800;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.stage-studio-meta {
+  font-size: 11px;
+  color: #bfae9c;
+  margin-top: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.stage-studio-desktop-toolbar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.stage-studio-mobile-actions {
+  display: none;
+}
+
+.stage-studio-mobile-modes-row {
+  display: none;
+}
+
+.stage-mobile-touch-dock {
+  display: none;
+}
+
+/* More Dropdown Menu */
+.stage-studio-more-dropdown-anchor {
+  position: relative;
+}
+
+.stage-studio-more-menu-popup {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  z-index: 100;
+  background: #1c150e;
+  border: 1px solid rgba(212, 175, 55, 0.38);
+  border-radius: 14px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.65);
+  padding: 6px;
+  min-width: 200px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  animation: fadeInMenu 0.15s ease-out;
+}
+
+@keyframes fadeInMenu {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.stage-studio-menu-item {
+  background: transparent;
+  border: none;
+  color: #fcfaf2;
+  font-size: 12.5px;
+  font-weight: 650;
+  padding: 10px 14px;
+  border-radius: 10px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  text-align: left;
+  transition: all 0.15s ease;
+  min-height: 40px;
+}
+
+.stage-studio-menu-item:hover {
+  background: rgba(212, 175, 55, 0.14);
+  color: #facc15;
+}
+
+.stage-studio-menu-subtext {
+  font-size: 10.5px;
+  color: #d4af37;
+  max-width: 140px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ==========================================================================
+   MOBILE RESPONSIVE BREAKPOINT (< 768px)
+   ========================================================================== */
+@media (max-width: 768px) {
+  .stage-studio-wrapper-container {
+    padding: 12px 10px;
+  }
+
+  .stage-studio-header-card {
+    padding: 10px 12px;
+    border-radius: 14px;
+    margin-bottom: 12px;
+    gap: 10px;
+  }
+
+  .stage-studio-desktop-toolbar {
+    display: none !important;
+  }
+
+  .stage-studio-mobile-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+
+  .stage-studio-mobile-save-btn {
+    background: linear-gradient(135deg, #e8bb5c 0%, #d4af37 100%);
+    border: none;
+    color: #0d0a07;
+    font-size: 12.5px;
+    font-weight: 800;
+    padding: 8px 14px;
+    border-radius: 10px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    min-height: 38px;
+    box-shadow: 0 2px 8px rgba(212, 175, 55, 0.25);
+    white-space: nowrap;
+    transition: all 0.2s ease;
+  }
+
+  .stage-studio-mobile-save-btn:active {
+    transform: scale(0.96);
+  }
+
+  .stage-studio-mobile-more-btn {
+    background: #231a13;
+    border: 1px solid rgba(212, 175, 55, 0.35);
+    color: #e8bb5c;
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+  }
+
+  .stage-studio-mobile-more-btn.active,
+  .stage-studio-mobile-more-btn:hover {
+    border-color: #d4af37;
+    background: #2c2017;
+    color: #fef08a;
+  }
+
+  .stage-studio-back-btn {
+    padding: 8px 12px;
+    min-height: 38px;
+    font-size: 12px;
+    gap: 4px;
+  }
+
+  .stage-studio-title {
+    font-size: 14.5px;
+    line-height: 1.25;
+  }
+
+  .stage-studio-meta {
+    font-size: 10.5px;
+  }
+
+  /* Dual Mode Switcher Row on Mobile */
+  .stage-studio-mobile-modes-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+  }
+
+  .stage-mobile-mode-btn {
+    flex: 1;
+    min-height: 40px;
+    border-radius: 10px;
+    font-size: 12px;
+    font-weight: 750;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+    box-sizing: border-box;
+  }
+
+  .stage-mobile-mode-btn.ar {
+    background: linear-gradient(135deg, rgba(212, 175, 55, 0.25) 0%, rgba(139, 69, 19, 0.38) 100%);
+    border: 1.5px solid #facc15;
+    color: #fef08a;
+    box-shadow: 0 0 12px rgba(250, 204, 21, 0.25);
+  }
+
+  .stage-mobile-mode-btn.vision {
+    background: #231a13;
+    border: 1px solid rgba(212, 175, 55, 0.35);
+    color: #e8bb5c;
+  }
+
+  .stage-mobile-mode-btn.vision.active {
+    background: linear-gradient(135deg, rgba(212, 175, 55, 0.22) 0%, rgba(35, 26, 19, 0.95) 100%);
+    border-color: #d4af37;
+    color: #fef08a;
+    box-shadow: 0 0 10px rgba(212, 175, 55, 0.28);
+  }
+
+  /* In-Canvas Overlays Hidden on Mobile to Prevent Clutter & Collision */
+  .stage-canvas-sfx-overlay-desktop,
+  .stage-canvas-scale-overlay-desktop {
+    display: none !important;
+  }
+
+  /* Mobile Dalang Touch Dock */
+  .stage-mobile-touch-dock {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #18120c;
+    border: 1px solid rgba(212, 175, 55, 0.28);
+    border-radius: 12px;
+    padding: 6px 10px;
+    margin-top: 8px;
+    gap: 8px;
+    box-sizing: border-box;
+  }
+
+  .stage-mobile-sfx-cluster {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: nowrap;
+  }
+
+  .stage-mobile-dock-btn {
+    background: #381503;
+    border: 1px solid #9a3412;
+    color: #fef3c7;
+    padding: 7px 10px;
+    border-radius: 10px;
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+    min-height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap;
+    transition: all 0.15s ease;
+  }
+
+  .stage-mobile-dock-btn:active {
+    background: #7c2d12;
+    transform: scale(0.96);
+  }
+
+  .stage-mobile-scale-cluster {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background: rgba(40, 28, 16, 0.5);
+    padding: 3px 6px;
+    border-radius: 8px;
+    border: 1px solid rgba(212, 175, 55, 0.25);
+  }
+
+  .stage-mobile-scale-btn {
+    background: #2b1d12;
+    border: 1px solid rgba(212, 175, 55, 0.3);
+    color: #fef3c7;
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+
+  .stage-mobile-scale-text {
+    font-size: 11.5px;
+    font-weight: 800;
+    color: #fef08a;
+    min-width: 24px;
+    text-align: center;
+  }
+}
+
+@media (max-width: 400px) {
+  .stage-studio-back-text {
+    display: none;
+  }
+
+  .stage-studio-back-btn {
+    padding: 8px 10px;
+  }
+
+  .stage-studio-title {
+    font-size: 13.5px;
+  }
+
+  .stage-mobile-dock-btn {
+    padding: 6px 8px;
+    font-size: 10.5px;
+  }
+}
+
 
 
 

@@ -426,6 +426,7 @@ const VirtualStageCanvas = forwardRef(function VirtualStageCanvas({
         {/* Panel Cepat Dalang (SFX Controller di Pojok Panggung) */}
         {isInteractive && (
           <div
+            className="stage-canvas-sfx-overlay-desktop"
             style={{
               position: 'absolute',
               top: '12px',
@@ -518,6 +519,7 @@ const VirtualStageCanvas = forwardRef(function VirtualStageCanvas({
         {/* Tombol Skala Bentuk Wayang Cepat Mengambang di Pojok Kanan Atas Panggung */}
         {isInteractive && characters.length > 0 && (
           <div
+            className="stage-canvas-scale-overlay-desktop"
             style={{
               position: 'absolute',
               top: '12px',
@@ -580,6 +582,62 @@ const VirtualStageCanvas = forwardRef(function VirtualStageCanvas({
           </div>
         )}
       </div>
+
+      {/* Mobile Dalang Touch Dock: Pengendali SFX Gamelan & Skala Wayang di Bawah Panggung */}
+      {isInteractive && (
+        <div className="stage-mobile-touch-dock">
+          <div className="stage-mobile-sfx-cluster">
+            <button
+              type="button"
+              onClick={() => handlePlaySfx('dodogan')}
+              className="stage-mobile-dock-btn"
+              title="Ketuk Dodogan Kotak Dalang"
+            >
+              🥁 Dodogan
+            </button>
+            <button
+              type="button"
+              onClick={() => handlePlaySfx('kepyak')}
+              className="stage-mobile-dock-btn"
+              title="Gemerincing Kepyak Dalang"
+            >
+              🔔 Kepyak
+            </button>
+            <button
+              type="button"
+              onClick={() => handlePlaySfx('gong')}
+              className="stage-mobile-dock-btn"
+              title="Gong Ageng Pamungkas"
+            >
+              🎵 Gong
+            </button>
+          </div>
+
+          {characters.length > 0 && (
+            <div className="stage-mobile-scale-cluster">
+              <button
+                type="button"
+                onClick={() => handleGlobalScaleChange(-0.1)}
+                className="stage-mobile-scale-btn"
+                title="Perkecil Ukuran Wayang"
+              >
+                <ZoomOut size={13} color="#fef3c7" />
+              </button>
+              <span className="stage-mobile-scale-text">
+                {(selectedChar?.scale || characters[0]?.scale || 1.0).toFixed(1)}x
+              </span>
+              <button
+                type="button"
+                onClick={() => handleGlobalScaleChange(0.1)}
+                className="stage-mobile-scale-btn"
+                title="Perbesar Ukuran Wayang"
+              >
+                <ZoomIn size={13} color="#fef3c7" />
+              </button>
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Floating Action Toolbar untuk Karakter yang Sedang Terpilih */}
       {isInteractive && selectedChar && (
