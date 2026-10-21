@@ -373,40 +373,94 @@ export default function WayangArStageModal({ isOpen, onClose, onOpenTutorial }) 
           });
 
           // 3. Precise Finger Snapping: Hitung target tangan wayang langsung dari koordinat nyata Landmark 4 & 8
-          const landmarksList = results?.landmarks || [];
-          landmarksList.forEach((landmarks) => {
+          const rawLandmarksList = results?.landmarks || [];
+          if (rawLandmarksList.length === 1) {
+            const landmarks = rawLandmarksList[0];
             const palmScreenX = (1.0 - landmarks[9].x) * stageW;
             const palmScreenY = landmarks[9].y * stageH;
             const isLeftHand = palmScreenX < stageW * 0.5;
 
             const puppetEl = isLeftHand ? leftPuppetRef.current : rightPuppetRef.current;
-            if (!puppetEl) return;
-
             const currentScale = isLeftHand ? leftScaleRef.current : rightScaleRef.current;
             const currentFacing = isLeftHand ? leftFacingRef.current : rightFacingRef.current;
 
-            // Landmark 4 = Ujung Jempol (Thumb Tip)
-            const thumbScreen = {
-              x: (1.0 - landmarks[4].x) * stageW,
-              y: landmarks[4].y * stageH,
-            };
-            // Landmark 8 = Ujung Telunjuk (Index Tip)
-            const indexScreen = {
-              x: (1.0 - landmarks[8].x) * stageW,
-              y: landmarks[8].y * stageH,
-            };
-            const palmScreen = {
-              x: palmScreenX,
-              y: palmScreenY,
-            };
+            if (puppetEl) {
+              const thumbScreen = {
+                x: (1.0 - landmarks[4].x) * stageW,
+                y: landmarks[4].y * stageH,
+              };
+              const indexScreen = {
+                x: (1.0 - landmarks[8].x) * stageW,
+                y: landmarks[8].y * stageH,
+              };
+              const palmScreen = {
+                x: palmScreenX,
+                y: palmScreenY,
+              };
 
-            const frontTarget = mapScreenLandmarkToPuppet(thumbScreen, palmScreen, currentScale, currentFacing);
-            const backTarget = mapScreenLandmarkToPuppet(indexScreen, palmScreen, currentScale, currentFacing);
+              const frontTarget = mapScreenLandmarkToPuppet(thumbScreen, palmScreen, currentScale, currentFacing);
+              const backTarget = mapScreenLandmarkToPuppet(indexScreen, palmScreen, currentScale, currentFacing);
 
-            if (frontTarget && backTarget) {
-              updatePuppetArmsDOM(puppetEl, null, { front: frontTarget, back: backTarget });
+              if (frontTarget && backTarget) {
+                updatePuppetArmsDOM(puppetEl, null, { front: frontTarget, back: backTarget });
+              }
             }
-          });
+          } else if (rawLandmarksList.length >= 2) {
+            // Urutkan kedua tangan dari kiri ke kanan layar secara deterministik:
+            // Tangan ke-0 (paling kiri di layar) -> leftPuppetRef (char-left)
+            // Tangan ke-1 (paling kanan di layar) -> rightPuppetRef (char-right)
+            const sortedByScreenX = [...rawLandmarksList].sort((a, b) => (1.0 - a[9].x) - (1.0 - b[9].x));
+
+            // Tangan Kiri -> Wayang Kiri
+            const leftLandmarks = sortedByScreenX[0];
+            const leftPuppet = leftPuppetRef.current;
+            if (leftPuppet) {
+              const leftPalmScreen = {
+                x: (1.0 - leftLandmarks[9].x) * stageW,
+                y: leftLandmarks[9].y * stageH,
+              };
+              const thumbScreen = {
+                x: (1.0 - leftLandmarks[4].x) * stageW,
+                y: leftLandmarks[4].y * stageH,
+              };
+              const indexScreen = {
+                x: (1.0 - leftLandmarks[8].x) * stageW,
+                y: leftLandmarks[8].y * stageH,
+              };
+
+              const frontTarget = mapScreenLandmarkToPuppet(thumbScreen, leftPalmScreen, leftScaleRef.current, leftFacingRef.current);
+              const backTarget = mapScreenLandmarkToPuppet(indexScreen, leftPalmScreen, leftScaleRef.current, leftFacingRef.current);
+
+              if (frontTarget && backTarget) {
+                updatePuppetArmsDOM(leftPuppet, null, { front: frontTarget, back: backTarget });
+              }
+            }
+
+            // Tangan Kanan -> Wayang Kanan
+            const rightLandmarks = sortedByScreenX[1];
+            const rightPuppet = rightPuppetRef.current;
+            if (rightPuppet) {
+              const rightPalmScreen = {
+                x: (1.0 - rightLandmarks[9].x) * stageW,
+                y: rightLandmarks[9].y * stageH,
+              };
+              const thumbScreen = {
+                x: (1.0 - rightLandmarks[4].x) * stageW,
+                y: rightLandmarks[4].y * stageH,
+              };
+              const indexScreen = {
+                x: (1.0 - rightLandmarks[8].x) * stageW,
+                y: rightLandmarks[8].y * stageH,
+              };
+
+              const frontTarget = mapScreenLandmarkToPuppet(thumbScreen, rightPalmScreen, rightScaleRef.current, rightFacingRef.current);
+              const backTarget = mapScreenLandmarkToPuppet(indexScreen, rightPalmScreen, rightScaleRef.current, rightFacingRef.current);
+
+              if (frontTarget && backTarget) {
+                updatePuppetArmsDOM(rightPuppet, null, { front: frontTarget, back: backTarget });
+              }
+            }
+          }
 
           // Perbarui koordinat dinamis agar pelacakan dua tangan tetap sinkron
           if (updates.length > 0) {

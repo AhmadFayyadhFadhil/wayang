@@ -3,12 +3,13 @@
  * Menghitung sudut sendi pundak-siku dan menggerakkan tudhing lengan wayang kulit
  */
 
-// Posisi pundak dalam sistem koordinat lokal wayang 240 x 360
-export const SHOULDER_L = { x: 92, y: 122 };
-export const SHOULDER_R = { x: 148, y: 122 };
+// Posisi pundak dalam sistem koordinat lokal wayang 240 x 360 (menghadap ke kanan secara default)
+// Dada/Depan berada di sisi kanan (x > 120), Punggung/Belakang berada di sisi kiri (x < 120)
+export const SHOULDER_L = { x: 148, y: 122 }; // Pundak Lengan Depan (Dada)
+export const SHOULDER_R = { x: 92, y: 122 };  // Pundak Lengan Belakang (Punggung)
 
-export const DEFAULT_FRONT_TARGET = { x: 70, y: 220 };
-export const DEFAULT_BACK_TARGET = { x: 170, y: 220 };
+export const DEFAULT_FRONT_TARGET = { x: 170, y: 220 }; // Menjuntai di depan dada
+export const DEFAULT_BACK_TARGET = { x: 70, y: 220 };   // Menjuntai di belakang punggung
 
 /**
  * Normalisasi selisih sudut modular ke rentang [-180°, +180°]

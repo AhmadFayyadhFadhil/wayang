@@ -477,14 +477,14 @@ class DalangKinematicsEngine {
     if (this.mode === 'dual') {
       if (characters.length === 0) return [];
 
-      const sortedChars = [...characters].sort((a, b) => a.x - b.x);
-      const leftChar = sortedChars[0];
-      const rightChar = sortedChars.length > 1 ? sortedChars[1] : null;
+      // Identifikasi tokoh kiri dan kanan secara konsisten & deterministik berdasarkan instanceId
+      const leftChar = characters.find((c) => c.instanceId === 'char-left') || characters[0];
+      const rightChar = characters.find((c) => c.instanceId === 'char-right') || (characters.length > 1 ? characters[1] : null);
 
       const isClashing = hands.length >= 2 && this.getDistance(hands[0].rawLandmarks[9], hands[1].rawLandmarks[9]) < 0.18;
       const isDualSembah = hands.length >= 2 && this.isSembah(hands[0].rawLandmarks, hands[1].rawLandmarks);
 
-      // Asosiasi tangan cerdas: urutkan tangan dari kiri ke kanan
+      // Asosiasi tangan deterministik berdasarkan posisi layar kiri dan kanan
       if (hands.length === 1) {
         const singleHand = hands[0];
         if (singleHand.x < 0.5 && leftChar) {
@@ -498,6 +498,8 @@ class DalangKinematicsEngine {
           singleHand.role = 'tokoh_kiri';
         }
       } else if (hands.length >= 2) {
+        // Urutkan tangan dari kiri ke kanan layar:
+        // Tangan yang lebih di kiri layar mengendalikan tokoh kiri, tangan yang lebih di kanan mengendalikan tokoh kanan
         const sortedHands = [...hands].sort((a, b) => a.x - b.x);
         if (leftChar) {
           sortedHands[0].targetChar = leftChar;
