@@ -35,11 +35,14 @@ export default function DalangVisionPip({
   characters = [],
   selectedInstanceId,
   onUpdateCharacter,
+  onDirectUpdate,
   onOpenTutorial,
 }) {
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
   const avatarImagesRef = useRef({});
+  const pendingUpdatesRef = useRef(new Map());
+  const commitTimeoutRef = useRef(null);
 
   const [isMinimized, setIsMinimized] = useState(false);
   const [visionMode, setVisionMode] = useState('dual'); // 'solo' | 'dual'
@@ -197,14 +200,16 @@ export default function DalangVisionPip({
         ctx.restore();
       }
 
-      // Lingkaran Bingkai Avatar
+      // Lingkaran Bingkai Avatar dengan status Terkunci
       ctx.save();
       ctx.beginPath();
       ctx.arc(cx, cy, radius, 0, Math.PI * 2);
       ctx.fillStyle = '#1c140e';
       ctx.fill();
-      ctx.strokeStyle = char.accentColor || '#d4af37';
-      ctx.lineWidth = 2.4;
+      ctx.strokeStyle = hand.isLocked ? '#facc15' : char.accentColor || '#d4af37';
+      ctx.lineWidth = hand.isLocked ? 3 : 2.4;
+      ctx.shadowColor = hand.isLocked ? '#facc15' : 'transparent';
+      ctx.shadowBlur = hand.isLocked ? 8 : 0;
       ctx.stroke();
       ctx.clip();
 
@@ -220,7 +225,7 @@ export default function DalangVisionPip({
       }
       ctx.restore();
 
-      // Label Nama Tokoh & Peran di Bawah Avatar
+      // Label Nama Tokoh, Indikator Lock & Arah Hadap Flip
       ctx.save();
       ctx.font = 'bold 9.5px sans-serif';
       ctx.textAlign = 'center';
@@ -232,12 +237,13 @@ export default function DalangVisionPip({
           : hand.role === 'cempurit'
           ? ' (Cempurit)'
           : '';
-      const fullLabel = (char.name || 'Wayang') + roleText;
+      const tiltIndicator = hand.tiltX > 0.032 ? ' →' : hand.tiltX < -0.032 ? ' ←' : '';
+      const fullLabel = `🔒 ${(char.name || 'Wayang')}${roleText}${tiltIndicator}`;
       const textWidth = ctx.measureText(fullLabel).width;
 
-      ctx.fillStyle = 'rgba(22, 16, 10, 0.9)';
+      ctx.fillStyle = 'rgba(22, 16, 10, 0.92)';
       ctx.fillRect(cx - textWidth / 2 - 4, cy + radius + 2, textWidth + 8, 14);
-      ctx.strokeStyle = 'rgba(212, 175, 55, 0.45)';
+      ctx.strokeStyle = 'rgba(212, 175, 55, 0.5)';
       ctx.lineWidth = 0.8;
       ctx.strokeRect(cx - textWidth / 2 - 4, cy + radius + 2, textWidth + 8, 14);
 
@@ -255,6 +261,7 @@ export default function DalangVisionPip({
     }
 
     let isSubscribed = true;
+    const pendingUpdates = pendingUpdatesRef.current;
 
     const startVision = async () => {
       try {
@@ -270,13 +277,45 @@ export default function DalangVisionPip({
 
           // 1. Jalankan kalkulasi kinematika & tentukan karakter target
           const updates = dalangKinematicsEngine.processFrame(results, characters, selectedInstanceId);
-          updates.forEach(({ instanceId, updates: u }) => {
-            if (onUpdateCharacter) {
-              onUpdateCharacter(instanceId, u);
-            }
-          });
 
-          // 2. Render skeletal beserta avatar wayang di atas tangan
+          // 2. Manipulasi DOM langsung (0x React Re-render = 60/120 FPS Butter Smooth)
+          if (onDirectUpdate && updates.length > 0) {
+            updates.forEach(({ instanceId, updates: u }) => {
+              onDirectUpdate(instanceId, u);
+            });
+          }
+
+          // 3. Simpan pembaruan ke buffer untuk sinkronisasi Zustand store secara hemat (tiap 200ms)
+          if (updates.length > 0) {
+            updates.forEach(({ instanceId, updates: u }) => {
+              pendingUpdatesRef.current.set(instanceId, {
+                ...(pendingUpdatesRef.current.get(instanceId) || {}),
+                ...u,
+              });
+            });
+
+            if (!commitTimeoutRef.current) {
+              commitTimeoutRef.current = setTimeout(() => {
+                if (onUpdateCharacter && pendingUpdatesRef.current.size > 0) {
+                  pendingUpdatesRef.current.forEach((u, id) => {
+                    onUpdateCharacter(id, u);
+                  });
+                  pendingUpdatesRef.current.clear();
+                }
+                commitTimeoutRef.current = null;
+              }, 200);
+            }
+          } else if (results?.landmarks?.length === 0) {
+            // Tancep Debog: tangan keluar kamera, segera commit posisi terakhir ke store
+            if (pendingUpdatesRef.current.size > 0 && onUpdateCharacter) {
+              pendingUpdatesRef.current.forEach((u, id) => {
+                onUpdateCharacter(id, u);
+              });
+              pendingUpdatesRef.current.clear();
+            }
+          }
+
+          // 4. Render skeletal beserta avatar wayang di atas tangan
           drawSkeletalOverlay(results, dalangKinematicsEngine.smoothedHands);
 
           setStatusText(dalangKinematicsEngine.statusMessage);
@@ -294,9 +333,19 @@ export default function DalangVisionPip({
 
     return () => {
       isSubscribed = false;
+      if (commitTimeoutRef.current) {
+        clearTimeout(commitTimeoutRef.current);
+        commitTimeoutRef.current = null;
+      }
+      if (pendingUpdates.size > 0 && onUpdateCharacter) {
+        pendingUpdates.forEach((u, id) => {
+          onUpdateCharacter(id, u);
+        });
+        pendingUpdates.clear();
+      }
       handTrackingService.stop();
     };
-  }, [isOpen, characters, selectedInstanceId, onUpdateCharacter, drawSkeletalOverlay]);
+  }, [isOpen, characters, selectedInstanceId, onUpdateCharacter, onDirectUpdate, drawSkeletalOverlay]);
 
   if (!isOpen) return null;
 

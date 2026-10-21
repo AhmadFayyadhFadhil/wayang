@@ -115,19 +115,19 @@ export default function DalangVisionTutorialModal({ isOpen, onClose }) {
                 flexShrink: 0,
               }}
             >
-              🤏
+              🔒
             </div>
             <div>
               <div style={{ fontWeight: '800', color: '#fcfaf2', fontSize: '14px', marginBottom: '3px' }}>
-                1. Cengkeram Cempurit (Jepit Jempol & Telunjuk)
+                1. Telapak Tangan Otomatis Terkunci (Auto-Lock)
               </div>
               <div style={{ fontSize: '12.5px', color: '#d5c4b1', lineHeight: '1.5' }}>
-                Rapatkan ujung jari jempol dan telunjuk Anda di depan kamera. Wayang akan terkunci dan langsung melayang mengikuti ke mana pun telapak tangan Anda bergerak.
+                Cukup angkat tangan Anda di depan kamera. Tangan kiri otomatis mengunci tokoh kiri dan tangan kanan mengunci tokoh kanan. Wayang langsung melayang mulus mengikuti gerakan tangan tanpa membuat dalang lelah.
               </div>
             </div>
           </div>
 
-          {/* Langkah 2: Tancep Debog */}
+          {/* Langkah 2: Miringkan Telapak untuk Balik Arah Hadap */}
           <div
             style={{
               display: 'flex',
@@ -154,14 +154,14 @@ export default function DalangVisionTutorialModal({ isOpen, onClose }) {
                 flexShrink: 0,
               }}
             >
-              ✋
+              🔄
             </div>
             <div>
               <div style={{ fontWeight: '800', color: '#fcfaf2', fontSize: '14px', marginBottom: '3px' }}>
-                2. Tancep Debog (Buka Jari / Tangan Turun)
+                2. Miringkan Telapak untuk Balik Arah Hadap (Flip)
               </div>
               <div style={{ fontSize: '12.5px', color: '#d5c4b1', lineHeight: '1.5' }}>
-                Buka jari telapak tangan Anda atau turunkan tangan dari kamera. Wayang akan <strong>tertancap diam dan kokoh</strong> di posisi terakhirnya di atas kelir tanpa terjatuh atau hilang.
+                Miringkan telapak ke kiri agar wayang hadap kiri, miringkan ke kanan agar wayang hadap kanan. Kepalkan tangan untuk pose perang sabetan, atau rapatkan kedua telapak untuk sembah takzim.
               </div>
             </div>
           </div>

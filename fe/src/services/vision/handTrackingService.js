@@ -102,25 +102,35 @@ class HandTrackingService {
   }
 
   /**
-   * Loop deteksi per frame render efisien (hanya saat frame video baru tiba)
+   * Loop deteksi per frame kamera native hemat CPU & sinkron
    */
   predictLoop() {
     if (!this.isRunning || !this.videoElement || !this.handLandmarker) return;
 
-    if (this.videoElement.readyState >= 2 && this.videoElement.currentTime !== this.lastVideoTime) {
-      this.lastVideoTime = this.videoElement.currentTime;
-      try {
-        const startTimeMs = performance.now();
-        const results = this.handLandmarker.detectForVideo(this.videoElement, startTimeMs);
-        if (this.onResultsCallback) {
-          this.onResultsCallback(results);
-        }
-      } catch {
-        // Safe skip frame
-      }
-    }
+    const onFrame = () => {
+      if (!this.isRunning || !this.videoElement || !this.handLandmarker) return;
 
-    this.animationFrameId = requestAnimationFrame(() => this.predictLoop());
+      if (this.videoElement.readyState >= 2 && this.videoElement.currentTime !== this.lastVideoTime) {
+        this.lastVideoTime = this.videoElement.currentTime;
+        try {
+          const startTimeMs = performance.now();
+          const results = this.handLandmarker.detectForVideo(this.videoElement, startTimeMs);
+          if (this.onResultsCallback) {
+            this.onResultsCallback(results);
+          }
+        } catch {
+          // Safe skip frame
+        }
+      }
+
+      if ('requestVideoFrameCallback' in this.videoElement) {
+        this.videoFrameCallbackId = this.videoElement.requestVideoFrameCallback(onFrame);
+      } else {
+        this.animationFrameId = requestAnimationFrame(onFrame);
+      }
+    };
+
+    onFrame();
   }
 
   /**
@@ -132,6 +142,11 @@ class HandTrackingService {
     if (this.animationFrameId) {
       cancelAnimationFrame(this.animationFrameId);
       this.animationFrameId = null;
+    }
+
+    if (this.videoFrameCallbackId && this.videoElement && 'cancelVideoFrameCallback' in this.videoElement) {
+      this.videoElement.cancelVideoFrameCallback(this.videoFrameCallbackId);
+      this.videoFrameCallbackId = null;
     }
 
     if (this.videoElement && this.videoElement.srcObject) {

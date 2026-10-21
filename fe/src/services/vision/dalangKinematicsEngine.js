@@ -108,6 +108,11 @@ class DalangKinematicsEngine {
       const rawX = this.isMirrored ? 1.0 - landmarks[9].x : landmarks[9].x;
       const rawY = landmarks[9].y;
 
+      // Hitung orientasi kemiringan telapak tangan (Hand Tilt):
+      // Vektor horizontal dari pergelangan tangan (wrist = #0) ke pangkal jari tengah (MCP = #9)
+      const wristRawX = this.isMirrored ? 1.0 - landmarks[0].x : landmarks[0].x;
+      const tiltX = rawX - wristRawX; // Positif jika telapak miring ke kanan, negatif jika miring ke kiri
+
       const prev = this.smoothedHands[hIdx] || { x: rawX, y: rawY };
       const dx = rawX - prev.x;
       const dy = rawY - prev.y;
@@ -136,8 +141,10 @@ class DalangKinematicsEngine {
         rawLandmarks: landmarks,
         x: Math.max(0.06, Math.min(0.94, smoothX)),
         y: Math.max(0.35, Math.min(0.85, smoothY)),
+        tiltX,
         isPinching: this.isPinching(landmarks),
         isFist: this.isFist(landmarks),
+        isLocked: true, // Auto-Lock: Tangan terdeteksi langsung mengunci wayang tanpa syarat pinch
         targetChar: null,
         role: 'dalang',
       };
@@ -163,42 +170,41 @@ class DalangKinematicsEngine {
         primaryHand.targetChar = targetChar;
         primaryHand.role = 'cempurit';
 
-        if (primaryHand.isPinching) {
-          this.statusMessage = `Menggerakkan ${targetChar.name || 'Wayang'} (Cempurit Terkunci)`;
-          this.statusTone = 'grabbing';
-
-          let facing = targetChar.facing || 'right';
-          if (primaryHand.x > targetChar.x + 0.03) facing = 'right';
-          else if (primaryHand.x < targetChar.x - 0.03) facing = 'left';
-
-          let pose = targetChar.pose || 'default';
-          if (primaryHand.isFist) pose = 'perang';
-
-          const clampedX = Math.max(0.06, Math.min(0.94, primaryHand.x));
-          const clampedY = Math.max(0.35, Math.min(0.85, primaryHand.y));
-
-          const lastState = this.lastWayangStates.get(targetChar.instanceId);
-          const dx = lastState ? Math.abs(clampedX - lastState.x) : 1;
-          const dy = lastState ? Math.abs(clampedY - lastState.y) : 1;
-          const poseChanged = !lastState || lastState.pose !== pose || lastState.facing !== facing;
-
-          if (dx > 0.001 || dy > 0.001 || poseChanged) {
-            const newState = {
-              x: Number(clampedX.toFixed(4)),
-              y: Number(clampedY.toFixed(4)),
-              facing,
-              pose,
-            };
-            this.lastWayangStates.set(targetChar.instanceId, newState);
-            updates.push({
-              instanceId: targetChar.instanceId,
-              updates: newState,
-            });
-          }
-        } else {
-          this.statusMessage = `Tangan siap — Jepit jempol-telunjuk untuk memegang ${targetChar.name || 'wayang'}`;
-          this.statusTone = 'detected';
+        // Deteksi kemiringan telapak untuk membalik arah hadap (Flip)
+        const lastState = this.lastWayangStates.get(targetChar.instanceId);
+        let facing = lastState?.facing || targetChar.facing || 'right';
+        if (primaryHand.tiltX > 0.032) {
+          facing = 'right';
+        } else if (primaryHand.tiltX < -0.032) {
+          facing = 'left';
         }
+
+        let pose = targetChar.pose || 'default';
+        if (primaryHand.isFist) pose = 'perang';
+
+        const clampedX = Math.max(0.06, Math.min(0.94, primaryHand.x));
+        const clampedY = Math.max(0.35, Math.min(0.85, primaryHand.y));
+
+        const dx = lastState ? Math.abs(clampedX - lastState.x) : 1;
+        const dy = lastState ? Math.abs(clampedY - lastState.y) : 1;
+        const poseChanged = !lastState || lastState.pose !== pose || lastState.facing !== facing;
+
+        if (dx > 0.001 || dy > 0.001 || poseChanged) {
+          const newState = {
+            x: Number(clampedX.toFixed(4)),
+            y: Number(clampedY.toFixed(4)),
+            facing,
+            pose,
+          };
+          this.lastWayangStates.set(targetChar.instanceId, newState);
+          updates.push({
+            instanceId: targetChar.instanceId,
+            updates: newState,
+          });
+        }
+
+        this.statusMessage = `🔒 Wayang ${targetChar.name || 'Wayang'} Terkunci — Miringkan telapak untuk hadap kiri/kanan`;
+        this.statusTone = 'grabbing';
       }
 
       if (secondaryHand && updates.length > 0) {
@@ -207,7 +213,7 @@ class DalangKinematicsEngine {
 
         if (this.isSembah(primaryHand.rawLandmarks, secondaryHand.rawLandmarks)) {
           updates[0].updates.pose = 'sembah';
-          this.statusMessage = `${targetChar.name || 'Wayang'} bersikap Sembah Takzim`;
+          this.statusMessage = `🙏 ${targetChar.name || 'Wayang'} bersikap Sembah Takzim`;
         } else if (secondaryHand.isFist) {
           updates[0].updates.pose = 'perang';
         }
@@ -254,49 +260,52 @@ class DalangKinematicsEngine {
         }
       }
 
-      let anyGrabbing = false;
-
       hands.forEach((hand) => {
         if (!hand.targetChar) return;
         const char = hand.targetChar;
         const isLeft = hand.role === 'tokoh_kiri';
 
-        if (hand.isPinching) {
-          anyGrabbing = true;
-          let pose = 'default';
-          if (isDualSembah) pose = 'sembah';
-          else if (isClashing || hand.isFist) pose = 'perang';
+        // Deteksi kemiringan telapak untuk membalik arah hadap (Flip)
+        const lastState = this.lastWayangStates.get(char.instanceId);
+        let facing = lastState?.facing || (isLeft ? 'right' : 'left');
+        if (hand.tiltX > 0.032) {
+          facing = 'right';
+        } else if (hand.tiltX < -0.032) {
+          facing = 'left';
+        }
 
-          // Anti-clipping margin agar tidak saling menabrak 100%
-          let targetX = hand.x;
-          if (isLeft && rightChar) {
-            targetX = Math.min(rightChar.x - 0.08, targetX);
-          } else if (!isLeft && leftChar) {
-            targetX = Math.max(leftChar.x + 0.08, targetX);
-          }
+        let pose = 'default';
+        if (isDualSembah) pose = 'sembah';
+        else if (isClashing || hand.isFist) pose = 'perang';
 
-          const clampedX = Math.max(0.06, Math.min(0.94, targetX));
-          const clampedY = Math.max(0.35, Math.min(0.85, hand.y));
+        // Anti-clipping margin agar tidak saling menabrak 100%
+        let targetX = hand.x;
+        if (isLeft && rightChar) {
+          targetX = Math.min(rightChar.x - 0.08, targetX);
+        } else if (!isLeft && leftChar) {
+          targetX = Math.max(leftChar.x + 0.08, targetX);
+        }
 
-          // Deadband filter untuk hemat rendering & jaminan smooth
-          const lastState = this.lastWayangStates.get(char.instanceId);
-          const dx = lastState ? Math.abs(clampedX - lastState.x) : 1;
-          const dy = lastState ? Math.abs(clampedY - lastState.y) : 1;
-          const poseChanged = !lastState || lastState.pose !== pose;
+        const clampedX = Math.max(0.06, Math.min(0.94, targetX));
+        const clampedY = Math.max(0.35, Math.min(0.85, hand.y));
 
-          if (dx > 0.001 || dy > 0.001 || poseChanged) {
-            const newState = {
-              x: Number(clampedX.toFixed(4)),
-              y: Number(clampedY.toFixed(4)),
-              facing: isLeft ? 'right' : 'left',
-              pose,
-            };
-            this.lastWayangStates.set(char.instanceId, newState);
-            updates.push({
-              instanceId: char.instanceId,
-              updates: newState,
-            });
-          }
+        // Deadband filter untuk hemat rendering & jaminan smooth
+        const dx = lastState ? Math.abs(clampedX - lastState.x) : 1;
+        const dy = lastState ? Math.abs(clampedY - lastState.y) : 1;
+        const poseChanged = !lastState || lastState.pose !== pose || lastState.facing !== facing;
+
+        if (dx > 0.001 || dy > 0.001 || poseChanged) {
+          const newState = {
+            x: Number(clampedX.toFixed(4)),
+            y: Number(clampedY.toFixed(4)),
+            facing,
+            pose,
+          };
+          this.lastWayangStates.set(char.instanceId, newState);
+          updates.push({
+            instanceId: char.instanceId,
+            updates: newState,
+          });
         }
       });
 
@@ -307,11 +316,16 @@ class DalangKinematicsEngine {
       } else if (isDualSembah) {
         this.statusMessage = '🙏 Sembah Bersama: Kedua ksatria saling menghormat.';
         this.statusTone = 'grabbing';
-      } else if (anyGrabbing) {
-        this.statusMessage = 'Wayang digenggam — Gerakkan telapak untuk solah sabetan';
+      } else if (hands.length >= 2) {
+        this.statusMessage = '🔒 2 Tokoh Terkunci — Gerakkan telapak & jari, miringkan untuk hadap kiri/kanan';
+        this.statusTone = 'grabbing';
+      } else if (hands.length === 1) {
+        const h = hands[0];
+        const targetName = h.targetChar?.name || (h.role === 'tokoh_kiri' ? 'Tokoh Kiri' : 'Tokoh Kanan');
+        this.statusMessage = `🔒 ${targetName} Terkunci — Gerakkan telapak bebas`;
         this.statusTone = 'grabbing';
       } else {
-        this.statusMessage = 'Tangan terdeteksi — Jepit jari cempurit di kiri / kanan untuk mendalang';
+        this.statusMessage = 'Mencari telapak tangan dalang di depan kamera...';
         this.statusTone = 'detected';
       }
 

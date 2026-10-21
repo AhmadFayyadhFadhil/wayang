@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { useStageStore } from './useStageStore';
 import VirtualStageCanvas from './VirtualStageCanvas';
 import SceneComposer from './SceneComposer';
@@ -11,6 +11,7 @@ import { getBackgroundById } from '../../data/master/stageConfigMaster';
 import { RotateCcw, Play, Save, ArrowLeft, X, Palette, Hand } from 'lucide-react';
 
 export default function StageStudio({ onNavigate }) {
+  const stageCanvasRef = useRef(null);
   const {
     metadata,
     scenes,
@@ -255,6 +256,7 @@ export default function StageStudio({ onNavigate }) {
 
       {/* Virtual Kelir Canvas */}
       <VirtualStageCanvas
+        ref={stageCanvasRef}
         scene={currentScene}
         selectedInstanceId={selectedInstanceId}
         onSelectCharacter={setSelectedInstanceId}
@@ -308,6 +310,9 @@ export default function StageStudio({ onNavigate }) {
         characters={currentScene?.characters || []}
         selectedInstanceId={selectedInstanceId}
         onUpdateCharacter={updateCharacter}
+        onDirectUpdate={(instanceId, updates) => {
+          stageCanvasRef.current?.directUpdate(instanceId, updates);
+        }}
         onOpenTutorial={() => setShowVisionTutorial(true)}
       />
 

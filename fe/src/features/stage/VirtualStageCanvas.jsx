@@ -1,10 +1,10 @@
-import React, { useRef, useState, useEffect, useMemo } from 'react';
+import React, { useRef, useState, useEffect, useMemo, forwardRef, useImperativeHandle } from 'react';
 import WayangFigureSvg from '../../components/stage/WayangFigureSvg';
 import { getBackgroundById, STAGE_CONFIG_MASTER } from '../../data/master/stageConfigMaster';
 import soundEngine from '../../services/soundscape';
 import { ZoomIn, ZoomOut, Trash2, Volume2, ArrowLeft, ArrowRight, ArrowUp, ArrowDown } from 'lucide-react';
 
-export default function VirtualStageCanvas({
+const VirtualStageCanvas = forwardRef(function VirtualStageCanvas({
   scene,
   selectedInstanceId,
   onSelectCharacter,
@@ -12,8 +12,9 @@ export default function VirtualStageCanvas({
   onRemoveCharacter,
   isInteractive = true,
   isVisionActive = false,
-}) {
+}, ref) {
   const containerRef = useRef(null);
+  const charDomRefs = useRef({});
   const [draggingId, setDraggingId] = useState(null);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
   const [volume, setVolume] = useState(70);
@@ -21,6 +22,32 @@ export default function VirtualStageCanvas({
   const bgConfig = getBackgroundById(scene?.background);
   const characters = useMemo(() => scene?.characters || [], [scene?.characters]);
   const selectedChar = characters.find((c) => c.instanceId === selectedInstanceId);
+
+  // Ekspos manipulasi DOM langsung ke Dalang Vision (0x React Re-render = 60/120 FPS Butter Smooth)
+  useImperativeHandle(ref, () => ({
+    directUpdate: (instanceId, updates) => {
+      const el = charDomRefs.current[instanceId];
+      if (!el) return;
+
+      if (updates.x !== undefined) {
+        el.style.left = `${(updates.x * 100).toFixed(2)}%`;
+      }
+      if (updates.y !== undefined) {
+        el.style.top = `${(updates.y * 100).toFixed(2)}%`;
+      }
+      if (updates.facing !== undefined) {
+        const svgGroup = el.querySelector('svg > g');
+        if (svgGroup) {
+          const char = characters.find((c) => c.instanceId === instanceId);
+          const sc = char?.scale || 1.0;
+          svgGroup.setAttribute(
+            'transform',
+            `scale(${updates.facing === 'left' ? -sc : sc}, ${sc})`
+          );
+        }
+      }
+    },
+  }), [characters]);
 
   // Kontrol Skala Global Cepat Wayang (Memperbesar / Memperkecil)
   const handleGlobalScaleChange = (delta) => {
@@ -232,6 +259,10 @@ export default function VirtualStageCanvas({
           return (
             <div
               key={char.instanceId}
+              ref={(el) => {
+                if (el) charDomRefs.current[char.instanceId] = el;
+                else delete charDomRefs.current[char.instanceId];
+              }}
               onPointerDown={(e) => handlePointerDown(e, char)}
               style={{
                 position: 'absolute',
@@ -241,7 +272,7 @@ export default function VirtualStageCanvas({
                 zIndex: isSelected ? 10 : 5,
                 willChange: isVisionActive ? 'left, top' : 'auto',
                 transition: isVisionActive
-                  ? 'left 0.08s cubic-bezier(0.1, 0.9, 0.2, 1), top 0.08s cubic-bezier(0.1, 0.9, 0.2, 1)'
+                  ? 'none' // Zero latency: manipulasi DOM langsung meluncur 60-120 FPS tanpa hambatan interpolasi
                   : draggingId === char.instanceId
                   ? 'none'
                   : 'filter 0.2s, left 0.15s ease-out, top 0.15s ease-out',
@@ -591,7 +622,9 @@ export default function VirtualStageCanvas({
       )}
     </div>
   );
-}
+});
+
+export default VirtualStageCanvas;
 
 const actionBtnStyle = {
   background: '#292524',
