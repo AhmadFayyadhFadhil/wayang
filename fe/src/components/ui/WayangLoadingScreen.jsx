@@ -5,26 +5,29 @@ import wayangLoadingCakra from '../../assets/wayang_loading_cakra.png';
 
 /**
  * WayangLoadingScreen
- * Layar pemuatan kultural autentik dengan tokoh Gatotkaca, siluet Gunungan Emas,
- * pendaran Blencong bernapas, dan spinner Cakra Surya Majapahit.
+ * Layar pemuatan kultural autentik Wayangverse.
+ * Cepat, responsif, bebas stuck, dan tombol 'Lewati' berfungsi instan.
  */
 export default function WayangLoadingScreen({
   isVisible = true,
   message = 'MEMUAT... MOHON SABAR',
   subtitle = '',
-  minDuration = 2000,
+  minDuration = 600, // Cepat & responsif (600ms)
   onComplete,
   allowSkip = true,
   playAudio = true,
 }) {
-  const [shouldRender, setShouldRender] = useState(isVisible);
   const [isExiting, setIsExiting] = useState(false);
-  const startTimeRef = useRef(Date.now());
-  const timerRef = useRef(null);
-  const exitTimerRef = useRef(null);
+  const onCompleteRef = useRef(onComplete);
+  onCompleteRef.current = onComplete;
+  const isFinishedRef = useRef(false);
 
-  const handleFinish = useCallback(() => {
+  // Fungsi penyelesaian transisi cepat
+  const finishLoading = useCallback(() => {
+    if (isFinishedRef.current) return;
+    isFinishedRef.current = true;
     setIsExiting(true);
+
     if (playAudio) {
       try {
         soundEngine.playGong();
@@ -32,53 +35,57 @@ export default function WayangLoadingScreen({
         // audio fail-soft
       }
     }
-    exitTimerRef.current = setTimeout(() => {
-      setShouldRender(false);
-      if (onComplete) onComplete();
-    }, 650);
-  }, [onComplete, playAudio]);
 
-  const handleSkip = useCallback(() => {
-    if (timerRef.current) clearTimeout(timerRef.current);
-    handleFinish();
-  }, [handleFinish]);
+    // Transisi fade out cepat (220ms) lalu kabari parent
+    setTimeout(() => {
+      if (onCompleteRef.current) {
+        onCompleteRef.current();
+      }
+    }, 220);
+  }, [playAudio]);
 
-  // Kelola siklus hidup kemunculan & durasi minimal
+  // Tombol 'Lewati' langsung menutup seketika tanpa delay
+  const handleSkip = useCallback((e) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    isFinishedRef.current = true;
+    setIsExiting(true);
+    if (onCompleteRef.current) {
+      onCompleteRef.current();
+    }
+  }, []);
+
   useEffect(() => {
-    if (isVisible) {
-      setShouldRender(true);
+    if (!isVisible) {
       setIsExiting(false);
-      startTimeRef.current = Date.now();
-
-      if (playAudio) {
-        try {
-          soundEngine.playDodogan();
-        } catch (_e) {
-          // audio fail-soft
-        }
-      }
-
-      if (minDuration > 0) {
-        timerRef.current = setTimeout(() => {
-          handleFinish();
-        }, minDuration);
-      }
-    } else if (shouldRender && !isExiting) {
-      const elapsed = Date.now() - startTimeRef.current;
-      const remaining = Math.max(0, minDuration - elapsed);
-
-      timerRef.current = setTimeout(() => {
-        handleFinish();
-      }, remaining);
+      isFinishedRef.current = false;
+      return;
     }
 
-    return () => {
-      if (timerRef.current) clearTimeout(timerRef.current);
-      if (exitTimerRef.current) clearTimeout(exitTimerRef.current);
-    };
-  }, [isVisible, minDuration, handleFinish, playAudio, shouldRender, isExiting]);
+    isFinishedRef.current = false;
+    setIsExiting(false);
 
-  if (!shouldRender) return null;
+    if (playAudio) {
+      try {
+        soundEngine.playDodogan();
+      } catch (_e) {
+        // audio fail-soft
+      }
+    }
+
+    // Timer pemuatan secepat mungkin sesuai minDuration
+    const timer = setTimeout(() => {
+      finishLoading();
+    }, Math.max(200, minDuration));
+
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [isVisible, minDuration, finishLoading, playAudio]);
+
+  if (!isVisible) return null;
 
   return (
     <aside
@@ -86,6 +93,8 @@ export default function WayangLoadingScreen({
       aria-label="Layar Pemuatan Wayangverse"
       role="status"
       aria-live="polite"
+      onClick={handleSkip} // Klik di mana saja pada backdrop juga bisa menutup cepat jika stuck
+      style={{ cursor: 'pointer' }}
     >
       {/* 1. Partikel Percikan Cahaya Temaram Malam (Golden Sparks) */}
       <div
@@ -143,7 +152,7 @@ export default function WayangLoadingScreen({
         />
       </div>
 
-      {/* 2. Tombol Lewati / Skip Ergonomis di Pojok Kanan Atas */}
+      {/* 2. Tombol Lewati / Skip Instan di Pojok Kanan Atas */}
       {allowSkip && (
         <button
           type="button"
@@ -151,6 +160,7 @@ export default function WayangLoadingScreen({
           className="wayang-loading-skip-btn"
           aria-label="Lewati Pemuatan"
           title="Lewati dan langsung masuk ke aplikasi"
+          style={{ pointerEvents: 'auto', zIndex: 100 }}
         >
           <span>Lewati</span>
           <span style={{ fontSize: '14px', lineHeight: 1 }}>→</span>
@@ -158,7 +168,11 @@ export default function WayangLoadingScreen({
       )}
 
       {/* 3. Konten Utama Terpusat (Tokoh Gatotkaca, Cahaya Blencong, Teks, & Cakra) */}
-      <div className="wayang-loading-hero-wrapper">
+      <div
+        className="wayang-loading-hero-wrapper"
+        onClick={(e) => e.stopPropagation()} // Supaya klik area tengah tidak mendadak close jika tidak disengaja
+        style={{ cursor: 'default' }}
+      >
         {/* Tokoh Wayang Kulit Gatotkaca & Siluet Gunungan dengan Efek Solah Mengambang */}
         <div className="wayang-loading-figure-container">
           {/* Pendaran Cahaya Lampu Blencong Bernapas di Balik Gunungan */}
@@ -187,7 +201,7 @@ export default function WayangLoadingScreen({
           </span>
         </div>
 
-        {/* Subtitle Opsional (misal konteks lakon yang sedang dimuat) */}
+        {/* Subtitle Opsional */}
         {subtitle && <p className="wayang-loading-subtitle">{subtitle}</p>}
 
         {/* Spinner Cakra Manggilingan (Surya Majapahit + Golden Arc Ring) */}
@@ -208,12 +222,12 @@ export default function WayangLoadingScreen({
             />
             <path
               d="M29 4C42.8071 4 54 15.1929 54 29"
-              stroke="url(#goldenArcGrad)"
+              stroke="url(#goldenArcGradFast)"
               strokeWidth="2.8"
               strokeLinecap="round"
             />
             <defs>
-              <linearGradient id="goldenArcGrad" x1="29" y1="4" x2="54" y2="29" gradientUnits="userSpaceOnUse">
+              <linearGradient id="goldenArcGradFast" x1="29" y1="4" x2="54" y2="29" gradientUnits="userSpaceOnUse">
                 <stop stopColor="#fef08a" />
                 <stop offset="0.6" stopColor="#e8bb5c" />
                 <stop offset="1" stopColor="#d4af37" stopOpacity="0.2" />
@@ -221,7 +235,7 @@ export default function WayangLoadingScreen({
             </defs>
           </svg>
 
-          {/* Cakram Surya Majapahit / Mandala Dalam (Putar Anggun Perlahan Berlawanan Jarum Jam) */}
+          {/* Cakram Surya Majapahit / Mandala Dalam */}
           <img
             src={wayangLoadingCakra}
             alt="Cakra Surya Majapahit"

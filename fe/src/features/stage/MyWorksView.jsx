@@ -451,7 +451,7 @@ export default function MyWorksView({ onOpenStudio, onPlayPerformance }) {
     triggerWayangLoading({
       message: 'MEMUAT LAKON...',
       subtitle: `Membuka panggung kelir: ${perf.title || 'Karya Dalang'}`,
-      duration: 1200,
+      duration: 450,
     });
     loadPerformanceFromData(perf);
     if (onOpenStudio) onOpenStudio();
@@ -462,7 +462,7 @@ export default function MyWorksView({ onOpenStudio, onPlayPerformance }) {
     triggerWayangLoading({
       message: 'MENYIAPKAN PANGGUNG...',
       subtitle: 'Merancang lembar lakon baru dari awal',
-      duration: 1000,
+      duration: 450,
     });
     resetStudio();
     if (onOpenStudio) onOpenStudio();
@@ -473,7 +473,7 @@ export default function MyWorksView({ onOpenStudio, onPlayPerformance }) {
     triggerWayangLoading({
       message: 'MENYIAPKAN TEMPLATE PAKEM...',
       subtitle: `Memuat adegan & tokoh: ${template.title}`,
-      duration: 1200,
+      duration: 500,
     });
 
     const newWorkData = {

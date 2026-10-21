@@ -10,7 +10,6 @@ import AdminCmsView from './features/admin/AdminCmsView';
 import StagePreviewModal from './features/stage/StagePreviewModal';
 import AuthModal from './features/auth/AuthModal';
 import WayangLoadingScreen from './components/ui/WayangLoadingScreen';
-import { triggerWayangLoading } from './services/loadingService';
 import { useStageStore } from './features/stage/useStageStore';
 import persistenceService from './services/persistenceService';
 import { checkApiStatus } from './services/api';
@@ -82,12 +81,12 @@ function App() {
   }, []);
 
   // Loading Screen State (Initial App Load & Cross-Module Trigger)
-  const [loadingConfig, setLoadingConfig] = useState({
+  const [loadingConfig, setLoadingConfig] = useState(() => ({
     show: true,
     message: 'MEMUAT... MOHON SABAR',
     subtitle: 'Menyiapkan panggung kelir & wiracarita Nusantara',
-    duration: 2200,
-  });
+    duration: 650, // Sangat cepat (650ms)
+  }));
 
   // Global listener untuk memicu loading screen dari modul mana pun
   useEffect(() => {
@@ -96,7 +95,7 @@ function App() {
         show: true,
         message: e.detail?.message || 'MEMUAT... MOHON SABAR',
         subtitle: e.detail?.subtitle || '',
-        duration: typeof e.detail?.duration === 'number' ? e.detail.duration : 1800,
+        duration: typeof e.detail?.duration === 'number' ? e.detail.duration : 500,
       });
     };
 
@@ -114,34 +113,17 @@ function App() {
   }, []);
 
   const handleNavigate = (tab) => {
-    if (tab === 'stage' && activeTab !== 'stage') {
-      triggerWayangLoading({
-        message: 'MEMUAT... MOHON SABAR',
-        subtitle: 'Mempersiapkan Panggung Kelir Virtual & Lakon Pedalangan',
-        duration: 1200,
-      });
-    }
     setActiveTab(tab);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   // Handler interaksi lintas modul (Connected by Design)
   const handlePlayCharacterOnStage = (characterId) => {
-    triggerWayangLoading({
-      message: 'MEMUAT TOKOH WAYANG...',
-      subtitle: 'Memasukkan tokoh ke panggung kelir virtual',
-      duration: 1000,
-    });
     addCharacterToActiveScene(characterId);
     setActiveTab('stage');
   };
 
   const handlePlayPerformanceFromGallery = (performance) => {
-    triggerWayangLoading({
-      message: 'MEMUAT PAGELARAN...',
-      subtitle: `Mempersiapkan pementasan: ${performance?.title || 'Lakon Wayang'}`,
-      duration: 1000,
-    });
     setSelectedPerformanceForWatch(performance);
   };
 

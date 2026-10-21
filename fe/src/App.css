@@ -3307,7 +3307,7 @@ html, body {
   justify-content: center;
   overflow: hidden;
   pointer-events: auto;
-  transition: opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1), transform 0.75s ease;
+  transition: opacity 0.22s cubic-bezier(0.16, 1, 0.3, 1), transform 0.22s ease;
   box-sizing: border-box;
 }
 
