@@ -34,6 +34,8 @@ export default function WayangArStageModal({ isOpen, onClose, onOpenTutorial }) 
   const particlesRef = useRef([]);
   const leftPuppetRef = useRef(null);
   const rightPuppetRef = useRef(null);
+  const statusMessageRef = useRef('');
+  const vignetteGradRef = useRef(null);
 
   // Koleksi wayang custom yang diunggah dalang
   const [customPuppets, setCustomPuppets] = useState([]);
@@ -196,7 +198,7 @@ export default function WayangArStageModal({ isOpen, onClose, onOpenTutorial }) 
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isOpen, handleToggleAudio]);
 
-  // Render Panggung Canvas AR: Bersih, Jernih, Tanpa Tirai Merah Menutupi Wajah
+  // Render Panggung Canvas AR: Bersih, Jernih, Tanpa Tirai Merah Menutupi Wajah (60-120 FPS High Performance)
   const renderStageCanvas = useCallback((results) => {
     const canvas = canvasRef.current;
     const video = videoRef.current;
@@ -209,7 +211,6 @@ export default function WayangArStageModal({ isOpen, onClose, onOpenTutorial }) 
     const weatherOn = isWeatherActiveRef.current;
 
     ctx.save();
-    ctx.clearRect(0, 0, width, height);
 
     // 1. Gambar Feed Kamera Webcam Jernih & Asli (Mirrored)
     ctx.save();
@@ -218,43 +219,44 @@ export default function WayangArStageModal({ isOpen, onClose, onOpenTutorial }) 
     ctx.drawImage(video, 0, 0, width, height);
     ctx.restore();
 
-    // 2. Vignette Alami Halus di Tepian Layar (Wajah Dalang di Tengah Tetap Bersih & Terang)
-    const vignette = ctx.createRadialGradient(
-      width * 0.5,
-      height * 0.5,
-      width * 0.38,
-      width * 0.5,
-      height * 0.5,
-      width * 0.72
-    );
-    vignette.addColorStop(0, 'rgba(0, 0, 0, 0)');
-    vignette.addColorStop(1, 'rgba(10, 6, 3, 0.45)');
-    ctx.fillStyle = vignette;
+    // 2. Vignette Alami Halus di Tepian Layar (Cached Gradient)
+    if (!vignetteGradRef.current) {
+      const vignette = ctx.createRadialGradient(
+        width * 0.5,
+        height * 0.5,
+        width * 0.38,
+        width * 0.5,
+        height * 0.5,
+        width * 0.72
+      );
+      vignette.addColorStop(0, 'rgba(0, 0, 0, 0)');
+      vignette.addColorStop(1, 'rgba(10, 6, 3, 0.45)');
+      vignetteGradRef.current = vignette;
+    }
+    ctx.fillStyle = vignetteGradRef.current;
     ctx.fillRect(0, 0, width, height);
 
-    // 3. Efek Cuaca Sangat Lembut & Tenang (Hanya jika diaktifkan)
+    // 3. Efek Cuaca Sangat Lembut & Tenang (Batched Draw Call)
     if (weatherOn && currentMood === 'sendu') {
       const particles = particlesRef.current || [];
       ctx.lineWidth = 1;
+      ctx.strokeStyle = 'rgba(186, 230, 253, 0.28)';
+      ctx.beginPath();
       particles.forEach((p) => {
         p.y += p.speed;
         if (p.y > 1.0) {
           p.y = 0;
           p.x = Math.random();
         }
-
         const px = p.x * width;
         const py = p.y * height;
-        ctx.beginPath();
         ctx.moveTo(px, py);
         ctx.lineTo(px, py + p.length);
-        ctx.strokeStyle = `rgba(186, 230, 253, ${p.opacity})`;
-        ctx.stroke();
       });
+      ctx.stroke();
     }
 
-    // 4. Render Dual Skeletal Garis Halus di Bawah Wayang
-    // Tangan Kiri = Emas Prada (#d4af37) | Tangan Kanan = Biru Kelir Halus (#38bdf8)
+    // 4. Render Dual Skeletal Garis Halus di Bawah Wayang (Batched Draw Calls)
     const landmarksList = results?.landmarks || [];
     if (landmarksList.length > 0) {
       landmarksList.forEach((landmarks) => {
@@ -266,32 +268,26 @@ export default function WayangArStageModal({ isOpen, onClose, onOpenTutorial }) 
 
         ctx.lineWidth = 1.8;
         ctx.strokeStyle = strokeCol;
-        ctx.shadowBlur = 0;
 
+        // Batched bone paths
+        ctx.beginPath();
         HAND_CONNECTIONS.forEach(([i, j]) => {
           const p1 = landmarks[i];
           const p2 = landmarks[j];
           if (!p1 || !p2) return;
-
-          const x1 = (1.0 - p1.x) * width;
-          const y1 = p1.y * height;
-          const x2 = (1.0 - p2.x) * width;
-          const y2 = p2.y * height;
-
-          ctx.beginPath();
-          ctx.moveTo(x1, y1);
-          ctx.lineTo(x2, y2);
-          ctx.stroke();
+          ctx.moveTo((1.0 - p1.x) * width, p1.y * height);
+          ctx.lineTo((1.0 - p2.x) * width, p2.y * height);
         });
+        ctx.stroke();
 
+        // Batched joints
+        ctx.fillStyle = jointCol;
         landmarks.forEach((p, idx) => {
           const px = (1.0 - p.x) * width;
           const py = p.y * height;
-
           ctx.beginPath();
           const isTip = idx === 4 || idx === 8;
           ctx.arc(px, py, isTip ? 3.8 : 2.2, 0, Math.PI * 2);
-          ctx.fillStyle = jointCol;
           ctx.fill();
         });
       });
@@ -324,6 +320,7 @@ export default function WayangArStageModal({ isOpen, onClose, onOpenTutorial }) 
 
           const updates = dalangKinematicsEngine.processFrame(results, dummyChars, null);
 
+          // 1. Direct DOM Hardware Acceleration 60-120 FPS
           updates.forEach(({ instanceId, updates: u }) => {
             const puppetEl = instanceId === 'char-left' ? leftPuppetRef.current : rightPuppetRef.current;
             if (puppetEl) {
@@ -340,15 +337,31 @@ export default function WayangArStageModal({ isOpen, onClose, onOpenTutorial }) 
               }
             }
 
+            // Hanya re-render React ketika status animasi diskrit berubah (bukan koordinat kontinu)
             if (instanceId === 'char-left') {
-              setLeftCharState((prev) => ({ ...prev, ...u }));
+              if (u.isKiprah !== undefined) {
+                setLeftCharState((prev) => (prev.isKiprah !== u.isKiprah ? { ...prev, isKiprah: u.isKiprah } : prev));
+              }
             } else if (instanceId === 'char-right') {
-              setRightCharState((prev) => ({ ...prev, ...u }));
+              if (u.isKiprah !== undefined) {
+                setRightCharState((prev) => (prev.isKiprah !== u.isKiprah ? { ...prev, isKiprah: u.isKiprah } : prev));
+              }
             }
           });
 
+          // Perbarui koordinat dinamis agar pelacakan dua tangan tetap sinkron
+          if (updates.length > 0) {
+            updates.forEach(({ instanceId, updates: u }) => {
+              if (instanceId === 'char-left' && u.x !== undefined) dummyChars[0].x = u.x;
+              if (instanceId === 'char-right' && u.x !== undefined) dummyChars[1].x = u.x;
+            });
+          }
+
           renderStageCanvas(results);
-          setStatusMessage(dalangKinematicsEngine.statusMessage);
+          if (statusMessageRef.current !== dalangKinematicsEngine.statusMessage) {
+            statusMessageRef.current = dalangKinematicsEngine.statusMessage;
+            setStatusMessage(dalangKinematicsEngine.statusMessage);
+          }
         });
       } catch (err) {
         if (!isSubscribed) return;

@@ -18,7 +18,7 @@ import {
   mapFingerToIkTarget,
 } from '../../services/vision/puppetIkSolver';
 
-export default function RealLeatherPuppet({
+const RealLeatherPuppet = React.memo(function RealLeatherPuppet({
   slug = 'arjuna',
   customImageUrl = null,
   facing = 'right',
@@ -444,4 +444,6 @@ export default function RealLeatherPuppet({
       </style>
     </div>
   );
-}
+});
+
+export default RealLeatherPuppet;

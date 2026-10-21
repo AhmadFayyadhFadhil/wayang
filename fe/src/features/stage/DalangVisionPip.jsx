@@ -52,6 +52,8 @@ export default function DalangVisionPip({
   const [errorMessage, setErrorMessage] = useState(null);
 
   // Stable refs untuk mencegah re-run effect webcam saat props/state berubah
+  const statusTextRef = useRef(statusText);
+  const statusToneRef = useRef(statusTone);
   const charactersRef = useRef(characters);
   const selectedInstanceIdRef = useRef(selectedInstanceId);
   const onUpdateCharacterRef = useRef(onUpdateCharacter);
@@ -153,13 +155,14 @@ export default function DalangVisionPip({
     const landmarksList = results?.landmarks || [];
     if (landmarksList.length === 0) return;
 
-    // 1. Gambar Skeletal Ruas Tulang dan Sendi
+    // 1. Gambar Skeletal Ruas Tulang dan Sendi (Batched for 60-120 FPS high performance)
     landmarksList.forEach((landmarks) => {
       ctx.lineWidth = 2.4;
       ctx.strokeStyle = 'rgba(212, 175, 55, 0.85)'; // Emas Prada
       ctx.shadowColor = 'rgba(232, 187, 92, 0.8)';
-      ctx.shadowBlur = 6;
+      ctx.shadowBlur = 4;
 
+      ctx.beginPath();
       HAND_CONNECTIONS.forEach(([i, j]) => {
         const p1 = landmarks[i];
         const p2 = landmarks[j];
@@ -170,13 +173,13 @@ export default function DalangVisionPip({
         const x2 = mirrored ? (1 - p2.x) * width : p2.x * width;
         const y2 = p2.y * height;
 
-        ctx.beginPath();
         ctx.moveTo(x1, y1);
         ctx.lineTo(x2, y2);
-        ctx.stroke();
       });
+      ctx.stroke();
 
       // Titik Sendi (Joints)
+      ctx.shadowBlur = 0;
       landmarks.forEach((p, idx) => {
         const px = mirrored ? (1 - p.x) * width : p.x * width;
         const py = p.y * height;
@@ -328,7 +331,7 @@ export default function DalangVisionPip({
             });
           }
 
-          // 3. Simpan pembaruan ke buffer untuk sinkronisasi Zustand store secara hemat (tiap 200ms)
+          // 3. Simpan pembaruan ke buffer; commit ke store hanya saat idle/tancep debog (0x React lag)
           if (updates.length > 0) {
             updates.forEach(({ instanceId, updates: u }) => {
               pendingUpdates.set(instanceId, {
@@ -337,19 +340,24 @@ export default function DalangVisionPip({
               });
             });
 
-            if (!commitTimeoutRef.current) {
-              commitTimeoutRef.current = setTimeout(() => {
-                if (updateCharFn && pendingUpdates.size > 0) {
-                  pendingUpdates.forEach((u, id) => {
-                    updateCharFn(id, u);
-                  });
-                  pendingUpdates.clear();
-                }
-                commitTimeoutRef.current = null;
-              }, 200);
+            if (commitTimeoutRef.current) {
+              clearTimeout(commitTimeoutRef.current);
             }
+            commitTimeoutRef.current = setTimeout(() => {
+              if (updateCharFn && pendingUpdates.size > 0) {
+                pendingUpdates.forEach((u, id) => {
+                  updateCharFn(id, u);
+                });
+                pendingUpdates.clear();
+              }
+              commitTimeoutRef.current = null;
+            }, 1000);
           } else if (results?.landmarks?.length === 0) {
             // Tancep Debog: tangan keluar kamera, segera commit posisi terakhir ke store
+            if (commitTimeoutRef.current) {
+              clearTimeout(commitTimeoutRef.current);
+              commitTimeoutRef.current = null;
+            }
             if (pendingUpdates.size > 0 && updateCharFn) {
               pendingUpdates.forEach((u, id) => {
                 updateCharFn(id, u);
@@ -363,8 +371,14 @@ export default function DalangVisionPip({
             drawSkeletalOverlayRef.current(results, dalangKinematicsEngine.smoothedHands);
           }
 
-          setStatusText(dalangKinematicsEngine.statusMessage);
-          setStatusTone(dalangKinematicsEngine.statusTone);
+          if (statusTextRef.current !== dalangKinematicsEngine.statusMessage) {
+            statusTextRef.current = dalangKinematicsEngine.statusMessage;
+            setStatusText(dalangKinematicsEngine.statusMessage);
+          }
+          if (statusToneRef.current !== dalangKinematicsEngine.statusTone) {
+            statusToneRef.current = dalangKinematicsEngine.statusTone;
+            setStatusTone(dalangKinematicsEngine.statusTone);
+          }
         });
       } catch (err) {
         if (!isSubscribed) return;

@@ -73,10 +73,10 @@ class DalangKinematicsEngine {
     this.mode = 'dual'; // 'solo' | 'dual'
     this.isMirrored = true;
 
-    // Filter OneEuro Adaptif per slot tangan [tangan 0, tangan 1] (Super Silky Smooth Motion)
+    // Filter OneEuro Adaptif per slot tangan [tangan 0, tangan 1] (Ultra Silky Smooth & Zero-Jitter Motion)
     this.filters = [
-      { x: new OneEuroFilter(0.75, 3.5), y: new OneEuroFilter(0.75, 3.5) },
-      { x: new OneEuroFilter(0.75, 3.5), y: new OneEuroFilter(0.75, 3.5) },
+      { x: new OneEuroFilter(0.55, 3.0), y: new OneEuroFilter(0.55, 3.0) },
+      { x: new OneEuroFilter(0.55, 3.0), y: new OneEuroFilter(0.55, 3.0) },
     ];
     this.smoothedFingers = [{}, {}];
 
@@ -291,10 +291,10 @@ class DalangKinematicsEngine {
       if (!this.smoothedFingers) this.smoothedFingers = [{}, {}];
       const prevF = this.smoothedFingers[hIdx] || {};
 
-      const smoothThbX = prevF.thbX !== undefined ? 0.35 * thbRawX + 0.65 * prevF.thbX : thbRawX;
-      const smoothThbY = prevF.thbY !== undefined ? 0.35 * thbRawY + 0.65 * prevF.thbY : thbRawY;
-      const smoothIdxX = prevF.idxX !== undefined ? 0.35 * idxRawX + 0.65 * prevF.idxX : idxRawX;
-      const smoothIdxY = prevF.idxY !== undefined ? 0.35 * idxRawY + 0.65 * prevF.idxY : idxRawY;
+      const smoothThbX = prevF.thbX !== undefined ? 0.28 * thbRawX + 0.72 * prevF.thbX : thbRawX;
+      const smoothThbY = prevF.thbY !== undefined ? 0.28 * thbRawY + 0.72 * prevF.thbY : thbRawY;
+      const smoothIdxX = prevF.idxX !== undefined ? 0.28 * idxRawX + 0.72 * prevF.idxX : idxRawX;
+      const smoothIdxY = prevF.idxY !== undefined ? 0.28 * idxRawY + 0.72 * prevF.idxY : idxRawY;
 
       this.smoothedFingers[hIdx] = {
         thbX: smoothThbX,
@@ -383,7 +383,7 @@ class DalangKinematicsEngine {
         const dy = lastState ? Math.abs(clampedY - lastState.y) : 1;
         const poseChanged = !lastState || lastState.pose !== pose || lastState.facing !== facing;
 
-        if (dx > 0.001 || dy > 0.001 || poseChanged) {
+        if (dx > 0.0003 || dy > 0.0003 || poseChanged) {
           const newState = {
             x: Number(clampedX.toFixed(4)),
             y: Number(clampedY.toFixed(4)),
@@ -476,23 +476,16 @@ class DalangKinematicsEngine {
         if (isDualSembah) pose = 'sembah';
         else if (isClashing || hand.isFist) pose = 'perang';
 
-        // Anti-clipping margin agar tidak saling menabrak 100%
-        let targetX = hand.x;
-        if (isLeft && rightChar) {
-          targetX = Math.min(rightChar.x - 0.08, targetX);
-        } else if (!isLeft && leftChar) {
-          targetX = Math.max(leftChar.x + 0.08, targetX);
-        }
-
-        const clampedX = Math.max(0.06, Math.min(0.94, targetX));
+        // Kedua karakter bebas bergerak melintasi seluruh panggung (0.06 - 0.94) untuk pagelaran perang tanding
+        const clampedX = Math.max(0.06, Math.min(0.94, hand.x));
         const clampedY = Math.max(0.35, Math.min(0.85, hand.y));
 
-        // Deadband filter untuk hemat rendering & jaminan smooth
+        // Filter halus berkelanjutan (smooth continuous motion)
         const dx = lastState ? Math.abs(clampedX - lastState.x) : 1;
         const dy = lastState ? Math.abs(clampedY - lastState.y) : 1;
         const poseChanged = !lastState || lastState.pose !== pose || lastState.facing !== facing;
 
-        if (dx > 0.001 || dy > 0.001 || poseChanged) {
+        if (dx > 0.0003 || dy > 0.0003 || poseChanged) {
           const newState = {
             x: Number(clampedX.toFixed(4)),
             y: Number(clampedY.toFixed(4)),
