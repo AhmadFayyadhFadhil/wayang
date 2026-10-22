@@ -178,7 +178,7 @@ export default function AtlasView({ onPlayCharacterOnStage }) {
         minHeight: '100vh',
         background: 'var(--bg-deep, #0d0a07)',
         color: 'var(--text-main, #fbf8ee)',
-        paddingBottom: '60px',
+        paddingBottom: '0',
       }}
     >
       {/* ============================================================
@@ -453,7 +453,7 @@ export default function AtlasView({ onPlayCharacterOnStage }) {
           width: '100%',
           background: '#f5f0e4',
           minHeight: '80vh',
-          padding: '80px 0 100px 0',
+          padding: '80px 0 clamp(110px, 14vh, 150px) 0',
           boxSizing: 'border-box',
           position: 'relative',
           overflow: 'hidden',
@@ -794,7 +794,50 @@ export default function AtlasView({ onPlayCharacterOnStage }) {
             </div>
           )}
         </div>
+
+        {/* Bottom Atmospheric Vignette (Opsi 2): Transisi pudar bertingkat dari kanvas gading ke warna kayu soga gelap */}
+        <div
+          aria-hidden="true"
+          style={{
+            position: 'absolute',
+            bottom: 0,
+            left: 0,
+            right: 0,
+            height: '180px',
+            background:
+              'linear-gradient(to bottom, rgba(245, 240, 228, 0) 0%, rgba(245, 240, 228, 0.30) 25%, rgba(195, 160, 115, 0.20) 50%, rgba(55, 34, 18, 0.65) 82%, #0d0906 100%)',
+            pointerEvents: 'none',
+            zIndex: 3,
+          }}
+        />
+        {/* Soft Radial Center Warmth: Pendaran temaram minyak blencong di transisi bawah */}
+        <div
+          aria-hidden="true"
+          style={{
+            position: 'absolute',
+            bottom: 0,
+            left: '50%',
+            transform: 'translateX(-50%)',
+            width: 'clamp(320px, 60vw, 900px)',
+            height: '140px',
+            background:
+              'radial-gradient(ellipse 65% 55% at 50% 100%, rgba(212, 175, 55, 0.18) 0%, rgba(139, 90, 27, 0.08) 55%, transparent 100%)',
+            pointerEvents: 'none',
+            zIndex: 3,
+          }}
+        />
       </section>
+
+      {/* Frosted Heritage Glass Ribbon & Continuous Gliding Batik Strip (Opsi 1: Pembatas Emas Mewah Menuju Footer) */}
+      <div className="heritage-frosted-glass-ribbon" style={{ zIndex: 10, position: 'relative' }}>
+        <div className="heritage-glass-specular-highlight" />
+        <div
+          className="infinite-batik-conveyor"
+          style={{
+            backgroundImage: `url(${atlasGoldMotifStrip})`,
+          }}
+        />
+      </div>
 
       {/* MODAL 1: DETAIL LAKON CERITA (FR-02) — BESPOKE MUSEUM MANUSCRIPT DESIGN */}
       {selectedStoryModal && (() => {

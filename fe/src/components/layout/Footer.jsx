@@ -92,7 +92,7 @@ export default function Footer({ onNavigate }) {
               'radial-gradient(ellipse 95% 85% at 50% 50%, rgba(13, 9, 6, 0.70) 0%, rgba(13, 9, 6, 0.88) 68%, rgba(10, 7, 5, 0.97) 100%)',
           }}
         />
-        {/* Hairline Pembatas Emas Halus di Atas Footer */}
+        {/* Hairline Pembatas Emas Halus dengan Specular Ambient Glow di Atas Footer */}
         <div
           style={{
             position: 'absolute',
@@ -101,7 +101,9 @@ export default function Footer({ onNavigate }) {
             right: 0,
             height: '1px',
             background:
-              'linear-gradient(90deg, transparent 0%, rgba(212, 175, 55, 0.35) 50%, transparent 100%)',
+              'linear-gradient(90deg, transparent 0%, rgba(212, 175, 55, 0.2) 15%, rgba(245, 215, 127, 0.65) 50%, rgba(212, 175, 55, 0.2) 85%, transparent 100%)',
+            boxShadow: '0 0 14px rgba(212, 175, 55, 0.35)',
+            zIndex: 4,
           }}
         />
       </div>
