@@ -14,6 +14,7 @@ import JavaneseCloudBackground from '../../components/ui/JavaneseCloudBackground
 import heroParchmentWideBg from '../../assets/hero_parchment_clouds_widescreen_hd.jpg';
 import gununganHd from '../../assets/gunungan_kayon_hd.png';
 import atlasGoldMotifStrip from '../../assets/atlas_gold_motif_strip.jpg';
+import HeritageBatikRibbon from '../../components/ui/HeritageBatikRibbon';
 import {
   X,
   Save,
@@ -1787,6 +1788,9 @@ export default function AdminCmsView({ onPlayPerformance }) {
           </div>
         </div>
       </section>
+
+      {/* Frosted Heritage Glass Ribbon & Kinetic Nusantara Marquee Ticker (Menuju Footer) */}
+      <HeritageBatikRibbon style={{ zIndex: 10, position: 'relative' }} />
 
       {/* ============================================================
           3. MODAL FORM DIALOG (TAMBAH / UBAH DATA MASTER)

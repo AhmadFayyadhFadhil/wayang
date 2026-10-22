@@ -3083,7 +3083,8 @@ html, body {
   z-index: 15;
   display: flex;
   flex-direction: column;
-  background: rgba(20, 14, 9, 0.65);
+  justify-content: center;
+  background: rgba(20, 14, 9, 0.72);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
   border-top: 1px solid rgba(212, 175, 55, 0.32);
@@ -3093,6 +3094,7 @@ html, body {
     0 4px 24px rgba(0, 0, 0, 0.45),
     inset 0 1px 0 rgba(255, 235, 180, 0.22);
   overflow: hidden;
+  height: clamp(40px, 5.2vh, 46px);
 }
 
 .heritage-glass-specular-highlight {
@@ -3110,19 +3112,116 @@ html, body {
     transparent 100%
   );
   pointer-events: none;
-  z-index: 2;
+  z-index: 5;
 }
 
 .infinite-batik-conveyor {
+  position: absolute;
+  inset: 0;
   width: 100%;
-  height: 42px;
+  height: 100%;
   background-repeat: repeat-x;
   background-position: 0px center;
-  background-size: auto 42px;
-  animation: infiniteBatikGliding 22s linear infinite;
+  background-size: auto 100%;
+  animation: infiniteBatikGliding 24s linear infinite;
   will-change: background-position;
   mask-image: linear-gradient(to bottom, transparent 0%, black 15%, black 85%, transparent 100%);
   -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 15%, black 85%, transparent 100%);
+  opacity: 0.92;
+  z-index: 1;
+}
+
+/* Scrim Penyeimbang Emas: Memastikan kontras teks di atas motif batik terjaga */
+.heritage-ribbon-gold-glaze {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    rgba(20, 14, 9, 0.50) 0%,
+    rgba(20, 14, 9, 0.18) 15%,
+    rgba(20, 14, 9, 0.18) 85%,
+    rgba(20, 14, 9, 0.50) 100%
+  );
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* Kinetic Nusantara Marquee Ticker Viewport */
+.heritage-ribbon-ticker-viewport {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  user-select: none;
+  z-index: 3;
+}
+
+.heritage-ribbon-ticker-track {
+  display: flex;
+  align-items: center;
+  width: max-content;
+  will-change: transform;
+  animation: heritageTickerGliding 32s linear infinite;
+  cursor: default;
+}
+
+.heritage-frosted-glass-ribbon:hover .heritage-ribbon-ticker-track {
+  animation-play-state: paused;
+}
+
+@keyframes heritageTickerGliding {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  100% {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+.heritage-ribbon-ticker-group {
+  display: flex;
+  align-items: center;
+  gap: clamp(20px, 2.5vw, 36px);
+  padding-right: clamp(20px, 2.5vw, 36px);
+  flex-shrink: 0;
+}
+
+.heritage-ribbon-wordmark-img {
+  height: clamp(20px, 2.8vh, 26px);
+  width: auto;
+  object-fit: contain;
+  user-select: none;
+  pointer-events: none;
+  filter: drop-shadow(0 1px 1px rgba(255, 235, 180, 0.6)) drop-shadow(0 1px 3px rgba(16, 10, 5, 0.45));
+  transition: transform 0.2s ease, filter 0.2s ease;
+}
+
+.heritage-ribbon-star-dot {
+  color: #e8bb5c;
+  font-size: clamp(9px, 1.1vw, 12px);
+  text-shadow: 0 0 6px rgba(212, 175, 55, 0.6);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.95;
+  flex-shrink: 0;
+}
+
+.heritage-ribbon-pill-tag {
+  font-size: clamp(9.5px, 0.9vw, 11px);
+  font-weight: 800;
+  letter-spacing: 1.8px;
+  text-transform: uppercase;
+  color: #1a120b;
+  background: rgba(255, 245, 215, 0.88);
+  border: 1px solid rgba(212, 175, 55, 0.55);
+  padding: 3px 10px;
+  border-radius: 9999px;
+  backdrop-filter: blur(4px);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 /* ==========================================================================

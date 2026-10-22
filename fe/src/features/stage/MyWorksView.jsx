@@ -36,9 +36,9 @@ import {
 
 // Aset Visual Heritage & Ornamen Budaya
 import heroParchmentWideBg from '../../assets/hero_parchment_clouds_widescreen_hd.jpg';
-import atlasGoldMotifStrip from '../../assets/atlas_gold_motif_strip.jpg';
 import gununganKayonHd from '../../assets/gunungan_kayon_hd.png';
 import JavaneseCloudBackground from '../../components/ui/JavaneseCloudBackground';
+import HeritageBatikRibbon from '../../components/ui/HeritageBatikRibbon';
 import galleryCoverGatotkaca from '../../assets/gallery_cover_gatotkaca.jpg';
 import dalangPerformanceHeritage from '../../assets/dalang_performance_heritage.jpg';
 import lakonCoverDewaRuci from '../../assets/lakon_cover_dewa_ruci.jpg';
@@ -1035,16 +1035,8 @@ export default function MyWorksView({ onOpenStudio, onPlayPerformance }) {
           </div>
         </div>
 
-        {/* Frosted Heritage Glass Ribbon & Continuous Gliding Batik Strip */}
-        <div className="heritage-frosted-glass-ribbon">
-          <div className="heritage-glass-specular-highlight" />
-          <div
-            className="infinite-batik-conveyor"
-            style={{
-              backgroundImage: `url(${atlasGoldMotifStrip})`,
-            }}
-          />
-        </div>
+        {/* Frosted Heritage Glass Ribbon & Kinetic Nusantara Marquee Ticker */}
+        <HeritageBatikRibbon />
       </section>
 
       {/* ============================================================
@@ -3070,6 +3062,9 @@ export default function MyWorksView({ onOpenStudio, onPlayPerformance }) {
           )}
         </div>
       </section>
+
+      {/* Frosted Heritage Glass Ribbon & Kinetic Nusantara Marquee Ticker (Menuju Footer) */}
+      <HeritageBatikRibbon style={{ zIndex: 10, position: 'relative' }} />
 
       {/* ============================================================
           4. MODAL KONFIRMASI HAPUS ELEGAN (CUSTOM DIALOG)

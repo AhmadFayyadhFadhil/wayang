@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { BookOpen, Music, Film, ArrowUpRight, ArrowRight, Sparkles } from 'lucide-react';
 import AnimatedCounter from '../../components/ui/AnimatedCounter';
 import JavaneseCloudBackground from '../../components/ui/JavaneseCloudBackground';
+import HeritageBatikRibbon from '../../components/ui/HeritageBatikRibbon';
 
 // Assets
 import heroParchmentWideBg from '../../assets/hero_parchment_clouds_widescreen_hd.jpg';
@@ -1356,6 +1357,9 @@ export default function HomeView({ onNavigate, connectionStatus: _connectionStat
           </div>
         </div>
       </section>
+
+      {/* Frosted Heritage Glass Ribbon & Kinetic Nusantara Marquee Ticker (Menuju Footer) */}
+      <HeritageBatikRibbon style={{ zIndex: 10, position: 'relative' }} />
     </div>
   );
 }

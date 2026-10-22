@@ -14,13 +14,13 @@ import {
 
 // Aset Visual Hero Section Sesuai Referensi Pengguna (SS 1, SS 2, SS 3)
 import heroParchmentWideBg from '../../assets/hero_parchment_clouds_widescreen_hd.jpg';
-import atlasGoldMotifStrip from '../../assets/atlas_gold_motif_strip.jpg';
 import gununganHd from '../../assets/gunungan_kayon_hd.png';
 import JavaneseCloudBackground from '../../components/ui/JavaneseCloudBackground';
 import WayangCoverflowCarousel from '../../components/ui/WayangCoverflowCarousel';
 import WayangDuelShadowBg from '../../components/ui/WayangDuelShadowBg';
 import AtlasStoryShowcase from './AtlasStoryShowcase';
 import WayangTopAudioCarousel from '../../components/ui/WayangTopAudioCarousel';
+import HeritageBatikRibbon from '../../components/ui/HeritageBatikRibbon';
 
 // Gambar Otentik Lakon & Tokoh Sesuai Cardbox Halaman Beranda
 import galleryCoverGatotkaca from '../../assets/gallery_cover_gatotkaca.jpg';
@@ -433,16 +433,8 @@ export default function AtlasView({ onPlayCharacterOnStage }) {
           </div>
         </div>
 
-        {/* Frosted Heritage Glass Ribbon & Continuous Gliding Batik Strip (Sesuai Permintaan User) */}
-        <div className="heritage-frosted-glass-ribbon">
-          <div className="heritage-glass-specular-highlight" />
-          <div
-            className="infinite-batik-conveyor"
-            style={{
-              backgroundImage: `url(${atlasGoldMotifStrip})`,
-            }}
-          />
-        </div>
+        {/* Frosted Heritage Glass Ribbon & Kinetic Nusantara Marquee Ticker */}
+        <HeritageBatikRibbon />
       </section>
 
       {/* Konten Utama Story Atlas (Latar Belakang Hangat #f5f0e4 Sesuai Section Lakon Beranda) */}
@@ -828,16 +820,8 @@ export default function AtlasView({ onPlayCharacterOnStage }) {
         />
       </section>
 
-      {/* Frosted Heritage Glass Ribbon & Continuous Gliding Batik Strip (Opsi 1: Pembatas Emas Mewah Menuju Footer) */}
-      <div className="heritage-frosted-glass-ribbon" style={{ zIndex: 10, position: 'relative' }}>
-        <div className="heritage-glass-specular-highlight" />
-        <div
-          className="infinite-batik-conveyor"
-          style={{
-            backgroundImage: `url(${atlasGoldMotifStrip})`,
-          }}
-        />
-      </div>
+      {/* Frosted Heritage Glass Ribbon & Kinetic Nusantara Marquee Ticker (Menuju Footer) */}
+      <HeritageBatikRibbon style={{ zIndex: 10, position: 'relative' }} />
 
       {/* MODAL 1: DETAIL LAKON CERITA (FR-02) — BESPOKE MUSEUM MANUSCRIPT DESIGN */}
       {selectedStoryModal && (() => {

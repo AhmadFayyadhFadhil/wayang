@@ -14,9 +14,9 @@ import {
 
 // Aset Visual Heritage & Ornamen Budaya
 import heroParchmentWideBg from '../../assets/hero_parchment_clouds_widescreen_hd.jpg';
-import atlasGoldMotifStrip from '../../assets/atlas_gold_motif_strip.jpg';
 import gununganKayonHd from '../../assets/gunungan_kayon_hd.png';
 import JavaneseCloudBackground from '../../components/ui/JavaneseCloudBackground';
+import HeritageBatikRibbon from '../../components/ui/HeritageBatikRibbon';
 import galleryCoverGatotkaca from '../../assets/gallery_cover_gatotkaca.jpg';
 import dalangPerformanceHeritage from '../../assets/dalang_performance_heritage.jpg';
 import tatahSunggingCraft from '../../assets/tatah_sungging_craft.jpg';
@@ -609,16 +609,8 @@ export default function ConnectedArchiveView({
           </button>
         </div>
 
-        {/* Frosted Heritage Glass Ribbon & Continuous Gliding Batik Strip */}
-        <div className="heritage-frosted-glass-ribbon">
-          <div className="heritage-glass-specular-highlight" />
-          <div
-            className="infinite-batik-conveyor"
-            style={{
-              backgroundImage: `url(${atlasGoldMotifStrip})`,
-            }}
-          />
-        </div>
+        {/* Frosted Heritage Glass Ribbon & Kinetic Nusantara Marquee Ticker */}
+        <HeritageBatikRibbon />
       </section>
 
       {/* ============================================================
@@ -1190,16 +1182,8 @@ export default function ConnectedArchiveView({
         />
       </section>
 
-      {/* Frosted Heritage Glass Ribbon & Continuous Gliding Batik Strip (Opsi 1: Pembatas Emas Mewah Menuju Footer) */}
-      <div className="heritage-frosted-glass-ribbon" style={{ zIndex: 10, position: 'relative' }}>
-        <div className="heritage-glass-specular-highlight" />
-        <div
-          className="infinite-batik-conveyor"
-          style={{
-            backgroundImage: `url(${atlasGoldMotifStrip})`,
-          }}
-        />
-      </div>
+      {/* Frosted Heritage Glass Ribbon & Kinetic Nusantara Marquee Ticker (Menuju Footer) */}
+      <HeritageBatikRibbon style={{ zIndex: 10, position: 'relative' }} />
     </div>
   );
 }
