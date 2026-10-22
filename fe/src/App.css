@@ -3100,6 +3100,27 @@ html, body {
   box-sizing: border-box;
 }
 
+/* Varian Murni Batik (Hero Boundary Divider): Ramping, anggun, tanpa teks, motif prada tampil otentik */
+.heritage-ribbon--batik-only {
+  height: clamp(34px, 4.2vh, 40px);
+  background: rgba(16, 11, 7, 0.75);
+}
+
+.heritage-ribbon--batik-only .infinite-batik-conveyor {
+  opacity: 0.88;
+  animation: infiniteBatikGliding 40s linear infinite;
+}
+
+.heritage-ribbon--batik-only .heritage-ribbon-gold-glaze {
+  background: linear-gradient(
+    90deg,
+    rgba(14, 10, 6, 0.45) 0%,
+    rgba(14, 10, 6, 0.15) 15%,
+    rgba(14, 10, 6, 0.15) 85%,
+    rgba(14, 10, 6, 0.45) 100%
+  );
+}
+
 .heritage-glass-specular-highlight {
   position: absolute;
   top: 0;

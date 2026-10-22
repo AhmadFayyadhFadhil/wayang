@@ -6,13 +6,12 @@ import nusantaraWordmark from '../../assets/nusantara_wordmark_transparent.png';
  * HeritageBatikRibbon
  * -------------------------------------------------------------
  * Pita Pembatas Budaya Adiluhung Nusantara (Living Cultural Kinetic Ribbon).
- * Menggabungkan:
- * 1. Background: Batik prada emas Jawa kuno dengan kontras terkontrol (subtle watermark)
- * 2. Foreground: Kinetic infinite marquee tipografi otentik "nusantara" bergantian dengan
- *    pill badges filosofi pewayangan dan separator ornamen surya Majapahit emas
- * 3. Loop: Seamless 100% tanpa jeda/lompatan (matematis zero-jump reset)
- * 4. Masking: Fade gradasi di tepi kiri dan kanan untuk transisi visual mulus tanpa potong kasar
- * 5. Interaktivitas & Aksesibilitas: Hover pause dan dukungan prefers-reduced-motion
+ * Mendukung 2 mode (variant):
+ * 1. variant="full" (default): Marquee kinetik lengkap berisi logo putih "nusantara",
+ *    pill badges filosofi pewayangan kaca temaram, dan separator ornamen surya Majapahit emas.
+ *    Digunakan di bagian bawah halaman sebelum footer.
+ * 2. variant="batik-only": Murni motif batik prada emas Jawa kuno yang meluncur kontinu
+ *    tanpa teks/logo. Digunakan sebagai pembatas dekoratif antara hero banner dan konten babak.
  */
 
 const TICKER_ITEMS = [
@@ -39,7 +38,11 @@ export default function HeritageBatikRibbon({
   className = '',
   speed = 72,
   showBadges = true,
+  showTicker = true,
+  variant = 'full',
 }) {
+  const isBatikOnly = variant === 'batik-only' || showTicker === false;
+
   const ribbonStyle = {
     '--ribbon-duration': `${speed}s`,
     ...style,
@@ -79,14 +82,14 @@ export default function HeritageBatikRibbon({
 
   return (
     <div
-      className={`heritage-frosted-glass-ribbon ${className}`.trim()}
+      className={`heritage-frosted-glass-ribbon ${isBatikOnly ? 'heritage-ribbon--batik-only' : ''} ${className}`.trim()}
       style={ribbonStyle}
       aria-label="Pita Budaya Adiluhung Nusantara Wayangverse"
     >
       {/* 1. Specular Golden Highlight di Bibir Atas */}
       <div className="heritage-glass-specular-highlight" aria-hidden="true" />
 
-      {/* 2. Lapisan Dasar: Infinite Gliding Batik Prada Emas (Subtle Watermark) */}
+      {/* 2. Lapisan Dasar: Infinite Gliding Batik Prada Emas */}
       <div
         className="infinite-batik-conveyor"
         aria-hidden="true"
@@ -95,19 +98,21 @@ export default function HeritageBatikRibbon({
         }}
       />
 
-      {/* 3. Golden Scrim Overlay: Menjaga Keterbacaan dan Kontras Tulisan */}
+      {/* 3. Golden Scrim Overlay: Penyeimbang Nuansa Emas Keraton */}
       <div className="heritage-ribbon-gold-glaze" aria-hidden="true" />
 
-      {/* 4. Marquee Viewport: Kinetic Nusantara Marquee Ticker dengan Edge Masking */}
-      <div className="heritage-ribbon-ticker-viewport">
-        <div className="heritage-ribbon-ticker-track">
-          {/* Track Group 1 (Main) */}
-          {renderGroup('group-main')}
+      {/* 4. Marquee Viewport: Kinetic Nusantara Marquee Ticker (Hanya Tampil di Mode Full) */}
+      {!isBatikOnly && (
+        <div className="heritage-ribbon-ticker-viewport">
+          <div className="heritage-ribbon-ticker-track">
+            {/* Track Group 1 (Main) */}
+            {renderGroup('group-main')}
 
-          {/* Track Group 2 (Clone Identik untuk Perulangan Mulus 100% Tanpa Jeda) */}
-          {renderGroup('group-clone')}
+            {/* Track Group 2 (Clone Identik untuk Perulangan Mulus 100% Tanpa Jeda) */}
+            {renderGroup('group-clone')}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }

@@ -609,8 +609,8 @@ export default function ConnectedArchiveView({
           </button>
         </div>
 
-        {/* Frosted Heritage Glass Ribbon & Kinetic Nusantara Marquee Ticker */}
-        <HeritageBatikRibbon />
+        {/* Pembatas Hero: Murni Motif Batik Prada Emas Tanpa Teks */}
+        <HeritageBatikRibbon variant="batik-only" />
       </section>
 
       {/* ============================================================

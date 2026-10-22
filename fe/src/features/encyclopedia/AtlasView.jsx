@@ -433,8 +433,8 @@ export default function AtlasView({ onPlayCharacterOnStage }) {
           </div>
         </div>
 
-        {/* Frosted Heritage Glass Ribbon & Kinetic Nusantara Marquee Ticker */}
-        <HeritageBatikRibbon />
+        {/* Pembatas Hero: Murni Motif Batik Prada Emas Tanpa Teks */}
+        <HeritageBatikRibbon variant="batik-only" />
       </section>
 
       {/* Konten Utama Story Atlas (Latar Belakang Hangat #f5f0e4 Sesuai Section Lakon Beranda) */}

@@ -1035,8 +1035,8 @@ export default function MyWorksView({ onOpenStudio, onPlayPerformance }) {
           </div>
         </div>
 
-        {/* Frosted Heritage Glass Ribbon & Kinetic Nusantara Marquee Ticker */}
-        <HeritageBatikRibbon />
+        {/* Pembatas Hero: Murni Motif Batik Prada Emas Tanpa Teks */}
+        <HeritageBatikRibbon variant="batik-only" />
       </section>
 
       {/* ============================================================
