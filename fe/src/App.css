@@ -3063,7 +3063,7 @@ html, body {
 /* ==========================================================================
    6. HERITAGE FROSTED GLASS RIBBON & INFINITE BATIK CONVEYOR
    Animasi geser kesamping terus-menerus tanpa henti dengan perulangan
-   matematis bulat sempurna (576px cycle, 60 FPS GPU-accelerated)
+   matematis bulat sempurna (Seamless zero-jump reset, 60 FPS GPU-accelerated)
    ========================================================================== */
 
 @keyframes infiniteBatikGliding {
@@ -3076,6 +3076,8 @@ html, body {
 }
 
 .heritage-frosted-glass-ribbon {
+  --ribbon-duration: 36s;
+  --ribbon-gap: 48px;
   position: absolute;
   bottom: 0;
   left: 0;
@@ -3084,17 +3086,18 @@ html, body {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  background: rgba(20, 14, 9, 0.72);
+  background: rgba(18, 12, 8, 0.85);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
-  border-top: 1px solid rgba(212, 175, 55, 0.32);
-  border-bottom: 1px solid rgba(212, 175, 55, 0.18);
+  border-top: 1px solid rgba(212, 175, 55, 0.40);
+  border-bottom: 1px solid rgba(212, 175, 55, 0.24);
   box-shadow: 
-    0 -4px 18px rgba(0, 0, 0, 0.35),
-    0 4px 24px rgba(0, 0, 0, 0.45),
+    0 -4px 18px rgba(0, 0, 0, 0.40),
+    0 4px 24px rgba(0, 0, 0, 0.50),
     inset 0 1px 0 rgba(255, 235, 180, 0.22);
   overflow: hidden;
-  height: clamp(40px, 5.2vh, 46px);
+  height: clamp(48px, 5.8vh, 52px);
+  box-sizing: border-box;
 }
 
 .heritage-glass-specular-highlight {
@@ -3123,11 +3126,11 @@ html, body {
   background-repeat: repeat-x;
   background-position: 0px center;
   background-size: auto 100%;
-  animation: infiniteBatikGliding 24s linear infinite;
+  animation: infiniteBatikGliding 36s linear infinite;
   will-change: background-position;
   mask-image: linear-gradient(to bottom, transparent 0%, black 15%, black 85%, transparent 100%);
   -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 15%, black 85%, transparent 100%);
-  opacity: 0.92;
+  opacity: 0.58;
   z-index: 1;
 }
 
@@ -3137,16 +3140,16 @@ html, body {
   inset: 0;
   background: linear-gradient(
     90deg,
-    rgba(20, 14, 9, 0.50) 0%,
-    rgba(20, 14, 9, 0.18) 15%,
-    rgba(20, 14, 9, 0.18) 85%,
-    rgba(20, 14, 9, 0.50) 100%
+    rgba(14, 10, 6, 0.65) 0%,
+    rgba(14, 10, 6, 0.38) 15%,
+    rgba(14, 10, 6, 0.38) 85%,
+    rgba(14, 10, 6, 0.65) 100%
   );
   pointer-events: none;
   z-index: 2;
 }
 
-/* Kinetic Nusantara Marquee Ticker Viewport */
+/* Kinetic Nusantara Marquee Ticker Viewport dengan Edge Masking */
 .heritage-ribbon-ticker-viewport {
   position: absolute;
   inset: 0;
@@ -3155,6 +3158,20 @@ html, body {
   overflow: hidden;
   user-select: none;
   z-index: 3;
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent 0%,
+    #000 8%,
+    #000 92%,
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    to right,
+    transparent 0%,
+    #000 8%,
+    #000 92%,
+    transparent 100%
+  );
 }
 
 .heritage-ribbon-ticker-track {
@@ -3162,7 +3179,7 @@ html, body {
   align-items: center;
   width: max-content;
   will-change: transform;
-  animation: heritageTickerGliding 32s linear infinite;
+  animation: heritageTickerGliding var(--ribbon-duration, 36s) linear infinite;
   cursor: default;
 }
 
@@ -3182,46 +3199,84 @@ html, body {
 .heritage-ribbon-ticker-group {
   display: flex;
   align-items: center;
-  gap: clamp(20px, 2.5vw, 36px);
-  padding-right: clamp(20px, 2.5vw, 36px);
+  gap: var(--ribbon-gap, 48px);
+  padding-right: var(--ribbon-gap, 48px);
   flex-shrink: 0;
 }
 
 .heritage-ribbon-wordmark-img {
-  height: clamp(20px, 2.8vh, 26px);
+  height: 30px;
   width: auto;
   object-fit: contain;
   user-select: none;
   pointer-events: none;
   filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.92)) drop-shadow(0 2px 6px rgba(18, 11, 6, 0.85));
+  opacity: 0.96;
+  flex-shrink: 0;
   transition: transform 0.2s ease, filter 0.2s ease;
 }
 
 .heritage-ribbon-star-dot {
-  color: #e8bb5c;
-  font-size: clamp(9px, 1.1vw, 12px);
-  text-shadow: 0 0 6px rgba(212, 175, 55, 0.6);
+  color: #d4af37;
+  font-size: 11px;
+  text-shadow: 0 0 6px rgba(212, 175, 55, 0.45);
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  opacity: 0.95;
+  opacity: 0.85;
   flex-shrink: 0;
+  line-height: 1;
 }
 
 .heritage-ribbon-pill-tag {
-  font-size: clamp(9.5px, 0.9vw, 11px);
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 20px;
+  font-size: 11px;
   font-weight: 800;
-  letter-spacing: 1.8px;
+  letter-spacing: 1.5px;
   text-transform: uppercase;
   color: #1a120b;
-  background: rgba(255, 245, 215, 0.88);
-  border: 1px solid rgba(212, 175, 55, 0.55);
-  padding: 3px 10px;
+  background: rgba(255, 246, 222, 0.92);
+  border: 1px solid rgba(212, 175, 55, 0.45);
   border-radius: 9999px;
   backdrop-filter: blur(4px);
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.30);
   white-space: nowrap;
   flex-shrink: 0;
+  box-sizing: border-box;
+}
+
+/* Responsivitas Layar Kecil & Aksesibilitas */
+@media (max-width: 768px) {
+  .heritage-frosted-glass-ribbon {
+    --ribbon-gap: 32px;
+    height: 46px;
+  }
+
+  .heritage-ribbon-pill-tag {
+    height: 28px;
+    padding: 0 14px;
+    font-size: 10px;
+    letter-spacing: 1.2px;
+  }
+
+  .heritage-ribbon-wordmark-img {
+    height: 25px;
+  }
+
+  .heritage-ribbon-star-dot {
+    font-size: 10px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .heritage-ribbon-ticker-track,
+  .infinite-batik-conveyor {
+    animation-play-state: paused !important;
+  }
 }
 
 /* ==========================================================================
