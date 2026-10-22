@@ -3076,7 +3076,7 @@ html, body {
 }
 
 .heritage-frosted-glass-ribbon {
-  --ribbon-duration: 36s;
+  --ribbon-duration: 72s;
   --ribbon-gap: 48px;
   position: absolute;
   bottom: 0;
@@ -3126,7 +3126,7 @@ html, body {
   background-repeat: repeat-x;
   background-position: 0px center;
   background-size: auto 100%;
-  animation: infiniteBatikGliding 36s linear infinite;
+  animation: infiniteBatikGliding 48s linear infinite;
   will-change: background-position;
   mask-image: linear-gradient(to bottom, transparent 0%, black 15%, black 85%, transparent 100%);
   -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 15%, black 85%, transparent 100%);

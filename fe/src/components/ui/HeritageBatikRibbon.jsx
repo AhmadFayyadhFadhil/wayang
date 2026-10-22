@@ -37,7 +37,7 @@ const TICKER_ITEMS = [
 export default function HeritageBatikRibbon({
   style = {},
   className = '',
-  speed = 36,
+  speed = 72,
   showBadges = true,
 }) {
   const ribbonStyle = {
