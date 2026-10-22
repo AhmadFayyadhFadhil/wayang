@@ -148,14 +148,16 @@ function App() {
         playAudio={true}
       />
 
-      {/* 1. Header & Navigasi Global */}
-      <Navbar
-        activeTab={activeTab}
-        onNavigate={handleNavigate}
-        backendConnected={connection.connected}
-        currentUser={currentUser}
-        onOpenAuth={() => setShowAuthModal(true)}
-      />
+      {/* 1. Header & Navigasi Global (Disembunyikan saat di Studio Panggung untuk Studio Satu Layar 100vh) */}
+      {activeTab !== 'stage' && (
+        <Navbar
+          activeTab={activeTab}
+          onNavigate={handleNavigate}
+          backendConnected={connection.connected}
+          currentUser={currentUser}
+          onOpenAuth={() => setShowAuthModal(true)}
+        />
+      )}
 
       {/* 2. Konten Halaman Aktif */}
       <main
@@ -166,10 +168,13 @@ function App() {
             activeTab === 'atlas' ||
             activeTab === 'my-works' ||
             activeTab === 'archive' ||
-            activeTab === 'admin'
+            activeTab === 'admin' ||
+            activeTab === 'stage'
               ? '0'
               : '112px',
           paddingBottom: '0',
+          height: activeTab === 'stage' ? '100vh' : 'auto',
+          overflow: activeTab === 'stage' ? 'hidden' : 'visible',
         }}
       >
         {activeTab === 'home' && (
@@ -247,10 +252,12 @@ function App() {
         }}
       />
 
-      {/* 4. Footer Resmi Wayangverse (Ditampilkan Seragam di Semua Halaman) */}
-      <Footer
-        onNavigate={handleNavigate}
-      />
+      {/* 4. Footer Resmi Wayangverse (Disembunyikan saat di Studio Panggung untuk Studio Satu Layar) */}
+      {activeTab !== 'stage' && (
+        <Footer
+          onNavigate={handleNavigate}
+        />
+      )}
     </div>
   );
 }
