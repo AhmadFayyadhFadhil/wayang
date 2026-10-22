@@ -5,24 +5,43 @@
 }
 
 /* ============================================================
-   SECTION DIVIDER - GARIS 1PX GRADIENT EMAS TRANSISI HALUS
-   Fade di kedua ujung untuk pembatas nafas halaman yang anggun
+   SECTION DIVIDER - GARIS 1.5PX GRADIENT EMAS HERITAGE
+   Aksen prada kencana dengan diamond ornament halus di tengah
    ============================================================ */
 .section-divider {
-  width: 100%;
-  max-width: 1200px;
-  height: 1px;
+  width: calc(100% - 48px);
+  max-width: 1180px;
+  height: 1.5px;
   margin: 0 auto;
   background: linear-gradient(
     90deg,
     transparent 0%,
-    rgba(212, 175, 55, 0.22) 20%,
-    rgba(212, 175, 55, 0.38) 50%,
-    rgba(212, 175, 55, 0.22) 80%,
+    rgba(212, 175, 55, 0.2) 10%,
+    rgba(197, 155, 39, 0.8) 32%,
+    #b48a28 50%,
+    rgba(197, 155, 39, 0.8) 68%,
+    rgba(212, 175, 55, 0.2) 90%,
     transparent 100%
   );
   border: none;
   pointer-events: none;
+  position: relative;
+  z-index: 10;
+  box-shadow: 0 1px 4px rgba(180, 138, 40, 0.25);
+}
+
+.section-divider::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(45deg);
+  width: 7px;
+  height: 7px;
+  background: #c59b27;
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  border-radius: 1px;
+  box-shadow: 0 0 6px rgba(197, 155, 39, 0.45);
 }
 
 .app-container {

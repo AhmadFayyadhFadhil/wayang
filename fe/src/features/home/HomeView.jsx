@@ -745,6 +745,9 @@ export default function HomeView({ onNavigate, connectionStatus: _connectionStat
         </div>
       </section>
 
+      {/* Divider Transisi Halus Emas: Tiga Pilar ke Lakon Rujukan */}
+      <div className="section-divider" role="separator" aria-hidden="true" />
+
       {/* ============================================================
           4. KURASI LAKON NASKAH RUJUKAN KLASIK
           ============================================================ */}
@@ -1048,6 +1051,9 @@ export default function HomeView({ onNavigate, connectionStatus: _connectionStat
           </div>
         </div>
       </section>
+
+      {/* Divider Transisi Halus Emas: Koleksi Tokoh ke Pentas Wayang */}
+      <div className="section-divider" role="separator" aria-hidden="true" />
 
       {/* ============================================================
           5. GALERI KARYA PUBLIK / LEADERBOARD TOP 4 PEMENTASAN WAYANG
