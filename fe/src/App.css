@@ -7346,6 +7346,415 @@ html, body {
   }
 }
 
+/* Tombol Panduan di Header Studio */
+.studio-guide-header-btn {
+  background: rgba(35, 26, 19, 0.55);
+  border: 1px solid rgba(212, 175, 55, 0.28);
+  color: #d4af37;
+  padding: 7px 12px;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+  min-height: 38px;
+}
+
+.studio-guide-header-btn:hover {
+  background: rgba(45, 34, 25, 0.85);
+  border-color: #d4af37;
+  color: #fef08a;
+  transform: translateY(-1px);
+}
+
+/* =========================================================================
+   MODAL PANDUAN PANGGUNG VIRTUAL (ONBOARDING WALKTHROUGH GUIDE)
+   ========================================================================= */
+.stage-guide-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  background: rgba(10, 8, 6, 0.88);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  animation: stageGuideFadeIn 0.22s ease-out;
+}
+
+@keyframes stageGuideFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.stage-guide-card {
+  width: 100%;
+  max-width: 620px;
+  background: #18120c;
+  border: 1px solid rgba(212, 175, 55, 0.35);
+  border-radius: 20px;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.85), 0 0 40px rgba(212, 175, 55, 0.1);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+  animation: stageGuideCardPop 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes stageGuideCardPop {
+  from {
+    opacity: 0;
+    transform: scale(0.96) translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* Progress bar atas */
+.stage-guide-progress-track {
+  width: 100%;
+  height: 3px;
+  background: rgba(212, 175, 55, 0.12);
+  position: relative;
+}
+
+.stage-guide-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #b8860b, #d4af37, #fef08a);
+  transition: width 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Header modal */
+.stage-guide-header {
+  padding: 18px 24px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(212, 175, 55, 0.18);
+  background: linear-gradient(180deg, #221810 0%, #18120c 100%);
+}
+
+.stage-guide-header-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.stage-guide-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 10.5px;
+  font-weight: 800;
+  color: #d4af37;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  background: rgba(212, 175, 55, 0.1);
+  padding: 3px 8px;
+  border-radius: 9999px;
+  border: 1px solid rgba(212, 175, 55, 0.25);
+}
+
+.stage-guide-step-count {
+  font-size: 11.5px;
+  color: #a89a8a;
+  font-weight: 600;
+}
+
+.stage-guide-close-btn {
+  background: transparent;
+  border: none;
+  color: #a89a8a;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+}
+
+.stage-guide-close-btn:hover {
+  background: rgba(212, 175, 55, 0.15);
+  color: #fef08a;
+}
+
+/* Body modal */
+.stage-guide-body {
+  padding: 22px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.stage-guide-hero-banner {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  border: 1px solid;
+  transition: all 0.3s ease;
+}
+
+.stage-guide-glyph-avatar {
+  position: relative;
+  width: 54px;
+  height: 54px;
+  border-radius: 12px;
+  background: #150f0a;
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.stage-guide-glyph-text {
+  font-family: 'Noto Sans Javanese', serif;
+  font-size: 24px;
+  color: #d4af37;
+  opacity: 0.6;
+}
+
+.stage-guide-icon-pill {
+  position: absolute;
+  bottom: -4px;
+  right: -4px;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+}
+
+.stage-guide-hero-titles {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.stage-guide-step-tag {
+  font-size: 11px;
+  font-weight: 750;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.stage-guide-title {
+  margin: 0;
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 19px;
+  font-weight: 800;
+  color: #fcfaf2;
+  letter-spacing: -0.2px;
+  line-height: 1.25;
+}
+
+.stage-guide-desc {
+  margin: 0;
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: #d4cbbe;
+}
+
+.stage-guide-tips-list {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  background: rgba(24, 18, 12, 0.6);
+  border: 1px solid rgba(212, 175, 55, 0.16);
+  border-radius: 12px;
+  padding: 12px 14px;
+}
+
+.stage-guide-tip-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.stage-guide-tip-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  margin-top: 6px;
+  flex-shrink: 0;
+}
+
+.stage-guide-tip-text {
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: #f0e6d6;
+}
+
+/* Footer modal */
+.stage-guide-footer {
+  padding: 14px 24px;
+  border-top: 1px solid rgba(212, 175, 55, 0.18);
+  background: #140e09;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.stage-guide-skip-btn {
+  background: transparent;
+  border: none;
+  color: #a89a8a;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 6px 4px;
+  transition: color 0.15s ease;
+}
+
+.stage-guide-skip-btn:hover {
+  color: #e8bb5c;
+  text-decoration: underline;
+}
+
+.stage-guide-dots-indicator {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.stage-guide-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 9999px;
+  background: rgba(212, 175, 55, 0.25);
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  transition: all 0.2s ease;
+}
+
+.stage-guide-dot:hover {
+  background: rgba(212, 175, 55, 0.55);
+}
+
+.stage-guide-dot.is-completed {
+  background: #b8860b;
+}
+
+.stage-guide-dot.is-active {
+  width: 22px;
+  background: linear-gradient(90deg, #d4af37, #fef08a);
+  box-shadow: 0 0 8px rgba(212, 175, 55, 0.4);
+}
+
+.stage-guide-nav-buttons {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.stage-guide-prev-btn {
+  background: rgba(35, 26, 19, 0.7);
+  border: 1px solid rgba(212, 175, 55, 0.28);
+  color: #d4af37;
+  padding: 7px 14px;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.18s ease;
+}
+
+.stage-guide-prev-btn:hover {
+  background: #2a1f15;
+  border-color: #d4af37;
+  color: #fef08a;
+}
+
+.stage-guide-next-btn {
+  background: linear-gradient(135deg, #d4af37 0%, #b8860b 100%);
+  border: 1px solid #fef08a;
+  color: #16100a;
+  padding: 7px 16px;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 850;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 4px 14px rgba(212, 175, 55, 0.28);
+  transition: all 0.18s ease;
+}
+
+.stage-guide-next-btn:hover {
+  background: linear-gradient(135deg, #e8bb5c 0%, #c59b27 100%);
+  box-shadow: 0 6px 18px rgba(212, 175, 55, 0.4);
+  transform: translateY(-1px);
+}
+
+/* Responsif Layar Mobile */
+@media (max-width: 640px) {
+  .stage-guide-card {
+    border-radius: 16px;
+  }
+  .stage-guide-header {
+    padding: 14px 16px;
+  }
+  .stage-guide-body {
+    padding: 16px;
+    gap: 12px;
+  }
+  .stage-guide-title {
+    font-size: 16px;
+  }
+  .stage-guide-desc {
+    font-size: 12px;
+  }
+  .stage-guide-tips-list {
+    padding: 10px 12px;
+    gap: 7px;
+  }
+  .stage-guide-tip-text {
+    font-size: 11.5px;
+  }
+  .stage-guide-footer {
+    padding: 12px 16px;
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+  .stage-guide-dots-indicator {
+    order: 3;
+    width: 100%;
+    justify-content: center;
+    margin-top: 6px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stage-guide-overlay,
+  .stage-guide-card,
+  .stage-guide-progress-fill {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
 
 
 

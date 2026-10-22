@@ -8,6 +8,7 @@ import SavePerformanceModal from './SavePerformanceModal';
 import DalangVisionPip from './DalangVisionPip';
 import DalangVisionTutorialModal from './DalangVisionTutorialModal';
 import WayangArStageModal from './WayangArStageModal';
+import StageGuideModal from './StageGuideModal';
 import ErrorBoundary from '../../components/ui/ErrorBoundary';
 import { getBackgroundById, getAllBackgrounds, STAGE_CONFIG_MASTER } from '../../data/master/stageConfigMaster';
 import { AUDIO_MASTER } from '../../data/master/audioMaster';
@@ -36,6 +37,8 @@ import {
   Plus,
   Upload,
   Clock,
+  HelpCircle,
+  BookOpen,
 } from 'lucide-react';
 
 import avatarGatotkaca from '../../assets/avatar_gatotkaca.png';
@@ -87,6 +90,24 @@ export default function StageStudio({ onNavigate }) {
   const [showArStageModal, setShowArStageModal] = useState(false);
   const [showMoreMenu, setShowMoreMenu] = useState(false);
   const moreMenuRef = useRef(null);
+
+  // Panduan Interaktif Dalang (Otomatis muncul untuk pengunjung baru, disimpan di localStorage)
+  const [showGuideModal, setShowGuideModal] = useState(() => {
+    try {
+      return !localStorage.getItem('wayang_stage_guide_completed');
+    } catch {
+      return false;
+    }
+  });
+
+  const handleCloseGuide = useCallback(() => {
+    setShowGuideModal(false);
+    try {
+      localStorage.setItem('wayang_stage_guide_completed', 'true');
+    } catch {
+      // safe fallback
+    }
+  }, []);
 
   // Studio Layout Rail State
   const [activeRailTab, setActiveRailTab] = useState('characters'); // 'characters' | 'backgrounds' | 'audio' | 'dialogue'
@@ -259,6 +280,18 @@ export default function StageStudio({ onNavigate }) {
 
         {/* Sisi Kanan: Hierarki Tombol (Outline Pratinjau + Emas Solid Simpan + Menu ⋯) */}
         <div className="studio-header-right">
+          {/* Tombol Panduan Panggung Dalang (Interactive Onboarding) */}
+          <button
+            type="button"
+            onClick={() => setShowGuideModal(true)}
+            className="studio-guide-header-btn"
+            title="Buka Panduan Studio Panggung Virtual"
+            aria-label="Panduan Studio Panggung"
+          >
+            <HelpCircle size={14} />
+            <span className="btn-label-text">Panduan</span>
+          </button>
+
           {/* Tombol Dalang Vision (Camera Hand Tracking AI) */}
           <button
             type="button"
@@ -313,6 +346,23 @@ export default function StageStudio({ onNavigate }) {
 
             {showMoreMenu && (
               <div className="studio-more-menu-panel" role="menu">
+                {/* Panduan Studio Panggung Virtual */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowMoreMenu(false);
+                    setShowGuideModal(true);
+                  }}
+                  className="more-menu-item"
+                  role="menuitem"
+                >
+                  <BookOpen size={15} color="#d4af37" />
+                  <div className="menu-item-text-group">
+                    <span className="menu-item-title">Panduan Studio Panggung</span>
+                    <span className="menu-item-desc">Pelajari langkah tancep tokoh, tata suara &amp; pentas</span>
+                  </div>
+                </button>
+
                 {/* Mode Dalang Vision */}
                 <button
                   type="button"
@@ -1072,6 +1122,12 @@ export default function StageStudio({ onNavigate }) {
         onSavedSuccess={(savedRecord) => {
           if (savedRecord?.id) setMetadata({ id: savedRecord.id });
         }}
+      />
+
+      {/* Modal Panduan Interaktif Studio Dalang (Onboarding Walkthrough) */}
+      <StageGuideModal
+        isOpen={showGuideModal}
+        onClose={handleCloseGuide}
       />
 
       {/* Modal Panduan Gestur Dalang */}
