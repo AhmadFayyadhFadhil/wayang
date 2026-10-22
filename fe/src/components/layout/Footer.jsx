@@ -3,28 +3,29 @@ import { X } from 'lucide-react';
 import footerHeritageHd from '../../assets/footer_heritage_hd.jpg';
 
 // ============================================================
-// IKON SOSIAL MEDIA VEKTOR
+// IKON SOSIAL MEDIA MINIMALIS EMAS (VEKTOR MURNI TANPA LINGKARAN KLISE)
 // ============================================================
 const YoutubeIcon = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
     <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
   </svg>
 );
 
 const FacebookIcon = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
     <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
   </svg>
 );
 
-const TwitterIcon = () => (
+// Ikon X modern (menggantikan ikon Twitter burung lama)
+const XIcon = () => (
   <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-    <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.936 9.936 0 0024 4.59z" />
+    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
   </svg>
 );
 
 const InstagramIcon = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
     <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
     <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
@@ -32,155 +33,69 @@ const InstagramIcon = () => (
 );
 
 // ============================================================
-// Tahun saat ini dihitung di tingkat modul agar render murni sesuai standar React 19
+// TAHUN SAAT INI (RENDER MURNI REACT 19)
+// ============================================================
 const CURRENT_YEAR = new Date().getFullYear();
 
-// KOMPONEN UTAMA FOOTER
-// ============================================================
 export default function Footer({ onNavigate }) {
   const [modalData, setModalData] = useState(null);
 
   const socialLinks = [
-    { name: 'YouTube', icon: <YoutubeIcon />, href: 'https://youtube.com', title: 'Wayangverse YouTube' },
-    { name: 'Facebook', icon: <FacebookIcon />, href: 'https://facebook.com', title: 'Wayangverse Facebook' },
-    { name: 'Twitter', icon: <TwitterIcon />, href: 'https://twitter.com', title: 'Wayangverse Twitter' },
-    { name: 'Instagram', icon: <InstagramIcon />, href: 'https://instagram.com', title: 'Wayangverse Instagram' },
+    { name: 'YouTube', icon: <YoutubeIcon />, href: 'https://youtube.com', title: 'Saluran YouTube Wayangverse' },
+    { name: 'Facebook', icon: <FacebookIcon />, href: 'https://facebook.com', title: 'Laman Facebook Wayangverse' },
+    { name: 'X', icon: <XIcon />, href: 'https://x.com', title: 'Akun Resmi X Wayangverse' },
+    { name: 'Instagram', icon: <InstagramIcon />, href: 'https://instagram.com', title: 'Instagram @wayangverse' },
   ];
 
   return (
-    <footer
-      style={{
-        width: '100%',
-        background: '#0d0906',
-        color: '#fcfaf2',
-        borderTop: 'none',
-        position: 'relative',
-        overflow: 'hidden',
-        boxSizing: 'border-box',
-      }}
-    >
-      {/* ============================================================
-          1. LAPISAN DASAR: LATAR BELAKANG ELEGAN ULTRA HD ASLI (TIDAK BURAM)
-          ============================================================ */}
-      <div
-        aria-hidden="true"
-        style={{
-          position: 'absolute',
-          inset: 0,
-          zIndex: 1,
-          pointerEvents: 'none',
-          overflow: 'hidden',
-        }}
-      >
+    <footer className="wayang-footer-root">
+      {/* 1. Latar Belakang Heritage HD dengan Overlay Kontras Alami */}
+      <div className="wayang-footer-bg-wrapper" aria-hidden="true">
         <img
           src={footerHeritageHd}
           alt="Latar Belakang Budaya Wayangverse HD"
-          style={{
-            width: '100%',
-            height: '100%',
-            objectFit: 'cover',
-            objectPosition: 'center',
-            filter: 'contrast(1.1) brightness(0.65)',
-          }}
+          className="wayang-footer-bg-img"
         />
-        {/* Scrim Peneduh Tengah & Tepi: Menjamin teks dan tautan terbaca sangat tajam */}
-        <div
-          style={{
-            position: 'absolute',
-            inset: 0,
-            background:
-              'radial-gradient(ellipse 95% 85% at 50% 50%, rgba(13, 9, 6, 0.70) 0%, rgba(13, 9, 6, 0.88) 68%, rgba(10, 7, 5, 0.97) 100%)',
-          }}
-        />
-        {/* Hairline Pembatas Emas Halus dengan Specular Ambient Glow di Atas Footer */}
-        <div
-          style={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            right: 0,
-            height: '1px',
-            background:
-              'linear-gradient(90deg, transparent 0%, rgba(212, 175, 55, 0.2) 15%, rgba(245, 215, 127, 0.65) 50%, rgba(212, 175, 55, 0.2) 85%, transparent 100%)',
-            boxShadow: '0 0 14px rgba(212, 175, 55, 0.35)',
-            zIndex: 4,
-          }}
-        />
+        <div className="wayang-footer-bg-scrim" />
+        <div className="wayang-footer-top-specular" />
       </div>
 
-      {/* ============================================================
-          2. KONTEN UTAMA (Z-INDEX 3 / DI ATAS MOTIF / TIDAK TERTUTUP)
-          ============================================================ */}
-      <div
-        style={{
-          maxWidth: '1280px',
-          margin: '0 auto',
-          padding: 'clamp(48px, 6vw, 64px) clamp(16px, 3.5vw, 24px) 36px clamp(16px, 3.5vw, 24px)',
-          position: 'relative',
-          zIndex: 3,
-          boxSizing: 'border-box',
-          width: '100%',
-        }}
-      >
-        {/* MAIN 4-PART CONTENT (LAYOUT SCREENSHOT PERSIS) */}
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'flex-start',
-            flexWrap: 'wrap',
-            gap: '56px 40px',
-          }}
-        >
-          {/* SISI KIRI: BRAND, ALAMAT, DAN 4 IKON SOSIAL */}
-          <div style={{ flex: '1 1 340px', maxWidth: '420px' }}>
-            {/* Brand Title: Jangkor. -> Wayangverse. */}
+      {/* 2. Konten Utama Footer */}
+      <div className="wayang-footer-container">
+        {/* Layout Asimetris (Brand 1.6fr : Kolom Link 1fr : 1fr : 0.9fr) */}
+        <div className="wayang-footer-main-grid">
+          {/* Kolom 1: Identitas Brand & Alamat Riil */}
+          <div className="wayang-footer-brand-col">
             <div
               onClick={() => onNavigate && onNavigate('home')}
-              style={{
-                cursor: 'pointer',
-                display: 'inline-block',
-                marginBottom: '16px',
-                userSelect: 'none',
+              className="wayang-footer-brand-header"
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  if (onNavigate) onNavigate('home');
+                }
               }}
             >
-              <h3
-                style={{
-                  margin: 0,
-                  fontSize: '32px',
-                  fontWeight: '850',
-                  color: '#fcfaf2',
-                  letterSpacing: '-0.6px',
-                  fontFamily: 'var(--font-sans)',
-                  lineHeight: '1.2',
-                }}
-              >
-                Wayangverse<span style={{ color: '#e8bb5c' }}>.</span>
+              <h3 className="wayang-footer-brand-title">
+                Wayangverse
               </h3>
             </div>
 
-            {/* Address Lines */}
-            <div
-              style={{
-                fontSize: '14.5px',
-                lineHeight: '1.7',
-                color: '#c4b5a5',
-                marginBottom: '44px',
-                fontWeight: '450',
-              }}
-            >
-              <div>Jl. Pondok Leungsir Street</div>
-              <div>No 491 Village Park</div>
+            {/* Misi Kultural Humanis */}
+            <p className="wayang-footer-mission-text">
+              Merawat wayang lewat karya yang bisa dibawa pulang — melestarikan seni pedalangan Nusantara ke dalam kanvas digital interaktif dan arsip wiracarita adiluhung.
+            </p>
+
+            {/* Format Alamat Riil Rapi (Dapat Disesuaikan Pengguna) */}
+            <div className="wayang-footer-address-block">
+              <div className="wayang-footer-address-name">Studio & Galeri Wayangverse</div>
+              <div className="wayang-footer-address-street">Jl. Slamet Riyadi No. 284, Sriwedari, Laweyan</div>
+              <div className="wayang-footer-address-city">Surakarta, Jawa Tengah 57141, Indonesia</div>
             </div>
 
-            {/* 4 Ikon Media Sosial Melingkar (Bulat Kapsul dengan Border Emas) */}
-            <div
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '14px',
-              }}
-            >
+            {/* Ikon Sosial Emas Minimalis (Vektor Murni Tanpa Lingkaran Klise) */}
+            <div className="wayang-footer-social-row">
               {socialLinks.map((item) => (
                 <a
                   key={item.name}
@@ -188,34 +103,7 @@ export default function Footer({ onNavigate }) {
                   target="_blank"
                   rel="noopener noreferrer"
                   title={item.title}
-                  style={{
-                    width: '42px',
-                    height: '42px',
-                    borderRadius: '50%',
-                    background: 'rgba(28, 20, 13, 0.8)',
-                    border: '1px solid rgba(212, 175, 55, 0.18)',
-                    color: '#e8bb5c',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    textDecoration: 'none',
-                    transition: 'all 0.2s cubic-bezier(0.16, 1, 0.3, 1)',
-                    boxShadow: 'none',
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.background = '#e8bb5c';
-                    e.currentTarget.style.color = '#0d0a07';
-                    e.currentTarget.style.borderColor = '#e8bb5c';
-                    e.currentTarget.style.transform = 'translateY(-2px)';
-                    e.currentTarget.style.boxShadow = '0 6px 18px rgba(232, 187, 92, 0.4)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.background = 'rgba(28, 20, 13, 0.9)';
-                    e.currentTarget.style.color = '#e8bb5c';
-                    e.currentTarget.style.borderColor = 'rgba(212, 175, 55, 0.3)';
-                    e.currentTarget.style.transform = 'translateY(0)';
-                    e.currentTarget.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.4)';
-                  }}
+                  className="wayang-footer-social-link"
                 >
                   {item.icon}
                 </a>
@@ -223,241 +111,221 @@ export default function Footer({ onNavigate }) {
             </div>
           </div>
 
-          {/* SISI KANAN: 3 KOLOM TAUTAN (COMPANY, PRODUCT, LEGAL) */}
-          <div
-            style={{
-              flex: '2 1 520px',
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))',
-              gap: '40px 32px',
-            }}
-          >
-            {/* Kolom 1: Company */}
-            <div>
-              <h4
-                style={{
-                  fontSize: '15.5px',
-                  fontWeight: '750',
-                  color: '#f5ebd9',
-                  letterSpacing: '-0.2px',
-                  margin: '0 0 20px 0',
-                }}
-              >
-                Company
-              </h4>
-              <ul style={footerListStyle}>
-                <li>
-                  <button
-                    onClick={() =>
-                      setModalData({
-                        title: 'Tentang Wayangverse',
-                        subtitle: 'Pusat Pelestarian Warisan Pedalangan Digital',
-                        content:
-                          'Wayangverse adalah platform digital terintegrasi yang menjembatani naskah pakem klasik pedalangan Nusantara dengan kanvas panggung kelir interaktif dua dimensi dan tata suara gamelan real-time.',
-                      })
-                    }
-                    style={footerLinkBtnStyle}
-                    onMouseEnter={handleLinkMouseEnter}
-                    onMouseLeave={handleLinkMouseLeave}
-                  >
-                    About
-                  </button>
-                </li>
-                <li>
-                  <button
-                    onClick={() =>
-                      setModalData({
-                        title: 'Kontak Redaksi & Komunitas',
-                        subtitle: 'Hubungi Tim Pengembang & Dalang',
-                        content:
-                          'Surel: redaksi@wayangverse.id\nWhatsApp: +62 812-3456-7890\nStudio: Jl. Pondok Leungsir No. 491, Village Park, Surakarta.',
-                      })
-                    }
-                    style={footerLinkBtnStyle}
-                    onMouseEnter={handleLinkMouseEnter}
-                    onMouseLeave={handleLinkMouseLeave}
-                  >
-                    Contact
-                  </button>
-                </li>
-                <li>
-                  <button
-                    onClick={() =>
-                      setModalData({
-                        title: 'Pusat Dukungan Dalang & Edukasi',
-                        subtitle: 'Bantuan Pengoperasian Studio & Ensiklopedia',
-                        content:
-                          'Dapatkan panduan lengkap cara menggerakkan wayang di panggung 2D, memilih gending laras slendro, dan menyusun urutan babak lakon pementasan.',
-                      })
-                    }
-                    style={footerLinkBtnStyle}
-                    onMouseEnter={handleLinkMouseEnter}
-                    onMouseLeave={handleLinkMouseLeave}
-                  >
-                    Support
-                  </button>
-                </li>
-                <li>
-                  <button
-                    onClick={() =>
-                      setModalData({
-                        title: 'Karier & Kontributor Budaya',
-                        subtitle: 'Bergabung Bersama Melestarikan Budaya',
-                        content:
-                          'Kami membuka kesempatan bagi para dalang, pengrawit, peneliti naskah serat purwa, seniman ilustrasi wayang, dan pengembang web untuk berkontribusi melestarikan budaya bangsa.',
-                      })
-                    }
-                    style={footerLinkBtnStyle}
-                    onMouseEnter={handleLinkMouseEnter}
-                    onMouseLeave={handleLinkMouseLeave}
-                  >
-                    Career
-                  </button>
-                </li>
-              </ul>
-            </div>
+          {/* Kolom 2: Jelajah Warisan */}
+          <div className="wayang-footer-link-col">
+            <h4 className="wayang-footer-col-heading">Jelajah</h4>
+            <ul className="wayang-footer-link-list">
+              <li>
+                <button
+                  type="button"
+                  onClick={() => onNavigate && onNavigate('atlas')}
+                  className="wayang-footer-link-btn"
+                >
+                  Koleksi Wayang
+                </button>
+              </li>
+              <li>
+                <button
+                  type="button"
+                  onClick={() => onNavigate && onNavigate('atlas')}
+                  className="wayang-footer-link-btn"
+                >
+                  Tokoh & Lakon
+                </button>
+              </li>
+              <li>
+                <button
+                  type="button"
+                  onClick={() => onNavigate && onNavigate('stage')}
+                  className="wayang-footer-link-btn"
+                >
+                  Panggung Kelir
+                </button>
+              </li>
+              <li>
+                <button
+                  type="button"
+                  onClick={() => onNavigate && onNavigate('archive')}
+                  className="wayang-footer-link-btn"
+                >
+                  Galeri Pementasan
+                </button>
+              </li>
+            </ul>
+          </div>
 
-            {/* Kolom 2: Product */}
-            <div>
-              <h4
-                style={{
-                  fontSize: '15.5px',
-                  fontWeight: '750',
-                  color: '#f5ebd9',
-                  letterSpacing: '-0.2px',
-                  margin: '0 0 20px 0',
-                }}
-              >
-                Product
-              </h4>
-              <ul style={footerListStyle}>
-                <li>
-                  <button
-                    onClick={() => onNavigate && onNavigate('stage')}
-                    title="Panggung Virtual 2D Studio Dalang"
-                    style={footerLinkBtnStyle}
-                    onMouseEnter={handleLinkMouseEnter}
-                    onMouseLeave={handleLinkMouseLeave}
-                  >
-                    New product
-                  </button>
-                </li>
-                <li>
-                  <button
-                    onClick={() => onNavigate && onNavigate('atlas')}
-                    title="Story & Character Atlas Wayang"
-                    style={footerLinkBtnStyle}
-                    onMouseEnter={handleLinkMouseEnter}
-                    onMouseLeave={handleLinkMouseLeave}
-                  >
-                    Custom card
-                  </button>
-                </li>
-                <li>
-                  <button
-                    onClick={() => onNavigate && onNavigate('stage')}
-                    title="Audio Gamelan Slendro Real-time & Naskah"
-                    style={footerLinkBtnStyle}
-                    onMouseEnter={handleLinkMouseEnter}
-                    onMouseLeave={handleLinkMouseLeave}
-                  >
-                    Printing needs
-                  </button>
-                </li>
-                <li>
-                  <button
-                    onClick={() => onNavigate && onNavigate('archive')}
-                    title="Galeri Karya & Komunitas Wayang"
-                    style={footerLinkBtnStyle}
-                    onMouseEnter={handleLinkMouseEnter}
-                    onMouseLeave={handleLinkMouseLeave}
-                  >
-                    Interest
-                  </button>
-                </li>
-              </ul>
-            </div>
+          {/* Kolom 3: Wayangverse */}
+          <div className="wayang-footer-link-col">
+            <h4 className="wayang-footer-col-heading">Wayangverse</h4>
+            <ul className="wayang-footer-link-list">
+              <li>
+                <button
+                  type="button"
+                  onClick={() =>
+                    setModalData({
+                      title: 'Tentang Kami',
+                      subtitle: 'Pusat Pelestarian Warisan Pedalangan Digital',
+                      content:
+                        'Wayangverse lahir dari ikhtiar merawat warisan adiluhung seni wayang kulit Nusantara. Melalui kanvas kelir digital interaktif, ensiklopedia lakon serat klasik, dan soundscape gamelan prosedural real-time, kami menghadirkan panggung pedalangan yang dapat dinikmati generasi muda di mana pun berada.',
+                    })
+                  }
+                  className="wayang-footer-link-btn"
+                >
+                  Tentang Kami
+                </button>
+              </li>
+              <li>
+                <button
+                  type="button"
+                  onClick={() =>
+                    setModalData({
+                      title: 'Cerita di Balik Karya',
+                      subtitle: 'Dari Tatah Sungging Kulit Kerbau ke Kanvas Digital',
+                      content:
+                        'Setiap tokoh wayang digital di Wayangverse digambar berdasarkan pakem gagrag Surakarta dan Yogyakarta. Kami mendokumentasikan detail tatah sungging, anatomi proporsi karakter (satria, raseksa, pamong), serta filosofi warna muka untuk menjamin keaslian budaya tetap terjaga.',
+                    })
+                  }
+                  className="wayang-footer-link-btn"
+                >
+                  Cerita di Balik Karya
+                </button>
+              </li>
+              <li>
+                <button
+                  type="button"
+                  onClick={() =>
+                    setModalData({
+                      title: 'Pesan Kartu Khusus',
+                      subtitle: 'Koleksi Kartu Fisik & Kolaborasi Komunitas',
+                      content:
+                        'Bagi kurator, pendidik, dan pegiat seni yang memerlukan kartu fisik wayang beraksen prada emas kencana atau integrasi panggung untuk pagelaran edukasi budaya, silakan berdiskusi langsung dengan tim redaksi kami.',
+                    })
+                  }
+                  className="wayang-footer-link-btn"
+                >
+                  Pesan Kartu Khusus
+                </button>
+              </li>
+              <li>
+                <button
+                  type="button"
+                  onClick={() =>
+                    setModalData({
+                      title: 'Hubungi Kami',
+                      subtitle: 'Redaksi, Sanggar & Komunitas Pedalangan',
+                      content:
+                        'Surel: redaksi@wayangverse.id\nNarahubung: +62 812-2849-5714\nSanggar: Jl. Slamet Riyadi No. 284, Sriwedari, Surakarta, Jawa Tengah.',
+                    })
+                  }
+                  className="wayang-footer-link-btn"
+                >
+                  Hubungi Kami
+                </button>
+              </li>
+            </ul>
+          </div>
 
-            {/* Kolom 3: Legal */}
-            <div>
-              <h4
-                style={{
-                  fontSize: '15.5px',
-                  fontWeight: '750',
-                  color: '#f5ebd9',
-                  letterSpacing: '-0.2px',
-                  margin: '0 0 20px 0',
-                }}
-              >
-                Legal
-              </h4>
-              <ul style={footerListStyle}>
-                <li>
-                  <button
-                    onClick={() =>
-                      setModalData({
-                        title: 'Syarat & Ketentuan (Terms & Conditions)',
-                        subtitle: 'Prinsip Integritas Kultural Wayangverse',
-                        content:
-                          'Semua visual karakter wayang, naskah serat purwa, dan audio gending pada platform ini dilindungi oleh prinsip Cultural Integrity dan hak cipta keterbukaan pelestarian budaya Nusantara.',
-                      })
-                    }
-                    style={footerLinkBtnStyle}
-                    onMouseEnter={handleLinkMouseEnter}
-                    onMouseLeave={handleLinkMouseLeave}
-                  >
-                    Terms & Conditions
-                  </button>
-                </li>
-                <li>
-                  <button
-                    onClick={() =>
-                      setModalData({
-                        title: 'Kebijakan Privasi (Privacy Policy)',
-                        subtitle: 'Perlindungan Data Kreator & Pengguna',
-                        content:
-                          'Wayangverse menghormati dan melindungi data privasi pengguna serta hak cipta atas rekaman pementasan yang dibuat melalui Studio Dalang 2D.',
-                      })
-                    }
-                    style={footerLinkBtnStyle}
-                    onMouseEnter={handleLinkMouseEnter}
-                    onMouseLeave={handleLinkMouseLeave}
-                  >
-                    Privacy policy
-                  </button>
-                </li>
-              </ul>
-            </div>
+          {/* Kolom 4: Bantuan & Pakem */}
+          <div className="wayang-footer-link-col">
+            <h4 className="wayang-footer-col-heading">Bantuan</h4>
+            <ul className="wayang-footer-link-list">
+              <li>
+                <button
+                  type="button"
+                  onClick={() =>
+                    setModalData({
+                      title: 'Syarat & Ketentuan',
+                      subtitle: 'Integritas Kultural & Hak Cipta Terbuka',
+                      content:
+                        'Seluruh aset visual tokoh wayang dan rekaman lakon di Wayangverse dilindungi di bawah prinsip keterbukaan pelestarian budaya. Karya pementasan yang dibuat melalui Studio Dalang 2D dapat digunakan untuk tujuan edukasi, apresiasi seni, dan riset kebudayaan non-komersial.',
+                    })
+                  }
+                  className="wayang-footer-link-btn"
+                >
+                  Syarat & Ketentuan
+                </button>
+              </li>
+              <li>
+                <button
+                  type="button"
+                  onClick={() =>
+                    setModalData({
+                      title: 'Kebijakan Privasi',
+                      subtitle: 'Perlindungan Data Kreator & Pengguna',
+                      content:
+                        'Wayangverse menghormati privasi Anda. Data pagelaran lokal yang tersimpan di perangkat Anda dijamin keamanannya dan tidak diperjualbelikan kepada pihak ketiga mana pun.',
+                    })
+                  }
+                  className="wayang-footer-link-btn"
+                >
+                  Kebijakan Privasi
+                </button>
+              </li>
+              <li>
+                <button
+                  type="button"
+                  onClick={() =>
+                    setModalData({
+                      title: 'Integritas Pakem Pedalangan',
+                      subtitle: 'Sanad Wiracarita & Tata Bahasa Jawa',
+                      content:
+                        'Wayangverse berpegang teguh pada naskah pakem klasik seperti Serat Baratayuda, Ramayana Balai Pustaka, dan Serat Dewa Ruci Radyapustaka demi menjaga kehormatan nilai filosofis pitutur luhur para leluhur Nusantara.',
+                    })
+                  }
+                  className="wayang-footer-link-btn"
+                >
+                  Integritas Pakem
+                </button>
+              </li>
+            </ul>
           </div>
         </div>
 
-        {/* BILAH HAK CIPTA BAWAH */}
-        <div
-          style={{
-            borderTop: '1px solid rgba(212, 175, 55, 0.16)',
-            marginTop: '56px',
-            paddingTop: '24px',
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            flexWrap: 'wrap',
-            gap: '12px',
-            fontSize: '12.5px',
-            color: '#9e8c79',
-          }}
-        >
-          <div>
-            © {CURRENT_YEAR} <strong style={{ color: '#fcfaf2' }}>Wayangverse</strong>. Dilindungi Hak Cipta. Dedikasi Pelestarian Seni Pedalangan Nusantara.
+        {/* 3. Divider Ornamen Gunungan / Kayon SVG Inline (Detail Buatan Tangan) */}
+        <div className="wayang-footer-gunungan-divider" aria-hidden="true">
+          <div className="wayang-footer-divider-hairline" />
+          <div className="wayang-footer-gunungan-symbol">
+            <svg width="28" height="28" viewBox="0 0 32 32" fill="none">
+              {/* Siluet Kayon / Gunungan Wayang */}
+              <path
+                d="M16 2C16 2 25 12 25 21C25 26 21 29 16 29C11 29 7 26 7 21C7 12 16 2 16 2Z"
+                fill="rgba(212, 175, 55, 0.16)"
+                stroke="#d4af37"
+                strokeWidth="1.2"
+                strokeLinejoin="round"
+              />
+              {/* Pohon Hayat / Batang Mandira */}
+              <path
+                d="M16 10V27M13 16L16 13L19 16M11 21L16 17L21 21"
+                stroke="#e8bb5c"
+                strokeWidth="1.1"
+                strokeLinecap="round"
+              />
+              {/* Pucuk Mustika Kencana */}
+              <circle cx="16" cy="6" r="1.5" fill="#fcfaf2" />
+            </svg>
           </div>
-          <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
-            <span>Pondok Leungsir Park</span>
-            <span>•</span>
-            <span style={{ color: '#e8bb5c', fontWeight: '600' }}>Memayu Hayuning Bawana</span>
+          <div className="wayang-footer-divider-hairline" />
+        </div>
+
+        {/* 4. Bilah Hak Cipta & Tagline Budaya Manusiawi */}
+        <div className="wayang-footer-bottom-row">
+          <div className="wayang-footer-copyright-text">
+            © {CURRENT_YEAR} <strong>Wayangverse</strong>. Dibuat dengan hormat untuk seni pedalangan Nusantara.
+          </div>
+          <div className="wayang-footer-tagline-block">
+            <span className="wayang-footer-javanese-script" title="Memayu Hayuning Bawana">
+              ꦩꦺꦩꦪꦸꦲꦪꦸꦤꦶꦁꦧꦮꦤ
+            </span>
+            <span className="wayang-footer-tagline-bullet">•</span>
+            <span className="wayang-footer-tagline-latin">
+              Memayu Hayuning Bawana
+            </span>
           </div>
         </div>
       </div>
 
-      {/* MODAL DIALOG INFORMASI TAUTAN */}
+      {/* 5. Modal Dialog Informasi Kuratorial */}
       {modalData && (
         <div
           className="wayang-modal-backdrop"
@@ -490,7 +358,7 @@ export default function Footer({ onNavigate }) {
                 <div>
                   <div className="wayang-modal-eyebrow" style={{ marginBottom: '8px' }}>
                     <span style={{ display: 'inline-block', width: '6px', height: '6px', borderRadius: '50%', background: '#d4af37' }} />
-                    <span>INFORMASI & DOKUMENTASI</span>
+                    <span>DOKUMENTASI & INFORMASI</span>
                   </div>
                   <h3
                     style={{
@@ -549,7 +417,7 @@ export default function Footer({ onNavigate }) {
                   onClick={() => setModalData(null)}
                   className="wayang-btn-cta"
                 >
-                  <span>Mengerti & Tutup</span>
+                  <span>Tutup</span>
                   <span className="wayang-btn-cta-icon">
                     <X size={15} color="#16100a" />
                   </span>
@@ -562,35 +430,3 @@ export default function Footer({ onNavigate }) {
     </footer>
   );
 }
-
-const footerListStyle = {
-  listStyle: 'none',
-  padding: 0,
-  margin: 0,
-  display: 'flex',
-  flexDirection: 'column',
-  gap: '12px',
-};
-
-const footerLinkBtnStyle = {
-  background: 'none',
-  border: 'none',
-  padding: '2px 0',
-  color: '#bfae9c',
-  fontSize: '14px',
-  cursor: 'pointer',
-  textAlign: 'left',
-  transition: 'all 0.18s ease',
-  fontFamily: 'inherit',
-  display: 'inline-block',
-};
-
-const handleLinkMouseEnter = (e) => {
-  e.currentTarget.style.color = '#e8bb5c';
-  e.currentTarget.style.transform = 'translateX(2px)';
-};
-
-const handleLinkMouseLeave = (e) => {
-  e.currentTarget.style.color = '#bfae9c';
-  e.currentTarget.style.transform = 'translateX(0)';
-};

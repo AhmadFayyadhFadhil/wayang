@@ -7,8 +7,11 @@ import nusantaraWordmark from '../../assets/nusantara_wordmark_transparent.png';
  * -------------------------------------------------------------
  * Pita Pembatas Budaya Adiluhung Nusantara (Living Cultural Kinetic Ribbon).
  * Mendukung 2 mode (variant):
- * 1. variant="full" (default): Marquee kinetik lengkap berisi logo putih "nusantara",
- *    pill badges filosofi pewayangan kaca temaram, dan separator ornamen surya Majapahit emas.
+ * 1. variant="full" (default): Marquee kinetik kaya variasi berisi:
+ *    - Pill badges filosofi pewayangan (kaca temaram)
+ *    - Nama tokoh agung dalam tipografi serif berkarakter (Arjuna, Semar, Gatotkaca, Bima, dll.)
+ *    - Logo otentik putih "nusantara" (tampil sesekali sebagai cap keagungan)
+ *    - Ornamen bintang surya Majapahit emas
  *    Digunakan di bagian bawah halaman sebelum footer.
  * 2. variant="batik-only": Murni motif batik prada emas Jawa kuno yang meluncur kontinu
  *    tanpa teks/logo. Digunakan sebagai pembatas dekoratif antara hero banner dan konten babak.
@@ -16,27 +19,25 @@ import nusantaraWordmark from '../../assets/nusantara_wordmark_transparent.png';
 
 const TICKER_ITEMS = [
   { type: 'pill', text: 'WAYANG KULIT PURWA' },
+  { type: 'char', name: 'Arjuna', epithet: 'Satria Panengah Pandawa' },
   { type: 'wordmark' },
   { type: 'pill', text: 'GAGRAG TRADISI' },
-  { type: 'wordmark' },
+  { type: 'char', name: 'Semar', epithet: 'Kyai Lurah Pamong Adiluhung' },
   { type: 'pill', text: 'SANAD PAKEM LAKON' },
-  { type: 'wordmark' },
-  { type: 'pill', text: 'WARISAN ADILUHUNG' },
-  { type: 'wordmark' },
-  { type: 'pill', text: 'KELIR DIGITAL' },
-  { type: 'wordmark' },
-  { type: 'pill', text: 'MAHAKARYA NUSANTARA' },
-  { type: 'wordmark' },
+  { type: 'char', name: 'Gatotkaca', epithet: 'Satria Pringgandani' },
   { type: 'pill', text: 'TATAH SUNGGING ADILUHUNG' },
+  { type: 'char', name: 'Bima', epithet: 'Raden Wrekudara' },
   { type: 'wordmark' },
-  { type: 'pill', text: 'FILOSOFI JAWA PURWA' },
-  { type: 'wordmark' },
+  { type: 'pill', text: 'MEMAYU HAYUNING BAWANA' },
+  { type: 'char', name: 'Srikandi', epithet: 'Prajurit Wanita Sejati' },
+  { type: 'pill', text: 'KELIR DIGITAL' },
+  { type: 'char', name: 'Karna', epithet: 'Adipati Awangga' },
 ];
 
 export default function HeritageBatikRibbon({
   style = {},
   className = '',
-  speed = 72,
+  speed = 54,
   showBadges = true,
   showTicker = true,
   variant = 'full',
@@ -63,6 +64,13 @@ export default function HeritageBatikRibbon({
               className="heritage-ribbon-wordmark-img"
               loading="lazy"
             />
+          ) : item.type === 'char' ? (
+            <span
+              className="heritage-ribbon-char-tag"
+              title={item.epithet}
+            >
+              <em>{item.name}</em>
+            </span>
           ) : (
             showBadges && (
               <span className="heritage-ribbon-pill-tag">
@@ -70,7 +78,7 @@ export default function HeritageBatikRibbon({
               </span>
             )
           )}
-          {(item.type === 'wordmark' || showBadges) && (
+          {(item.type === 'wordmark' || item.type === 'char' || showBadges) && (
             <span className="heritage-ribbon-star-dot" aria-hidden="true">
               ✦
             </span>
