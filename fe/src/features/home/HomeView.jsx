@@ -250,7 +250,7 @@ export default function HomeView({ onNavigate, connectionStatus: _connectionStat
       style={{
         width: '100%',
         color: '#1a140e',
-        background: '#fcfaf5',
+        background: 'var(--canvas, #f7f4eb)',
         overflowX: 'hidden',
         fontFamily: 'var(--font-sans)',
       }}
@@ -591,7 +591,8 @@ export default function HomeView({ onNavigate, connectionStatus: _connectionStat
           flexDirection: 'column',
           justifyContent: 'center',
           boxSizing: 'border-box',
-          padding: '110px 24px 100px 24px',
+          padding: 'clamp(64px, 8vw, 96px) 24px',
+          background: 'transparent',
           position: 'relative',
           overflow: 'hidden',
         }}
@@ -755,9 +756,9 @@ export default function HomeView({ onNavigate, connectionStatus: _connectionStat
           flexDirection: 'column',
           justifyContent: 'center',
           boxSizing: 'border-box',
-          background: '#f5f0e4',
+          background: 'transparent',
           border: 'none',
-          padding: '100px 24px',
+          padding: 'clamp(64px, 8vw, 96px) 24px',
         }}
       >
         <div style={{ maxWidth: '1280px', width: '100%', margin: '0 auto' }}>
@@ -855,6 +856,9 @@ export default function HomeView({ onNavigate, connectionStatus: _connectionStat
         </div>
       </section>
 
+      {/* Divider Transisi Halus Emas: Lakon Rujukan ke Koleksi Tokoh */}
+      <div className="section-divider" role="separator" aria-hidden="true" />
+
       {/* ============================================================
           5. KOLEKSI TOKOH WAYANG KLASIK & WANDHA OTENTIK
           Tata letak terinspirasi dari referensi desain: Tag slash,
@@ -869,8 +873,8 @@ export default function HomeView({ onNavigate, connectionStatus: _connectionStat
           flexDirection: 'column',
           justifyContent: 'center',
           boxSizing: 'border-box',
-          padding: '110px 24px',
-          background: '#fcfaf5',
+          padding: 'clamp(64px, 8vw, 96px) 24px',
+          background: 'transparent',
           position: 'relative',
           overflow: 'hidden',
         }}
@@ -1206,6 +1210,9 @@ export default function HomeView({ onNavigate, connectionStatus: _connectionStat
       </section>
       </div> {/* Tutup #home-light-sections */}
 
+      {/* Divider Transisi Halus Emas: Leaderboard ke Call to Action */}
+      <div className="section-divider" role="separator" aria-hidden="true" />
+
       {/* ============================================================
           6. FALSAFAH KULTURAL & CALL TO ACTION PENUTUP PAGELARAN
           ============================================================ */}
@@ -1218,7 +1225,8 @@ export default function HomeView({ onNavigate, connectionStatus: _connectionStat
           justifyContent: 'center',
           alignItems: 'center',
           boxSizing: 'border-box',
-          padding: '100px 24px',
+          padding: 'clamp(64px, 8vw, 96px) 24px',
+          background: 'transparent',
         }}
       >
         <div style={{ maxWidth: '1240px', width: '100%', margin: '0 auto' }}>
