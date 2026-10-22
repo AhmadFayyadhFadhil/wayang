@@ -717,26 +717,16 @@ export default function AtlasView({ onPlayCharacterOnStage }) {
             </div>
           )}
 
-          {/* B. Bagian Tokoh Wayang */}
+          {/* B. Bagian Tokoh Wayang — Panggung Terbuka Khazanah Ksatria Nusantara */}
           {filteredCharacters.length > 0 && (
-            <div
-              className="wayang-tokoh-section-container"
-              style={{
-                marginBottom: filteredAudio.length > 0 ? '56px' : '20px',
-              }}
-            >
-              {/* Latar Belakang Siluet Perang Tanding Kelir */}
-              <WayangDuelShadowBg leftSlug="gatotkaca" rightSlug="karna" />
-
+            <div style={{ marginBottom: filteredAudio.length > 0 ? '56px' : '20px' }}>
               {activeFilter === 'all' && (
                 <div
                   style={{
-                    position: 'relative',
-                    zIndex: 2,
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'space-between',
-                    marginBottom: '18px',
+                    marginBottom: '22px',
                     borderBottom: '1px solid rgba(0, 0, 0, 0.08)',
                     paddingBottom: '12px',
                   }}
@@ -750,18 +740,24 @@ export default function AtlasView({ onPlayCharacterOnStage }) {
                 </div>
               )}
 
-              <div style={{ position: 'relative', zIndex: 2 }}>
-                <WayangCoverflowCarousel
-                  characters={filteredCharacters}
-                  charAssets={CHAR_ASSETS}
-                  onSelectCharacter={(char) => {
-                    setSelectedCharModal(char);
-                    setPreviewPose('default');
-                  }}
-                  onPlayOnStage={(charId) => {
-                    if (onPlayCharacterOnStage) onPlayCharacterOnStage(charId);
-                  }}
-                />
+              {/* Panggung Terbuka Tokoh Wayang (Open Canvas Kelir - Bebas Kotak Pembungkus) */}
+              <div className="wayang-tokoh-section-container">
+                {/* Latar Belakang Siluet Perang Tanding Kelir */}
+                <WayangDuelShadowBg leftSlug="gatotkaca" rightSlug="karna" />
+
+                <div style={{ position: 'relative', zIndex: 2 }}>
+                  <WayangCoverflowCarousel
+                    characters={filteredCharacters}
+                    charAssets={CHAR_ASSETS}
+                    onSelectCharacter={(char) => {
+                      setSelectedCharModal(char);
+                      setPreviewPose('default');
+                    }}
+                    onPlayOnStage={(charId) => {
+                      if (onPlayCharacterOnStage) onPlayCharacterOnStage(charId);
+                    }}
+                  />
+                </div>
               </div>
             </div>
           )}
