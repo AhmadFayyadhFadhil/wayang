@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { X } from 'lucide-react';
-import batikPattern from '../../assets/atlas_gold_motif_strip.jpg';
+import footerHeritageHd from '../../assets/footer_heritage_hd.jpg';
 
 // ============================================================
 // IKON SOSIAL MEDIA VEKTOR
@@ -60,7 +60,7 @@ export default function Footer({ onNavigate }) {
       }}
     >
       {/* ============================================================
-          1. LAPISAN DASAR: WATERMARK HALUS SELURUH LATAR (NON-KONTRAS)
+          1. LAPISAN DASAR: LATAR BELAKANG ELEGAN ULTRA HD ASLI (TIDAK BURAM)
           ============================================================ */}
       <div
         aria-hidden="true"
@@ -70,108 +70,54 @@ export default function Footer({ onNavigate }) {
           zIndex: 1,
           pointerEvents: 'none',
           overflow: 'hidden',
-          opacity: 0.08,
-          mixBlendMode: 'luminosity',
         }}
       >
         <img
-          src={batikPattern}
-          alt=""
+          src={footerHeritageHd}
+          alt="Latar Belakang Budaya Wayangverse HD"
           style={{
             width: '100%',
             height: '100%',
             objectFit: 'cover',
-            filter: 'contrast(1.15) brightness(0.85)',
+            objectPosition: 'center',
+            filter: 'contrast(1.1) brightness(0.65)',
           }}
         />
-        {/* Lapisan Pelindung Tengah untuk Keterbacaan Teks Maksimal */}
+        {/* Scrim Peneduh Tengah & Tepi: Menjamin teks dan tautan terbaca sangat tajam */}
         <div
           style={{
             position: 'absolute',
             inset: 0,
-            background: 'radial-gradient(ellipse at 50% 50%, rgba(13, 9, 6, 0.96) 0%, rgba(13, 9, 6, 0.75) 75%, transparent 100%)',
+            background:
+              'radial-gradient(ellipse 95% 85% at 50% 50%, rgba(13, 9, 6, 0.70) 0%, rgba(13, 9, 6, 0.88) 68%, rgba(10, 7, 5, 0.97) 100%)',
           }}
         />
-      </div>
-
-      {/* ============================================================
-          2. MOTIF BATIK PINGGIR KIRI (BERVARIASI & FADE KE TENGAH)
-          ============================================================ */}
-      <div
-        aria-hidden="true"
-        style={{
-          position: 'absolute',
-          top: 0,
-          bottom: 0,
-          left: 0,
-          width: '340px',
-          maxWidth: '30vw',
-          pointerEvents: 'none',
-          zIndex: 2,
-          overflow: 'hidden',
-          opacity: 0.42,
-          maskImage: 'linear-gradient(to right, rgba(0,0,0,1) 0%, rgba(0,0,0,0.55) 45%, rgba(0,0,0,0) 100%)',
-          WebkitMaskImage: 'linear-gradient(to right, rgba(0,0,0,1) 0%, rgba(0,0,0,0.55) 45%, rgba(0,0,0,0) 100%)',
-        }}
-      >
-        <img
-          src={batikPattern}
-          alt=""
+        {/* Hairline Pembatas Emas Halus di Atas Footer */}
+        <div
           style={{
-            width: '100%',
-            height: '100%',
-            objectFit: 'cover',
-            objectPosition: 'left 15%',
-            transform: 'scale(1.15)',
-            filter: 'contrast(1.25) saturate(1.3) brightness(0.95)',
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            height: '1px',
+            background:
+              'linear-gradient(90deg, transparent 0%, rgba(212, 175, 55, 0.35) 50%, transparent 100%)',
           }}
         />
       </div>
 
       {/* ============================================================
-          3. MOTIF BATIK PINGGIR KANAN (ASIMETRIS & BERBEDA DENGAN KIRI)
-          ============================================================ */}
-      <div
-        aria-hidden="true"
-        style={{
-          position: 'absolute',
-          top: 0,
-          bottom: 0,
-          right: 0,
-          width: '340px',
-          maxWidth: '30vw',
-          pointerEvents: 'none',
-          zIndex: 2,
-          overflow: 'hidden',
-          opacity: 0.44,
-          maskImage: 'linear-gradient(to left, rgba(0,0,0,1) 0%, rgba(0,0,0,0.55) 45%, rgba(0,0,0,0) 100%)',
-          WebkitMaskImage: 'linear-gradient(to left, rgba(0,0,0,1) 0%, rgba(0,0,0,0.55) 45%, rgba(0,0,0,0) 100%)',
-        }}
-      >
-        <img
-          src={batikPattern}
-          alt=""
-          style={{
-            width: '100%',
-            height: '100%',
-            objectFit: 'cover',
-            objectPosition: 'right 82%',
-            transform: 'scaleX(-1) scale(1.22)',
-            filter: 'contrast(1.3) saturate(1.35) brightness(0.9)',
-          }}
-        />
-      </div>
-
-      {/* ============================================================
-          4. KONTEN UTAMA (Z-INDEX 3 / DI ATAS MOTIF / TIDAK TERTUTUP)
+          2. KONTEN UTAMA (Z-INDEX 3 / DI ATAS MOTIF / TIDAK TERTUTUP)
           ============================================================ */}
       <div
         style={{
           maxWidth: '1280px',
           margin: '0 auto',
-          padding: '64px 24px 36px 24px',
+          padding: 'clamp(48px, 6vw, 64px) clamp(16px, 3.5vw, 24px) 36px clamp(16px, 3.5vw, 24px)',
           position: 'relative',
           zIndex: 3,
+          boxSizing: 'border-box',
+          width: '100%',
         }}
       >
         {/* MAIN 4-PART CONTENT (LAYOUT SCREENSHOT PERSIS) */}

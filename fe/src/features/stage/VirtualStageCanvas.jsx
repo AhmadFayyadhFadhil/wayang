@@ -193,102 +193,101 @@ const VirtualStageCanvas = forwardRef(function VirtualStageCanvas({
 
   return (
     <div
-      className="virtual-stage-wrapper"
-      style={{
-        position: 'relative',
-        width: '100%',
-        maxWidth: '1000px',
-        margin: '0 auto',
-        userSelect: 'none',
-        borderRadius: '16px',
-        overflow: 'hidden',
-        boxShadow: '0 12px 36px rgba(0, 0, 0, 0.45)',
-        border: '1px solid #362619',
-        backgroundColor: bgConfig.bgColor,
-      }}
+      className="stage-gawangan-frame"
     >
-      {/* Kanvas Panggung Utama (Aspect Ratio 16:9) */}
-      <div
-        ref={containerRef}
-        onPointerMove={handlePointerMove}
-        onPointerUp={handlePointerUp}
-        onClick={() => isInteractive && onSelectCharacter(null)}
-        style={{
-          position: 'relative',
-          width: '100%',
-          paddingTop: '56.25%', // 16:9 Ratio
-          cursor: draggingId ? 'grabbing' : 'default',
-          overflow: 'hidden',
-          background: `radial-gradient(ellipse at 50% 25%, ${bgConfig.glowColor}44 0%, ${bgConfig.kelirColor} 45%, ${bgConfig.bgColor} 100%)`,
-        }}
-      >
-        {/* Latar Gambar Panggung Otentik jika tersedia */}
-        {bgConfig.bgImage && (
-          <img
-            src={bgConfig.bgImage}
-            alt={bgConfig.name}
-            style={{
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              width: '100%',
-              height: '100%',
-              objectFit: 'cover',
-              opacity: bgConfig.imageOpacity || 0.9,
-              filter: 'contrast(1.08) brightness(0.95)',
-              pointerEvents: 'none',
-              zIndex: 0,
-            }}
-          />
-        )}
+      {/* Ornamen Sudut Prada Kencana Plawah */}
+      <div style={{ position: 'absolute', top: '10px', left: '10px', width: '14px', height: '14px', borderTop: '2px solid #d4af37', borderLeft: '2px solid #d4af37', pointerEvents: 'none', zIndex: 20 }} />
+      <div style={{ position: 'absolute', top: '10px', right: '10px', width: '14px', height: '14px', borderTop: '2px solid #d4af37', borderRight: '2px solid #d4af37', pointerEvents: 'none', zIndex: 20 }} />
+      <div style={{ position: 'absolute', bottom: '10px', left: '10px', width: '14px', height: '14px', borderBottom: '2px solid #d4af37', borderLeft: '2px solid #d4af37', pointerEvents: 'none', zIndex: 20 }} />
+      <div style={{ position: 'absolute', bottom: '10px', right: '10px', width: '14px', height: '14px', borderBottom: '2px solid #d4af37', borderRight: '2px solid #d4af37', pointerEvents: 'none', zIndex: 20 }} />
 
-        {/* Lampu Blencong Keemasan di Atas Kelir */}
+      <div className="stage-gawangan-inner" style={{ backgroundColor: bgConfig.bgColor }}>
+        {/* Kanvas Panggung Utama (Aspect Ratio 16:9) */}
         <div
+          ref={containerRef}
+          onPointerMove={handlePointerMove}
+          onPointerUp={handlePointerUp}
+          onClick={() => isInteractive && onSelectCharacter(null)}
           style={{
-            position: 'absolute',
-            top: '8%',
-            left: '50%',
-            transform: 'translateX(-50%)',
-            width: '140px',
-            height: '140px',
-            borderRadius: '50%',
-            background: `radial-gradient(circle, ${bgConfig.glowColor} 0%, rgba(245, 158, 11, 0.4) 40%, transparent 70%)`,
-            filter: 'blur(16px)',
-            pointerEvents: 'none',
-            zIndex: 1,
-            animation: 'blencongPulse 3s infinite ease-in-out',
-          }}
-        />
-
-        {/* Siluet Debog (Batang Pisang Tempat Tancep Wayang di Dasar Panggung) */}
-        <div
-          style={{
-            position: 'absolute',
-            bottom: 0,
-            left: 0,
-            right: 0,
-            height: '14%',
-            background: 'linear-gradient(to top, #140b05 0%, #29180c 70%, #451a03 100%)',
-            borderTop: '2px solid #78350f',
-            zIndex: 3,
-            boxShadow: '0 -6px 15px rgba(0,0,0,0.6)',
+            position: 'relative',
+            width: '100%',
+            paddingTop: '56.25%', // 16:9 Ratio
+            cursor: draggingId ? 'grabbing' : 'default',
+            overflow: 'hidden',
+            background: `radial-gradient(ellipse at 50% 25%, ${bgConfig.glowColor}44 0%, ${bgConfig.kelirColor} 45%, ${bgConfig.bgColor} 100%)`,
           }}
         >
+          {/* Latar Gambar Panggung Otentik jika tersedia */}
+          {bgConfig.bgImage && (
+            <img
+              src={bgConfig.bgImage}
+              alt={bgConfig.name}
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                width: '100%',
+                height: '100%',
+                objectFit: 'cover',
+                opacity: bgConfig.imageOpacity || 0.9,
+                filter: 'contrast(1.08) brightness(0.95)',
+                pointerEvents: 'none',
+                zIndex: 0,
+              }}
+            />
+          )}
+
+          {/* Lampu Blencong Keemasan di Atas Kelir */}
           <div
             style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              padding: '6px 16px',
-              fontSize: '11px',
-              color: '#d4a359',
-              letterSpacing: '1px',
+              position: 'absolute',
+              top: '8%',
+              left: '50%',
+              transform: 'translateX(-50%)',
+              width: '140px',
+              height: '140px',
+              borderRadius: '50%',
+              background: `radial-gradient(circle, ${bgConfig.glowColor} 0%, rgba(245, 158, 11, 0.4) 40%, transparent 70%)`,
+              filter: 'blur(16px)',
+              pointerEvents: 'none',
+              zIndex: 1,
+              animation: 'blencongPulse 3s infinite ease-in-out',
+            }}
+          />
+
+          {/* Siluet Debog (Batang Pisang Tempat Tancep Wayang di Dasar Panggung) */}
+          <div
+            style={{
+              position: 'absolute',
+              bottom: 0,
+              left: 0,
+              right: 0,
+              height: '13.5%',
+              background: 'linear-gradient(180deg, #2b1f13 0%, #1a140c 35%, #152216 65%, #0f1710 100%)',
+              borderTop: '2px solid rgba(212, 175, 55, 0.45)',
+              zIndex: 3,
+              boxShadow: '0 -6px 20px rgba(0, 0, 0, 0.65)',
             }}
           >
-            <span>PALAHAN DEBOG WAYANG</span>
-            <span style={{ opacity: 0.8 }}>PANGGUNG KELIR DIGITAL</span>
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                padding: '6px 18px',
+                fontSize: '10.5px',
+                color: '#d4af37',
+                letterSpacing: '1.2px',
+                fontWeight: '700',
+              }}
+            >
+              <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <span style={{ width: '4px', height: '4px', borderRadius: '50%', background: '#d4af37' }} />
+                PALAHAN DEBOG TANCEPAN
+              </span>
+              <span style={{ opacity: 0.75, letterSpacing: '0.8px' }}>PANGGUNG KELIR PURWA</span>
+            </div>
           </div>
-        </div>
 
         {/* Karakter Wayang di Atas Kelir */}
         {characters.map((char) => {
@@ -364,34 +363,35 @@ const VirtualStageCanvas = forwardRef(function VirtualStageCanvas({
                   </button>
                 </div>
               )}
-              {/* Balon Dialog Wayang jika ada naskah (disembunyikan saat Dalang Vision aktif agar panggung tidak penuh sesak) */}
+              {/* Balon Dialog Wayang jika ada naskah (Pita Sabda Dalang) */}
               {char.dialogue && !isVisionActive && (
                 <div
                   style={{
                     position: 'absolute',
                     bottom: '100%',
                     left: '50%',
-                    transform: 'translateX(-50%) translateY(-10px)',
-                    maxWidth: '220px',
-                    minWidth: '120px',
-                    padding: '8px 12px',
-                    background: 'rgba(23, 23, 23, 0.88)',
-                    backdropFilter: 'blur(8px)',
-                    border: `1.5px solid ${char.accentColor || '#f59e0b'}`,
-                    borderRadius: '10px',
-                    color: '#fef3c7',
+                    transform: 'translateX(-50%) translateY(-12px)',
+                    maxWidth: '240px',
+                    minWidth: '130px',
+                    padding: '8px 14px',
+                    background: 'rgba(20, 14, 9, 0.94)',
+                    backdropFilter: 'blur(10px)',
+                    WebkitBackdropFilter: 'blur(10px)',
+                    border: `1.5px solid ${char.accentColor || '#d4af37'}`,
+                    borderRadius: '12px',
+                    color: '#fef08a',
                     fontSize: '12px',
-                    lineHeight: '1.4',
+                    lineHeight: '1.45',
                     textAlign: 'center',
                     pointerEvents: 'none',
-                    boxShadow: '0 8px 20px rgba(0,0,0,0.5)',
+                    boxShadow: '0 8px 24px rgba(0, 0, 0, 0.65)',
                     zIndex: 20,
                   }}
                 >
-                  <div style={{ fontWeight: '600', color: char.accentColor, fontSize: '10px', marginBottom: '2px' }}>
+                  <div style={{ fontWeight: '800', color: char.accentColor || '#d4af37', fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.8px', marginBottom: '2px' }}>
                     {char.name}
                   </div>
-                  <div>"{char.dialogue}"</div>
+                  <div style={{ fontStyle: 'italic', color: '#fcfaf2' }}>"{char.dialogue}"</div>
                   {/* Panah Balon Dialog */}
                   <div
                     style={{
@@ -401,7 +401,7 @@ const VirtualStageCanvas = forwardRef(function VirtualStageCanvas({
                       transform: 'translateX(-50%)',
                       borderWidth: '6px',
                       borderStyle: 'solid',
-                      borderColor: `${char.accentColor || '#f59e0b'} transparent transparent transparent`,
+                      borderColor: `${char.accentColor || '#d4af37'} transparent transparent transparent`,
                     }}
                   />
                 </div>
@@ -423,7 +423,7 @@ const VirtualStageCanvas = forwardRef(function VirtualStageCanvas({
           );
         })}
 
-        {/* Panel Cepat Dalang (SFX Controller di Pojok Panggung) */}
+        {/* Panel Cepat Dalang (SFX Controller & Volume Gamelan di Pojok Panggung) */}
         {isInteractive && (
           <div
             className="stage-canvas-sfx-overlay-desktop"
@@ -433,72 +433,108 @@ const VirtualStageCanvas = forwardRef(function VirtualStageCanvas({
               left: '12px',
               zIndex: 15,
               display: 'flex',
+              alignItems: 'center',
               gap: '6px',
-              background: 'rgba(15, 12, 8, 0.75)',
-              backdropFilter: 'blur(8px)',
-              padding: '6px 10px',
-              borderRadius: '24px',
-              border: '1px solid rgba(217, 119, 6, 0.4)',
+              background: 'rgba(20, 14, 9, 0.88)',
+              backdropFilter: 'blur(12px)',
+              WebkitBackdropFilter: 'blur(12px)',
+              padding: '5px 10px',
+              borderRadius: '9999px',
+              border: '1px solid rgba(212, 175, 55, 0.35)',
+              boxShadow: '0 4px 16px rgba(0, 0, 0, 0.55)',
             }}
           >
             <button
               onClick={() => handlePlaySfx('dodogan')}
-              title="Ketuk Dodogan Kotak Dalang"
+              title="Ketuk Dodogan Kotak Dalang (Keyboard: Space)"
               style={{
-                background: '#451a03',
-                border: '1px solid #b45309',
-                color: '#fef3c7',
-                padding: '4px 8px',
-                borderRadius: '12px',
+                background: 'rgba(45, 30, 20, 0.9)',
+                border: '1px solid rgba(212, 175, 55, 0.35)',
+                color: '#fef08a',
+                padding: '4px 10px',
+                borderRadius: '9999px',
                 fontSize: '11px',
+                fontWeight: '750',
                 cursor: 'pointer',
                 display: 'flex',
                 alignItems: 'center',
-                gap: '4px',
+                gap: '5px',
+                transition: 'all 0.15s ease',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.borderColor = '#d4af37';
+                e.currentTarget.style.background = '#3c2718';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.borderColor = 'rgba(212, 175, 55, 0.35)';
+                e.currentTarget.style.background = 'rgba(45, 30, 20, 0.9)';
               }}
             >
-              Dodogan
+              <span>🥁</span>
+              <span>Dodogan</span>
             </button>
             <button
               onClick={() => handlePlaySfx('kepyak')}
-              title="Gemerincing Kepyak Dalang"
+              title="Gemerincing Kepyak Dalang (Keyboard: Shift)"
               style={{
-                background: '#451a03',
-                border: '1px solid #b45309',
-                color: '#fef3c7',
-                padding: '4px 8px',
-                borderRadius: '12px',
+                background: 'rgba(45, 30, 20, 0.9)',
+                border: '1px solid rgba(212, 175, 55, 0.35)',
+                color: '#fef08a',
+                padding: '4px 10px',
+                borderRadius: '9999px',
                 fontSize: '11px',
+                fontWeight: '750',
                 cursor: 'pointer',
                 display: 'flex',
                 alignItems: 'center',
-                gap: '4px',
+                gap: '5px',
+                transition: 'all 0.15s ease',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.borderColor = '#d4af37';
+                e.currentTarget.style.background = '#3c2718';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.borderColor = 'rgba(212, 175, 55, 0.35)';
+                e.currentTarget.style.background = 'rgba(45, 30, 20, 0.9)';
               }}
             >
-              Kepyak
+              <span>🔔</span>
+              <span>Kepyak</span>
             </button>
             <button
               onClick={() => handlePlaySfx('gong')}
-              title="Gong Ageng Pamungkas"
+              title="Gong Ageng Pamungkas (Keyboard: G)"
               style={{
-                background: '#451a03',
-                border: '1px solid #b45309',
-                color: '#fef3c7',
-                padding: '4px 8px',
-                borderRadius: '12px',
+                background: 'rgba(45, 30, 20, 0.9)',
+                border: '1px solid rgba(212, 175, 55, 0.35)',
+                color: '#fef08a',
+                padding: '4px 10px',
+                borderRadius: '9999px',
                 fontSize: '11px',
+                fontWeight: '750',
                 cursor: 'pointer',
                 display: 'flex',
                 alignItems: 'center',
-                gap: '4px',
+                gap: '5px',
+                transition: 'all 0.15s ease',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.borderColor = '#d4af37';
+                e.currentTarget.style.background = '#3c2718';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.borderColor = 'rgba(212, 175, 55, 0.35)';
+                e.currentTarget.style.background = 'rgba(45, 30, 20, 0.9)';
               }}
             >
-              Gong
+              <span>🎵</span>
+              <span>Gong</span>
             </button>
 
             {/* Volume Slider */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '4px', paddingLeft: '4px', borderLeft: '1px solid rgba(217,119,6,0.3)' }}>
-              <Volume2 size={12} color="#f59e0b" />
+            <div style={{ display: 'flex', alignItems: 'center', gap: '5px', paddingLeft: '6px', borderLeft: '1px solid rgba(212, 175, 55, 0.25)' }}>
+              <Volume2 size={13} color="#d4af37" />
               <input
                 type="range"
                 min="0"
@@ -509,8 +545,8 @@ const VirtualStageCanvas = forwardRef(function VirtualStageCanvas({
                   setVolume(val);
                   soundEngine.setVolume(val / 100);
                 }}
-                title={`Volume: ${volume}%`}
-                style={{ width: '50px', height: '4px', accentColor: '#f59e0b', cursor: 'pointer' }}
+                title={`Volume Suara: ${volume}%`}
+                style={{ width: '56px', height: '4px', accentColor: '#d4af37', cursor: 'pointer' }}
               />
             </div>
           </div>
@@ -528,16 +564,17 @@ const VirtualStageCanvas = forwardRef(function VirtualStageCanvas({
               display: 'flex',
               alignItems: 'center',
               gap: '6px',
-              background: 'rgba(15, 12, 8, 0.82)',
-              backdropFilter: 'blur(8px)',
+              background: 'rgba(20, 14, 9, 0.88)',
+              backdropFilter: 'blur(12px)',
+              WebkitBackdropFilter: 'blur(12px)',
               padding: '5px 12px',
-              borderRadius: '24px',
+              borderRadius: '9999px',
               border: '1px solid rgba(212, 175, 55, 0.35)',
-              boxShadow: '0 4px 12px rgba(0,0,0,0.4)',
+              boxShadow: '0 4px 16px rgba(0, 0, 0, 0.55)',
             }}
           >
-            <span style={{ fontSize: '11px', color: '#e8bb5c', fontWeight: '700' }}>
-              Ukuran:
+            <span style={{ fontSize: '11px', color: '#d4af37', fontWeight: '800', letterSpacing: '0.04em' }}>
+              Skala:
             </span>
             <button
               type="button"
@@ -545,9 +582,9 @@ const VirtualStageCanvas = forwardRef(function VirtualStageCanvas({
               title="Perkecil Ukuran Bentuk Wayang (-)"
               style={stageScaleBtnStyle}
             >
-              <ZoomOut size={12} color="#fef3c7" />
+              <ZoomOut size={12} color="#fef08a" />
             </button>
-            <span style={{ fontSize: '11px', fontWeight: '800', color: '#fef08a', minWidth: '28px', textAlign: 'center' }}>
+            <span style={{ fontSize: '11.5px', fontWeight: '850', color: '#fef08a', minWidth: '28px', textAlign: 'center' }}>
               {(selectedChar?.scale || characters[0]?.scale || 1.0).toFixed(1)}x
             </span>
             <button
@@ -556,7 +593,7 @@ const VirtualStageCanvas = forwardRef(function VirtualStageCanvas({
               title="Perbesar Ukuran Bentuk Wayang (+)"
               style={stageScaleBtnStyle}
             >
-              <ZoomIn size={12} color="#fef3c7" />
+              <ZoomIn size={12} color="#fef08a" />
             </button>
           </div>
         )}
@@ -569,18 +606,23 @@ const VirtualStageCanvas = forwardRef(function VirtualStageCanvas({
               bottom: '16%',
               right: '16px',
               zIndex: 15,
-              background: 'rgba(0,0,0,0.65)',
-              padding: '6px 12px',
-              borderRadius: '8px',
+              background: 'rgba(20, 14, 9, 0.85)',
+              backdropFilter: 'blur(8px)',
+              WebkitBackdropFilter: 'blur(8px)',
+              padding: '6px 14px',
+              borderRadius: '9999px',
               fontSize: '11px',
-              color: '#d4d4d8',
+              fontWeight: '600',
+              color: '#f0e4d0',
               pointerEvents: 'none',
-              border: '1px solid rgba(255,255,255,0.1)',
+              border: '1px solid rgba(212, 175, 55, 0.25)',
+              boxShadow: '0 4px 14px rgba(0, 0, 0, 0.4)',
             }}
           >
-            Klik & geser wayang untuk memindahkan posisi
+            Klik & geser wayang untuk mengatur posisi solah
           </div>
         )}
+      </div>
       </div>
 
       {/* Mobile Dalang Touch Dock: Pengendali SFX Gamelan & Skala Wayang di Bawah Panggung */}
@@ -639,7 +681,7 @@ const VirtualStageCanvas = forwardRef(function VirtualStageCanvas({
         </div>
       )}
 
-      {/* Floating Action Toolbar untuk Karakter yang Sedang Terpilih */}
+      {/* Floating Action Toolbar untuk Karakter yang Sedang Terpilih (Floating Dalang Toolbelt) */}
       {isInteractive && selectedChar && (
         <div
           style={{
@@ -647,23 +689,34 @@ const VirtualStageCanvas = forwardRef(function VirtualStageCanvas({
             flexWrap: 'wrap',
             alignItems: 'center',
             justifyContent: 'space-between',
-            padding: '10px 16px',
-            background: '#1c1917',
-            borderTop: '1px solid #442a17',
-            color: '#f3f4f6',
-            gap: '8px',
+            padding: '12px 18px',
+            background: 'linear-gradient(180deg, #1d140e 0%, #150f0a 100%)',
+            borderTop: '1px solid rgba(212, 175, 55, 0.32)',
+            color: '#fcfaf2',
+            gap: '10px',
+            borderRadius: '0 0 14px 14px',
+            boxShadow: '0 8px 24px rgba(0, 0, 0, 0.45)',
           }}
         >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <span style={{ fontSize: '12px', fontWeight: 'bold', color: selectedChar.accentColor }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <span
+              style={{
+                width: '8px',
+                height: '8px',
+                borderRadius: '50%',
+                background: selectedChar.accentColor || '#d4af37',
+                boxShadow: `0 0 8px ${selectedChar.accentColor || '#d4af37'}`,
+              }}
+            />
+            <span style={{ fontSize: '13px', fontWeight: '850', color: '#fcfaf2' }}>
               {selectedChar.name}
             </span>
-            <span style={{ fontSize: '11px', color: '#9ca3af' }}>
-              (Posisi: {Math.round(selectedChar.x * 100)}%, {Math.round(selectedChar.y * 100)}%)
+            <span style={{ fontSize: '11px', color: '#c4b5a3', background: 'rgba(212, 175, 55, 0.1)', padding: '2px 8px', borderRadius: '6px', border: '1px solid rgba(212, 175, 55, 0.2)' }}>
+              Posisi: {Math.round(selectedChar.x * 100)}%, {Math.round(selectedChar.y * 100)}%
             </span>
           </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '6px' }}>
             {/* Balik Arah Hadap (Flip) */}
             <button
               onClick={() =>
@@ -671,10 +724,19 @@ const VirtualStageCanvas = forwardRef(function VirtualStageCanvas({
                   facing: selectedChar.facing === 'left' ? 'right' : 'left',
                 })
               }
-              title="Balik Arah Hadap (Kiri/Kanan)"
+              title="Balik Arah Hadap (Shortcut: F / Klik Dua Kali)"
               style={actionBtnStyle}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.borderColor = '#d4af37';
+                e.currentTarget.style.background = '#2c1e14';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.borderColor = 'rgba(212, 175, 55, 0.32)';
+                e.currentTarget.style.background = 'rgba(34, 24, 16, 0.9)';
+              }}
             >
-              Hadap {selectedChar.facing === 'left' ? 'Kiri' : 'Kanan'}
+              <span>🔄</span>
+              <span>Hadap {selectedChar.facing === 'left' ? 'Kiri' : 'Kanan'}</span>
             </button>
 
             {/* Ubah Ukuran (Scale) */}
@@ -686,10 +748,20 @@ const VirtualStageCanvas = forwardRef(function VirtualStageCanvas({
               }
               title="Perkecil Wayang"
               style={actionBtnStyle}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.borderColor = '#d4af37';
+                e.currentTarget.style.background = '#2c1e14';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.borderColor = 'rgba(212, 175, 55, 0.32)';
+                e.currentTarget.style.background = 'rgba(34, 24, 16, 0.9)';
+              }}
             >
-              <ZoomOut size={14} />
+              <ZoomOut size={13} />
             </button>
-            <span style={{ fontSize: '11px', padding: '0 4px' }}>{selectedChar.scale}x</span>
+            <span style={{ fontSize: '11.5px', fontWeight: '800', color: '#fef08a', padding: '0 4px' }}>
+              {selectedChar.scale}x
+            </span>
             <button
               onClick={() =>
                 onUpdateCharacter(selectedChar.instanceId, {
@@ -698,39 +770,55 @@ const VirtualStageCanvas = forwardRef(function VirtualStageCanvas({
               }
               title="Perbesar Wayang"
               style={actionBtnStyle}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.borderColor = '#d4af37';
+                e.currentTarget.style.background = '#2c1e14';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.borderColor = 'rgba(212, 175, 55, 0.32)';
+                e.currentTarget.style.background = 'rgba(34, 24, 16, 0.9)';
+              }}
             >
-              <ZoomIn size={14} />
+              <ZoomIn size={13} />
             </button>
 
-            {/* D-Pad Geser Aksesibel (NFR-06) */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '2px', background: '#292524', border: '1px solid #78350f', borderRadius: '6px', padding: '1px 2px' }}>
+            {/* D-Pad Geser Aksesibel */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '2px', background: 'rgba(26, 18, 12, 0.95)', border: '1px solid rgba(212, 175, 55, 0.35)', borderRadius: '8px', padding: '2px 4px' }}>
               <button
                 onClick={() => onUpdateCharacter(selectedChar.instanceId, { x: selectedChar.x - 0.02 })}
-                title="Geser Kiri (atau Panah Kiri Keyboard)"
+                title="Geser Kiri (Keyboard: Panah Kiri)"
                 style={miniNudgeBtnStyle}
+                onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(212, 175, 55, 0.15)'; }}
+                onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}
               >
-                <ArrowLeft size={12} />
+                <ArrowLeft size={13} />
               </button>
               <button
                 onClick={() => onUpdateCharacter(selectedChar.instanceId, { y: selectedChar.y - 0.02 })}
-                title="Geser Atas (atau Panah Atas Keyboard)"
+                title="Geser Atas (Keyboard: Panah Atas)"
                 style={miniNudgeBtnStyle}
+                onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(212, 175, 55, 0.15)'; }}
+                onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}
               >
-                <ArrowUp size={12} />
+                <ArrowUp size={13} />
               </button>
               <button
                 onClick={() => onUpdateCharacter(selectedChar.instanceId, { y: selectedChar.y + 0.02 })}
-                title="Geser Bawah (atau Panah Bawah Keyboard)"
+                title="Geser Bawah (Keyboard: Panah Bawah)"
                 style={miniNudgeBtnStyle}
+                onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(212, 175, 55, 0.15)'; }}
+                onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}
               >
-                <ArrowDown size={12} />
+                <ArrowDown size={13} />
               </button>
               <button
                 onClick={() => onUpdateCharacter(selectedChar.instanceId, { x: selectedChar.x + 0.02 })}
-                title="Geser Kanan (atau Panah Kanan Keyboard)"
+                title="Geser Kanan (Keyboard: Panah Kanan)"
                 style={miniNudgeBtnStyle}
+                onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(212, 175, 55, 0.15)'; }}
+                onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}
               >
-                <ArrowRight size={12} />
+                <ArrowRight size={13} />
               </button>
             </div>
 
@@ -739,18 +827,20 @@ const VirtualStageCanvas = forwardRef(function VirtualStageCanvas({
               value={selectedChar.pose}
               onChange={(e) => onUpdateCharacter(selectedChar.instanceId, { pose: e.target.value })}
               style={{
-                background: '#292524',
-                color: '#fef3c7',
-                border: '1px solid #78350f',
-                borderRadius: '6px',
-                padding: '4px 8px',
-                fontSize: '11px',
+                background: 'rgba(34, 24, 16, 0.95)',
+                color: '#fef08a',
+                border: '1px solid rgba(212, 175, 55, 0.35)',
+                borderRadius: '8px',
+                padding: '7px 10px',
+                fontSize: '11.5px',
+                fontWeight: '700',
                 cursor: 'pointer',
+                outline: 'none',
               }}
             >
               {STAGE_CONFIG_MASTER.poses.map((p) => (
-                <option key={p.id} value={p.id}>
-                  {p.label}
+                <option key={p.id} value={p.id} style={{ background: '#1c140e', color: '#fef08a' }}>
+                  Pose: {p.label}
                 </option>
               ))}
             </select>
@@ -759,9 +849,22 @@ const VirtualStageCanvas = forwardRef(function VirtualStageCanvas({
             <button
               onClick={() => onRemoveCharacter(selectedChar.instanceId)}
               title="Hapus Wayang dari Adegan ini"
-              style={{ ...actionBtnStyle, background: '#7f1d1d', borderColor: '#ef4444' }}
+              style={{
+                ...actionBtnStyle,
+                background: 'rgba(127, 29, 29, 0.75)',
+                borderColor: 'rgba(239, 68, 68, 0.5)',
+                color: '#fecaca',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = '#991b1b';
+                e.currentTarget.style.borderColor = '#ef4444';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = 'rgba(127, 29, 29, 0.75)';
+                e.currentTarget.style.borderColor = 'rgba(239, 68, 68, 0.5)';
+              }}
             >
-              <Trash2 size={14} />
+              <Trash2 size={13} />
             </button>
           </div>
         </div>
@@ -773,47 +876,51 @@ const VirtualStageCanvas = forwardRef(function VirtualStageCanvas({
 export default VirtualStageCanvas;
 
 const actionBtnStyle = {
-  background: '#292524',
-  border: '1px solid #78350f',
-  color: '#fef3c7',
-  padding: '6px 12px',
-  borderRadius: '8px',
+  background: 'rgba(34, 24, 16, 0.9)',
+  border: '1px solid rgba(212, 175, 55, 0.32)',
+  color: '#fcfaf2',
+  padding: '6px 14px',
+  borderRadius: '10px',
   fontSize: '12px',
-  fontWeight: '650',
+  fontWeight: '700',
   cursor: 'pointer',
   display: 'inline-flex',
   alignItems: 'center',
   justifyContent: 'center',
   minHeight: '36px',
-  gap: '5px',
+  gap: '6px',
+  boxShadow: '0 2px 6px rgba(0, 0, 0, 0.3)',
+  transition: 'all 0.2s cubic-bezier(0.16, 1, 0.3, 1)',
 };
 
 const miniNudgeBtnStyle = {
   background: 'transparent',
   border: 'none',
-  color: '#fef3c7',
+  color: '#e8bb5c',
   padding: '4px 6px',
-  minWidth: '30px',
-  minHeight: '30px',
-  borderRadius: '4px',
-  cursor: 'pointer',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-};
-
-const stageScaleBtnStyle = {
-  background: '#382313',
-  border: '1px solid #b45309',
-  color: '#fef3c7',
-  padding: '4px 8px',
-  minWidth: '30px',
-  minHeight: '30px',
-  borderRadius: '8px',
+  minWidth: '32px',
+  minHeight: '32px',
+  borderRadius: '6px',
   cursor: 'pointer',
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
   transition: 'all 0.15s ease',
+};
+
+const stageScaleBtnStyle = {
+  background: 'rgba(45, 32, 20, 0.95)',
+  border: '1px solid rgba(212, 175, 55, 0.38)',
+  color: '#fef08a',
+  padding: '4px 8px',
+  minWidth: '32px',
+  minHeight: '32px',
+  borderRadius: '10px',
+  cursor: 'pointer',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  boxShadow: '0 2px 6px rgba(0, 0, 0, 0.3)',
+  transition: 'all 0.18s cubic-bezier(0.16, 1, 0.3, 1)',
 };
 

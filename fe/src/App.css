@@ -485,17 +485,34 @@
   will-change: transform;
 }
 
-/* Media queries responsif untuk Hero dan Ornamen Wayang */
-@media (max-width: 960px) {
+/* Media queries responsif untuk Hero dan Ornamen Wayang Kayon (Bebas Cutoff & Anti-Collision) */
+@media (max-width: 1440px) and (min-width: 1025px) {
   .hero-gunungan-frame-left,
   .hero-gunungan-frame-right {
-    opacity: 0.18 !important;
-    width: 200px !important;
-    height: 360px !important;
+    width: clamp(140px, 15vw, 220px) !important;
+    height: clamp(260px, 42vh, 390px) !important;
+    opacity: 0.32 !important;
+    pointer-events: none !important;
+  }
+  .hero-gunungan-frame-left {
+    left: -20px !important;
+  }
+  .hero-gunungan-frame-right {
+    right: -20px !important;
   }
 }
 
-@media (max-width: 680px) {
+@media (max-width: 1024px) and (min-width: 769px) {
+  .hero-gunungan-frame-left,
+  .hero-gunungan-frame-right {
+    width: 160px !important;
+    height: 300px !important;
+    opacity: 0.16 !important;
+    pointer-events: none !important;
+  }
+}
+
+@media (max-width: 768px) {
   .hero-gunungan-frame-left,
   .hero-gunungan-frame-right {
     display: none !important;
@@ -515,12 +532,12 @@
   width: 100%;
   position: relative;
   z-index: 30;
-  padding: 0 24px;
+  padding: 0 16px;
   box-sizing: border-box;
 }
 
 .hero-floating-card {
-  max-width: 1140px;
+  max-width: 1180px;
   width: 100%;
   margin: -105px auto 0 auto;
   position: relative;
@@ -623,7 +640,7 @@
   .hero-floating-card {
     margin: -115px auto 0 auto;
     padding: 12px 18px;
-    max-width: 1080px;
+    max-width: 1180px;
   }
   .hero-floating-stat-item {
     padding: 2px 10px;
@@ -640,8 +657,9 @@
     font-size: 10px !important;
   }
   .myworks-floating-stats-card {
-    padding: 8px 18px;
-    margin-top: 14px !important;
+    padding: 10px 20px;
+    margin-top: 56px !important;
+    max-width: 1180px;
   }
   .myworks-floating-stat-item {
     padding: 2px 10px;
@@ -653,6 +671,7 @@
   .hero-floating-card {
     margin: -95px auto 0 auto;
     padding: 8px 14px;
+    max-width: 1180px;
   }
   .hero-floating-stat-item {
     padding: 2px 6px;
@@ -661,10 +680,15 @@
   .hero-stat-number {
     font-size: 22px !important;
   }
+  .myworks-floating-stats-card {
+    margin-top: 48px !important;
+    padding: 8px 16px;
+    max-width: 1180px;
+  }
 }
 
 /* ============================================================
-   Cardbox Numerik Karya Saya (Selaras dengan Hero Beranda)
+   Cardbox Numerik Karya Saya (Selaras dengan Hero Beranda & Navbar 1180px)
    ============================================================ */
 .myworks-floating-stats-card {
   max-width: 1180px;
@@ -727,6 +751,7 @@
     grid-template-columns: repeat(2, 1fr);
     gap: 12px;
     padding: 14px 16px;
+    margin-top: 28px !important;
   }
 }
 
@@ -736,6 +761,7 @@
     gap: 14px;
     padding: 18px 16px;
     border-radius: 16px;
+    margin-top: 24px !important;
   }
 }
 
@@ -971,14 +997,14 @@
   width: 100%;
 }
 
-@media (max-width: 1024px) {
+@media (max-width: 1140px) {
   .fondasi-ecosystem-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 24px;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 22px;
   }
 }
 
-@media (max-width: 680px) {
+@media (max-width: 768px) {
   .fondasi-ecosystem-grid {
     grid-template-columns: 1fr;
     gap: 20px;
@@ -1051,6 +1077,21 @@
 
 .fondasi-ecosystem-card:hover .fondasi-card-spotlight {
   opacity: 1;
+}
+
+/* Fallback Elegan di Perangkat Layar Sentuh / Tablet (Tanpa Mouse Hover) */
+@media (hover: none) {
+  .fondasi-card-spotlight {
+    opacity: 0.65;
+    background: radial-gradient(
+      320px circle at 85% 15%,
+      rgba(212, 175, 55, 0.18),
+      transparent 70%
+    );
+  }
+  .fondasi-card-wayang-bg {
+    opacity: 0.22;
+  }
 }
 
 .fondasi-card-top-row {
@@ -1375,6 +1416,7 @@
 
 .leaderboard-section-wrapper {
   width: 100%;
+  max-width: 100%;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -1384,6 +1426,7 @@
   border: none;
   padding: 100px 24px;
   scroll-margin-top: 80px;
+  overflow-x: hidden;
 }
 
 .leaderboard-section-header {
@@ -1436,7 +1479,10 @@
   grid-template-columns: 1.35fr 1fr;
   gap: 28px;
   width: 100%;
+  max-width: 100%;
+  min-width: 0;
   align-items: stretch;
+  box-sizing: border-box;
 }
 
 /* Sisi Kiri: Master Stage Spotlight */
@@ -1588,6 +1634,9 @@
   flex-direction: column;
   gap: 12px;
   width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
   justify-content: space-between;
 }
 
@@ -1604,6 +1653,10 @@
   box-shadow: 0 2px 8px rgba(40, 28, 16, 0.03);
   transition: all 0.22s ease;
   box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  overflow: hidden;
 }
 
 .leaderboard-reel-card:hover {
@@ -1624,6 +1677,7 @@
   color: #8b6820;
   line-height: 1;
   min-width: 28px;
+  flex-shrink: 0;
   letter-spacing: -0.5px;
 }
 
@@ -1654,8 +1708,10 @@
 }
 
 .leaderboard-reel-body {
-  flex: 1;
+  flex: 1 1 0%;
   min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
 }
 
 .leaderboard-reel-title {
@@ -1667,6 +1723,7 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  max-width: 100%;
 }
 
 .leaderboard-reel-dalang {
@@ -1674,6 +1731,10 @@
   color: #8b4513;
   font-weight: 650;
   margin: 0 0 3px 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
 }
 
 .leaderboard-reel-meta {
@@ -1685,6 +1746,8 @@
   white-space: nowrap;
   overflow: hidden;
   width: 100%;
+  max-width: 100%;
+  min-width: 0;
 }
 
 .leaderboard-reel-epos {
@@ -1692,7 +1755,7 @@
   text-overflow: ellipsis;
   white-space: nowrap;
   min-width: 0;
-  flex: 1 1 auto;
+  flex: 0 1 auto;
 }
 
 .leaderboard-reel-dot {
@@ -1704,6 +1767,7 @@
   flex-shrink: 0;
   font-weight: 600;
   color: #8b6820;
+  white-space: nowrap;
 }
 
 .leaderboard-reel-arrow {
@@ -1775,23 +1839,38 @@
   .leaderboard-section-wrapper {
     padding: clamp(60px, 8vw, 84px) 20px;
     min-height: auto;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    overflow-x: hidden;
   }
 
   .leaderboard-showcase-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
     gap: 20px;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
   }
 
   .leaderboard-spotlight-stage {
     min-height: 460px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
   }
 }
 
 @media (max-width: 640px) {
   .leaderboard-section-wrapper {
-    padding: clamp(48px, 7vw, 64px) clamp(14px, 3.5vw, 20px);
+    padding: clamp(36px, 6vw, 48px) clamp(12px, 3.5vw, 16px);
     min-height: auto;
     scroll-margin-top: 72px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    overflow-x: hidden;
   }
 
   .leaderboard-section-header {
@@ -1799,10 +1878,15 @@
     align-items: flex-start;
     margin-bottom: 22px;
     gap: 14px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
   }
 
   .leaderboard-section-header-text {
     width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
   }
 
   .leaderboard-header-btn {
@@ -1811,17 +1895,25 @@
     padding: 11px 18px;
     font-size: 14px;
     border-radius: 12px;
+    box-sizing: border-box;
   }
 
   .leaderboard-showcase-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
     gap: 14px;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
   }
 
   /* Spotlight Stage on Mobile */
   .leaderboard-spotlight-stage {
     min-height: 460px;
     border-radius: 18px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
   }
 
   .leaderboard-spotlight-header-meta {
@@ -1829,6 +1921,9 @@
     gap: 8px;
     flex-direction: column;
     align-items: flex-start;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
   }
 
   .leaderboard-spotlight-badge {
@@ -1849,17 +1944,23 @@
 
   .leaderboard-spotlight-content {
     padding: 14px 14px 18px 14px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
   }
 
   .leaderboard-spotlight-title {
     font-size: clamp(20px, 5.2vw, 24px);
     line-height: 1.22;
     margin-bottom: 5px;
+    word-break: break-word;
   }
 
   .leaderboard-spotlight-dalang {
     font-size: 12.5px;
     margin-bottom: 7px;
+    flex-wrap: wrap;
+    gap: 6px;
   }
 
   .leaderboard-spotlight-desc {
@@ -1874,6 +1975,7 @@
     flex-direction: column;
     width: 100%;
     gap: 8px;
+    box-sizing: border-box;
   }
 
   .leaderboard-btn-primary,
@@ -1885,57 +1987,111 @@
     font-size: 13.5px;
     justify-content: center;
     border-radius: 9999px;
+    box-sizing: border-box;
   }
 
   /* Reel Stack on Mobile */
   .leaderboard-reel-stack {
     gap: 10px;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
   }
 
   .leaderboard-reel-card {
     padding: 10px 12px;
     gap: 10px;
     border-radius: 14px;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    overflow: hidden;
   }
 
   .leaderboard-reel-rank {
-    font-size: 15px;
-    min-width: 20px;
+    font-size: 14px;
+    min-width: 18px;
+    flex-shrink: 0;
   }
 
   .leaderboard-reel-img-thumb {
-    width: 52px;
-    height: 52px;
+    width: 50px;
+    height: 50px;
     border-radius: 10px;
+    flex-shrink: 0;
+  }
+
+  .leaderboard-reel-body {
+    flex: 1 1 0%;
+    min-width: 0;
+    max-width: 100%;
+    overflow: hidden;
   }
 
   .leaderboard-reel-title {
-    font-size: 14px;
+    font-size: 13.5px;
     margin-bottom: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
   }
 
   .leaderboard-reel-dalang {
     font-size: 11.5px;
     margin-bottom: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
   }
 
   .leaderboard-reel-meta {
-    font-size: 10.5px;
-    gap: 6px;
+    font-size: 10px;
+    gap: 5px;
+    white-space: nowrap;
+    overflow: hidden;
+    max-width: 100%;
+    min-width: 0;
+    width: 100%;
+  }
+
+  .leaderboard-reel-epos {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    min-width: 0;
+    flex: 0 1 auto;
+  }
+
+  .leaderboard-reel-views {
+    flex-shrink: 0;
+    font-weight: 600;
+    color: #8b6820;
+    white-space: nowrap;
   }
 
   .leaderboard-reel-arrow {
-    width: 28px;
-    height: 28px;
-    min-width: 28px;
+    width: 26px;
+    height: 26px;
+    min-width: 26px;
     flex-shrink: 0;
   }
 }
 
 @media (max-width: 400px) {
+  .leaderboard-section-wrapper {
+    padding: clamp(30px, 5vw, 40px) 10px;
+  }
+
   .leaderboard-spotlight-stage {
-    min-height: 430px;
+    min-height: 420px;
     border-radius: 16px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
   }
 
   .leaderboard-spotlight-header-meta {
@@ -1944,33 +2100,74 @@
 
   .leaderboard-spotlight-content {
     padding: 12px 12px 16px 12px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
   }
 
   .leaderboard-spotlight-title {
-    font-size: 19px;
+    font-size: 18.5px;
+    word-break: break-word;
   }
 
   .leaderboard-reel-card {
     padding: 8px 10px;
     gap: 8px;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
   }
 
   .leaderboard-reel-img-thumb {
-    width: 46px;
-    height: 46px;
+    width: 44px;
+    height: 44px;
+    border-radius: 8px;
+    flex-shrink: 0;
   }
 
   .leaderboard-reel-rank {
-    font-size: 14px;
-    min-width: 18px;
+    font-size: 12.5px;
+    min-width: 16px;
+    flex-shrink: 0;
+  }
+
+  .leaderboard-reel-body {
+    flex: 1 1 0%;
+    min-width: 0;
+    max-width: 100%;
+    overflow: hidden;
   }
 
   .leaderboard-reel-title {
-    font-size: 13px;
+    font-size: 12.5px;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .leaderboard-reel-dalang {
+    font-size: 11px;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   .leaderboard-reel-meta {
-    font-size: 10px;
+    font-size: 9.5px;
+    gap: 4px;
+    max-width: 100%;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+
+  .leaderboard-reel-arrow {
+    width: 22px;
+    height: 22px;
+    min-width: 22px;
+    flex-shrink: 0;
   }
 }
 
@@ -2809,17 +3006,7 @@
 }
 
 /* 2. Responsivitas Frame Gunungan di Seluruh Halaman (Beranda, Atlas, Arsip, Karya Saya) */
-@media (max-width: 960px) {
-  .hero-gunungan-frame-left,
-  .hero-gunungan-frame-right {
-    width: 200px !important;
-    height: 380px !important;
-    opacity: 0.32 !important;
-    pointer-events: none !important;
-  }
-}
-
-@media (max-width: 680px) {
+@media (max-width: 768px) {
   .hero-gunungan-frame-left,
   .hero-gunungan-frame-right {
     display: none !important;
@@ -2944,23 +3131,26 @@ html, body {
    ========================================================================== */
 
 .stage-studio-wrapper-container {
-  max-width: 1200px;
+  max-width: 1240px;
   margin: 0 auto;
-  padding: 20px 16px;
+  padding: 18px 16px 40px 16px;
   color: #fcfaf2;
   box-sizing: border-box;
 }
 
 .stage-studio-header-card {
-  background: #16100a;
-  border: 1px solid rgba(212, 175, 55, 0.25);
-  border-radius: 16px;
+  background: linear-gradient(180deg, rgba(28, 19, 13, 0.92) 0%, rgba(18, 12, 8, 0.96) 100%);
+  border: 1px solid rgba(212, 175, 55, 0.28);
+  border-radius: 18px;
   padding: 14px 20px;
   margin-bottom: 16px;
   display: flex;
   flex-direction: column;
   gap: 12px;
   box-sizing: border-box;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
 }
 
 .stage-studio-top-bar {
@@ -2968,7 +3158,7 @@ html, body {
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  gap: 12px;
+  gap: 14px;
 }
 
 .stage-studio-left-group {
@@ -2980,8 +3170,8 @@ html, body {
 }
 
 .stage-studio-back-btn {
-  background: #231a13;
-  border: 1px solid rgba(212, 175, 55, 0.3);
+  background: rgba(36, 25, 17, 0.85);
+  border: 1px solid rgba(212, 175, 55, 0.32);
   color: #e8bb5c;
   padding: 8px 16px;
   border-radius: 12px;
@@ -2992,14 +3182,16 @@ html, body {
   font-size: 12.5px;
   font-weight: 700;
   min-height: 40px;
-  transition: all 0.2s ease;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   flex-shrink: 0;
   white-space: nowrap;
 }
 
 .stage-studio-back-btn:hover {
   border-color: #d4af37;
-  background: #2c2017;
+  background: #362619;
+  color: #fef08a;
+  transform: translateY(-1px);
 }
 
 .stage-studio-title-block {
@@ -3007,23 +3199,39 @@ html, body {
   flex: 1;
 }
 
+.stage-studio-eyebrow {
+  font-size: 10px;
+  font-weight: 800;
+  color: #d4af37;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin-bottom: 2px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
 .stage-studio-title {
   margin: 0;
-  font-size: 18px;
+  font-size: 19px;
   color: #fcfaf2;
-  font-weight: 800;
+  font-weight: 850;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  letter-spacing: -0.3px;
 }
 
 .stage-studio-meta {
-  font-size: 11px;
-  color: #bfae9c;
-  margin-top: 2px;
+  font-size: 11.5px;
+  color: #c4b5a3;
+  margin-top: 3px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .stage-studio-desktop-toolbar {
@@ -3044,6 +3252,35 @@ html, body {
 
 .stage-mobile-touch-dock {
   display: none;
+}
+
+/* ==========================================================================
+   GAWANGAN KELIR (THEATRICAL TEAK WOOD FRAME 16:9)
+   ========================================================================== */
+.stage-gawangan-frame {
+  position: relative;
+  width: 100%;
+  max-width: 1080px;
+  margin: 0 auto;
+  user-select: none;
+  background: linear-gradient(145deg, #241910 0%, #160f0a 50%, #281c13 100%);
+  border: 2px solid rgba(212, 175, 55, 0.38);
+  border-radius: 20px;
+  padding: 8px;
+  box-shadow: 
+    0 20px 50px -10px rgba(0, 0, 0, 0.75),
+    0 4px 16px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 235, 180, 0.22);
+  box-sizing: border-box;
+}
+
+.stage-gawangan-inner {
+  position: relative;
+  width: 100%;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(0, 0, 0, 0.5);
 }
 
 /* More Dropdown Menu */
@@ -3691,17 +3928,17 @@ html, body {
 
 /* Kartu Sayap Luar Kiri 2 */
 .wayang-coverflow-card[data-offset="-2"] {
-  transform: translate3d(calc(-1 * clamp(270px, 39vw, 420px)), 0, -110px) scale(0.72) rotateY(10deg);
-  opacity: 0.44;
-  filter: grayscale(95%) contrast(0.9);
+  transform: translate3d(calc(-1 * clamp(210px, 28vw, 340px)), 0, -110px) scale(0.74) rotateY(8deg);
+  opacity: 0.48;
+  filter: grayscale(92%) contrast(0.92);
   border-color: rgba(0, 0, 0, 0.04);
 }
 
 /* Kartu Sayap Luar Kanan 2 */
 .wayang-coverflow-card[data-offset="2"] {
-  transform: translate3d(calc(clamp(270px, 39vw, 420px)), 0, -110px) scale(0.72) rotateY(-10deg);
-  opacity: 0.44;
-  filter: grayscale(95%) contrast(0.9);
+  transform: translate3d(calc(clamp(210px, 28vw, 340px)), 0, -110px) scale(0.74) rotateY(-8deg);
+  opacity: 0.48;
+  filter: grayscale(92%) contrast(0.92);
   border-color: rgba(0, 0, 0, 0.04);
 }
 
@@ -4382,7 +4619,7 @@ html, body {
   display: flex;
   gap: 22px;
   overflow-x: auto;
-  padding: 16px 20px 28px 12px;
+  padding: 16px clamp(20px, 3.5vw, 40px) 28px clamp(28px, 4.5vw, 56px);
   scroll-snap-type: x mandatory;
   scrollbar-width: none;
   -ms-overflow-style: none;

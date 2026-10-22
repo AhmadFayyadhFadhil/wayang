@@ -559,7 +559,7 @@ export default function ConnectedArchiveView({
           {/* Subjudul Narasi Singkat, Padat, dan Jelas */}
           <p
             style={{
-              margin: '0 auto clamp(16px, 2.5vh, 34px) auto',
+              margin: '0 auto clamp(24px, 3.6vh, 44px) auto',
               fontSize: 'clamp(14px, 1.3vw, 17px)',
               color: '#f0e6d8',
               lineHeight: '1.7',
@@ -571,13 +571,14 @@ export default function ConnectedArchiveView({
             Panggung kelir digital nusantara. Saksikan lakon wiracarita luhur dan kreasi pedalangan modern dalam format dua dimensi interaktif.
           </p>
 
-          {/* Tombol Aksi Tunggal yang Tenang & Jelas (Persis AtlasView) */}
+          {/* Tombol Aksi Tunggal yang Tenang & Jelas (Diposisikan Lebih ke Bawah agar Proporsional) */}
           <button
             onClick={() => {
               const el = document.getElementById('archive-light-sections');
               if (el) el.scrollIntoView({ behavior: 'smooth' });
             }}
             style={{
+              marginTop: 'clamp(12px, 1.8vh, 22px)',
               background: 'linear-gradient(135deg, #e8bb5c 0%, #d4af37 100%)',
               border: '1px solid rgba(245, 215, 127, 0.45)',
               color: '#1a120b',

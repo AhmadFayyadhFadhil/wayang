@@ -81,14 +81,23 @@ export default function StageStudio({ onNavigate }) {
             </button>
 
             <div className="stage-studio-title-block">
+              <div className="stage-studio-eyebrow">
+                <span style={{ width: '5px', height: '5px', borderRadius: '50%', background: '#d4af37' }} />
+                <span>STUDIO PANGGUNG KELIR DIGITAL</span>
+                <span style={{ width: '5px', height: '5px', borderRadius: '50%', background: '#d4af37' }} />
+              </div>
               <h1 className="stage-studio-title">
                 {metadata.title || 'Lakon Wayang Baru'}
               </h1>
               <div className="stage-studio-meta">
-                {scenes.length} Adegan • Status:{' '}
-                <strong style={{ color: metadata.visibility === 'public' ? '#10b981' : '#e8bb5c' }}>
-                  {metadata.visibility === 'public' ? 'Publik' : 'Privat'}
-                </strong>
+                <span>{scenes.length} Adegan Terangkai</span>
+                <span style={{ opacity: 0.4 }}>•</span>
+                <span>
+                  Status:{' '}
+                  <strong style={{ color: metadata.visibility === 'public' ? '#10b981' : '#e8bb5c' }}>
+                    {metadata.visibility === 'public' ? 'Publik' : 'Privat'}
+                  </strong>
+                </span>
               </div>
             </div>
           </div>
@@ -551,8 +560,8 @@ export default function StageStudio({ onNavigate }) {
 }
 
 const studioBtnStyle = {
-  background: '#231a13',
-  border: '1px solid rgba(212, 175, 55, 0.25)',
+  background: 'rgba(34, 24, 16, 0.85)',
+  border: '1px solid rgba(212, 175, 55, 0.32)',
   color: '#fcfaf2',
   padding: '8px 16px',
   borderRadius: '12px',
@@ -560,9 +569,10 @@ const studioBtnStyle = {
   display: 'inline-flex',
   alignItems: 'center',
   justifyContent: 'center',
-  gap: '6px',
+  gap: '7px',
   fontSize: '12.5px',
   fontWeight: '700',
   minHeight: '40px',
-  transition: 'all 0.2s ease',
+  boxShadow: '0 2px 8px rgba(0, 0, 0, 0.25)',
+  transition: 'all 0.2s cubic-bezier(0.16, 1, 0.3, 1)',
 };

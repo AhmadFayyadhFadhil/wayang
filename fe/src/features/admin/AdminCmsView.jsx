@@ -487,7 +487,7 @@ export default function AdminCmsView({ onPlayPerformance }) {
           position: 'relative',
           overflow: 'hidden',
           background: '#0d0a07',
-          padding: '130px 24px 90px 24px',
+          padding: 'clamp(75px, 10vh, 120px) clamp(16px, 3vw, 24px) clamp(35px, 5vh, 80px) clamp(16px, 3vw, 24px)',
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
@@ -565,12 +565,16 @@ export default function AdminCmsView({ onPlayPerformance }) {
             position: 'absolute',
             left: '-15px',
             bottom: '0',
-            height: '530px',
-            width: '330px',
+            height: 'clamp(340px, 55vh, 530px)',
+            width: 'clamp(200px, 32vh, 330px)',
             zIndex: 4,
             opacity: 0.78,
             pointerEvents: 'none',
             filter: 'none',
+            maskImage:
+              'linear-gradient(to bottom, black 65%, rgba(0, 0, 0, 0.5) 85%, transparent 98%)',
+            WebkitMaskImage:
+              'linear-gradient(to bottom, black 65%, rgba(0, 0, 0, 0.5) 85%, transparent 98%)',
           }}
         >
           <img
@@ -587,12 +591,16 @@ export default function AdminCmsView({ onPlayPerformance }) {
             position: 'absolute',
             right: '-15px',
             bottom: '0',
-            height: '530px',
-            width: '330px',
-            zIndex: 3,
+            height: 'clamp(340px, 55vh, 530px)',
+            width: 'clamp(200px, 32vh, 330px)',
+            zIndex: 4,
             opacity: 0.78,
             pointerEvents: 'none',
             filter: 'none',
+            maskImage:
+              'linear-gradient(to bottom, black 65%, rgba(0, 0, 0, 0.5) 85%, transparent 98%)',
+            WebkitMaskImage:
+              'linear-gradient(to bottom, black 65%, rgba(0, 0, 0, 0.5) 85%, transparent 98%)',
           }}
         >
           <img

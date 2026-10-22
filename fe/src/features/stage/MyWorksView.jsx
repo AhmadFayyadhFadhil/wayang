@@ -725,7 +725,7 @@ export default function MyWorksView({ onOpenStudio, onPlayPerformance }) {
             bottom: '0',
             height: 'clamp(340px, 55vh, 530px)',
             width: 'clamp(200px, 32vh, 330px)',
-            zIndex: 3,
+            zIndex: 4,
             opacity: 0.78,
             pointerEvents: 'none',
             filter: 'none',
@@ -759,7 +759,7 @@ export default function MyWorksView({ onOpenStudio, onPlayPerformance }) {
               fontWeight: '700',
               letterSpacing: '2.5px',
               textTransform: 'uppercase',
-              marginBottom: 'clamp(8px, 1.4vh, 18px)',
+              marginBottom: 'clamp(12px, 2vh, 22px)',
             }}
           >
             <span style={{ width: '5px', height: '5px', borderRadius: '50%', background: '#d4af37' }} />
@@ -770,7 +770,7 @@ export default function MyWorksView({ onOpenStudio, onPlayPerformance }) {
           {/* Headline Utama */}
           <h1
             style={{
-              margin: '0 auto clamp(10px, 1.6vh, 20px) auto',
+              margin: '0 auto clamp(18px, 2.8vh, 28px) auto',
               maxWidth: '850px',
               fontFamily: 'var(--font-sans)',
               fontSize: 'clamp(26px, 4.2vw, 56px)',
@@ -787,10 +787,10 @@ export default function MyWorksView({ onOpenStudio, onPlayPerformance }) {
           {/* Subjudul Sesuai Narasi Heritage */}
           <p
             style={{
-              margin: '0 auto clamp(14px, 2.2vh, 34px) auto',
+              margin: '0 auto clamp(26px, 4vh, 40px) auto',
               fontSize: 'clamp(14px, 1.3vw, 17px)',
               color: '#f0e6d8',
-              lineHeight: '1.65',
+              lineHeight: '1.72',
               maxWidth: '740px',
               fontWeight: '450',
               textAlign: 'center',
@@ -916,8 +916,8 @@ export default function MyWorksView({ onOpenStudio, onPlayPerformance }) {
             </button>
           </div>
 
-          {/* Cardbox Numerik Floating (Selaras dengan Hero Beranda & Panjang Menyesuaikan Navbar 1180px) */}
-          <div className="myworks-floating-stats-card" style={{ marginTop: 'clamp(16px, 2.8vh, 38px)', marginBottom: '8px' }}>
+          {/* Cardbox Numerik Floating (Diposisikan Lebih ke Bawah agar Proporsional & Lega dari Tombol Atas) */}
+          <div className="myworks-floating-stats-card" style={{ marginTop: 'clamp(50px, 7.5vh, 78px)', marginBottom: 'clamp(10px, 1.8vh, 20px)' }}>
             {/* Metrik 1: Total Lakon */}
             <div className="myworks-floating-stat-item">
               <div

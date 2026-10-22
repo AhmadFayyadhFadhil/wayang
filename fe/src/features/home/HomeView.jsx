@@ -266,7 +266,7 @@ export default function HomeView({ onNavigate, connectionStatus: _connectionStat
           alignItems: 'center',
           justifyContent: 'center',
           position: 'relative',
-          padding: 'clamp(45px, 6.5vh, 75px) clamp(16px, 2.5vw, 24px) clamp(25px, 4vh, 50px) clamp(16px, 2.5vw, 24px)',
+          padding: 'clamp(75px, 10vh, 115px) clamp(16px, 3vw, 24px) clamp(35px, 5vh, 75px) clamp(16px, 3vw, 24px)',
           overflow: 'hidden',
           background: '#0d0a07',
           boxSizing: 'border-box',
@@ -285,7 +285,7 @@ export default function HomeView({ onNavigate, connectionStatus: _connectionStat
             objectFit: 'cover',
             objectPosition: 'bottom center',
             zIndex: 1,
-            filter: 'contrast(1.02) brightness(0.78)',
+            filter: 'contrast(1.0) brightness(0.88)',
           }}
         />
 
@@ -296,15 +296,15 @@ export default function HomeView({ onNavigate, connectionStatus: _connectionStat
             top: 0,
             left: 0,
             right: 0,
-            height: '180px',
+            height: '200px',
             background:
-              'linear-gradient(to bottom, rgba(13, 10, 7, 0.92) 0%, rgba(13, 10, 7, 0.60) 80px, transparent 100%)',
+              'linear-gradient(to bottom, rgba(13, 10, 7, 0.92) 0%, rgba(13, 10, 7, 0.60) 90px, transparent 100%)',
             pointerEvents: 'none',
             zIndex: 2,
           }}
         />
 
-        {/* 2. Harmonious Center Ambient Overlay: Meneduhkan area tengah agar teks terbaca jernih tanpa silau/kontras tajam (Persis Story Atlas) */}
+        {/* 2. Harmonious Center Ambient Overlay: Meneduhkan area tengah agar teks terbaca jernih tanpa silau */}
         <div
           style={{
             position: 'absolute',
@@ -316,14 +316,14 @@ export default function HomeView({ onNavigate, connectionStatus: _connectionStat
           }}
         />
 
-        {/* 3. Bottom Gradient: Transisi lembut ke bagian bawah hero (Persis Story Atlas) */}
+        {/* 3. Bottom Gradient: Transisi lembut ke bagian bawah hero */}
         <div
           style={{
             position: 'absolute',
             bottom: 0,
             left: 0,
             right: 0,
-            height: '130px',
+            height: '140px',
             background:
               'linear-gradient(to top, rgba(13, 10, 7, 0.85) 0%, rgba(13, 10, 7, 0.35) 60%, transparent 100%)',
             pointerEvents: 'none',
@@ -332,21 +332,25 @@ export default function HomeView({ onNavigate, connectionStatus: _connectionStat
         />
 
         {/* Motif Awan Tradisional Jawa Otentik dengan Animasi Mengambang & Bergeser Halus */}
-        <JavaneseCloudBackground variant="hero" theme="dark" opacity={0.55} animated={true} style={{ zIndex: 3 }} />
+        <JavaneseCloudBackground variant="hero" theme="dark" opacity={0.65} animated={true} style={{ zIndex: 3 }} />
 
-        {/* Ornamen Gunungan HD di Kiri & Kanan (Fluid Scaling Sesuai Tinggi Layar Laptop) */}
+        {/* Ornamen Gunungan HD di Kiri & Kanan (Selaras Persis dengan Hero Galeri Publik & Panggung Kelir) */}
         <div
           className="hero-gunungan-frame-left"
           style={{
             position: 'absolute',
             left: '-15px',
             bottom: '0',
-            height: 'clamp(260px, 46vh, 460px)',
-            width: 'clamp(160px, 27vh, 280px)',
+            height: 'clamp(340px, 55vh, 530px)',
+            width: 'clamp(200px, 32vh, 330px)',
             zIndex: 4,
             opacity: 0.78,
             pointerEvents: 'none',
             filter: 'none',
+            maskImage:
+              'linear-gradient(to bottom, black 65%, rgba(0, 0, 0, 0.5) 85%, transparent 98%)',
+            WebkitMaskImage:
+              'linear-gradient(to bottom, black 65%, rgba(0, 0, 0, 0.5) 85%, transparent 98%)',
           }}
         >
           <img
@@ -362,12 +366,16 @@ export default function HomeView({ onNavigate, connectionStatus: _connectionStat
             position: 'absolute',
             right: '-15px',
             bottom: '0',
-            height: 'clamp(260px, 46vh, 460px)',
-            width: 'clamp(160px, 27vh, 280px)',
+            height: 'clamp(340px, 55vh, 530px)',
+            width: 'clamp(200px, 32vh, 330px)',
             zIndex: 4,
             opacity: 0.78,
             pointerEvents: 'none',
             filter: 'none',
+            maskImage:
+              'linear-gradient(to bottom, black 65%, rgba(0, 0, 0, 0.5) 85%, transparent 98%)',
+            WebkitMaskImage:
+              'linear-gradient(to bottom, black 65%, rgba(0, 0, 0, 0.5) 85%, transparent 98%)',
           }}
         >
           <img
@@ -380,7 +388,7 @@ export default function HomeView({ onNavigate, connectionStatus: _connectionStat
         {/* Center Hero Content */}
         <div
           style={{
-            maxWidth: '880px',
+            maxWidth: '920px',
             width: '100%',
             margin: '0 auto',
             textAlign: 'center',
@@ -388,133 +396,105 @@ export default function HomeView({ onNavigate, connectionStatus: _connectionStat
             zIndex: 10,
           }}
         >
-          {/* Eyebrow Budaya Nusantara */}
-          <div
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '8px',
-              padding: '5px 14px',
-              borderRadius: '9999px',
-              background: 'rgba(212, 175, 55, 0.08)',
-              border: '1px solid rgba(212, 175, 55, 0.22)',
-              color: '#d4af37',
-              fontSize: '10.5px',
-              fontWeight: '700',
-              letterSpacing: '2.2px',
-              textTransform: 'uppercase',
-              marginBottom: 'clamp(8px, 1.4vh, 16px)',
-            }}
-          >
-            <span style={{ width: '5px', height: '5px', borderRadius: '50%', background: '#d4af37' }} />
-            <span>Pagelaran Wayang Kulit Digital Interaktif</span>
-            <span style={{ width: '5px', height: '5px', borderRadius: '50%', background: '#d4af37' }} />
-          </div>
-
-          {/* Main Headline - Selaras dengan Standar Tipografi Atlas & Karya Saya */}
+          {/* Main Headline (Warna Alami Bersih Tanpa Shadow/Stroke) */}
           <h1
             style={{
-              margin: '0 0 clamp(8px, 1.4vh, 16px) 0',
+              margin: '0 0 22px 0',
               fontFamily: 'var(--font-sans)',
-              fontSize: 'clamp(24px, min(3.8vw, 5.2vh), 48px)',
+              fontSize: 'clamp(32px, 5.2vw, 56px)',
               fontWeight: '850',
               color: '#fcfaf2',
-              letterSpacing: '-0.5px',
-              lineHeight: '1.2',
+              lineHeight: '1.22',
+              letterSpacing: '-0.6px',
             }}
           >
-            Satu Panggung untuk Memainkan <span style={{ color: '#d4af37' }}>Seni Wayang</span> & Karakter Luhur
+            Satu Panggung untuk Memainkan{' '}
+            <span style={{ color: '#d4af37' }}>Seni Wayang</span>{' '}
+            dan Karakter Luhur
           </h1>
 
           {/* Subtitle Sesuai PRD 1.2 Proposisi Nilai */}
           <p
             style={{
-              margin: '0 auto clamp(12px, 2vh, 24px) auto',
-              fontSize: 'clamp(13px, min(1.15vw, 1.8vh), 15.5px)',
+              margin: '0 auto 36px auto',
+              fontSize: 'clamp(14px, 1.35vw, 16.5px)',
               color: '#f0e6d8',
-              lineHeight: '1.65',
-              maxWidth: '700px',
+              lineHeight: '1.75',
+              maxWidth: '720px',
               fontWeight: '450',
             }}
           >
             Wayangverse menghadirkan panggung wayang digital interaktif dua dimensi berbasis kelir dengan visual tatah-sungging otentik, animasi solah dalang, tata suara gamelan real-time, dan relasi data ke naskah pakem bersejarah.
           </p>
 
-          {/* Dual Action Buttons (Material Alami: Emas Prada & Dark Soga Glass) */}
+          {/* Dual Action Buttons (Warna Solid Alami Bersih Tanpa Shadow/Stroke Berlebih) */}
           <div
             style={{
               display: 'flex',
               justifyContent: 'center',
               alignItems: 'center',
-              gap: '12px',
+              gap: '14px',
               flexWrap: 'wrap',
               marginBottom: '0',
             }}
           >
-            {/* Primary Button -> Panggung Virtual */}
+            {/* Primary Capsule Button -> Panggung Virtual */}
             <button
               onClick={() => onNavigate('stage')}
               style={{
-                background: 'linear-gradient(135deg, #e8bb5c 0%, #d4af37 100%)',
-                border: '1px solid rgba(245, 215, 127, 0.45)',
-                color: '#1a120b',
-                padding: 'clamp(8px, 1.2vh, 12px) clamp(18px, 1.8vw, 26px)',
-                borderRadius: '12px',
-                fontSize: '13.5px',
+                background: '#e8bb5c',
+                border: 'none',
+                color: '#0d0a07',
+                padding: '12px 28px',
+                borderRadius: '20px',
+                fontSize: '14px',
                 fontWeight: '750',
-                letterSpacing: '0.2px',
                 cursor: 'pointer',
                 display: 'inline-flex',
                 alignItems: 'center',
-                gap: '8px',
-                boxShadow: '0 2px 8px rgba(0, 0, 0, 0.25)',
-                transition: 'all 0.25s cubic-bezier(0.16, 1, 0.3, 1)',
+                justifyContent: 'center',
+                boxShadow: 'none',
+                transition: 'all 0.2s ease',
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.transform = 'translateY(-2px)';
-                e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.35)';
+                e.currentTarget.style.transform = 'translateY(-1px)';
+                e.currentTarget.style.background = '#dcae4d';
               }}
               onMouseLeave={(e) => {
                 e.currentTarget.style.transform = 'translateY(0)';
-                e.currentTarget.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.25)';
+                e.currentTarget.style.background = '#e8bb5c';
               }}
             >
               Buka Panggung Virtual
             </button>
 
-            {/* Secondary Button -> Story Atlas */}
+            {/* Secondary Capsule Button -> Story Atlas */}
             <button
               onClick={() => onNavigate('atlas')}
               style={{
-                background: 'rgba(24, 17, 11, 0.65)',
-                backdropFilter: 'blur(10px)',
-                WebkitBackdropFilter: 'blur(10px)',
-                border: '1px solid rgba(212, 175, 55, 0.28)',
-                color: '#fdfbf7',
-                padding: 'clamp(8px, 1.2vh, 12px) clamp(16px, 1.6vw, 24px)',
-                borderRadius: '12px',
-                fontSize: '13.5px',
+                background: '#1c140d',
+                border: '1px solid rgba(212, 175, 55, 0.3)',
+                color: '#fcfaf2',
+                padding: '13px 28px',
+                borderRadius: '20px',
+                fontSize: '14px',
                 fontWeight: '650',
-                letterSpacing: '0.2px',
                 cursor: 'pointer',
                 display: 'inline-flex',
                 alignItems: 'center',
-                gap: '8px',
-                transition: 'all 0.25s cubic-bezier(0.16, 1, 0.3, 1)',
+                justifyContent: 'center',
+                transition: 'all 0.2s ease',
               }}
               onMouseEnter={(e) => {
                 e.currentTarget.style.transform = 'translateY(-2px)';
-                e.currentTarget.style.background = 'rgba(36, 25, 16, 0.85)';
-                e.currentTarget.style.borderColor = 'rgba(212, 175, 55, 0.45)';
+                e.currentTarget.style.background = '#281c12';
               }}
               onMouseLeave={(e) => {
                 e.currentTarget.style.transform = 'translateY(0)';
-                e.currentTarget.style.background = 'rgba(24, 17, 11, 0.65)';
-                e.currentTarget.style.borderColor = 'rgba(212, 175, 55, 0.28)';
+                e.currentTarget.style.background = '#1c140d';
               }}
             >
-              <span>Jelajahi Story Atlas</span>
-              <span style={{ fontSize: '15px' }}>→</span>
+              Jelajahi Story Atlas
             </button>
           </div>
         </div>
@@ -1068,7 +1048,7 @@ export default function HomeView({ onNavigate, connectionStatus: _connectionStat
           5. GALERI KARYA PUBLIK / LEADERBOARD TOP 4 PEMENTASAN WAYANG
           ============================================================ */}
       <section className="leaderboard-section-wrapper" id="leaderboard-showcase">
-        <div style={{ maxWidth: '1240px', width: '100%', margin: '0 auto' }}>
+        <div style={{ maxWidth: '1240px', width: '100%', margin: '0 auto', boxSizing: 'border-box', minWidth: 0 }}>
           {/* Header Section */}
           <div className="leaderboard-section-header">
             <div className="leaderboard-section-header-text">
@@ -1223,7 +1203,7 @@ export default function HomeView({ onNavigate, connectionStatus: _connectionStat
           })()}
         </div>
       </section>
-      </div>
+      </div> {/* Tutup #home-light-sections */}
 
       {/* ============================================================
           6. FALSAFAH KULTURAL & CALL TO ACTION PENUTUP PAGELARAN

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { STORIES_MASTER } from '../../data/master/storiesMaster';
 import { CHARACTERS_MASTER } from '../../data/master/charactersMaster';
 import { AUDIO_MASTER } from '../../data/master/audioMaster';
@@ -98,6 +98,13 @@ export default function AtlasView({ onPlayCharacterOnStage }) {
   const [selectedCharModal, setSelectedCharModal] = useState(null);
   const [previewPose, setPreviewPose] = useState('default');
 
+  // Bersihkan pemutaran audio gending saat pengguna berpindah tab/halaman
+  useEffect(() => {
+    return () => {
+      soundEngine.stopBgm();
+    };
+  }, []);
+
   const q = searchQuery.toLowerCase().trim();
 
   // Filter Lakon Cerita
@@ -187,7 +194,7 @@ export default function AtlasView({ onPlayCharacterOnStage }) {
           alignItems: 'center',
           justifyContent: 'center',
           position: 'relative',
-          padding: 'clamp(45px, 6.5vh, 75px) clamp(16px, 2.5vw, 24px) clamp(25px, 4vh, 50px) clamp(16px, 2.5vw, 24px)',
+          padding: 'clamp(75px, 10vh, 115px) clamp(16px, 3vw, 24px) clamp(35px, 5vh, 75px) clamp(16px, 3vw, 24px)',
           overflow: 'hidden',
           background: '#0d0a07',
           boxSizing: 'border-box',
@@ -206,7 +213,7 @@ export default function AtlasView({ onPlayCharacterOnStage }) {
             objectFit: 'cover',
             objectPosition: 'bottom center',
             zIndex: 1,
-            filter: 'contrast(1.02) brightness(0.78)',
+            filter: 'contrast(1.0) brightness(0.88)',
           }}
         />
 
@@ -217,9 +224,9 @@ export default function AtlasView({ onPlayCharacterOnStage }) {
             top: 0,
             left: 0,
             right: 0,
-            height: '180px',
+            height: '200px',
             background:
-              'linear-gradient(to bottom, rgba(13, 10, 7, 0.92) 0%, rgba(13, 10, 7, 0.60) 80px, transparent 100%)',
+              'linear-gradient(to bottom, rgba(13, 10, 7, 0.92) 0%, rgba(13, 10, 7, 0.60) 90px, transparent 100%)',
             pointerEvents: 'none',
             zIndex: 2,
           }}
@@ -244,32 +251,34 @@ export default function AtlasView({ onPlayCharacterOnStage }) {
             bottom: 0,
             left: 0,
             right: 0,
-            height: '220px',
+            height: '140px',
             background:
-              'linear-gradient(to bottom, transparent 0%, rgba(13, 10, 7, 0.35) 35%, rgba(13, 10, 7, 0.88) 75%, #120b06 100%)',
+              'linear-gradient(to top, rgba(13, 10, 7, 0.85) 0%, rgba(13, 10, 7, 0.35) 60%, transparent 100%)',
             pointerEvents: 'none',
-            zIndex: 5,
+            zIndex: 2,
           }}
         />
 
         {/* Motif Awan Tradisional Jawa Otentik dengan Animasi Mengambang & Bergeser Halus (Berada di atas backdrop layer 2) */}
-        <JavaneseCloudBackground variant="hero" theme="dark" opacity={0.55} animated={true} style={{ zIndex: 2 }} />
+        <JavaneseCloudBackground variant="hero" theme="dark" opacity={0.65} animated={true} style={{ zIndex: 3 }} />
 
-        {/* Ornamen Gunungan HD di Kiri & Kanan (Fluid Scaling Sesuai Tinggi Layar Laptop) */}
+        {/* Ornamen Gunungan HD di Kiri & Kanan (Selaras Persis dengan Hero Galeri Publik & Panggung Kelir) */}
         <div
           className="hero-gunungan-frame-left"
           style={{
             position: 'absolute',
             left: '-15px',
             bottom: '0',
-            height: 'clamp(260px, 46vh, 460px)',
-            width: 'clamp(160px, 27vh, 280px)',
+            height: 'clamp(340px, 55vh, 530px)',
+            width: 'clamp(200px, 32vh, 330px)',
             zIndex: 4,
             opacity: 0.78,
             pointerEvents: 'none',
             filter: 'none',
-            maskImage: 'linear-gradient(to bottom, black 65%, rgba(0,0,0,0.5) 85%, transparent 98%)',
-            WebkitMaskImage: 'linear-gradient(to bottom, black 65%, rgba(0,0,0,0.5) 85%, transparent 98%)',
+            maskImage:
+              'linear-gradient(to bottom, black 65%, rgba(0, 0, 0, 0.5) 85%, transparent 98%)',
+            WebkitMaskImage:
+              'linear-gradient(to bottom, black 65%, rgba(0, 0, 0, 0.5) 85%, transparent 98%)',
           }}
         >
           <img
@@ -285,14 +294,16 @@ export default function AtlasView({ onPlayCharacterOnStage }) {
             position: 'absolute',
             right: '-15px',
             bottom: '0',
-            height: 'clamp(260px, 46vh, 460px)',
-            width: 'clamp(160px, 27vh, 280px)',
+            height: 'clamp(340px, 55vh, 530px)',
+            width: 'clamp(200px, 32vh, 330px)',
             zIndex: 4,
             opacity: 0.78,
             pointerEvents: 'none',
             filter: 'none',
-            maskImage: 'linear-gradient(to bottom, black 65%, rgba(0,0,0,0.5) 85%, transparent 98%)',
-            WebkitMaskImage: 'linear-gradient(to bottom, black 65%, rgba(0,0,0,0.5) 85%, transparent 98%)',
+            maskImage:
+              'linear-gradient(to bottom, black 65%, rgba(0, 0, 0, 0.5) 85%, transparent 98%)',
+            WebkitMaskImage:
+              'linear-gradient(to bottom, black 65%, rgba(0, 0, 0, 0.5) 85%, transparent 98%)',
           }}
         >
           <img
@@ -312,7 +323,7 @@ export default function AtlasView({ onPlayCharacterOnStage }) {
           style={{
             position: 'relative',
             zIndex: 10,
-            maxWidth: '880px',
+            maxWidth: '920px',
             width: '100%',
             margin: '0 auto',
             textAlign: 'center',
@@ -336,7 +347,7 @@ export default function AtlasView({ onPlayCharacterOnStage }) {
               fontWeight: '700',
               letterSpacing: '2.2px',
               textTransform: 'uppercase',
-              marginBottom: 'clamp(8px, 1.4vh, 16px)',
+              marginBottom: '18px',
             }}
           >
             <span style={{ width: '5px', height: '5px', borderRadius: '50%', background: '#d4af37' }} />
@@ -347,13 +358,13 @@ export default function AtlasView({ onPlayCharacterOnStage }) {
           {/* Judul Besar Klasik Sesuai Tipografi PRD & SRS (Plus Jakarta Sans) - Terpusat */}
           <h1
             style={{
-              margin: '0 0 clamp(8px, 1.4vh, 16px) 0',
+              margin: '0 0 22px 0',
               fontFamily: 'var(--font-sans)',
-              fontSize: 'clamp(24px, min(3.8vw, 5.2vh), 48px)',
+              fontSize: 'clamp(32px, 5.2vw, 56px)',
               fontWeight: '850',
               color: '#fcfaf2',
-              letterSpacing: '-0.5px',
-              lineHeight: '1.2',
+              letterSpacing: '-0.6px',
+              lineHeight: '1.22',
               textAlign: 'center',
             }}
           >
@@ -363,11 +374,11 @@ export default function AtlasView({ onPlayCharacterOnStage }) {
           {/* Deskripsi Subtitle Elegan - Terpusat */}
           <p
             style={{
-              margin: '0 auto clamp(12px, 2vh, 24px) auto',
-              fontSize: 'clamp(13px, min(1.15vw, 1.8vh), 15.5px)',
+              margin: '0 auto 36px auto',
+              fontSize: 'clamp(14px, 1.35vw, 16.5px)',
               color: '#f0e6d8',
-              lineHeight: '1.65',
-              maxWidth: '700px',
+              lineHeight: '1.75',
+              maxWidth: '720px',
               fontWeight: '450',
               textAlign: 'center',
             }}
@@ -381,7 +392,7 @@ export default function AtlasView({ onPlayCharacterOnStage }) {
               display: 'flex',
               justifyContent: 'center',
               alignItems: 'center',
-              gap: '12px',
+              gap: '14px',
               flexWrap: 'wrap',
               marginBottom: '0',
             }}
@@ -392,31 +403,31 @@ export default function AtlasView({ onPlayCharacterOnStage }) {
                 if (el) el.scrollIntoView({ behavior: 'smooth' });
               }}
               style={{
-                background: 'linear-gradient(135deg, #e8bb5c 0%, #d4af37 100%)',
-                border: '1px solid rgba(245, 215, 127, 0.45)',
-                color: '#1a120b',
-                padding: 'clamp(8px, 1.2vh, 12px) clamp(18px, 1.8vw, 26px)',
-                borderRadius: '12px',
-                fontSize: '13.5px',
+                background: '#e8bb5c',
+                border: 'none',
+                color: '#0d0a07',
+                padding: '12px 28px',
+                borderRadius: '20px',
+                fontSize: '14px',
                 fontWeight: '750',
-                letterSpacing: '0.2px',
                 cursor: 'pointer',
                 display: 'inline-flex',
                 alignItems: 'center',
+                justifyContent: 'center',
                 gap: '8px',
-                boxShadow: '0 2px 8px rgba(0, 0, 0, 0.25)',
-                transition: 'all 0.25s cubic-bezier(0.16, 1, 0.3, 1)',
+                boxShadow: 'none',
+                transition: 'all 0.2s ease',
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.transform = 'translateY(-2px)';
-                e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.35)';
+                e.currentTarget.style.transform = 'translateY(-1px)';
+                e.currentTarget.style.background = '#dcae4d';
               }}
               onMouseLeave={(e) => {
                 e.currentTarget.style.transform = 'translateY(0)';
-                e.currentTarget.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.25)';
+                e.currentTarget.style.background = '#e8bb5c';
               }}
             >
-              Jelajahi Pustaka & Lakon
+              <span>Jelajahi Pustaka & Lakon</span>
               <ChevronDown size={16} />
             </button>
           </div>
