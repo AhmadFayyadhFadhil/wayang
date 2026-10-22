@@ -3999,6 +3999,43 @@ html, body {
   flex-shrink: 0;
 }
 
+/* Tombol Dalang Vision (Camera Hand Tracking) */
+.studio-vision-toggle-btn {
+  background: rgba(35, 26, 19, 0.7);
+  border: 1px solid rgba(212, 175, 55, 0.35);
+  color: #e8bb5c;
+  padding: 7px 14px;
+  border-radius: 10px;
+  font-size: 12.5px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  min-height: 38px;
+}
+
+.studio-vision-toggle-btn:hover {
+  border-color: #d4af37;
+  color: #fef08a;
+  background: #2a1f15;
+}
+
+.studio-vision-toggle-btn.is-active {
+  background: linear-gradient(135deg, rgba(212, 175, 55, 0.2) 0%, rgba(35, 26, 19, 0.95) 100%);
+  border-color: #22c55e;
+  color: #fef08a;
+  box-shadow: 0 0 12px rgba(34, 197, 94, 0.25);
+}
+
+.vision-indicator-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+}
+
 /* Tombol Pratinjau (Outline) */
 .studio-preview-outline-btn {
   background: rgba(35, 26, 19, 0.7);
@@ -4303,6 +4340,74 @@ html, body {
 .rail-upload-custom-btn:hover {
   color: #fef08a;
   border-color: rgba(212, 175, 55, 0.4);
+}
+
+.rail-vision-card {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  background: #1c150e;
+  border: 1px solid rgba(212, 175, 55, 0.25);
+  border-radius: 10px;
+  margin-bottom: 12px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.rail-vision-card:hover {
+  border-color: #d4af37;
+  background: #241c13;
+}
+
+.rail-vision-card.is-active {
+  border-color: #22c55e;
+  background: rgba(34, 197, 94, 0.08);
+  box-shadow: 0 0 10px rgba(34, 197, 94, 0.2);
+}
+
+.rail-vision-icon-wrap {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  background: rgba(212, 175, 55, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.rail-vision-card.is-active .rail-vision-icon-wrap {
+  background: rgba(34, 197, 94, 0.2);
+}
+
+.rail-vision-text-wrap {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  flex: 1;
+}
+
+.rail-vision-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 11px;
+  font-weight: 750;
+  color: #fcfaf2;
+}
+
+.rail-vision-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+}
+
+.rail-vision-desc {
+  font-size: 9.5px;
+  color: #a89a8a;
+  margin-top: 1px;
 }
 
 .rail-char-items-list {
@@ -4734,16 +4839,17 @@ html, body {
   display: flex;
   align-items: center;
   justify-content: center;
+  min-width: 0;
+  min-height: 0;
+  padding: 8px 12px;
+  box-sizing: border-box;
 }
 
 .stage-gawangan-frame {
   position: relative;
-  width: auto;
-  height: auto;
-  max-width: 100%;
-  max-height: 100%;
-  aspect-ratio: 16 / 9;
-  margin: 0 auto;
+  width: 100%;
+  max-width: min(100%, calc((100vh - 58px - 105px - 40px) * (16 / 9)));
+  margin: auto;
   user-select: none;
   background: linear-gradient(145deg, #241910 0%, #160f0a 50%, #281c13 100%);
   border: 2px solid rgba(212, 175, 55, 0.38);
@@ -4753,7 +4859,7 @@ html, body {
     0 16px 40px rgba(0, 0, 0, 0.8),
     inset 0 1px 0 rgba(255, 235, 180, 0.22);
   box-sizing: border-box;
-  display: flex;
+  display: block;
 }
 
 .stage-frame-corner {
@@ -4796,17 +4902,17 @@ html, body {
 .stage-gawangan-inner {
   position: relative;
   width: 100%;
-  height: 100%;
   border-radius: 10px;
   overflow: hidden;
   box-shadow: inset 0 0 24px rgba(0, 0, 0, 0.65);
   border: 1px solid rgba(0, 0, 0, 0.5);
+  display: block;
 }
 
 .stage-canvas-viewport {
   position: relative;
   width: 100%;
-  height: 100%;
+  padding-top: 56.25%; /* 16:9 Aspect Ratio */
   overflow: hidden;
 }
 

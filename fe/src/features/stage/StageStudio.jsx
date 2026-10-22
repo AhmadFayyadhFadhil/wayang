@@ -259,6 +259,24 @@ export default function StageStudio({ onNavigate }) {
 
         {/* Sisi Kanan: Hierarki Tombol (Outline Pratinjau + Emas Solid Simpan + Menu ⋯) */}
         <div className="studio-header-right">
+          {/* Tombol Dalang Vision (Camera Hand Tracking AI) */}
+          <button
+            type="button"
+            onClick={() => setIsDalangVisionActive(!isDalangVisionActive)}
+            className={`studio-vision-toggle-btn ${isDalangVisionActive ? 'is-active' : ''}`}
+            title="Kendalikan wayang dengan telapak tangan via webcam (AI Hand Tracking)"
+          >
+            <Hand size={14} color={isDalangVisionActive ? '#22c55e' : '#e8bb5c'} />
+            <span className="btn-label-text">Dalang Vision</span>
+            <span
+              className="vision-indicator-dot"
+              style={{
+                background: isDalangVisionActive ? '#22c55e' : 'rgba(212, 175, 55, 0.4)',
+                boxShadow: isDalangVisionActive ? '0 0 8px #22c55e' : 'none',
+              }}
+            />
+          </button>
+
           {/* Tombol Pratinjau Pertunjukan (Outline Emas Lembut) */}
           <button
             type="button"
@@ -469,6 +487,29 @@ export default function StageStudio({ onNavigate }) {
                   <Upload size={12} />
                   <span>Unggah Wayang Sendiri</span>
                 </button>
+
+                {/* Banner Cepat Dalang Vision AI */}
+                <div
+                  className={`rail-vision-card ${isDalangVisionActive ? 'is-active' : ''}`}
+                  onClick={() => setIsDalangVisionActive(!isDalangVisionActive)}
+                  title="Kendalikan wayang dengan telapak tangan via webcam"
+                >
+                  <div className="rail-vision-icon-wrap">
+                    <Hand size={14} color={isDalangVisionActive ? '#22c55e' : '#fef08a'} />
+                  </div>
+                  <div className="rail-vision-text-wrap">
+                    <div className="rail-vision-title">
+                      <span>Dalang Vision AI</span>
+                      <span
+                        className="rail-vision-dot"
+                        style={{ background: isDalangVisionActive ? '#22c55e' : 'rgba(212, 175, 55, 0.4)' }}
+                      />
+                    </div>
+                    <span className="rail-vision-desc">
+                      {isDalangVisionActive ? 'Webcam Aktif (Klik matikan)' : 'Kamera gerak tangan'}
+                    </span>
+                  </div>
+                </div>
 
                 {/* Daftar Tokoh di Babak Ini */}
                 <div className="rail-char-items-list">

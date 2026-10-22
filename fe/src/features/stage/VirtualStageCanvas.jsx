@@ -227,7 +227,11 @@ const VirtualStageCanvas = forwardRef(function VirtualStageCanvas({
           onClick={() => isInteractive && onSelectCharacter(null)}
           className="stage-canvas-viewport"
           style={{
+            position: 'relative',
+            width: '100%',
+            paddingTop: '56.25%', // 16:9 Aspect Ratio
             cursor: draggingId ? 'grabbing' : 'default',
+            overflow: 'hidden',
             background: `radial-gradient(ellipse at 50% 25%, ${bgConfig.glowColor}44 0%, ${bgConfig.kelirColor} 45%, ${bgConfig.bgColor} 100%)`,
           }}
         >
