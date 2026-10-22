@@ -7371,49 +7371,160 @@ html, body {
 }
 
 /* =========================================================================
-   MODAL PANDUAN PANGGUNG VIRTUAL (ONBOARDING WALKTHROUGH GUIDE)
+   INTERACTIVE SPOTLIGHT WALKTHROUGH GUIDE (PANDUAN INTERAKTIF TERARAH)
    ========================================================================= */
-.stage-guide-overlay {
+.stage-spotlight-overlay-root {
   position: fixed;
   inset: 0;
   z-index: 10000;
-  background: rgba(10, 8, 6, 0.88);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 16px;
-  animation: stageGuideFadeIn 0.22s ease-out;
+  pointer-events: auto;
 }
 
-@keyframes stageGuideFadeIn {
-  from {
-    opacity: 0;
+.stage-spotlight-svg-mask {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: auto;
+  z-index: 10000;
+}
+
+/* Bingkai Emas Fokus di Atas Elemen Asli */
+.stage-spotlight-focus-frame {
+  position: fixed;
+  border-radius: 14px;
+  pointer-events: none;
+  z-index: 10001;
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 0 0 2px #d4af37, 0 0 30px rgba(212, 175, 55, 0.7), inset 0 0 20px rgba(212, 175, 55, 0.25);
+  animation: spotlightFocusGlow 2s infinite ease-in-out;
+}
+
+@keyframes spotlightFocusGlow {
+  0%, 100% {
+    box-shadow: 0 0 0 2px #d4af37, 0 0 24px rgba(212, 175, 55, 0.55), inset 0 0 16px rgba(212, 175, 55, 0.2);
   }
-  to {
+  50% {
+    box-shadow: 0 0 0 3px #fef08a, 0 0 38px rgba(254, 240, 138, 0.85), inset 0 0 28px rgba(212, 175, 55, 0.35);
+  }
+}
+
+/* Animasi Ping Beacon */
+.spotlight-beacon-pulse-ring {
+  position: absolute;
+  top: -6px;
+  left: -6px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #fef08a;
+  box-shadow: 0 0 12px #d4af37;
+}
+
+.spotlight-beacon-pulse-ring::after {
+  content: '';
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  border: 2px solid #fef08a;
+  animation: beaconPing 1.8s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+@keyframes beaconPing {
+  0% {
+    transform: scale(0.6);
     opacity: 1;
   }
+  100% {
+    transform: scale(2.6);
+    opacity: 0;
+  }
 }
 
-.stage-guide-card {
-  width: 100%;
-  max-width: 620px;
+/* Lencana Petunjuk Arah Panah Beranimasi */
+.spotlight-arrow-badge {
+  position: absolute;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: linear-gradient(135deg, #241a10 0%, #150f09 100%);
+  border: 1.5px solid #d4af37;
+  border-radius: 9999px;
+  padding: 5px 12px;
+  color: #fef08a;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.7), 0 0 10px rgba(212, 175, 55, 0.3);
+}
+
+.spotlight-arrow-badge.dir-down {
+  bottom: -36px;
+  left: 50%;
+  transform: translateX(-50%);
+  animation: bounceDown 1.8s infinite ease-in-out;
+}
+
+.spotlight-arrow-badge.dir-up {
+  top: -36px;
+  left: 50%;
+  transform: translateX(-50%);
+  animation: bounceUp 1.8s infinite ease-in-out;
+}
+
+.spotlight-arrow-badge.dir-left {
+  left: -42px;
+  top: 30px;
+  animation: bounceLeft 1.8s infinite ease-in-out;
+}
+
+.spotlight-arrow-badge.dir-right {
+  right: -42px;
+  top: 30px;
+  animation: bounceRight 1.8s infinite ease-in-out;
+}
+
+@keyframes bounceDown {
+  0%, 100% { transform: translate(-50%, 0); }
+  50% { transform: translate(-50%, 6px); }
+}
+
+@keyframes bounceUp {
+  0%, 100% { transform: translate(-50%, 0); }
+  50% { transform: translate(-50%, -6px); }
+}
+
+@keyframes bounceLeft {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(-6px); }
+}
+
+@keyframes bounceRight {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(6px); }
+}
+
+.badge-arrow-icon {
+  font-size: 13px;
+}
+
+/* Kartu Floating Panduan */
+.stage-spotlight-card {
   background: #18120c;
-  border: 1px solid rgba(212, 175, 55, 0.35);
+  border: 1.5px solid rgba(212, 175, 55, 0.45);
   border-radius: 20px;
-  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.85), 0 0 40px rgba(212, 175, 55, 0.1);
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.9), 0 0 45px rgba(212, 175, 55, 0.2);
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  position: relative;
-  animation: stageGuideCardPop 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  animation: spotlightCardPop 0.28s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-@keyframes stageGuideCardPop {
+@keyframes spotlightCardPop {
   from {
     opacity: 0;
-    transform: scale(0.96) translateY(8px);
+    transform: scale(0.95) translateY(6px);
   }
   to {
     opacity: 1;
@@ -7421,222 +7532,511 @@ html, body {
   }
 }
 
-/* Progress bar atas */
-.stage-guide-progress-track {
+.spotlight-card-progress-track {
   width: 100%;
-  height: 3px;
-  background: rgba(212, 175, 55, 0.12);
-  position: relative;
+  height: 3.5px;
+  background: rgba(212, 175, 55, 0.15);
 }
 
-.stage-guide-progress-fill {
+.spotlight-card-progress-fill {
   height: 100%;
   background: linear-gradient(90deg, #b8860b, #d4af37, #fef08a);
   transition: width 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* Header modal */
-.stage-guide-header {
-  padding: 18px 24px 14px;
+.spotlight-card-header {
+  padding: 16px 20px 12px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   border-bottom: 1px solid rgba(212, 175, 55, 0.18);
-  background: linear-gradient(180deg, #221810 0%, #18120c 100%);
+  background: linear-gradient(180deg, #241910 0%, #18120c 100%);
 }
 
-.stage-guide-header-meta {
+.spotlight-card-badge-row {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
 }
 
-.stage-guide-badge {
+.spotlight-card-badge {
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  font-size: 10.5px;
-  font-weight: 800;
+  font-size: 10px;
+  font-weight: 850;
   color: #d4af37;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
-  background: rgba(212, 175, 55, 0.1);
+  background: rgba(212, 175, 55, 0.12);
   padding: 3px 8px;
   border-radius: 9999px;
-  border: 1px solid rgba(212, 175, 55, 0.25);
+  border: 1px solid rgba(212, 175, 55, 0.3);
 }
 
-.stage-guide-step-count {
-  font-size: 11.5px;
+.spotlight-card-step-num {
+  font-size: 11px;
   color: #a89a8a;
   font-weight: 600;
 }
 
-.stage-guide-close-btn {
+.spotlight-card-close-btn {
   background: transparent;
   border: none;
   color: #a89a8a;
   cursor: pointer;
-  padding: 6px;
-  border-radius: 8px;
+  padding: 4px;
+  border-radius: 6px;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: all 0.15s ease;
 }
 
-.stage-guide-close-btn:hover {
+.spotlight-card-close-btn:hover {
   background: rgba(212, 175, 55, 0.15);
   color: #fef08a;
 }
 
-/* Body modal */
-.stage-guide-body {
-  padding: 22px 24px;
+.spotlight-card-body {
+  padding: 18px 20px;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 14px;
+  max-height: calc(100vh - 240px);
+  overflow-y: auto;
 }
 
-.stage-guide-hero-banner {
+.spotlight-card-title-row {
   display: flex;
   align-items: center;
-  gap: 16px;
-  padding: 14px 16px;
-  border-radius: 14px;
-  border: 1px solid;
-  transition: all 0.3s ease;
+  gap: 10px;
 }
 
-.stage-guide-glyph-avatar {
-  position: relative;
-  width: 54px;
-  height: 54px;
-  border-radius: 12px;
-  background: #150f0a;
-  border: 1px solid rgba(212, 175, 55, 0.3);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
-.stage-guide-glyph-text {
+.spotlight-card-glyph {
   font-family: 'Noto Sans Javanese', serif;
-  font-size: 24px;
+  font-size: 22px;
   color: #d4af37;
-  opacity: 0.6;
+  opacity: 0.7;
 }
 
-.stage-guide-icon-pill {
-  position: absolute;
-  bottom: -4px;
-  right: -4px;
-  width: 26px;
-  height: 26px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
-}
-
-.stage-guide-hero-titles {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-}
-
-.stage-guide-step-tag {
-  font-size: 11px;
-  font-weight: 750;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-}
-
-.stage-guide-title {
+.spotlight-card-title {
   margin: 0;
   font-family: 'Cinzel', Georgia, serif;
-  font-size: 19px;
-  font-weight: 800;
+  font-size: 18px;
+  font-weight: 850;
   color: #fcfaf2;
   letter-spacing: -0.2px;
   line-height: 1.25;
 }
 
-.stage-guide-desc {
+.spotlight-card-desc {
   margin: 0;
-  font-size: 13.5px;
-  line-height: 1.6;
+  font-size: 13px;
+  line-height: 1.55;
   color: #d4cbbe;
 }
 
-.stage-guide-tips-list {
-  display: flex;
-  flex-direction: column;
-  gap: 9px;
-  background: rgba(24, 18, 12, 0.6);
-  border: 1px solid rgba(212, 175, 55, 0.16);
+/* =========================================================================
+   ANIMASI INTERAKTIF DEMO SESUAI MASING-MASING LANGKAH
+   ========================================================================= */
+.spotlight-interactive-demo {
+  background: rgba(20, 14, 9, 0.75);
+  border: 1px solid rgba(212, 175, 55, 0.22);
   border-radius: 12px;
   padding: 12px 14px;
-}
-
-.stage-guide-tip-item {
   display: flex;
-  align-items: flex-start;
+  flex-direction: column;
   gap: 10px;
 }
 
-.stage-guide-tip-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  margin-top: 6px;
-  flex-shrink: 0;
+/* 1. Stage Demo */
+.demo-stage-screen {
+  position: relative;
+  width: 100%;
+  height: 100px;
+  background: radial-gradient(ellipse at 50% 20%, #3a2512 0%, #1a120b 70%, #0d0905 100%);
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid rgba(212, 175, 55, 0.3);
 }
 
-.stage-guide-tip-text {
-  font-size: 12.5px;
-  line-height: 1.5;
+.demo-blencong-light {
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 50px;
+  height: 50px;
+  background: radial-gradient(circle, rgba(254, 240, 138, 0.5) 0%, rgba(212, 175, 55, 0) 70%);
+  border-radius: 50%;
+  animation: demoBlencongPulse 4s infinite alternate ease-in-out;
+}
+
+@keyframes demoBlencongPulse {
+  0% { transform: translateX(-50%) scale(0.9); opacity: 0.6; }
+  100% { transform: translateX(-50%) scale(1.15); opacity: 0.95; }
+}
+
+.demo-wayang-actor {
+  position: absolute;
+  bottom: 18px;
+  left: 50%;
+  width: 32px;
+  height: 54px;
+  background: url('./assets/avatar_gatotkaca.png') center / contain no-repeat;
+  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.8));
+  animation: demoWayangSlide 3.5s infinite ease-in-out alternate;
+}
+
+@keyframes demoWayangSlide {
+  0% { transform: translateX(-55px); }
+  100% { transform: translateX(25px); }
+}
+
+.demo-hand-cursor {
+  position: absolute;
+  top: -10px;
+  right: -16px;
+  background: rgba(212, 175, 55, 0.92);
+  color: #16100a;
+  border-radius: 9999px;
+  padding: 2px 6px;
+  font-size: 9.5px;
+  font-weight: 850;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.5);
+}
+
+.demo-subtitle-pill {
+  position: absolute;
+  bottom: 5px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(14, 10, 7, 0.9);
+  border: 1px solid rgba(212, 175, 55, 0.4);
+  border-radius: 9999px;
+  padding: 2px 8px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 9.5px;
+  white-space: nowrap;
+}
+
+.demo-sub-dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #d4af37;
+}
+
+.demo-sub-name {
+  color: #e8bb5c;
+  font-weight: 800;
+}
+
+.demo-sub-quote {
+  color: #fef08a;
+  font-style: italic;
+}
+
+.demo-debog-bar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 8px;
+  background: linear-gradient(180deg, #2b1f13 0%, #132014 100%);
+  border-top: 1px solid rgba(212, 175, 55, 0.4);
+}
+
+.demo-tips-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.demo-tip-pill {
+  background: rgba(35, 26, 19, 0.85);
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  border-radius: 6px;
+  padding: 3px 8px;
+  font-size: 11px;
   color: #f0e6d6;
 }
 
-/* Footer modal */
-.stage-guide-footer {
-  padding: 14px 24px;
+/* 2. Rail Demo */
+.demo-rail-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.demo-rail-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(30, 22, 15, 0.7);
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  border-radius: 8px;
+  padding: 6px 10px;
+}
+
+.demo-rail-item.active {
+  background: rgba(45, 32, 20, 0.95);
+  border-color: #d4af37;
+  box-shadow: 0 0 10px rgba(212, 175, 55, 0.25);
+}
+
+.demo-rail-icon {
+  color: #d4af37;
+  display: flex;
+  align-items: center;
+}
+
+.demo-rail-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.demo-rail-text strong {
+  font-size: 11.5px;
+  color: #fef08a;
+}
+
+.demo-rail-text span {
+  font-size: 10px;
+  color: #a89a8a;
+}
+
+/* 3. Header Buttons Demo */
+.header-buttons-demo {
+  gap: 8px;
+}
+
+.demo-button-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  background: rgba(28, 20, 13, 0.75);
+  border: 1px solid rgba(212, 175, 55, 0.22);
+  border-radius: 8px;
+  padding: 8px 10px;
+}
+
+.demo-button-pill-mockup {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(35, 26, 19, 0.85);
+  border: 1px solid rgba(212, 175, 55, 0.35);
+  color: #e8bb5c;
+  padding: 4px 9px;
+  border-radius: 8px;
+  font-size: 11px;
+  font-weight: 750;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.demo-button-pill-mockup.outline {
+  border-color: rgba(212, 175, 55, 0.5);
+  color: #fef08a;
+}
+
+.demo-button-pill-mockup.solid {
+  background: linear-gradient(135deg, #d4af37, #b8860b);
+  border-color: #fef08a;
+  color: #18120c;
+}
+
+.demo-live-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #22c55e;
+  box-shadow: 0 0 6px #22c55e;
+}
+
+.demo-button-explain {
+  font-size: 11.5px;
+  color: #e5ded3;
+  line-height: 1.4;
+}
+
+/* 4. Context Demo */
+.demo-context-mockup {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.demo-context-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.demo-avatar-mini {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #2a1f14;
+  border: 1px solid #d4af37;
+  color: #d4af37;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.demo-char-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.demo-char-info strong {
+  font-size: 11.5px;
+  color: #fcfaf2;
+}
+
+.demo-char-info span {
+  font-size: 10px;
+  color: #a89a8a;
+}
+
+.demo-typewriter-box {
+  background: #140e09;
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  border-radius: 6px;
+  padding: 6px 9px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.demo-typewriter-label {
+  font-size: 9.5px;
+  color: #a89a8a;
+  text-transform: uppercase;
+}
+
+.demo-typewriter-input {
+  font-size: 11.5px;
+  color: #fef08a;
+  font-style: italic;
+  display: flex;
+  align-items: center;
+}
+
+.demo-cursor-blink {
+  animation: cursorBlink 0.9s infinite;
+  color: #d4af37;
+  margin-left: 2px;
+}
+
+@keyframes cursorBlink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+.demo-context-reflection {
+  font-size: 10.5px;
+  color: #10b981;
+}
+
+/* 5. Filmstrip Demo */
+.demo-filmstrip-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 4px 0;
+}
+
+.demo-scene-card {
+  background: #241910;
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  border-radius: 6px;
+  padding: 6px 10px;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+}
+
+.demo-scene-card.active {
+  border-color: #d4af37;
+  box-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
+}
+
+.demo-scene-card.add {
+  background: transparent;
+  border-style: dashed;
+  color: #d4af37;
+  font-size: 10.5px;
+}
+
+.demo-scene-num {
+  font-size: 9.5px;
+  color: #a89a8a;
+}
+
+.demo-scene-title {
+  font-size: 11px;
+  font-weight: 750;
+  color: #fef08a;
+}
+
+.demo-scene-arrow {
+  color: #d4af37;
+  font-size: 11px;
+}
+
+.demo-filmstrip-tip {
+  font-size: 11px;
+  color: #d4cbbe;
+}
+
+/* Footer Kartu */
+.spotlight-card-footer {
+  padding: 12px 20px;
   border-top: 1px solid rgba(212, 175, 55, 0.18);
   background: #140e09;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
+  gap: 10px;
 }
 
-.stage-guide-skip-btn {
+.spotlight-card-skip-btn {
   background: transparent;
   border: none;
   color: #a89a8a;
-  font-size: 12px;
+  font-size: 11.5px;
   font-weight: 600;
   cursor: pointer;
-  padding: 6px 4px;
+  padding: 4px;
   transition: color 0.15s ease;
 }
 
-.stage-guide-skip-btn:hover {
+.spotlight-card-skip-btn:hover {
   color: #e8bb5c;
   text-decoration: underline;
 }
 
-.stage-guide-dots-indicator {
+.spotlight-card-dots {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 5px;
 }
 
-.stage-guide-dot {
-  width: 7px;
-  height: 7px;
+.spotlight-dot {
+  width: 6px;
+  height: 6px;
   border-radius: 9999px;
   background: rgba(212, 175, 55, 0.25);
   border: none;
@@ -7645,111 +8045,107 @@ html, body {
   transition: all 0.2s ease;
 }
 
-.stage-guide-dot:hover {
+.spotlight-dot:hover {
   background: rgba(212, 175, 55, 0.55);
 }
 
-.stage-guide-dot.is-completed {
+.spotlight-dot.is-completed {
   background: #b8860b;
 }
 
-.stage-guide-dot.is-active {
-  width: 22px;
+.spotlight-dot.is-active {
+  width: 18px;
   background: linear-gradient(90deg, #d4af37, #fef08a);
-  box-shadow: 0 0 8px rgba(212, 175, 55, 0.4);
+  box-shadow: 0 0 6px rgba(212, 175, 55, 0.4);
 }
 
-.stage-guide-nav-buttons {
+.spotlight-card-actions {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
 }
 
-.stage-guide-prev-btn {
+.spotlight-card-prev-btn {
   background: rgba(35, 26, 19, 0.7);
   border: 1px solid rgba(212, 175, 55, 0.28);
   color: #d4af37;
-  padding: 7px 14px;
-  border-radius: 10px;
-  font-size: 12px;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 11.5px;
   font-weight: 700;
   cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 5px;
   transition: all 0.18s ease;
 }
 
-.stage-guide-prev-btn:hover {
+.spotlight-card-prev-btn:hover {
   background: #2a1f15;
   border-color: #d4af37;
   color: #fef08a;
 }
 
-.stage-guide-next-btn {
+.spotlight-card-next-btn {
   background: linear-gradient(135deg, #d4af37 0%, #b8860b 100%);
   border: 1px solid #fef08a;
   color: #16100a;
-  padding: 7px 16px;
-  border-radius: 10px;
-  font-size: 12px;
+  padding: 6px 14px;
+  border-radius: 8px;
+  font-size: 11.5px;
   font-weight: 850;
   cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 6px;
-  box-shadow: 0 4px 14px rgba(212, 175, 55, 0.28);
+  gap: 5px;
+  box-shadow: 0 4px 12px rgba(212, 175, 55, 0.28);
   transition: all 0.18s ease;
 }
 
-.stage-guide-next-btn:hover {
+.spotlight-card-next-btn:hover {
   background: linear-gradient(135deg, #e8bb5c 0%, #c59b27 100%);
-  box-shadow: 0 6px 18px rgba(212, 175, 55, 0.4);
+  box-shadow: 0 6px 16px rgba(212, 175, 55, 0.4);
   transform: translateY(-1px);
 }
 
-/* Responsif Layar Mobile */
+/* Responsif Mobile & Tablet */
 @media (max-width: 640px) {
-  .stage-guide-card {
+  .stage-spotlight-card {
     border-radius: 16px;
   }
-  .stage-guide-header {
+  .spotlight-card-header {
+    padding: 12px 16px;
+  }
+  .spotlight-card-body {
     padding: 14px 16px;
+    gap: 10px;
   }
-  .stage-guide-body {
-    padding: 16px;
-    gap: 12px;
-  }
-  .stage-guide-title {
+  .spotlight-card-title {
     font-size: 16px;
   }
-  .stage-guide-desc {
+  .spotlight-card-desc {
     font-size: 12px;
   }
-  .stage-guide-tips-list {
-    padding: 10px 12px;
-    gap: 7px;
-  }
-  .stage-guide-tip-text {
-    font-size: 11.5px;
-  }
-  .stage-guide-footer {
-    padding: 12px 16px;
+  .spotlight-card-footer {
+    padding: 10px 16px;
     flex-wrap: wrap;
     justify-content: space-between;
   }
-  .stage-guide-dots-indicator {
+  .spotlight-card-dots {
     order: 3;
     width: 100%;
     justify-content: center;
-    margin-top: 6px;
+    margin-top: 4px;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .stage-guide-overlay,
-  .stage-guide-card,
-  .stage-guide-progress-fill {
+  .stage-spotlight-focus-frame,
+  .spotlight-beacon-pulse-ring::after,
+  .spotlight-arrow-badge,
+  .demo-blencong-light,
+  .demo-wayang-actor,
+  .demo-cursor-blink {
     animation: none !important;
     transition: none !important;
   }
