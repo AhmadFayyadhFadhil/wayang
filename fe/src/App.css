@@ -4918,10 +4918,10 @@ html, body {
 
 .stage-canvas-bg-image {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  top: -1%;
+  left: -1%;
+  width: 102%;
+  height: 102%;
   object-fit: cover;
   filter: contrast(1.08) brightness(0.95);
   pointer-events: none;
@@ -4954,38 +4954,18 @@ html, body {
   }
 }
 
-/* Siluet Debog (Batang Pisang) */
+/* Siluet Debog Bersih (Batang Pisang Tempat Tancep Wayang) */
 .stage-debog-bar {
   position: absolute;
   bottom: 0;
   left: 0;
   right: 0;
-  height: 13.5%;
-  background: linear-gradient(180deg, #2b1f13 0%, #1a140c 35%, #152216 65%, #0f1710 100%);
-  border-top: 2px solid rgba(212, 175, 55, 0.45);
+  height: 12%;
+  background: linear-gradient(180deg, #2b1f13 0%, #1a140c 35%, #132014 70%, #0d160e 100%);
+  border-top: 1.5px solid rgba(212, 175, 55, 0.4);
   z-index: 3;
-  box-shadow: 0 -6px 20px rgba(0, 0, 0, 0.65);
-}
-
-.stage-debog-inner {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 5px 16px;
-  font-size: 10px;
-  color: #d4af37;
-  letter-spacing: 1.2px;
-}
-
-.debog-pathet-pill {
-  font-weight: 800;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
-}
-
-.debog-audio-cue {
-  font-size: 9px;
-  opacity: 0.7;
-  letter-spacing: 0.5px;
+  box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.6);
+  pointer-events: none;
 }
 
 /* Wayang Node & Micro Idle Sway */
@@ -5049,24 +5029,24 @@ html, body {
   white-space: nowrap;
 }
 
-/* Subtitle Sinematik di Dasar Kelir */
+/* Subtitle Sinematik di Dasar Kelir (Bebas Tabrakan di Atas Debog) */
 .kelir-cinematic-subtitle-bar {
   position: absolute;
-  bottom: 14%;
+  bottom: 15%;
   left: 50%;
   transform: translateX(-50%);
-  max-width: 78%;
+  max-width: 76%;
   min-width: 220px;
   padding: 8px 18px;
-  background: rgba(13, 10, 7, 0.88);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(212, 175, 55, 0.32);
+  background: rgba(13, 10, 7, 0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(212, 175, 55, 0.38);
   border-radius: 12px;
   color: #fcfaf2;
   text-align: center;
   pointer-events: none;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.65);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.7);
   z-index: 22;
   animation: subtitleFadeUp 0.25s ease-out;
 }
@@ -5110,35 +5090,21 @@ html, body {
   font-style: italic;
 }
 
-/* Watermark Kelir di Kiri Bawah */
-.kelir-name-watermark {
-  position: absolute;
-  bottom: 4px;
-  left: 14px;
-  z-index: 10;
-  pointer-events: none;
-  font-size: 10px;
-  color: #d4af37;
-  opacity: 0.6;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  font-weight: 700;
-}
-
-/* Kontrol Zoom Mini di Kanan Bawah */
+/* Kontrol Zoom Mini di Pojok Kanan Bawah Debog */
 .kelir-zoom-control {
   position: absolute;
-  bottom: 4px;
-  right: 14px;
+  bottom: 6px;
+  right: 12px;
   z-index: 10;
   display: flex;
   align-items: center;
   gap: 4px;
-  background: rgba(20, 14, 9, 0.85);
+  background: rgba(20, 14, 9, 0.88);
   backdrop-filter: blur(8px);
-  border: 1px solid rgba(212, 175, 55, 0.28);
+  border: 1px solid rgba(212, 175, 55, 0.32);
   border-radius: 8px;
-  padding: 2px 6px;
+  padding: 2px 7px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
 }
 
 .kelir-zoom-btn {

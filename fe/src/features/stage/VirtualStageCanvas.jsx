@@ -256,16 +256,7 @@ const VirtualStageCanvas = forwardRef(function VirtualStageCanvas({
           />
 
           {/* Siluet Debog (Batang Pisang Tempat Tancep Wayang) */}
-          <div className="stage-debog-bar">
-            <div className="stage-debog-inner">
-              <span className="debog-pathet-pill">
-                PATHET {bgConfig.pathet?.toUpperCase() || 'NEM'} • SUASANA {bgConfig.name?.toUpperCase()}
-              </span>
-              <span className="debog-audio-cue">
-                GARIS TANCEP WAYANG PURWA
-              </span>
-            </div>
-          </div>
+          <div className="stage-debog-bar" />
 
           {/* Tokoh Wayang Kulit di Atas Panggung */}
           {characters.map((char, idx) => {
@@ -350,10 +341,7 @@ const VirtualStageCanvas = forwardRef(function VirtualStageCanvas({
             </div>
           )}
 
-          {/* Watermark Nama Kelir di Pojok Kiri Bawah */}
-          <div className="kelir-name-watermark">
-            <span>{bgConfig?.name || 'Kelir Blencong Klasik'}</span>
-          </div>
+
 
           {/* Kontrol Zoom Mini Non-Intrusif di Pojok Kanan Bawah */}
           {isInteractive && characters.length > 0 && (
