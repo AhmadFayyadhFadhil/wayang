@@ -1,4 +1,5 @@
 import React, { useRef, useState, useEffect, useMemo, forwardRef, useImperativeHandle } from 'react';
+import { X, MessageSquare } from 'lucide-react';
 import RealLeatherPuppet from '../../components/stage/RealLeatherPuppet';
 import { updatePuppetArmsDOM } from '../../services/vision/puppetIkSolver';
 import { getBackgroundById } from '../../data/master/stageConfigMaster';
@@ -26,6 +27,7 @@ const VirtualStageCanvas = forwardRef(function VirtualStageCanvas({
       return false;
     }
   });
+  const [dismissedDialogueKey, setDismissedDialogueKey] = useState(null);
 
   const bgConfig = getBackgroundById(scene?.background);
   const characters = useMemo(() => scene?.characters || [], [scene?.characters]);
@@ -36,6 +38,12 @@ const VirtualStageCanvas = forwardRef(function VirtualStageCanvas({
     if (selectedChar && selectedChar.dialogue) return selectedChar;
     return characters.find((c) => c.dialogue);
   }, [selectedChar, characters]);
+
+  // Derived visibility murni: otomatis terbuka kembali jika tokoh atau dialog berganti
+  const currentDialogueKey = activeDialogueChar
+    ? `${activeDialogueChar.instanceId}:${activeDialogueChar.dialogue}`
+    : null;
+  const isSubtitleVisible = Boolean(currentDialogueKey && dismissedDialogueKey !== currentDialogueKey);
 
   // Ekspos manipulasi DOM langsung ke Dalang Vision (0x React Re-render = 60/120 FPS Butter Smooth)
   useImperativeHandle(ref, () => ({
@@ -320,10 +328,10 @@ const VirtualStageCanvas = forwardRef(function VirtualStageCanvas({
             );
           })}
 
-          {/* Subtitle Sinematik di Dasar Kelir (Menggantikan Balon Melayang) */}
-          {activeDialogueChar && !isVisionActive && (
-            <div className="kelir-cinematic-subtitle-bar">
-              <div className="subtitle-char-label">
+          {/* Subtitle Sinematik Ramping di Dasar Kelir (Satu Baris Inline, Anti Halang Solah) */}
+          {activeDialogueChar && !isVisionActive && isSubtitleVisible && (
+            <div className="kelir-cinematic-subtitle-pill" role="region" aria-label="Naskah Dialog Wayang">
+              <span className="subtitle-char-badge">
                 <span
                   className="subtitle-char-dot"
                   style={{ background: activeDialogueChar.accentColor || '#d4af37' }}
@@ -332,13 +340,41 @@ const VirtualStageCanvas = forwardRef(function VirtualStageCanvas({
                   className="subtitle-char-name"
                   style={{ color: activeDialogueChar.accentColor || '#e8bb5c' }}
                 >
-                  {activeDialogueChar.name}
+                  {activeDialogueChar.name}:
                 </span>
-              </div>
-              <p className="subtitle-dialogue-text">
+              </span>
+              <span className="subtitle-dialogue-inline" title={activeDialogueChar.dialogue}>
                 &ldquo;{activeDialogueChar.dialogue}&rdquo;
-              </p>
+              </span>
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setDismissedDialogueKey(currentDialogueKey);
+                }}
+                className="subtitle-close-btn"
+                title="Tutup Tampilan Naskah (Bisa Dibuka Kembali Kapan Saja)"
+                aria-label="Tutup naskah dialog"
+              >
+                <X size={13} />
+              </button>
             </div>
+          )}
+
+          {/* Tombol Mini Buka Naskah Jika Ditutup oleh Dalang */}
+          {activeDialogueChar && !isVisionActive && !isSubtitleVisible && (
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                setDismissedDialogueKey(null);
+              }}
+              className="kelir-show-subtitle-btn"
+              title="Buka kembali sabda dialog wayang"
+            >
+              <MessageSquare size={12} />
+              <span>Naskah</span>
+            </button>
           )}
 
 
