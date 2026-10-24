@@ -14,7 +14,6 @@ import {
 
 // Aset Visual Heritage & Ornamen Budaya
 import heroParchmentWideBg from '../../assets/hero_parchment_clouds_widescreen_hd.jpg';
-import gununganKayonHd from '../../assets/gunungan_kayon_hd.png';
 import JavaneseCloudBackground from '../../components/ui/JavaneseCloudBackground';
 import HeritageBatikRibbon from '../../components/ui/HeritageBatikRibbon';
 import galleryCoverGatotkaca from '../../assets/gallery_cover_gatotkaca.jpg';
@@ -49,7 +48,7 @@ const TOP_4_PERFORMANCES = [
         {
           id: 'sc-top1-1',
           title: 'Pergerakan Pasukan Kurusetra Malam',
-          background: 'kelir-blencong-default',
+          background: 'kelir-kayon-keraton-kencana',
           durationMs: 4500,
           audioAssetId: 1,
           characters: [
@@ -71,7 +70,7 @@ const TOP_4_PERFORMANCES = [
         {
           id: 'sc-top1-2',
           title: 'Gatotkaca Nyamber ing Awang-awang',
-          background: 'kelir-blencong-default',
+          background: 'kelir-kayon-keraton-kencana',
           durationMs: 5000,
           audioAssetId: 1,
           characters: [
@@ -129,7 +128,7 @@ const TOP_4_PERFORMANCES = [
         {
           id: 'sc-top2-1',
           title: 'Adep-adepan Kereta Perang',
-          background: 'kelir-blencong-default',
+          background: 'kelir-gunungan-batik-soga',
           durationMs: 4500,
           audioAssetId: 2,
           characters: [
@@ -187,7 +186,7 @@ const TOP_4_PERFORMANCES = [
         {
           id: 'sc-top3-1',
           title: 'Taman Argasoka & Kobaran Api',
-          background: 'kelir-blencong-default',
+          background: 'kelir-naskah-kuno-pustaka',
           durationMs: 4500,
           audioAssetId: 1,
           characters: [
@@ -232,7 +231,7 @@ const TOP_4_PERFORMANCES = [
         {
           id: 'sc-top4-1',
           title: 'Dasar Samudra Minangkalbu',
-          background: 'kelir-blencong-default',
+          background: 'kelir-teratai-prada-lumut',
           durationMs: 5000,
           audioAssetId: 3,
           characters: [
@@ -451,59 +450,7 @@ export default function ConnectedArchiveView({
         {/* Motif Awan Tradisional Jawa Otentik dengan Animasi Mengambang & Bergeser Halus (Berada di atas backdrop layer 2) */}
         <JavaneseCloudBackground variant="hero" theme="dark" opacity={0.55} animated={true} style={{ zIndex: 2 }} />
 
-        {/* Ornamen Wayang Gunungan Kiri */}
-        <div
-          className="hero-gunungan-frame-left"
-          style={{
-            position: 'absolute',
-            left: '-15px',
-            bottom: '0',
-            height: 'clamp(340px, 55vh, 530px)',
-            width: 'clamp(200px, 32vh, 330px)',
-            zIndex: 4,
-            opacity: 0.78,
-            pointerEvents: 'none',
-            filter: 'none',
-            maskImage:
-              'linear-gradient(to bottom, black 65%, rgba(0, 0, 0, 0.5) 85%, transparent 98%)',
-            WebkitMaskImage:
-              'linear-gradient(to bottom, black 65%, rgba(0, 0, 0, 0.5) 85%, transparent 98%)',
-          }}
-        >
-          <img
-            src={gununganKayonHd}
-            alt="Wayang Gunungan Kiri"
-            style={{ width: '100%', height: '100%', objectFit: 'contain' }}
-          />
-        </div>
-
-        {/* Ornamen Wayang Gunungan Kanan */}
-        <div
-          className="hero-gunungan-frame-right"
-          style={{
-            position: 'absolute',
-            right: '-15px',
-            bottom: '0',
-            height: 'clamp(340px, 55vh, 530px)',
-            width: 'clamp(200px, 32vh, 330px)',
-            zIndex: 4,
-            opacity: 0.78,
-            pointerEvents: 'none',
-            filter: 'none',
-            maskImage:
-              'linear-gradient(to bottom, black 65%, rgba(0, 0, 0, 0.5) 85%, transparent 98%)',
-            WebkitMaskImage:
-              'linear-gradient(to bottom, black 65%, rgba(0, 0, 0, 0.5) 85%, transparent 98%)',
-          }}
-        >
-          <img
-            src={gununganKayonHd}
-            alt="Wayang Gunungan Kanan"
-            style={{ width: '100%', height: '100%', objectFit: 'contain', transform: 'scaleX(-1)' }}
-          />
-        </div>
-
-        {/* Konten Hero Terpusat Sederhana & Berwibawa */}
+        {/* Konten Hero Terpusat Sederhana & Berwibawa (Fokus Animasi Awan Sakral) */}
         <div
           style={{
             maxWidth: '920px',
@@ -519,6 +466,8 @@ export default function ConnectedArchiveView({
         >
           {/* Eyebrow Budaya Nusantara */}
           <div
+            data-aos="fade-down"
+            data-aos-duration="600"
             style={{
               display: 'inline-flex',
               alignItems: 'center',
@@ -542,6 +491,8 @@ export default function ConnectedArchiveView({
 
           {/* Headline Utama Selaras Tipografi Atlas & Beranda */}
           <h1
+            data-aos="fade-up"
+            data-aos-duration="700"
             style={{
               margin: '0 0 clamp(12px, 1.8vh, 20px) 0',
               fontFamily: 'var(--font-sans)',
@@ -661,6 +612,8 @@ export default function ConnectedArchiveView({
         >
           {/* Section Header */}
           <h2
+            data-aos="fade-up"
+            data-aos-duration="700"
             style={{
               textAlign: 'center',
               fontFamily: 'var(--font-sans)',
@@ -675,6 +628,9 @@ export default function ConnectedArchiveView({
           </h2>
 
           <p
+            data-aos="fade-up"
+            data-aos-duration="700"
+            data-aos-delay="100"
             style={{
               textAlign: 'center',
               fontSize: '15px',
@@ -689,6 +645,9 @@ export default function ConnectedArchiveView({
 
           {/* Kapsul Search Bar Elegan (Persis AtlasView) */}
           <form
+            data-aos="fade-up"
+            data-aos-duration="700"
+            data-aos-delay="200"
             onSubmit={(e) => e.preventDefault()}
             style={{
               maxWidth: '820px',
@@ -775,6 +734,9 @@ export default function ConnectedArchiveView({
 
           {/* Baris Kapsul Filter Kategori (Persis AtlasView) */}
           <div
+            data-aos="fade-up"
+            data-aos-duration="700"
+            data-aos-delay="300"
             style={{
               display: 'flex',
               alignItems: 'center',
@@ -828,6 +790,8 @@ export default function ConnectedArchiveView({
               BARIS HEADER KATALOG (Persis Story Atlas - Rapi, Tanpa Duplikasi)
               ============================================================ */}
           <div
+            data-aos="fade-up"
+            data-aos-duration="600"
             style={{
               display: 'flex',
               alignItems: 'center',
@@ -917,10 +881,13 @@ export default function ConnectedArchiveView({
                 gap: '28px',
               }}
             >
-              {filteredPerformances.map((item) => {
+              {filteredPerformances.map((item, idx) => {
                 return (
                   <div
                     key={item.id}
+                    data-aos="fade-up"
+                    data-aos-duration="700"
+                    data-aos-delay={(idx % 6) * 100}
                     style={{
                       background: '#ffffff',
                       borderRadius: '20px',

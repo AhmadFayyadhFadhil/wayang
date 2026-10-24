@@ -12,7 +12,6 @@ import persistenceService from '../../services/persistenceService';
 import { soundEngine } from '../../services/soundscape';
 import JavaneseCloudBackground from '../../components/ui/JavaneseCloudBackground';
 import heroParchmentWideBg from '../../assets/hero_parchment_clouds_widescreen_hd.jpg';
-import gununganHd from '../../assets/gunungan_kayon_hd.png';
 import atlasGoldMotifStrip from '../../assets/atlas_gold_motif_strip.jpg';
 import HeritageBatikRibbon from '../../components/ui/HeritageBatikRibbon';
 import {
@@ -50,7 +49,6 @@ export default function AdminCmsView({ onPlayPerformance }) {
   const [usersList, setUsersList] = useState([]);
   const [stageBackgrounds, setStageBackgrounds] = useState([]);
   const [notice, setNotice] = useState(null);
-  const [isServerConnected, setIsServerConnected] = useState(false);
 
   // Search & Filter State
   const [searchQuery, setSearchQuery] = useState('');
@@ -129,10 +127,9 @@ export default function AdminCmsView({ onPlayPerformance }) {
           if (Array.isArray(d.performances)) setPerformances(d.performances);
           if (Array.isArray(d.users)) setUsersList(d.users);
           loadedViaApi = true;
-          setIsServerConnected(true);
         }
       } catch {
-        setIsServerConnected(false);
+        // Fallback lokal
       }
 
       // 3. Fallback cerdas: Ambil dari master data lokal jika server kosong/offline
@@ -556,65 +553,15 @@ export default function AdminCmsView({ onPlayPerformance }) {
           }}
         />
 
-        {/* Motif Awan Tradisional Jawa Otentik dengan Animasi Mengambang & Bergeser Halus (Layer 3) */}
-        <JavaneseCloudBackground variant="hero" theme="dark" opacity={0.55} animated={true} style={{ zIndex: 3 }} />
-
-        {/* Ornamen Wayang Gunungan Berayun Kiri */}
-        <div
-          className="hero-gunungan-frame-left"
-          style={{
-            position: 'absolute',
-            left: '-15px',
-            bottom: '0',
-            height: 'clamp(340px, 55vh, 530px)',
-            width: 'clamp(200px, 32vh, 330px)',
-            zIndex: 4,
-            opacity: 0.78,
-            pointerEvents: 'none',
-            filter: 'none',
-            maskImage:
-              'linear-gradient(to bottom, black 65%, rgba(0, 0, 0, 0.5) 85%, transparent 98%)',
-            WebkitMaskImage:
-              'linear-gradient(to bottom, black 65%, rgba(0, 0, 0, 0.5) 85%, transparent 98%)',
-          }}
-        >
-          <img
-            src={gununganHd}
-            alt="Wayang Gunungan Kiri HD"
-            style={{ width: '100%', height: '100%', objectFit: 'contain' }}
-          />
-        </div>
-
-        {/* Ornamen Wayang Gunungan Berayun Kanan */}
-        <div
-          className="hero-gunungan-frame-right"
-          style={{
-            position: 'absolute',
-            right: '-15px',
-            bottom: '0',
-            height: 'clamp(340px, 55vh, 530px)',
-            width: 'clamp(200px, 32vh, 330px)',
-            zIndex: 4,
-            opacity: 0.78,
-            pointerEvents: 'none',
-            filter: 'none',
-            maskImage:
-              'linear-gradient(to bottom, black 65%, rgba(0, 0, 0, 0.5) 85%, transparent 98%)',
-            WebkitMaskImage:
-              'linear-gradient(to bottom, black 65%, rgba(0, 0, 0, 0.5) 85%, transparent 98%)',
-          }}
-        >
-          <img
-            src={gununganHd}
-            alt="Wayang Gunungan Kanan HD"
-            style={{ width: '100%', height: '100%', objectFit: 'contain', transform: 'scaleX(-1)' }}
-          />
-        </div>
+        {/* Motif Awan Tradisional Jawa Otentik dengan Animasi Mengambang & Bergeser Halus (Fokus Murni Animasi Awan Sakral) */}
+        <JavaneseCloudBackground variant="hero" theme="dark" opacity={0.65} animated={true} style={{ zIndex: 3 }} />
 
         {/* Konten Teks Hero Terpusat Sempurna (Panjang Selaras dengan Navbar 1180px) */}
         <div style={{ maxWidth: '1180px', width: '100%', position: 'relative', zIndex: 10, margin: '0 auto', textAlign: 'center' }}>
           {/* Eyebrow Budaya Nusantara */}
           <div
+            data-aos="fade-down"
+            data-aos-duration="600"
             style={{
               display: 'inline-flex',
               alignItems: 'center',
@@ -638,6 +585,8 @@ export default function AdminCmsView({ onPlayPerformance }) {
 
           {/* Heading Hero Wayangverse - Selaras dengan Standar Tipografi Atlas & Karya Saya */}
           <h1
+            data-aos="fade-up"
+            data-aos-duration="700"
             style={{
               margin: '0 auto 20px auto',
               maxWidth: '850px',
@@ -655,6 +604,9 @@ export default function AdminCmsView({ onPlayPerformance }) {
 
           {/* Subjudul Hero Sesuai Narasi Heritage */}
           <p
+            data-aos="fade-up"
+            data-aos-duration="700"
+            data-aos-delay="100"
             style={{
               margin: '0 auto 30px auto',
               fontSize: 'clamp(15px, 1.5vw, 17px)',
@@ -667,39 +619,28 @@ export default function AdminCmsView({ onPlayPerformance }) {
             Pusat kurasi wiracarita pakem, filosofi watak luhur para ksatria, tata suara gamelan slendro, dan moderasi karya pagelaran dalang nusantara.
           </p>
 
-          {/* Toolbar Status Sanctum & Sinkronkan Data */}
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '14px', flexWrap: 'wrap', marginBottom: '24px' }}>
-            <div
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '8px',
-                padding: '7px 18px',
-                borderRadius: '9999px',
-                background: 'rgba(20, 14, 9, 0.76)',
-                border: `1px solid ${isServerConnected ? 'rgba(34, 197, 94, 0.35)' : 'rgba(212, 175, 55, 0.35)'}`,
-                fontSize: '12px',
-                fontWeight: '650',
-                color: isServerConnected ? '#a7f3d0' : '#e8bb5c',
-                backdropFilter: 'blur(8px)',
-              }}
-            >
-              <span
-                style={{
-                  width: '7px',
-                  height: '7px',
-                  borderRadius: '50%',
-                  background: isServerConnected ? '#16a34a' : '#d4af37',
-                }}
-              />
-              <span>{isServerConnected ? 'Sanctum Server Terhubung' : 'Preservasi Lokal Terverifikasi'}</span>
-            </div>
-
+          {/* Tombol Sinkronkan Data (Eksklusif Emas Prada, Berdiri Sendiri di Tengah) */}
+          <div
+            data-aos="fade-up"
+            data-aos-duration="700"
+            data-aos-delay="200"
+            style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: '22px', marginBottom: '8px' }}
+          >
             <button
               onClick={() => loadData(true)}
               disabled={isSyncing}
               className="wayang-btn-cta"
-              style={{ cursor: isSyncing ? 'wait' : 'pointer', minHeight: '40px', borderRadius: '9999px' }}
+              style={{
+                height: '44px',
+                padding: '0 6px 0 22px',
+                fontSize: '13.5px',
+                fontWeight: '750',
+                lineHeight: 1,
+                cursor: isSyncing ? 'wait' : 'pointer',
+                borderRadius: '9999px',
+                boxSizing: 'border-box',
+                boxShadow: '0 4px 18px rgba(212, 175, 55, 0.32)',
+              }}
             >
               <span>{isSyncing ? 'Menyinkronkan...' : 'Sinkronkan Data'}</span>
               <span className="wayang-btn-cta-icon">
@@ -709,7 +650,13 @@ export default function AdminCmsView({ onPlayPerformance }) {
           </div>
 
           {/* Cardbox Numerik Floating (Selaras dengan Hero Beranda & MyWorksView) */}
-          <div className="admin-floating-stats-card" style={{ marginTop: '20px', marginBottom: '8px' }}>
+          <div
+            data-aos="fade-up"
+            data-aos-duration="800"
+            data-aos-delay="250"
+            className="admin-floating-stats-card"
+            style={{ marginTop: '24px', marginBottom: '8px' }}
+          >
             {/* Metrik 1: Tokoh */}
             <div
               className={`admin-floating-stat-item ${activeTab === 'karakter' ? 'active' : ''}`}
@@ -934,7 +881,7 @@ export default function AdminCmsView({ onPlayPerformance }) {
 
         <div style={{ maxWidth: '1280px', width: '100%', margin: '0 auto', position: 'relative', zIndex: 10 }}>
           {/* Header Section Kurasi */}
-          <div style={{ textAlign: 'center', marginBottom: '32px' }}>
+          <div style={{ textAlign: 'center', marginBottom: '32px' }} data-aos="fade-up" data-aos-duration="600">
             <div
               style={{
                 display: 'inline-flex',
@@ -999,7 +946,7 @@ export default function AdminCmsView({ onPlayPerformance }) {
           )}
 
           {/* 1. Navigasi Tab Kategori Master Data (Clean Segmented Bar) */}
-          <div className="admin-category-tabs-bar">
+          <div className="admin-category-tabs-bar" data-aos="fade-up" data-aos-duration="600" data-aos-delay="100">
             {[
               { id: 'karakter', label: 'Tokoh Wayang', count: characters.length, icon: Users },
               { id: 'cerita', label: 'Lakon Cerita', count: stories.length, icon: BookOpen },
@@ -1033,7 +980,7 @@ export default function AdminCmsView({ onPlayPerformance }) {
           </div>
 
           {/* 2. Unified Control Bar (Search, Sub-filters & Tombol Tambah Aligned 100% dengan Grid Tabel) */}
-          <div className="admin-control-bar">
+          <div className="admin-control-bar" data-aos="fade-up" data-aos-duration="600" data-aos-delay="150">
             <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap', flex: 1 }}>
               {/* Search Bar Input */}
               <div className="admin-control-search-wrap">
@@ -1187,7 +1134,7 @@ export default function AdminCmsView({ onPlayPerformance }) {
           </div>
 
           {/* Luxury Archive Table Chassis (Cardbox Bersih di Latar Ivory) */}
-          <div className="admin-table-chassis">
+          <div className="admin-table-chassis" data-aos="fade-up" data-aos-duration="700" data-aos-delay="200">
             <div className="admin-table-scroll">
               {/* TAB 1: TOKOH WAYANG */}
               {activeTab === 'karakter' && (
@@ -1849,9 +1796,9 @@ export default function AdminCmsView({ onPlayPerformance }) {
                       margin: 0,
                       fontSize: '22px',
                       color: '#1a140e',
-                      fontWeight: '850',
-                      fontFamily: 'Cinzel, Georgia, serif',
-                      letterSpacing: '-0.01em',
+                      fontWeight: '800',
+                      fontFamily: 'var(--font-sans)',
+                      letterSpacing: '-0.02em',
                     }}
                   >
                     {editingItem ? 'Perbarui Data Master' : 'Tambah Data Master Baru'}

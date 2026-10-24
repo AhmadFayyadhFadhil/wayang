@@ -60,10 +60,11 @@ export default class ErrorBoundary extends React.Component {
           />
           <h3
             style={{
-              fontFamily: "'Cinzel', 'Cinzel Decorative', serif",
+              fontFamily: 'var(--font-sans)',
               fontSize: '18px',
+              fontWeight: '800',
               color: '#fef08a',
-              letterSpacing: '0.04em',
+              letterSpacing: '-0.02em',
               marginBottom: '8px',
             }}
           >

@@ -29,7 +29,7 @@ export const STORIES_MASTER = [
         rightsNote: 'Arsip Kurasi Pedalangan'
       }
     ],
-    recommendedBackground: 'kelir-kurusetra-perang',
+    recommendedBackground: 'kelir-kayon-keraton-kencana',
     themeSong: 'Gamelan Srepeg Mataram'
   },
   {
@@ -51,7 +51,7 @@ export const STORIES_MASTER = [
         rightsNote: 'Domain Publik'
       }
     ],
-    recommendedBackground: 'kelir-malam-mistik',
+    recommendedBackground: 'kelir-teratai-prada-lumut',
     themeSong: 'Gamelan Ayak-ayak Slendro'
   },
   {
@@ -73,7 +73,7 @@ export const STORIES_MASTER = [
         rightsNote: 'Cagar Budaya Nasional'
       }
     ],
-    recommendedBackground: 'kelir-blencong-default',
+    recommendedBackground: 'kelir-gunungan-batik-soga',
     themeSong: 'Gamelan Sampak Alengka'
   },
   {
@@ -101,7 +101,7 @@ export const STORIES_MASTER = [
         rightsNote: 'Arsip Kurasi Pedalangan'
       }
     ],
-    recommendedBackground: 'kelir-kurusetra-perang',
+    recommendedBackground: 'kelir-kayon-keraton-kencana',
     themeSong: 'Gamelan Srepeg Manyura'
   }
 ];

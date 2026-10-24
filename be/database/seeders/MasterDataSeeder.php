@@ -137,7 +137,7 @@ class MasterDataSeeder extends Seeder
                 'philosophy' => 'Pengorbanan suci seorang generasi muda yang memilih gugur demi keberlangsungan perjuangan yang lebih besar. Kematian fisik bukanlah kekalahan jika kehormatan dan keselamatan sesama berhasil dijaga.',
                 'tradition' => 'Gaya Surakarta & Yogyakarta (Gagrag Mataram)',
                 'version_label' => 'Serat Bharatayuddha - Pupuh Salya-Karna',
-                'recommended_background' => 'kelir-kurusetra-perang',
+                'recommended_background' => 'kelir-kayon-keraton-kencana',
                 'theme_song' => 'Gamelan Srepeg Mataram',
                 'character_slugs' => ['gatotkaca', 'karna', 'arjuna'],
                 'sources' => [
@@ -163,7 +163,7 @@ class MasterDataSeeder extends Seeder
                 'philosophy' => 'Pencarian jati diri manusia (manunggaling kawula Gusti), ketulusan ketaatan seorang murid, keberanian menaklukkan ego pribadi, dan penemuan kedamaian batin hakiki.',
                 'tradition' => 'Gaya Surakarta & Pesisiran',
                 'version_label' => 'Serat Dewa Ruci Pakem Yasadipura I',
-                'recommended_background' => 'kelir-malam-mistik',
+                'recommended_background' => 'kelir-teratai-prada-lumut',
                 'theme_song' => 'Gamelan Ayak-ayak Slendro',
                 'character_slugs' => ['bima', 'semar'],
                 'sources' => [
@@ -183,7 +183,7 @@ class MasterDataSeeder extends Seeder
                 'philosophy' => 'Keteguhan iman dan integritas moral wanita dalam menghadapi fitnah dan praduga. Api suci melambangkan pembersihan batin dan kebenaran sejati yang tak akan pernah lekang oleh celaan.',
                 'tradition' => 'Gaya Surakarta, Yogyakarta & Bali',
                 'version_label' => 'Kakawin Ramayana Bab Uttarakanda',
-                'recommended_background' => 'kelir-kurusetra-perang',
+                'recommended_background' => 'kelir-gunungan-batik-soga',
                 'theme_song' => 'Gamelan Sampak Alengka',
                 'character_slugs' => ['rahwana'],
                 'sources' => [
@@ -331,7 +331,7 @@ class MasterDataSeeder extends Seeder
                     [
                         'id' => 'scene-demo-1',
                         'title' => 'Panggilan Bhakti Senopati',
-                        'background' => 'kelir-kurusetra-perang',
+                        'background' => 'kelir-kayon-keraton-kencana',
                         'durationMs' => 6000,
                         'audioAssetIds' => [1],
                         'characters' => [
@@ -360,7 +360,7 @@ class MasterDataSeeder extends Seeder
                     [
                         'id' => 'scene-demo-2',
                         'title' => 'Laga Angkasa Kurusetra',
-                        'background' => 'kelir-malam-mistik',
+                        'background' => 'kelir-kayon-keraton-kencana',
                         'durationMs' => 5000,
                         'audioAssetIds' => [1],
                         'characters' => [

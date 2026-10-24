@@ -39,18 +39,27 @@ import {
   Clock,
   HelpCircle,
   BookOpen,
+  Hammer,
+  Bell,
+  Disc3,
 } from 'lucide-react';
 
 import avatarGatotkaca from '../../assets/avatar_gatotkaca.png';
 import avatarArjuna from '../../assets/avatar_arjuna.png';
 import avatarShinta from '../../assets/avatar_shinta.png';
 import avatarBima from '../../assets/avatar_bima.png';
+import cardKarna from '../../assets/wayang_card_karna.jpg';
+import cardRahwana from '../../assets/wayang_card_rahwana.jpg';
+import cardSemar from '../../assets/wayang_card_semar.jpg';
 
 const CHAR_AVATARS = {
   gatotkaca: avatarGatotkaca,
   arjuna: avatarArjuna,
   shinta: avatarShinta,
   werkudara: avatarBima,
+  karna: cardKarna,
+  rahwana: cardRahwana,
+  semar: cardSemar,
 };
 
 export default function StageStudio({ onNavigate }) {
@@ -301,13 +310,7 @@ export default function StageStudio({ onNavigate }) {
           >
             <Hand size={14} color={isDalangVisionActive ? '#22c55e' : '#e8bb5c'} />
             <span className="btn-label-text">Dalang Vision</span>
-            <span
-              className="vision-indicator-dot"
-              style={{
-                background: isDalangVisionActive ? '#22c55e' : 'rgba(212, 175, 55, 0.4)',
-                boxShadow: isDalangVisionActive ? '0 0 8px #22c55e' : 'none',
-              }}
-            />
+            {isDalangVisionActive && <span className="vision-active-badge">Aktif</span>}
           </button>
 
           {/* Tombol Pratinjau Pertunjukan (Outline Emas Lembut) */}
@@ -518,7 +521,7 @@ export default function StageStudio({ onNavigate }) {
                   className="rail-add-char-action-btn"
                 >
                   <Plus size={14} />
-                  <span>＋ Tambah Tokoh</span>
+                  <span>Tambah Tokoh</span>
                 </button>
 
                 {/* Input Unggah Wayang Sendiri */}
@@ -550,10 +553,7 @@ export default function StageStudio({ onNavigate }) {
                   <div className="rail-vision-text-wrap">
                     <div className="rail-vision-title">
                       <span>Dalang Vision AI</span>
-                      <span
-                        className="rail-vision-dot"
-                        style={{ background: isDalangVisionActive ? '#22c55e' : 'rgba(212, 175, 55, 0.4)' }}
-                      />
+                      {isDalangVisionActive && <span className="rail-vision-badge-active">Aktif</span>}
                     </div>
                     <span className="rail-vision-desc">
                       {isDalangVisionActive ? 'Webcam Aktif (Klik matikan)' : 'Kamera gerak tangan'}
@@ -654,18 +654,34 @@ export default function StageStudio({ onNavigate }) {
                         <div
                           className="rail-bg-thumb"
                           style={{
-                            background: bg.kelirColor || '#281c13',
+                            background: bg.bgImage
+                              ? `url(${bg.bgImage}) center / cover no-repeat`
+                              : (bg.kelirColor || '#281c13'),
                           }}
                         >
-                          <div
-                            className="rail-bg-thumb-glow"
-                            style={{ background: bg.glowColor || 'rgba(212, 175, 55, 0.5)' }}
-                          />
-                          {isActive && <div className="rail-bg-active-check">✓</div>}
+                          {!bg.bgImage && (
+                            <div
+                              className="rail-bg-thumb-glow"
+                              style={{ background: bg.glowColor || 'rgba(212, 175, 55, 0.5)' }}
+                            />
+                          )}
+                          {isActive && (
+                            <div className="rail-bg-active-check">
+                              <span>✓</span>
+                              <span>Aktif</span>
+                            </div>
+                          )}
                         </div>
-                        <div className="rail-bg-title-row">
-                          <span className="rail-bg-name">{bg.name}</span>
-                          <span className="rail-bg-pathet">{bg.pathet}</span>
+                        <div className="rail-bg-meta">
+                          <div className="rail-bg-title-row">
+                            <span className="rail-bg-name" title={bg.name}>{bg.name}</span>
+                            <span className="rail-bg-pathet">Pathet {bg.pathet}</span>
+                          </div>
+                          {bg.atmosphere && (
+                            <div className="rail-bg-atmosphere" title={bg.atmosphere}>
+                              {bg.atmosphere}
+                            </div>
+                          )}
                         </div>
                       </button>
                     );
@@ -689,7 +705,7 @@ export default function StageStudio({ onNavigate }) {
                     title="Ketuk Dodogan Kotak Dalang (Keyboard: Space)"
                     className="rail-sfx-pad-btn"
                   >
-                    <span className="sfx-emoji">🥁</span>
+                    <Hammer size={16} color="#d4af37" className="sfx-pad-icon" />
                     <span className="sfx-name">Dodogan</span>
                     <span className="sfx-key-badge">Space</span>
                   </button>
@@ -699,7 +715,7 @@ export default function StageStudio({ onNavigate }) {
                     title="Gemerincing Kepyak Dalang (Keyboard: Shift)"
                     className="rail-sfx-pad-btn"
                   >
-                    <span className="sfx-emoji">🔔</span>
+                    <Bell size={16} color="#d4af37" className="sfx-pad-icon" />
                     <span className="sfx-name">Kepyak</span>
                     <span className="sfx-key-badge">Shift</span>
                   </button>
@@ -709,7 +725,7 @@ export default function StageStudio({ onNavigate }) {
                     title="Gong Ageng Pamungkas (Keyboard: G)"
                     className="rail-sfx-pad-btn"
                   >
-                    <span className="sfx-emoji">🎵</span>
+                    <Disc3 size={16} color="#d4af37" className="sfx-pad-icon" />
                     <span className="sfx-name">Gong</span>
                     <span className="sfx-key-badge">G</span>
                   </button>
@@ -1068,7 +1084,7 @@ export default function StageStudio({ onNavigate }) {
                   className="context-quick-add-btn"
                 >
                   <Plus size={14} />
-                  <span>＋ Tancap Tokoh ke Babak Ini</span>
+                  <span>Tancap Tokoh ke Babak Ini</span>
                 </button>
               </div>
             </div>
@@ -1210,7 +1226,7 @@ export default function StageStudio({ onNavigate }) {
                 <span>KONFIRMASI PANGGUNG KELIR</span>
               </div>
 
-              <h3 style={{ margin: '0 0 10px 0', fontSize: '22px', fontWeight: '850', color: '#1a140e', fontFamily: 'Cinzel, Georgia, serif', letterSpacing: '-0.3px' }}>
+              <h3 style={{ margin: '0 0 10px 0', fontSize: '22px', fontWeight: '800', color: '#1a140e', fontFamily: 'var(--font-sans)', letterSpacing: '-0.02em' }}>
                 Reset Proyek Lakon?
               </h3>
               <p style={{ margin: '0 0 26px 0', fontSize: '13.5px', color: '#5c4738', lineHeight: '1.65' }}>

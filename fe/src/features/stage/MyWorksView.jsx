@@ -36,7 +36,6 @@ import {
 
 // Aset Visual Heritage & Ornamen Budaya
 import heroParchmentWideBg from '../../assets/hero_parchment_clouds_widescreen_hd.jpg';
-import gununganKayonHd from '../../assets/gunungan_kayon_hd.png';
 import JavaneseCloudBackground from '../../components/ui/JavaneseCloudBackground';
 import HeritageBatikRibbon from '../../components/ui/HeritageBatikRibbon';
 import galleryCoverGatotkaca from '../../assets/gallery_cover_gatotkaca.jpg';
@@ -76,7 +75,7 @@ const TEMPLATE_STARTERS = [
       {
         id: 'sc-tpl-1-1',
         title: 'Gerak Pasukan Malam Kurusetra',
-        background: 'kelir-kurusetra-perang',
+        background: 'kelir-kayon-keraton-kencana',
         durationMs: 5000,
         audioAssetId: 1,
         characters: [
@@ -99,7 +98,7 @@ const TEMPLATE_STARTERS = [
       {
         id: 'sc-tpl-1-2',
         title: 'Gatotkaca Membelah Angkasa',
-        background: 'kelir-kurusetra-perang',
+        background: 'kelir-kayon-keraton-kencana',
         durationMs: 5500,
         audioAssetId: 1,
         characters: [
@@ -146,7 +145,7 @@ const TEMPLATE_STARTERS = [
       {
         id: 'sc-tpl-2-1',
         title: 'Werkudara Menerjang Samudra',
-        background: 'kelir-malam-mistik',
+        background: 'kelir-teratai-prada-lumut',
         durationMs: 5000,
         audioAssetId: 2,
         characters: [
@@ -169,7 +168,7 @@ const TEMPLATE_STARTERS = [
       {
         id: 'sc-tpl-2-2',
         title: 'Pertemuan di Dasar Samudra',
-        background: 'kelir-malam-mistik',
+        background: 'kelir-teratai-prada-lumut',
         durationMs: 6000,
         audioAssetId: 2,
         characters: [
@@ -216,7 +215,7 @@ const TEMPLATE_STARTERS = [
       {
         id: 'sc-tpl-3-1',
         title: 'Ujian Kesucian di Taman Asoka',
-        background: 'kelir-blencong-default',
+        background: 'kelir-gunungan-batik-soga',
         durationMs: 5000,
         audioAssetId: 3,
         characters: [
@@ -239,7 +238,7 @@ const TEMPLATE_STARTERS = [
       {
         id: 'sc-tpl-3-2',
         title: 'Anugerah Batara Brama',
-        background: 'kelir-blencong-default',
+        background: 'kelir-gunungan-batik-soga',
         durationMs: 5500,
         audioAssetId: 3,
         characters: [
@@ -286,7 +285,7 @@ const TEMPLATE_STARTERS = [
       {
         id: 'sc-tpl-4-1',
         title: 'Tandhing Kereta Kurusetra',
-        background: 'kelir-kurusetra-perang',
+        background: 'kelir-kayon-keraton-kencana',
         durationMs: 5000,
         audioAssetId: 1,
         characters: [
@@ -309,7 +308,7 @@ const TEMPLATE_STARTERS = [
       {
         id: 'sc-tpl-4-2',
         title: 'Pelepasan Pusaka Kyai Pasopati',
-        background: 'kelir-kurusetra-perang',
+        background: 'kelir-kayon-keraton-kencana',
         durationMs: 5500,
         audioAssetId: 1,
         characters: [
@@ -687,65 +686,15 @@ export default function MyWorksView({ onOpenStudio, onPlayPerformance }) {
           }}
         />
 
-        {/* Motif Awan Tradisional Jawa Otentik dengan Animasi Mengambang & Bergeser Halus (Berada di atas backdrop layer 3 di panggung malam) */}
-        <JavaneseCloudBackground variant="hero" theme="dark" opacity={0.55} animated={true} style={{ zIndex: 3 }} />
-
-        {/* Ornamen Wayang Gunungan Berayun Kiri */}
-        <div
-          className="hero-gunungan-frame-left"
-          style={{
-            position: 'absolute',
-            left: '-15px',
-            bottom: '0',
-            height: 'clamp(340px, 55vh, 530px)',
-            width: 'clamp(200px, 32vh, 330px)',
-            zIndex: 4,
-            opacity: 0.78,
-            pointerEvents: 'none',
-            filter: 'none',
-            maskImage:
-              'linear-gradient(to bottom, black 65%, rgba(0, 0, 0, 0.5) 85%, transparent 98%)',
-            WebkitMaskImage:
-              'linear-gradient(to bottom, black 65%, rgba(0, 0, 0, 0.5) 85%, transparent 98%)',
-          }}
-        >
-          <img
-            src={gununganKayonHd}
-            alt="Wayang Gunungan Kiri"
-            style={{ width: '100%', height: '100%', objectFit: 'contain' }}
-          />
-        </div>
-
-        {/* Ornamen Wayang Gunungan Berayun Kanan */}
-        <div
-          className="hero-gunungan-frame-right"
-          style={{
-            position: 'absolute',
-            right: '-15px',
-            bottom: '0',
-            height: 'clamp(340px, 55vh, 530px)',
-            width: 'clamp(200px, 32vh, 330px)',
-            zIndex: 4,
-            opacity: 0.78,
-            pointerEvents: 'none',
-            filter: 'none',
-            maskImage:
-              'linear-gradient(to bottom, black 65%, rgba(0, 0, 0, 0.5) 85%, transparent 98%)',
-            WebkitMaskImage:
-              'linear-gradient(to bottom, black 65%, rgba(0, 0, 0, 0.5) 85%, transparent 98%)',
-          }}
-        >
-          <img
-            src={gununganKayonHd}
-            alt="Wayang Gunungan Kanan"
-            style={{ width: '100%', height: '100%', objectFit: 'contain', transform: 'scaleX(-1)' }}
-          />
-        </div>
+        {/* Motif Awan Tradisional Jawa Otentik dengan Animasi Mengambang & Bergeser Halus (Fokus Murni Animasi Awan Sakral) */}
+        <JavaneseCloudBackground variant="hero" theme="dark" opacity={0.65} animated={true} style={{ zIndex: 3 }} />
 
         {/* Konten Teks Hero Terpusat Sempurna (Panjang Selaras dengan Navbar 1180px) */}
         <div style={{ maxWidth: '1180px', width: '100%', position: 'relative', zIndex: 10, margin: '0 auto', textAlign: 'center' }}>
           {/* Eyebrow Budaya Nusantara */}
           <div
+            data-aos="fade-down"
+            data-aos-duration="600"
             style={{
               display: 'inline-flex',
               alignItems: 'center',
@@ -769,6 +718,8 @@ export default function MyWorksView({ onOpenStudio, onPlayPerformance }) {
 
           {/* Headline Utama */}
           <h1
+            data-aos="fade-up"
+            data-aos-duration="700"
             style={{
               margin: '0 auto clamp(18px, 2.8vh, 28px) auto',
               maxWidth: '850px',
@@ -786,6 +737,9 @@ export default function MyWorksView({ onOpenStudio, onPlayPerformance }) {
 
           {/* Subjudul Sesuai Narasi Heritage */}
           <p
+            data-aos="fade-up"
+            data-aos-duration="700"
+            data-aos-delay="100"
             style={{
               margin: '0 auto clamp(26px, 4vh, 40px) auto',
               fontSize: 'clamp(14px, 1.3vw, 17px)',
@@ -801,6 +755,9 @@ export default function MyWorksView({ onOpenStudio, onPlayPerformance }) {
 
           {/* Tombol Aksi Utama Hero (Format Harmonis 12px Radius) */}
           <div
+            data-aos="fade-up"
+            data-aos-duration="700"
+            data-aos-delay="200"
             style={{
               display: 'flex',
               justifyContent: 'center',
@@ -917,7 +874,13 @@ export default function MyWorksView({ onOpenStudio, onPlayPerformance }) {
           </div>
 
           {/* Cardbox Numerik Floating (Diposisikan Lebih ke Bawah agar Proporsional & Lega dari Tombol Atas) */}
-          <div className="myworks-floating-stats-card" style={{ marginTop: 'clamp(50px, 7.5vh, 78px)', marginBottom: 'clamp(10px, 1.8vh, 20px)' }}>
+          <div
+            data-aos="fade-up"
+            data-aos-duration="800"
+            data-aos-delay="300"
+            className="myworks-floating-stats-card"
+            style={{ marginTop: 'clamp(50px, 7.5vh, 78px)', marginBottom: 'clamp(10px, 1.8vh, 20px)' }}
+          >
             {/* Metrik 1: Total Lakon */}
             <div className="myworks-floating-stat-item">
               <div
@@ -2271,7 +2234,7 @@ export default function MyWorksView({ onOpenStudio, onPlayPerformance }) {
           }}
         >
           {/* Header Bagian Konten */}
-          <div style={{ textAlign: 'center', marginBottom: '36px' }}>
+          <div data-aos="fade-up" data-aos-duration="600" style={{ textAlign: 'center', marginBottom: '36px' }}>
             <h2
               style={{
                 margin: '0 0 10px 0',
@@ -2290,6 +2253,9 @@ export default function MyWorksView({ onOpenStudio, onPlayPerformance }) {
 
           {/* Kapsul Search Bar Elegan (Sesuai Gaya Search Bar Story Atlas) */}
           <form
+            data-aos="fade-up"
+            data-aos-duration="600"
+            data-aos-delay="100"
             onSubmit={(e) => e.preventDefault()}
             style={{
               maxWidth: '820px',
@@ -2361,6 +2327,9 @@ export default function MyWorksView({ onOpenStudio, onPlayPerformance }) {
 
           {/* Toolbar Navigasi: Filter Kapsul Tabs & Pilihan Pengurutan */}
           <div
+            data-aos="fade-up"
+            data-aos-duration="600"
+            data-aos-delay="200"
             style={{
               display: 'flex',
               justifyContent: 'space-between',
@@ -2613,6 +2582,9 @@ export default function MyWorksView({ onOpenStudio, onPlayPerformance }) {
                 return (
                   <div
                     key={item.id}
+                    data-aos="fade-up"
+                    data-aos-duration="700"
+                    data-aos-delay={(idx % 6) * 100}
                     style={{
                       background: '#ffffff',
                       borderRadius: '20px',
@@ -3131,7 +3103,7 @@ export default function MyWorksView({ onOpenStudio, onPlayPerformance }) {
                 <span>KONFIRMASI PENGHAPUSAN</span>
               </div>
 
-              <h3 style={{ margin: '0 0 10px 0', fontSize: '22px', fontWeight: '850', color: '#1a140e', fontFamily: 'Cinzel, Georgia, serif', letterSpacing: '-0.3px' }}>
+              <h3 style={{ margin: '0 0 10px 0', fontSize: '22px', fontWeight: '800', color: '#1a140e', fontFamily: 'var(--font-sans)', letterSpacing: '-0.02em' }}>
                 Hapus Pementasan?
               </h3>
               <p style={{ margin: '0 0 26px 0', fontSize: '13.5px', color: '#5c4738', lineHeight: '1.65' }}>
@@ -3314,7 +3286,7 @@ export default function MyWorksView({ onOpenStudio, onPlayPerformance }) {
                   fontSize: '24px',
                   fontWeight: '850',
                   color: '#1a140e',
-                  fontFamily: 'Cinzel, Georgia, serif',
+                  fontFamily: 'var(--font-sans)',
                   letterSpacing: '-0.02em',
                   lineHeight: '1.25',
                 }}

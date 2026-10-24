@@ -114,9 +114,6 @@ export default function HomeView({ onNavigate, connectionStatus: _connectionStat
     };
   }, []);
 
-  // State hover interaktif untuk pilar fondasi (default null: semua button outline pada kondisi resting)
-  const [hoveredPillar, setHoveredPillar] = useState(null);
-
   // Dynamic mouse spotlight & subtle 3D tilt tracking for ecosystem cards
   const handlePillarMouseMove = (e) => {
     const card = e.currentTarget;
@@ -338,6 +335,8 @@ export default function HomeView({ onNavigate, connectionStatus: _connectionStat
         {/* Ornamen Gunungan HD di Kiri & Kanan (Selaras Persis dengan Hero Galeri Publik & Panggung Kelir) */}
         <div
           className="hero-gunungan-frame-left"
+          data-aos="fade-right"
+          data-aos-duration="900"
           style={{
             position: 'absolute',
             left: '-15px',
@@ -363,6 +362,8 @@ export default function HomeView({ onNavigate, connectionStatus: _connectionStat
 
         <div
           className="hero-gunungan-frame-right"
+          data-aos="fade-left"
+          data-aos-duration="900"
           style={{
             position: 'absolute',
             right: '-15px',
@@ -399,6 +400,8 @@ export default function HomeView({ onNavigate, connectionStatus: _connectionStat
         >
           {/* Main Headline (Warna Alami Bersih Tanpa Shadow/Stroke) */}
           <h1
+            data-aos="fade-up"
+            data-aos-duration="700"
             style={{
               margin: '0 0 22px 0',
               fontFamily: 'var(--font-sans)',
@@ -416,6 +419,9 @@ export default function HomeView({ onNavigate, connectionStatus: _connectionStat
 
           {/* Subtitle Sesuai PRD 1.2 Proposisi Nilai */}
           <p
+            data-aos="fade-up"
+            data-aos-delay="150"
+            data-aos-duration="700"
             style={{
               margin: '0 auto 36px auto',
               fontSize: 'clamp(14px, 1.35vw, 16.5px)',
@@ -430,6 +436,9 @@ export default function HomeView({ onNavigate, connectionStatus: _connectionStat
 
           {/* Dual Action Buttons (Warna Solid Alami Bersih Tanpa Shadow/Stroke Berlebih) */}
           <div
+            data-aos="fade-up"
+            data-aos-delay="300"
+            data-aos-duration="700"
             style={{
               display: 'flex',
               justifyContent: 'center',
@@ -506,7 +515,13 @@ export default function HomeView({ onNavigate, connectionStatus: _connectionStat
           Mengambang di perbatasan hero & konten, diposisikan lebih ke atas agar
           langsung tampak jelas saat membuka halaman beranda
           ============================================================ */}
-      <div className="hero-floating-card-wrapper" ref={statsSectionRef}>
+      <div
+        className="hero-floating-card-wrapper"
+        ref={statsSectionRef}
+        data-aos="fade-up"
+        data-aos-delay="200"
+        data-aos-duration="800"
+      >
         <div className="hero-floating-card">
           {/* Metrik 1: Panggung 2D & Skenario (Countdown Serentak dari 3.000 ke 2.400+) */}
           <div
@@ -602,7 +617,7 @@ export default function HomeView({ onNavigate, connectionStatus: _connectionStat
 
         <div style={{ maxWidth: '1280px', width: '100%', margin: '0 auto', position: 'relative', zIndex: 10 }}>
           {/* Header Bagian: Judul Utama & Subjudul dengan Eyebrow Kultural */}
-          <div style={{ textAlign: 'center', marginBottom: '44px' }}>
+          <div style={{ textAlign: 'center', marginBottom: '44px' }} data-aos="fade-up">
             <div
               style={{
                 fontSize: '11.5px',
@@ -674,18 +689,15 @@ export default function HomeView({ onNavigate, connectionStatus: _connectionStat
                 tag: 'Web Audio Gamelan',
               },
             ].map((pilar, idx) => {
-              const isHovered = hoveredPillar === idx;
-
               return (
                 <div
                   key={pilar.id}
-                  className={`fondasi-ecosystem-card ${isHovered ? 'is-hovered' : ''}`}
-                  onMouseEnter={() => setHoveredPillar(idx)}
+                  data-aos="fade-up"
+                  data-aos-duration="700"
+                  data-aos-delay={idx * 150 + 100}
+                  className="fondasi-ecosystem-card"
                   onMouseMove={handlePillarMouseMove}
-                  onMouseLeave={(e) => {
-                    setHoveredPillar(null);
-                    handlePillarMouseLeave(e);
-                  }}
+                  onMouseLeave={handlePillarMouseLeave}
                   onClick={() => onNavigate(pilar.nav)}
                   role="button"
                   tabIndex={0}
@@ -775,7 +787,7 @@ export default function HomeView({ onNavigate, connectionStatus: _connectionStat
               gap: '20px',
             }}
           >
-            <div style={{ maxWidth: '780px' }}>
+            <div style={{ maxWidth: '780px' }} data-aos="fade-right">
               <div
                 style={{
                   fontSize: '11.5px',
@@ -798,6 +810,8 @@ export default function HomeView({ onNavigate, connectionStatus: _connectionStat
 
             <button
               onClick={() => onNavigate('atlas')}
+              data-aos="fade-left"
+              data-aos-delay="150"
               style={selengkapnyaBtnStyle}
               onMouseEnter={(e) => {
                 e.currentTarget.style.background = '#dcae4d';
@@ -815,9 +829,11 @@ export default function HomeView({ onNavigate, connectionStatus: _connectionStat
 
           {/* Bento Grid 4 Lakon Terkurasi Sesuai Layout Referensi Modern Glass */}
           <div className="lakon-bento-grid">
-            {featuredStories.map((story) => (
+            {featuredStories.map((story, idx) => (
               <div
                 key={story.id}
+                data-aos="fade-up"
+                data-aos-delay={(idx % 4) * 120 + 100}
                 className={`lakon-bento-card ${story.cardClass}`}
                 onClick={() => onNavigate('atlas')}
                 role="button"
@@ -898,7 +914,7 @@ export default function HomeView({ onNavigate, connectionStatus: _connectionStat
             }}
           >
             {/* Sisi Kiri: Headline Utama Tanpa Teks di Atasnya */}
-            <div style={{ maxWidth: '640px' }}>
+            <div style={{ maxWidth: '640px' }} data-aos="fade-right">
               <div
                 style={{
                   fontSize: '11.5px',
@@ -926,7 +942,7 @@ export default function HomeView({ onNavigate, connectionStatus: _connectionStat
             </div>
 
             {/* Sisi Kanan: Narasi Filosofi Budaya (Tanpa Icon Arrow/Slider Sesuai Permintaan) */}
-            <div style={{ maxWidth: '480px', width: '100%' }}>
+            <div style={{ maxWidth: '480px', width: '100%' }} data-aos="fade-left">
               <p
                 style={{
                   fontSize: '15px',
@@ -941,7 +957,7 @@ export default function HomeView({ onNavigate, connectionStatus: _connectionStat
           </div>
 
           {/* Accordion Carousel Tokoh Wayang (Sesuai Referensi SS: 1 Kartu Melebar & Kartu Lainnya Persegi Ramping) */}
-          <div className="wayang-accordion-container">
+          <div className="wayang-accordion-container" data-aos="fade-up" data-aos-delay="150">
             {featuredCharacters.map((char) => {
               const isActive = activeCharId === char.id;
 
@@ -1012,6 +1028,8 @@ export default function HomeView({ onNavigate, connectionStatus: _connectionStat
 
           {/* Tombol Selengkapnya di Bawah 4 Cardbox (Berada di Tengah-Tengah, Style & Responsif Sesuai Navbar) */}
           <div
+            data-aos="fade-up"
+            data-aos-delay="200"
             style={{
               display: 'flex',
               justifyContent: 'center',
@@ -1061,7 +1079,7 @@ export default function HomeView({ onNavigate, connectionStatus: _connectionStat
       <section className="leaderboard-section-wrapper" id="leaderboard-showcase">
         <div style={{ maxWidth: '1240px', width: '100%', margin: '0 auto', boxSizing: 'border-box', minWidth: 0 }}>
           {/* Header Section */}
-          <div className="leaderboard-section-header">
+          <div className="leaderboard-section-header" data-aos="fade-up">
             <div className="leaderboard-section-header-text">
               <div className="leaderboard-section-pretitle">
                 PAGELARAN KOMUNITAS TERPILIH
@@ -1104,7 +1122,7 @@ export default function HomeView({ onNavigate, connectionStatus: _connectionStat
             return (
               <div className="leaderboard-showcase-grid">
                 {/* Sisi Kiri: Master Stage Spotlight */}
-                <div className="leaderboard-spotlight-stage">
+                <div className="leaderboard-spotlight-stage" data-aos="fade-right" data-aos-delay="100">
                   <img
                     src={activePerformance.coverImg}
                     alt={activePerformance.title}
@@ -1163,12 +1181,14 @@ export default function HomeView({ onNavigate, connectionStatus: _connectionStat
 
                 {/* Sisi Kanan: Reel Stack of 4 Curated Performances */}
                 <div className="leaderboard-reel-stack">
-                  {HOME_TOP_4_PERFORMANCES.map((item) => {
+                  {HOME_TOP_4_PERFORMANCES.map((item, idx) => {
                     const isSelected = item.id === activePerformance.id;
 
                     return (
                       <div
                         key={item.id}
+                        data-aos="fade-left"
+                        data-aos-delay={idx * 100 + 150}
                         onClick={() => setActiveLeaderboardId(item.id)}
                         onMouseEnter={() => setActiveLeaderboardId(item.id)}
                         className={`leaderboard-reel-card ${isSelected ? 'active' : ''}`}
@@ -1237,6 +1257,8 @@ export default function HomeView({ onNavigate, connectionStatus: _connectionStat
       >
         <div style={{ maxWidth: '1240px', width: '100%', margin: '0 auto' }}>
           <div
+            data-aos="zoom-in"
+            data-aos-duration="800"
             style={{
               position: 'relative',
               borderRadius: '24px',
@@ -1292,6 +1314,8 @@ export default function HomeView({ onNavigate, connectionStatus: _connectionStat
 
             {/* Konten Teks & Tombol CTA di Ruang Pendaran Cahaya Tengah Antara Dua Gunungan */}
             <div
+              data-aos="fade-up"
+              data-aos-delay="200"
               style={{
                 position: 'relative',
                 zIndex: 10,

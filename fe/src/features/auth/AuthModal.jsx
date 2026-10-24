@@ -147,9 +147,9 @@ export default function AuthModal({ isOpen, onClose, currentUser, onAuthSuccess,
                   margin: '0 0 4px 0',
                   color: '#18120c',
                   fontSize: '22px',
-                  fontWeight: '700',
-                  fontFamily: "'Cinzel', Georgia, serif",
-                  letterSpacing: '-0.01em',
+                  fontWeight: '800',
+                  fontFamily: 'var(--font-sans)',
+                  letterSpacing: '-0.02em',
                   lineHeight: '1.25',
                 }}
               >
@@ -233,7 +233,7 @@ export default function AuthModal({ isOpen, onClose, currentUser, onAuthSuccess,
                         fontWeight: '700',
                         fontSize: '17px',
                         color: '#18120c',
-                        fontFamily: "'Cinzel', Georgia, serif",
+                        fontFamily: 'var(--font-sans)',
                       }}
                     >
                       {currentUser.name}

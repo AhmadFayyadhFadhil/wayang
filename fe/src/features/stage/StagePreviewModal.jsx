@@ -113,7 +113,7 @@ export default function StagePreviewModal({
             <span>PANGGUNG BIOSKOP KELIR VIRTUAL</span>
           </div>
           <div style={{ display: 'flex', alignItems: 'baseline', gap: '12px' }}>
-            <h2 style={{ margin: 0, fontSize: '18px', color: '#fcfaf2', fontWeight: '850', fontFamily: 'Cinzel, Georgia, serif', letterSpacing: '-0.3px' }}>
+            <h2 style={{ margin: 0, fontSize: '18px', color: '#fcfaf2', fontWeight: '800', fontFamily: 'var(--font-sans)', letterSpacing: '-0.02em' }}>
               {metadata?.title || 'Pagelaran Lakon'}
             </h2>
             <span style={{ fontSize: '12px', color: '#bfae9c' }}>

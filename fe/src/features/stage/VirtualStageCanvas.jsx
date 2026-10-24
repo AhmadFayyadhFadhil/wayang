@@ -4,6 +4,9 @@ import RealLeatherPuppet from '../../components/stage/RealLeatherPuppet';
 import { updatePuppetArmsDOM } from '../../services/vision/puppetIkSolver';
 import { getBackgroundById } from '../../data/master/stageConfigMaster';
 import soundEngine from '../../services/soundscape';
+import JavaneseCloudBackground from '../../components/ui/JavaneseCloudBackground';
+import panjiCloud from '../../assets/cloud_javanese_panji.png';
+import ukelCloud from '../../assets/cloud_javanese_ukel.png';
 
 const VirtualStageCanvas = forwardRef(function VirtualStageCanvas({
   scene,
@@ -30,6 +33,7 @@ const VirtualStageCanvas = forwardRef(function VirtualStageCanvas({
   const [dismissedDialogueKey, setDismissedDialogueKey] = useState(null);
 
   const bgConfig = getBackgroundById(scene?.background);
+  const isEnhancedClouds = bgConfig?.hasCloudsAnimation !== false;
   const characters = useMemo(() => scene?.characters || [], [scene?.characters]);
   const selectedChar = characters.find((c) => c.instanceId === selectedInstanceId);
 
@@ -220,12 +224,6 @@ const VirtualStageCanvas = forwardRef(function VirtualStageCanvas({
 
   return (
     <div className="stage-gawangan-frame">
-      {/* Ornamen Sudut Prada Kencana */}
-      <div className="stage-frame-corner top-left" />
-      <div className="stage-frame-corner top-right" />
-      <div className="stage-frame-corner bottom-left" />
-      <div className="stage-frame-corner bottom-right" />
-
       <div className="stage-gawangan-inner" style={{ backgroundColor: bgConfig.bgColor }}>
         {/* Kanvas Panggung Utama (16:9 Rasio Terpelihara) */}
         <div
@@ -250,18 +248,63 @@ const VirtualStageCanvas = forwardRef(function VirtualStageCanvas({
               alt={bgConfig.name}
               className="stage-canvas-bg-image"
               style={{
-                opacity: bgConfig.imageOpacity || 0.9,
+                opacity: bgConfig.imageOpacity || 0.92,
               }}
             />
           )}
 
-          {/* Lampu Blencong Keemasan dengan Denyut Bernafas Sakral (5.5s Cycle) */}
-          <div
-            className="blencong-light-aura"
-            style={{
-              background: `radial-gradient(circle, ${bgConfig.glowColor} 0%, rgba(245, 158, 11, 0.4) 40%, transparent 70%)`,
-            }}
+          {/* Motif Awan Tradisional Jawa Otentik dengan Animasi Mengambang & Melayang Halus */}
+          <JavaneseCloudBackground
+            variant="hero"
+            theme="dark"
+            opacity={0.52}
+            animated={true}
+            style={{ zIndex: 1, pointerEvents: 'none' }}
           />
+
+          {/* Pedhut & Awan Kelir Tradisional Jawa Bergerak Berkesinambungan */}
+          <div
+            className="stage-ambient-mist"
+            style={{
+              backgroundImage: `url(${panjiCloud})`,
+              opacity: isEnhancedClouds ? 0.38 : 0.24,
+            }}
+            aria-hidden="true"
+          />
+
+          {/* Lapisan Awan Megamendung Kedua untuk Gerakan Awan Berlawanan Arah */}
+          <div
+            className="stage-ambient-mist-ukel"
+            style={{
+              backgroundImage: `url(${ukelCloud})`,
+              opacity: isEnhancedClouds ? 0.32 : 0.20,
+            }}
+            aria-hidden="true"
+          />
+
+          {/* Lampu Blencong Keemasan dengan Wadah, Denyut Bernafas, & Lidah Api Alami */}
+          <div className="blencong-light-container" aria-hidden="true">
+            <div
+              className="blencong-light-aura"
+              style={{
+                background: `radial-gradient(circle, ${bgConfig.glowColor} 0%, rgba(245, 158, 11, 0.45) 40%, transparent 72%)`,
+              }}
+            />
+            <div className="blencong-cone-beam" />
+            <div className="blencong-flame-core" />
+          </div>
+
+          {/* Pendar Keluk Menyan & Percikan Cahaya Keemasan Melayang */}
+          <div className="stage-ambient-embers" aria-hidden="true">
+            <span className="stage-ember ember-1" />
+            <span className="stage-ember ember-2" />
+            <span className="stage-ember ember-3" />
+            <span className="stage-ember ember-4" />
+            <span className="stage-ember ember-5" />
+            <span className="stage-ember ember-6" />
+            <span className="stage-ember ember-7" />
+            <span className="stage-ember ember-8" />
+          </div>
 
           {/* Siluet Debog (Batang Pisang Tempat Tancep Wayang) */}
           <div className="stage-debog-bar" />
@@ -332,10 +375,6 @@ const VirtualStageCanvas = forwardRef(function VirtualStageCanvas({
           {activeDialogueChar && !isVisionActive && isSubtitleVisible && (
             <div className="kelir-cinematic-subtitle-pill" role="region" aria-label="Naskah Dialog Wayang">
               <span className="subtitle-char-badge">
-                <span
-                  className="subtitle-char-dot"
-                  style={{ background: activeDialogueChar.accentColor || '#d4af37' }}
-                />
                 <span
                   className="subtitle-char-name"
                   style={{ color: activeDialogueChar.accentColor || '#e8bb5c' }}

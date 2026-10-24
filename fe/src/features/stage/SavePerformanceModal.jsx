@@ -102,7 +102,7 @@ export default function SavePerformanceModal({
                   alignItems: 'center',
                   gap: '10px',
                   letterSpacing: '-0.3px',
-                  fontFamily: 'Cinzel, Georgia, serif',
+                  fontFamily: 'var(--font-sans)',
                 }}
               >
                 <Save size={20} style={{ color: '#8b4513' }} />

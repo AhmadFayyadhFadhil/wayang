@@ -14,7 +14,6 @@ import {
 
 // Aset Visual Hero Section Sesuai Referensi Pengguna (SS 1, SS 2, SS 3)
 import heroParchmentWideBg from '../../assets/hero_parchment_clouds_widescreen_hd.jpg';
-import gununganHd from '../../assets/gunungan_kayon_hd.png';
 import JavaneseCloudBackground from '../../components/ui/JavaneseCloudBackground';
 import WayangCoverflowCarousel from '../../components/ui/WayangCoverflowCarousel';
 import WayangDuelShadowBg from '../../components/ui/WayangDuelShadowBg';
@@ -262,63 +261,7 @@ export default function AtlasView({ onPlayCharacterOnStage }) {
         {/* Motif Awan Tradisional Jawa Otentik dengan Animasi Mengambang & Bergeser Halus (Berada di atas backdrop layer 2) */}
         <JavaneseCloudBackground variant="hero" theme="dark" opacity={0.65} animated={true} style={{ zIndex: 3 }} />
 
-        {/* Ornamen Gunungan HD di Kiri & Kanan (Selaras Persis dengan Hero Galeri Publik & Panggung Kelir) */}
-        <div
-          className="hero-gunungan-frame-left"
-          style={{
-            position: 'absolute',
-            left: '-15px',
-            bottom: '0',
-            height: 'clamp(340px, 55vh, 530px)',
-            width: 'clamp(200px, 32vh, 330px)',
-            zIndex: 4,
-            opacity: 0.78,
-            pointerEvents: 'none',
-            filter: 'none',
-            maskImage:
-              'linear-gradient(to bottom, black 65%, rgba(0, 0, 0, 0.5) 85%, transparent 98%)',
-            WebkitMaskImage:
-              'linear-gradient(to bottom, black 65%, rgba(0, 0, 0, 0.5) 85%, transparent 98%)',
-          }}
-        >
-          <img
-            src={gununganHd}
-            alt="Gunungan Kelir Kiri HD"
-            style={{ width: '100%', height: '100%', objectFit: 'contain' }}
-          />
-        </div>
-
-        <div
-          className="hero-gunungan-frame-right"
-          style={{
-            position: 'absolute',
-            right: '-15px',
-            bottom: '0',
-            height: 'clamp(340px, 55vh, 530px)',
-            width: 'clamp(200px, 32vh, 330px)',
-            zIndex: 4,
-            opacity: 0.78,
-            pointerEvents: 'none',
-            filter: 'none',
-            maskImage:
-              'linear-gradient(to bottom, black 65%, rgba(0, 0, 0, 0.5) 85%, transparent 98%)',
-            WebkitMaskImage:
-              'linear-gradient(to bottom, black 65%, rgba(0, 0, 0, 0.5) 85%, transparent 98%)',
-          }}
-        >
-          <img
-            src={gununganHd}
-            alt="Gunungan Kelir Kanan HD"
-            style={{
-              width: '100%',
-              height: '100%',
-              objectFit: 'contain',
-              transform: 'scaleX(-1)',
-            }}
-          />
-        </div>
-
-        {/* Konten Utama: Tipografi Klasik Mewah Terpusat Sempurna (Persis Hero Beranda) */}
+        {/* Konten Utama: Tipografi Klasik Mewah Terpusat Sempurna (Fokus Animasi Awan Sakral) */}
         <div
           style={{
             position: 'relative',
@@ -334,6 +277,8 @@ export default function AtlasView({ onPlayCharacterOnStage }) {
         >
           {/* Eyebrow Budaya Nusantara (Persis Hero Beranda) */}
           <div
+            data-aos="fade-down"
+            data-aos-duration="600"
             style={{
               display: 'inline-flex',
               alignItems: 'center',
@@ -357,6 +302,8 @@ export default function AtlasView({ onPlayCharacterOnStage }) {
 
           {/* Judul Besar Klasik Sesuai Tipografi PRD & SRS (Plus Jakarta Sans) - Terpusat */}
           <h1
+            data-aos="fade-up"
+            data-aos-duration="700"
             style={{
               margin: '0 0 22px 0',
               fontFamily: 'var(--font-sans)',
@@ -373,6 +320,9 @@ export default function AtlasView({ onPlayCharacterOnStage }) {
 
           {/* Deskripsi Subtitle Elegan - Terpusat */}
           <p
+            data-aos="fade-up"
+            data-aos-delay="150"
+            data-aos-duration="700"
             style={{
               margin: '0 auto 36px auto',
               fontSize: 'clamp(14px, 1.35vw, 16.5px)',
@@ -388,6 +338,9 @@ export default function AtlasView({ onPlayCharacterOnStage }) {
 
           {/* Tombol Aksi Utama Hero (Persis Tata Letak Hero Beranda) */}
           <div
+            data-aos="fade-up"
+            data-aos-delay="250"
+            data-aos-duration="700"
             style={{
               display: 'flex',
               justifyContent: 'center',
@@ -482,6 +435,8 @@ export default function AtlasView({ onPlayCharacterOnStage }) {
         >
           {/* 1. Header Khazanah Pustaka Wayang Sesuai Tipografi PRD & SRS (Plus Jakarta Sans) */}
           <h2
+            data-aos="fade-up"
+            data-aos-duration="700"
             style={{
               textAlign: 'center',
               fontFamily: 'var(--font-sans)',
@@ -497,6 +452,9 @@ export default function AtlasView({ onPlayCharacterOnStage }) {
 
           {/* 2. Kapsul Search Bar Elegan (Persis Tata Letak Screenshot: Kapsul Putih, Ikon Search, Button Oranye-Emas) */}
           <form
+            data-aos="fade-up"
+            data-aos-duration="700"
+            data-aos-delay="100"
             onSubmit={(e) => e.preventDefault()}
             style={{
               maxWidth: '820px',
@@ -583,6 +541,9 @@ export default function AtlasView({ onPlayCharacterOnStage }) {
 
           {/* 3. Baris Kapsul Filter Kategori */}
           <div
+            data-aos="fade-up"
+            data-aos-duration="700"
+            data-aos-delay="200"
             style={{
               display: 'flex',
               alignItems: 'center',
@@ -676,7 +637,7 @@ export default function AtlasView({ onPlayCharacterOnStage }) {
 
           {/* A. Bagian Lakon Cerita (Cardbox Persis Halaman Beranda) */}
           {filteredStories.length > 0 && (
-            <div style={{ marginBottom: filteredCharacters.length > 0 || filteredAudio.length > 0 ? '56px' : '20px' }}>
+            <div data-aos="fade-up" data-aos-duration="700" style={{ marginBottom: filteredCharacters.length > 0 || filteredAudio.length > 0 ? '56px' : '20px' }}>
               {activeFilter === 'all' && (
                 <div
                   style={{
@@ -711,7 +672,7 @@ export default function AtlasView({ onPlayCharacterOnStage }) {
 
           {/* B. Bagian Tokoh Wayang — Panggung Terbuka Khazanah Ksatria Nusantara */}
           {filteredCharacters.length > 0 && (
-            <div style={{ marginBottom: filteredAudio.length > 0 ? '56px' : '20px' }}>
+            <div data-aos="fade-up" data-aos-duration="700" style={{ marginBottom: filteredAudio.length > 0 ? '56px' : '20px' }}>
               {activeFilter === 'all' && (
                 <div
                   style={{
@@ -756,7 +717,7 @@ export default function AtlasView({ onPlayCharacterOnStage }) {
 
           {/* C. Bagian Tata Suara — Netflix Top 10 Style Horizontal Carousel */}
           {filteredAudio.length > 0 && (
-            <div style={{ marginBottom: '36px' }}>
+            <div data-aos="fade-up" data-aos-duration="700" style={{ marginBottom: '36px' }}>
               {activeFilter === 'all' && (
                 <div
                   style={{
@@ -952,7 +913,7 @@ export default function AtlasView({ onPlayCharacterOnStage }) {
                         fontSize: '25px',
                         fontWeight: '850',
                         color: '#1a140e',
-                        fontFamily: 'Cinzel, Georgia, serif',
+                        fontFamily: 'var(--font-sans)',
                         letterSpacing: '-0.02em',
                         lineHeight: '1.2',
                       }}
@@ -991,7 +952,8 @@ export default function AtlasView({ onPlayCharacterOnStage }) {
                         fontSize: '24px',
                         fontWeight: '850',
                         color: '#1a140e',
-                        fontFamily: 'Cinzel, Georgia, serif',
+                        fontFamily: 'var(--font-sans)',
+                        letterSpacing: '-0.02em',
                       }}
                     >
                       {selectedStoryModal.title}
@@ -1181,7 +1143,7 @@ export default function AtlasView({ onPlayCharacterOnStage }) {
                     fontSize: '26px',
                     color: '#1a140e',
                     fontWeight: '850',
-                    fontFamily: 'Cinzel, Georgia, serif',
+                    fontFamily: 'var(--font-sans)',
                     letterSpacing: '-0.02em',
                   }}
                 >

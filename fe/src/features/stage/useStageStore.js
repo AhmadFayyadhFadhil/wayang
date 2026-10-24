@@ -5,7 +5,7 @@ import { STAGE_CONFIG_MASTER } from '../../data/master/stageConfigMaster';
 const createDefaultScene = (index = 1) => ({
   id: `scene-${Date.now()}-${index}`,
   title: `Adegan ${index}`,
-  background: 'kelir-blencong-default',
+  background: 'kelir-naskah-prada-kencana',
   durationMs: 5000,
   audioAssetId: 1, // Gamelan Srepeg Mataram
   characters: [
@@ -322,7 +322,7 @@ export const useStageStore = create((set, get) => ({
     const importedScenes = (sceneData.scenes || []).map((sc, sIdx) => ({
       id: sc.id || `scene-${sIdx + 1}`,
       title: sc.title || `Adegan ${sIdx + 1}`,
-      background: sc.background || 'kelir-blencong-default',
+      background: sc.background || 'kelir-naskah-prada-kencana',
       durationMs: sc.durationMs || 5000,
       audioAssetId: sc.audioAssetIds?.[0] || 1,
       characters: (sc.characters || []).map((ch, cIdx) => {

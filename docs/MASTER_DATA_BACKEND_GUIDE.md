@@ -78,13 +78,13 @@ Menyimpan soundscape gamelan, suluk, dan SFX dalang.
   * `created_at`, `updated_at`: TIMESTAMP
 
 ### F. Master Latar Panggung / Kelir (`stage_backgrounds`)
-Preset tema panggung 2D SVG yang tersedia di studio panggung.
-* Nilai preset baku (bisa disimpan di DB atau config array):
-  1. `kelir-blencong-default` (Kelir Putih Klasik + Sorotan Lampu Minyak Blencong)
-  2. `kelir-malam-mistik` (Kelir Malam Bernuansa Mistik Biru Gelap)
-  3. `kelir-kurusetra-perang` (Kelir Senja Merah Laga Bharatayuddha)
-  4. `kelir-alas-robana` (Kelir Siluet Hutan Belantara)
-  5. `kelir-pendopo-agung` (Kelir Keraton Hastinapura/Amarta)
+Preset tema panggung 2D yang tersedia di studio panggung (HD 16:9 Otentik Nusantara):
+* Nilai preset baku (disimpan di master data dan config):
+  1. `kelir-naskah-prada-kencana` (Serat Kuno Prada Kencana — Default)
+  2. `kelir-gunungan-batik-soga` (Hamparan Kelir & Sayap Kayon Batik Soga)
+  3. `kelir-kayon-keraton-kencana` (Relief Kayu Jati Gebyok & Prada Kencana)
+  4. `kelir-naskah-kuno-pustaka` (Kertas Pustaka Babad Serat Kuno)
+  5. `kelir-teratai-prada-lumut` (Beludru Hijau Lumut & Teratai Suci)
 
 ---
 
@@ -99,7 +99,7 @@ Setiap pertunjukan yang disimpan oleh user di tabel `performances` memiliki kolo
     {
       "id": "scene-1",
       "title": "Perjumpaan di Kurusetra",
-      "background": "kelir-blencong-default",
+      "background": "kelir-naskah-prada-kencana",
       "durationMs": 6000,
       "audioAssetIds": [1],
       "characters": [

@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { Plus, Copy, Trash2, Film, Clock } from 'lucide-react';
+import { Plus, Copy, Trash2, Film, Clock, Users } from 'lucide-react';
 import { getBackgroundById } from '../../data/master/stageConfigMaster';
 import soundEngine from '../../services/soundscape';
 
@@ -10,6 +10,7 @@ export default function StageFilmstrip({
   onAddScene,
   onDuplicateScene,
   onRemoveScene,
+  _onReorderScene,
 }) {
   const totalDurationSeconds = useMemo(() => {
     return scenes.reduce((acc, s) => acc + (Number(s.duration) || 5), 0);
@@ -62,7 +63,8 @@ export default function StageFilmstrip({
                 <span className="filmstrip-thumb-number">#{idx + 1}</span>
                 {charCount > 0 && (
                   <span className="filmstrip-thumb-chars" title={`${charCount} tokoh di babak ini`}>
-                    👥 {charCount}
+                    <Users size={8} style={{ display: 'inline', marginRight: '2px', verticalAlign: 'middle' }} />
+                    {charCount}
                   </span>
                 )}
               </div>

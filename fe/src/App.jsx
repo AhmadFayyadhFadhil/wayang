@@ -13,6 +13,7 @@ import WayangLoadingScreen from './components/ui/WayangLoadingScreen';
 import { useStageStore } from './features/stage/useStageStore';
 import persistenceService from './services/persistenceService';
 import { checkApiStatus } from './services/api';
+import { initAOS } from './services/aos';
 import './App.css';
 
 function App() {
@@ -111,6 +112,19 @@ function App() {
       window.removeEventListener('wayang-hide-loading', handleHideLoading);
     };
   }, []);
+
+  // Inisialisasi AOS (Animate On Scroll) seperti jobnation.id setiap tab berubah (kecuali tab panggung kelir)
+  useEffect(() => {
+    if (activeTab === 'stage') return () => {};
+    const cleanup = initAOS({ offset: 40 });
+    const timer = setTimeout(() => {
+      initAOS({ offset: 40 });
+    }, 150);
+    return () => {
+      cleanup();
+      clearTimeout(timer);
+    };
+  }, [activeTab]);
 
   const handleNavigate = (tab) => {
     setActiveTab(tab);

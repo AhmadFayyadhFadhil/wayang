@@ -61,7 +61,7 @@ export default function Footer({ onNavigate }) {
       </div>
 
       {/* 2. Konten Utama Footer */}
-      <div className="wayang-footer-container">
+      <div className="wayang-footer-container" data-aos="fade-up" data-aos-duration="700">
         {/* Layout Asimetris (Brand 1.6fr : Kolom Link 1fr : 1fr : 0.9fr) */}
         <div className="wayang-footer-main-grid">
           {/* Kolom 1: Identitas Brand & Alamat Riil */}
@@ -78,7 +78,7 @@ export default function Footer({ onNavigate }) {
               }}
             >
               <h3 className="wayang-footer-brand-title">
-                Wayangverse
+                Wayang<span style={{ color: '#e8bb5c' }}>verse.</span>
               </h3>
             </div>
 
@@ -364,10 +364,10 @@ export default function Footer({ onNavigate }) {
                     style={{
                       margin: '0 0 4px 0',
                       fontSize: '22px',
-                      fontWeight: '850',
+                      fontWeight: '800',
                       color: '#1a140e',
-                      fontFamily: 'Cinzel, Georgia, serif',
-                      letterSpacing: '-0.01em',
+                      fontFamily: 'var(--font-sans)',
+                      letterSpacing: '-0.02em',
                     }}
                   >
                     {modalData.title}

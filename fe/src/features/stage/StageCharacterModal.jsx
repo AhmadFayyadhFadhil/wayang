@@ -94,7 +94,7 @@ export default function StageCharacterModal({
                   alignItems: 'center',
                   gap: '8px',
                   letterSpacing: '-0.3px',
-                  fontFamily: 'Cinzel, Georgia, serif',
+                  fontFamily: 'var(--font-sans)',
                 }}
               >
                 <UserPlus size={18} style={{ color: '#8b4513' }} />

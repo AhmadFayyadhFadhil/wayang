@@ -103,7 +103,7 @@ class StoryController extends Controller
                 'philosophy' => $validated['philosophy'],
                 'tradition' => $validated['tradition'] ?? 'Gaya Surakarta & Yogyakarta',
                 'version_label' => $validated['version_label'] ?? 'Pakem Gagrag Mataram',
-                'recommended_background' => $validated['recommended_background'] ?? 'kelir-kurusetra-perang',
+                'recommended_background' => $validated['recommended_background'] ?? 'kelir-naskah-prada-kencana',
                 'theme_song' => $validated['theme_song'] ?? 'Gamelan Srepeg Mataram',
                 'status' => $validated['status'] ?? 'published',
             ]);
