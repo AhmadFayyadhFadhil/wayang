@@ -66,3 +66,35 @@ jobs:
       - name: Validate Artisan Commands
         working-directory: ./be
         run: php artisan route:list
+
+  # 3. Pipeline Auto-Deploy Backend ke AWS EC2 (Hanya saat Push/Merge ke branch main)
+  deploy:
+    name: Deploy to AWS EC2
+    needs: [frontend, backend]
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Execute Remote Deployment via SSH
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.EC2_SSH_KEY }}
+          SSH_HOST: ${{ secrets.EC2_HOST }}
+        run: |
+          mkdir -p ~/.ssh
+          echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh -o StrictHostKeyChecking=no ubuntu@$SSH_HOST << 'EOF'
+            set -e
+            echo "🚀 Menjalankan Auto-Deployment Wayangverse di AWS EC2..."
+            cd /home/ubuntu/wayang
+            git fetch origin
+            git checkout main
+            git pull origin main
+            sudo docker compose up -d --build backend
+            sudo docker compose exec -T backend php artisan migrate --force
+            sudo docker compose exec -T backend php artisan config:cache
+            sudo docker compose exec -T backend php artisan route:cache
+            echo ""
+            echo "✅ Auto-deploy sukses! Respon status backend:"
+            curl -s http://localhost:8000/api/status
+          EOF
