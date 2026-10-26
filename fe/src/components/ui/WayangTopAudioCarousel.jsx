@@ -11,6 +11,33 @@ import { Play, Square, ChevronLeft, ChevronRight, Volume2 } from 'lucide-react';
  * - Pemutar audio interaktif dengan animasi equalizer gelombang suara saat aktif.
  * - Navigasi scroll horizontal mulus (panah geser + touch swipe mobile).
  */
+/**
+ * Helper untuk mengekstrak label tempo yang ringkas, elegan, dan anti-overflow.
+ * Menjamin pill badge di kanan atas tidak terpotong (truncated) canggung.
+ */
+const formatTempoTag = (audio = {}) => {
+  if (audio.tempoTag) return audio.tempoTag;
+  const tempo = audio.tempo || '';
+  if (!tempo) return '';
+  const tempoMap = {
+    'Lambat, Syahdu, Mengalun': 'Lambat',
+    'Aksen Tunggal / Hentakan': 'Aksen Tunggal',
+    'Gema Menggelegar Dalam': 'Gema Ageng',
+    'Sangat Cepat & Bergetar': 'Sangat Cepat',
+    'Cepat & Heroik': 'Cepat',
+    'Gemerincing Tajam': 'Gemerincing',
+  };
+  if (tempoMap[tempo]) return tempoMap[tempo];
+
+  // Fallback dinamis: potong tanda pemisah koma, ampersand, atau slash
+  const primary = tempo.split(/[,&/]/)[0].trim();
+  if (primary.length > 13) {
+    const words = primary.split(' ');
+    return words.length > 1 ? words.slice(0, 2).join(' ') : primary.slice(0, 12);
+  }
+  return primary;
+};
+
 export default function WayangTopAudioCarousel({
   audioList = [],
   playingAudioId = null,
@@ -115,23 +142,36 @@ export default function WayangTopAudioCarousel({
                 <div className="wayang-top-audio-header">
                   <div className="wayang-top-audio-crest-group">
                     <span className="wayang-top-audio-crest-logo">W</span>
-                    <span className="wayang-top-audio-badge-category">
+                    <span
+                      className="wayang-top-audio-badge-category"
+                      title={`Kategori: ${audio.category ? audio.category.toUpperCase() : 'BGM'}`}
+                    >
                       {audio.category ? audio.category.toUpperCase() : 'BGM'}
                     </span>
                   </div>
 
-                  {/* Lencana Tempo / Mood di Kanan Atas */}
+                  {/* Lencana Tempo / Mood di Kanan Atas dengan Anti-Overflow Tooltip */}
                   {audio.tempo && (
-                    <span className="wayang-top-audio-tempo-tag">
-                      {audio.tempo.split('&')[0].trim()}
+                    <span
+                      className="wayang-top-audio-tempo-tag"
+                      title={`Karakter Irama: ${audio.tempo}${audio.mood ? ` • ${audio.mood}` : ''}`}
+                    >
+                      {formatTempoTag(audio)}
                     </span>
                   )}
                 </div>
 
                 {/* Konten Bagian Bawah Poster */}
                 <div className="wayang-top-audio-content">
-                  <h4 className="wayang-top-audio-title">{audio.title}</h4>
-                  <p className="wayang-top-audio-instrument">{audio.instrument}</p>
+                  <h4 className="wayang-top-audio-title" title={audio.title}>
+                    {audio.title}
+                  </h4>
+                  <p
+                    className="wayang-top-audio-instrument"
+                    title={`Instrumen: ${audio.instrument}${audio.mood ? ` (${audio.mood})` : ''}`}
+                  >
+                    {audio.instrument}
+                  </p>
 
                   <div className="wayang-top-audio-footer-row">
                     {/* Tombol Play / Stop dengan Equalizer Aktif */}

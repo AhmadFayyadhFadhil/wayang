@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { apiClient } from '../../services/api';
 import { STORIES_MASTER } from '../../data/master/storiesMaster';
 import { CHARACTERS_MASTER } from '../../data/master/charactersMaster';
 import { AUDIO_MASTER } from '../../data/master/audioMaster';
@@ -97,6 +98,82 @@ export default function AtlasView({ onPlayCharacterOnStage }) {
   const [selectedCharModal, setSelectedCharModal] = useState(null);
   const [previewPose, setPreviewPose] = useState('default');
 
+  // Master Data Terintegrasi (Sinkron dengan CMS Admin & Status Moderasi)
+  const [characters, setCharacters] = useState(() => {
+    try {
+      const overrides = JSON.parse(localStorage.getItem('wayangverse_character_status') || '{}');
+      return CHARACTERS_MASTER.map((c) => ({
+        ...c,
+        status: overrides[c.id] !== undefined ? overrides[c.id] : (c.status || 'published'),
+      }));
+    } catch {
+      return CHARACTERS_MASTER;
+    }
+  });
+
+  const [stories, setStories] = useState(() => {
+    try {
+      const overrides = JSON.parse(localStorage.getItem('wayangverse_story_status') || '{}');
+      return STORIES_MASTER.map((s) => ({
+        ...s,
+        status: overrides[s.id] !== undefined ? overrides[s.id] : (s.status || 'published'),
+      }));
+    } catch {
+      return STORIES_MASTER;
+    }
+  });
+
+  // Sinkronisasi status keterlihatan (Atlas Toggle) secara real-time
+  useEffect(() => {
+    const syncAtlasData = async () => {
+      try {
+        const charOverrides = JSON.parse(localStorage.getItem('wayangverse_character_status') || '{}');
+        const storyOverrides = JSON.parse(localStorage.getItem('wayangverse_story_status') || '{}');
+
+        let apiChars = null;
+        let apiStories = null;
+        try {
+          const [cRes, sRes] = await Promise.all([
+            apiClient.get('/characters?all=1'),
+            apiClient.get('/stories?all=1'),
+          ]);
+          if (Array.isArray(cRes.data?.data)) apiChars = cRes.data.data;
+          if (Array.isArray(sRes.data?.data)) apiStories = sRes.data.data;
+        } catch {
+          // Fallback lokal jika offline
+        }
+
+        const baseChars = apiChars && apiChars.length > 0 ? apiChars : CHARACTERS_MASTER;
+        const baseStories = apiStories && apiStories.length > 0 ? apiStories : STORIES_MASTER;
+
+        setCharacters(
+          baseChars.map((c) => ({
+            ...c,
+            status: charOverrides[c.id] !== undefined ? charOverrides[c.id] : (c.status || 'published'),
+          }))
+        );
+
+        setStories(
+          baseStories.map((s) => ({
+            ...s,
+            status: storyOverrides[s.id] !== undefined ? storyOverrides[s.id] : (s.status || 'published'),
+          }))
+        );
+      } catch (err) {
+        console.warn('Gagal sinkron data Story Atlas:', err);
+      }
+    };
+
+    syncAtlasData();
+    window.addEventListener('wayangverse_status_changed', syncAtlasData);
+    window.addEventListener('storage', syncAtlasData);
+
+    return () => {
+      window.removeEventListener('wayangverse_status_changed', syncAtlasData);
+      window.removeEventListener('storage', syncAtlasData);
+    };
+  }, []);
+
   // Bersihkan pemutaran audio gending saat pengguna berpindah tab/halaman
   useEffect(() => {
     return () => {
@@ -106,15 +183,17 @@ export default function AtlasView({ onPlayCharacterOnStage }) {
 
   const q = searchQuery.toLowerCase().trim();
 
-  // Filter Lakon Cerita
-  const filteredStories = STORIES_MASTER.filter((s) => {
+  // Filter Lakon Cerita (Hanya yang berstatus published / dicentang tampil)
+  const filteredStories = stories.filter((s) => {
+    if (s.status && s.status !== 'published') return false;
+
     const textMatch =
       !q ||
       s.title.toLowerCase().includes(q) ||
       s.synopsis.toLowerCase().includes(q) ||
       (s.shortSynopsis && s.shortSynopsis.toLowerCase().includes(q)) ||
-      s.tradition.toLowerCase().includes(q) ||
-      s.philosophy.toLowerCase().includes(q);
+      (s.tradition && s.tradition.toLowerCase().includes(q)) ||
+      (s.philosophy && s.philosophy.toLowerCase().includes(q));
 
     if (!textMatch) return false;
 
@@ -122,16 +201,18 @@ export default function AtlasView({ onPlayCharacterOnStage }) {
     return false;
   });
 
-  // Filter Tokoh Wayang
-  const filteredCharacters = CHARACTERS_MASTER.filter((c) => {
+  // Filter Tokoh Wayang (Hanya yang berstatus published / dicentang tampil)
+  const filteredCharacters = characters.filter((c) => {
+    if (c.status && c.status !== 'published') return false;
+
     const textMatch =
       !q ||
       c.name.toLowerCase().includes(q) ||
-      c.alias.toLowerCase().includes(q) ||
-      c.description.toLowerCase().includes(q) ||
+      (c.alias && c.alias.toLowerCase().includes(q)) ||
+      (c.description && c.description.toLowerCase().includes(q)) ||
       (c.shortDesc && c.shortDesc.toLowerCase().includes(q)) ||
-      c.weapons.toLowerCase().includes(q) ||
-      c.typeName.toLowerCase().includes(q);
+      (c.weapons && c.weapons.toLowerCase().includes(q)) ||
+      (c.typeName && c.typeName.toLowerCase().includes(q));
 
     if (!textMatch) return false;
 

@@ -14,6 +14,20 @@ import JavaneseCloudBackground from '../../components/ui/JavaneseCloudBackground
 import heroParchmentWideBg from '../../assets/hero_parchment_clouds_widescreen_hd.jpg';
 import atlasGoldMotifStrip from '../../assets/atlas_gold_motif_strip.jpg';
 import HeritageBatikRibbon from '../../components/ui/HeritageBatikRibbon';
+
+// Aset Visual Kartu Koleksi Tokoh & Sampul Lakon Otentik
+import wayangCardGatotkaca from '../../assets/wayang_card_gatotkaca.jpg';
+import wayangCardArjuna from '../../assets/wayang_card_arjuna.jpg';
+import wayangCardBima from '../../assets/wayang_card_bima.jpg';
+import wayangCardKarna from '../../assets/wayang_card_karna.jpg';
+import wayangCardRahwana from '../../assets/wayang_card_rahwana.jpg';
+import wayangCardSemar from '../../assets/wayang_card_semar.jpg';
+import wayangCardShinta from '../../assets/wayang_card_shinta.jpg';
+import galleryCoverGatotkaca from '../../assets/gallery_cover_gatotkaca.jpg';
+import dalangPerformanceHeritage from '../../assets/dalang_performance_heritage.jpg';
+import lakonCoverDewaRuci from '../../assets/lakon_cover_dewa_ruci.jpg';
+import lakonCoverShintaObong from '../../assets/lakon_cover_shinta_obong.jpg';
+
 import {
   X,
   Save,
@@ -36,7 +50,57 @@ import {
   ChevronDown,
   Layers,
   Upload,
+  ZoomIn,
+  Check,
+  ExternalLink,
 } from 'lucide-react';
+
+const CHARACTER_IMAGE_MAP = {
+  gatotkaca: wayangCardGatotkaca,
+  arjuna: wayangCardArjuna,
+  bima: wayangCardBima,
+  werkudara: wayangCardBima,
+  karna: wayangCardKarna,
+  rahwana: wayangCardRahwana,
+  dasamuka: wayangCardRahwana,
+  semar: wayangCardSemar,
+  shinta: wayangCardShinta,
+};
+
+const STORY_IMAGE_MAP = {
+  'gugurnya-ghatotkaca': galleryCoverGatotkaca,
+  'bharatayuddha': galleryCoverGatotkaca,
+  'karno-tanding': dalangPerformanceHeritage,
+  'dewa-ruci': lakonCoverDewaRuci,
+  'shinta-obong': lakonCoverShintaObong,
+  'ramayana': lakonCoverShintaObong,
+};
+
+const getCharacterImage = (c) => {
+  if (!c) return null;
+  if (c.image_path) return c.image_path;
+  if (c.image_url) return c.image_url;
+  if (c.imageUrl) return c.imageUrl;
+  if (c.photo) return c.photo;
+  const slug = (c.slug || c.name || '').toLowerCase();
+  for (const [key, val] of Object.entries(CHARACTER_IMAGE_MAP)) {
+    if (slug.includes(key)) return val;
+  }
+  return null;
+};
+
+const getStoryImage = (s) => {
+  if (!s) return dalangPerformanceHeritage;
+  if (s.cover_image) return s.cover_image;
+  if (s.coverImage) return s.coverImage;
+  if (s.coverUrl) return s.coverUrl;
+  if (s.image_url) return s.image_url;
+  const slug = (s.slug || s.title || '').toLowerCase();
+  for (const [key, val] of Object.entries(STORY_IMAGE_MAP)) {
+    if (slug.includes(key)) return val;
+  }
+  return dalangPerformanceHeritage;
+};
 
 export default function AdminCmsView({ onPlayPerformance }) {
   const [activeTab, setActiveTab] = useState('karakter'); // 'karakter' | 'cerita' | 'audio' | 'panggung' | 'karya' | 'users'
@@ -63,10 +127,24 @@ export default function AdminCmsView({ onPlayPerformance }) {
   const [editingItem, setEditingItem] = useState(null);
   const [form, setForm] = useState({});
 
+  // Lightbox Pratinjau Foto HD State
+  const [lightboxImage, setLightboxImage] = useState(null); // { src, title, subtitle, type }
+
   const showNotice = (msg, isError = false) => {
     setNotice({ msg, isError });
     setTimeout(() => setNotice(null), 3500);
   };
+
+  // Tutup Lightbox saat tombol Escape ditekan
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        if (lightboxImage) setLightboxImage(null);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [lightboxImage]);
 
   // Stop background music on unmount
   useEffect(() => {
@@ -116,13 +194,30 @@ export default function AdminCmsView({ onPlayPerformance }) {
 
       // 2. Muat data menggunakan endpoint terpadu /admin/dashboard-data
       let loadedViaApi = false;
+      const charOverrides = JSON.parse(localStorage.getItem('wayangverse_character_status') || '{}');
+      const storyOverrides = JSON.parse(localStorage.getItem('wayangverse_story_status') || '{}');
+
       try {
         const res = await apiClient.get('/admin/dashboard-data');
         if (res.data?.data) {
           const d = res.data.data;
           if (d.counts) setStats({ counts: d.counts });
-          if (Array.isArray(d.characters) && d.characters.length > 0) setCharacters(d.characters);
-          if (Array.isArray(d.stories) && d.stories.length > 0) setStories(d.stories);
+          if (Array.isArray(d.characters) && d.characters.length > 0) {
+            setCharacters(
+              d.characters.map((c) => ({
+                ...c,
+                status: charOverrides[c.id] !== undefined ? charOverrides[c.id] : (c.status || 'published'),
+              }))
+            );
+          }
+          if (Array.isArray(d.stories) && d.stories.length > 0) {
+            setStories(
+              d.stories.map((s) => ({
+                ...s,
+                status: storyOverrides[s.id] !== undefined ? storyOverrides[s.id] : (s.status || 'published'),
+              }))
+            );
+          }
           if (Array.isArray(d.audio_assets) && d.audio_assets.length > 0) setAudioAssets(d.audio_assets);
           if (Array.isArray(d.performances)) setPerformances(d.performances);
           if (Array.isArray(d.users)) setUsersList(d.users);
@@ -135,8 +230,18 @@ export default function AdminCmsView({ onPlayPerformance }) {
       // 3. Fallback cerdas: Ambil dari master data lokal jika server kosong/offline
       if (!loadedViaApi) {
         const localWorks = await persistenceService.getMyWorks().catch(() => []);
-        setCharacters(CHARACTERS_MASTER);
-        setStories(STORIES_MASTER);
+        setCharacters(
+          CHARACTERS_MASTER.map((c) => ({
+            ...c,
+            status: charOverrides[c.id] !== undefined ? charOverrides[c.id] : (c.status || 'published'),
+          }))
+        );
+        setStories(
+          STORIES_MASTER.map((s) => ({
+            ...s,
+            status: storyOverrides[s.id] !== undefined ? storyOverrides[s.id] : (s.status || 'published'),
+          }))
+        );
         setAudioAssets(AUDIO_MASTER);
         setPerformances(
           localWorks.length > 0
@@ -267,6 +372,64 @@ export default function AdminCmsView({ onPlayPerformance }) {
     }
   };
 
+  // Toggle Status Moderasi / Tampil di Story Atlas (Checkbox / Switch Interaktif)
+  const handleToggleAtlasVisibility = async (type, item) => {
+    const nextStatus = item.status === 'published' ? 'draft' : 'published';
+    const isPublishing = nextStatus === 'published';
+
+    if (type === 'character') {
+      // 1. Optimistic Update State
+      setCharacters((prev) =>
+        prev.map((c) => (c.id === item.id ? { ...c, status: nextStatus } : c))
+      );
+      // 2. Persistensi Dual-Layer: Local Storage
+      try {
+        const overrides = JSON.parse(localStorage.getItem('wayangverse_character_status') || '{}');
+        overrides[item.id] = nextStatus;
+        localStorage.setItem('wayangverse_character_status', JSON.stringify(overrides));
+        window.dispatchEvent(new CustomEvent('wayangverse_status_changed'));
+      } catch (e) {
+        console.warn('Gagal simpan status lokal tokoh:', e);
+      }
+      // 3. Sinkronisasi API Backend
+      try {
+        await apiClient.patch(`/admin/characters/${item.id}`, { status: nextStatus });
+      } catch (err) {
+        console.warn('API update status gagal, fallback lokal aktif:', err);
+      }
+      showNotice(
+        isPublishing
+          ? `Tokoh "${item.name}" kini DITAMPILKAN di Story Atlas.`
+          : `Tokoh "${item.name}" kini DISEMBUNYIKAN dari Story Atlas (Draft).`
+      );
+    } else if (type === 'story') {
+      // 1. Optimistic Update State
+      setStories((prev) =>
+        prev.map((s) => (s.id === item.id ? { ...s, status: nextStatus } : s))
+      );
+      // 2. Persistensi Dual-Layer: Local Storage
+      try {
+        const overrides = JSON.parse(localStorage.getItem('wayangverse_story_status') || '{}');
+        overrides[item.id] = nextStatus;
+        localStorage.setItem('wayangverse_story_status', JSON.stringify(overrides));
+        window.dispatchEvent(new CustomEvent('wayangverse_status_changed'));
+      } catch (e) {
+        console.warn('Gagal simpan status lokal lakon:', e);
+      }
+      // 3. Sinkronisasi API Backend
+      try {
+        await apiClient.patch(`/admin/stories/${item.id}`, { status: nextStatus });
+      } catch (err) {
+        console.warn('API update status gagal, fallback lokal aktif:', err);
+      }
+      showNotice(
+        isPublishing
+          ? `Lakon "${item.title}" kini DITAMPILKAN di Story Atlas.`
+          : `Lakon "${item.title}" kini DISEMBUNYIKAN dari Story Atlas (Draft).`
+      );
+    }
+  };
+
   // Form Modal
   const openModal = (type, item = null) => {
     setModalType(type);
@@ -280,6 +443,7 @@ export default function AdminCmsView({ onPlayPerformance }) {
           alias: '',
           type: 'ksatria',
           weapons: '',
+          image_url: '',
           description: '',
           philosophy: '',
           status: 'published',
@@ -291,6 +455,7 @@ export default function AdminCmsView({ onPlayPerformance }) {
           philosophy: '',
           tradition: 'Gaya Surakarta & Yogyakarta',
           theme_song: 'Gamelan Srepeg Mataram',
+          cover_image: '',
           status: 'published',
         });
       } else if (type === 'audio') {
@@ -1141,10 +1306,10 @@ export default function AdminCmsView({ onPlayPerformance }) {
                 <table className="admin-table">
                   <thead>
                     <tr>
-                      <th>Nama & Gelar Tokoh</th>
+                      <th style={{ minWidth: '240px' }}>Tokoh & Pratinjau Foto</th>
                       <th>Golongan / Trah</th>
                       <th>Senjata Pusaka</th>
-                      <th>Status Moderasi</th>
+                      <th style={{ width: '190px' }}>Tampil di Story Atlas</th>
                       <th style={{ textAlign: 'right' }}>Aksi</th>
                     </tr>
                   </thead>
@@ -1161,61 +1326,101 @@ export default function AdminCmsView({ onPlayPerformance }) {
                         </td>
                       </tr>
                     ) : (
-                      filteredCharacters.map((c) => (
-                        <tr key={c.id}>
-                          <td>
-                            <div>
-                              <div style={{ fontWeight: '800', color: '#1a140e', fontSize: '14.5px', letterSpacing: '-0.01em' }}>
-                                {c.name}
+                      filteredCharacters.map((c) => {
+                        const cImg = getCharacterImage(c);
+                        return (
+                          <tr key={c.id}>
+                            <td>
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+                                <div
+                                  className="admin-photo-thumb"
+                                  title={cImg ? `Klik untuk perbesar foto ${c.name}` : `Foto ${c.name}`}
+                                  onClick={() => {
+                                    if (cImg) {
+                                      setLightboxImage({
+                                        src: cImg,
+                                        title: c.name,
+                                        subtitle: c.alias || c.typeName || 'Koleksi Kartu Wayang Purwa',
+                                        type: 'Karakter Wayang',
+                                      });
+                                    }
+                                  }}
+                                >
+                                  {cImg ? (
+                                    <img
+                                      src={cImg}
+                                      alt={c.name}
+                                      className="admin-photo-img"
+                                    />
+                                  ) : (
+                                    <div className="admin-photo-placeholder">
+                                      <span>{(c.name || 'W')[0]}</span>
+                                    </div>
+                                  )}
+                                  {cImg && (
+                                    <div className="admin-photo-overlay">
+                                      <ZoomIn size={14} />
+                                    </div>
+                                  )}
+                                </div>
+                                <div>
+                                  <div style={{ fontWeight: '800', color: '#1a140e', fontSize: '14.5px', letterSpacing: '-0.01em' }}>
+                                    {c.name}
+                                  </div>
+                                  <div style={{ fontSize: '12px', color: '#786554', marginTop: '3px' }}>
+                                    {c.alias || c.typeName || 'Tokoh Wayang Purwa'}
+                                  </div>
+                                </div>
                               </div>
-                              <div style={{ fontSize: '12px', color: '#786554', marginTop: '3px' }}>
-                                {c.alias || c.typeName || 'Tokoh Wayang Purwa'}
-                              </div>
-                            </div>
-                          </td>
-                          <td>
-                            <span className={getGolonganClass(c.type)}>
-                              {c.typeName || c.type}
-                            </span>
-                          </td>
-                          <td>
-                            <span style={{ color: '#423122', fontSize: '13px', fontWeight: '500' }}>
-                              {c.weapons || '-'}
-                            </span>
-                          </td>
-                          <td>
-                            {c.status === 'published' ? (
-                              <div className="admin-status-indicator published">
-                                <span className="admin-status-dot published" />
-                                <span>Published</span>
-                              </div>
-                            ) : (
-                              <div className="admin-status-indicator draft">
-                                <span className="admin-status-dot draft" />
-                                <span>Draft</span>
-                              </div>
-                            )}
-                          </td>
-                          <td style={{ textAlign: 'right' }}>
-                            <div style={{ display: 'inline-flex', gap: '8px' }}>
+                            </td>
+                            <td>
+                              <span className={getGolonganClass(c.type)}>
+                                {c.typeName || c.type}
+                              </span>
+                            </td>
+                            <td>
+                              <span style={{ color: '#423122', fontSize: '13px', fontWeight: '500' }}>
+                                {c.weapons || '-'}
+                              </span>
+                            </td>
+                            <td>
                               <button
-                                onClick={() => openModal('character', c)}
-                                className="admin-btn-action-edit"
+                                type="button"
+                                onClick={() => handleToggleAtlasVisibility('character', c)}
+                                className={`admin-toggle-atlas ${c.status === 'published' ? 'is-published' : 'is-draft'}`}
+                                title={c.status === 'published' ? 'Klik untuk sembunyikan dari Story Atlas' : 'Klik untuk tampilkan di Story Atlas'}
                               >
-                                <Pencil size={13} />
-                                <span>Ubah</span>
+                                <div className="admin-toggle-track">
+                                  <div className="admin-toggle-thumb">
+                                    {c.status === 'published' ? <Check size={10} strokeWidth={3} /> : <X size={10} strokeWidth={3} />}
+                                  </div>
+                                </div>
+                                <span className="admin-toggle-label">
+                                  {c.status === 'published' ? 'Tampil di Atlas' : 'Disembunyikan'}
+                                </span>
                               </button>
-                              <button
-                                onClick={() => handleDelete('character', c.id, c.name)}
-                                className="admin-btn-action-del"
-                              >
-                                <Trash2 size={13} />
-                                <span>Hapus</span>
-                              </button>
-                            </div>
-                          </td>
-                        </tr>
-                      ))
+                            </td>
+                            <td style={{ textAlign: 'right' }}>
+                              <div style={{ display: 'inline-flex', gap: '8px' }}>
+                                <button
+                                  onClick={() => openModal('character', c)}
+                                  className="admin-btn-action-edit"
+                                >
+                                  <Pencil size={13} />
+                                  <span>Ubah</span>
+                                </button>
+                                <button
+                                  onClick={() => handleDelete('character', c.id, c.name)}
+                                  className="admin-btn-action-del"
+                                >
+                                  <Trash2 size={13} />
+                                  <span>Hapus</span>
+                                </button>
+                              </div>
+                            </td>
+                          </tr>
+                        );
+                      })
                     )}
                   </tbody>
                 </table>
@@ -1226,10 +1431,10 @@ export default function AdminCmsView({ onPlayPerformance }) {
                 <table className="admin-table">
                   <thead>
                     <tr>
-                      <th>Judul Lakon Wiracarita</th>
+                      <th style={{ minWidth: '260px' }}>Lakon & Sampul Cerita</th>
                       <th>Gaya Tradisi</th>
                       <th>Gending Iringan</th>
-                      <th>Status Moderasi</th>
+                      <th style={{ width: '190px' }}>Tampil di Story Atlas</th>
                       <th style={{ textAlign: 'right' }}>Aksi</th>
                     </tr>
                   </thead>
@@ -1246,61 +1451,101 @@ export default function AdminCmsView({ onPlayPerformance }) {
                         </td>
                       </tr>
                     ) : (
-                      filteredStories.map((s) => (
-                        <tr key={s.id}>
-                          <td>
-                            <div>
-                              <div style={{ fontWeight: '800', color: '#1a140e', fontSize: '14.5px', letterSpacing: '-0.01em' }}>
-                                {s.title}
+                      filteredStories.map((s) => {
+                        const sImg = getStoryImage(s);
+                        return (
+                          <tr key={s.id}>
+                            <td>
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+                                <div
+                                  className="admin-photo-thumb story-cover"
+                                  title={sImg ? `Klik untuk perbesar sampul ${s.title}` : `Sampul ${s.title}`}
+                                  onClick={() => {
+                                    if (sImg) {
+                                      setLightboxImage({
+                                        src: sImg,
+                                        title: s.title,
+                                        subtitle: s.tradition || s.versionLabel || 'Naskah Pakem Wiracarita',
+                                        type: 'Sampul Lakon Cerita',
+                                      });
+                                    }
+                                  }}
+                                >
+                                  {sImg ? (
+                                    <img
+                                      src={sImg}
+                                      alt={s.title}
+                                      className="admin-photo-img"
+                                    />
+                                  ) : (
+                                    <div className="admin-photo-placeholder story-cover">
+                                      <BookOpen size={16} />
+                                    </div>
+                                  )}
+                                  {sImg && (
+                                    <div className="admin-photo-overlay">
+                                      <ZoomIn size={14} />
+                                    </div>
+                                  )}
+                                </div>
+                                <div>
+                                  <div style={{ fontWeight: '800', color: '#1a140e', fontSize: '14.5px', letterSpacing: '-0.01em' }}>
+                                    {s.title}
+                                  </div>
+                                  <div style={{ fontSize: '12px', color: '#786554', marginTop: '3px' }}>
+                                    {s.versionLabel || s.version_label || 'Pakem Purwa Klasik'}
+                                  </div>
+                                </div>
                               </div>
-                              <div style={{ fontSize: '12px', color: '#786554', marginTop: '3px' }}>
-                                {s.versionLabel || s.version_label || 'Pakem Purwa Klasik'}
-                              </div>
-                            </div>
-                          </td>
-                          <td>
-                            <span style={{ color: '#8b4513', fontSize: '13px', fontWeight: '650' }}>
-                              {s.tradition || 'Gaya Surakarta & Yogyakarta'}
-                            </span>
-                          </td>
-                          <td>
-                            <span style={{ color: '#423122', fontSize: '13px', fontWeight: '500' }}>
-                              {s.themeSong || s.theme_song || 'Gamelan Srepeg Mataram'}
-                            </span>
-                          </td>
-                          <td>
-                            {s.status === 'published' ? (
-                              <div className="admin-status-indicator published">
-                                <span className="admin-status-dot published" />
-                                <span>Published</span>
-                              </div>
-                            ) : (
-                              <div className="admin-status-indicator draft">
-                                <span className="admin-status-dot draft" />
-                                <span>Draft</span>
-                              </div>
-                            )}
-                          </td>
-                          <td style={{ textAlign: 'right' }}>
-                            <div style={{ display: 'inline-flex', gap: '8px' }}>
+                            </td>
+                            <td>
+                              <span style={{ color: '#8b4513', fontSize: '13px', fontWeight: '650' }}>
+                                {s.tradition || 'Gaya Surakarta & Yogyakarta'}
+                              </span>
+                            </td>
+                            <td>
+                              <span style={{ color: '#423122', fontSize: '13px', fontWeight: '500' }}>
+                                {s.themeSong || s.theme_song || 'Gamelan Srepeg Mataram'}
+                              </span>
+                            </td>
+                            <td>
                               <button
-                                onClick={() => openModal('story', s)}
-                                className="admin-btn-action-edit"
+                                type="button"
+                                onClick={() => handleToggleAtlasVisibility('story', s)}
+                                className={`admin-toggle-atlas ${s.status === 'published' ? 'is-published' : 'is-draft'}`}
+                                title={s.status === 'published' ? 'Klik untuk sembunyikan dari Story Atlas' : 'Klik untuk tampilkan di Story Atlas'}
                               >
-                                <Pencil size={13} />
-                                <span>Ubah</span>
+                                <div className="admin-toggle-track">
+                                  <div className="admin-toggle-thumb">
+                                    {s.status === 'published' ? <Check size={10} strokeWidth={3} /> : <X size={10} strokeWidth={3} />}
+                                  </div>
+                                </div>
+                                <span className="admin-toggle-label">
+                                  {s.status === 'published' ? 'Tampil di Atlas' : 'Disembunyikan'}
+                                </span>
                               </button>
-                              <button
-                                onClick={() => handleDelete('story', s.id, s.title)}
-                                className="admin-btn-action-del"
-                              >
-                                <Trash2 size={13} />
-                                <span>Hapus</span>
-                              </button>
-                            </div>
-                          </td>
-                        </tr>
-                      ))
+                            </td>
+                            <td style={{ textAlign: 'right' }}>
+                              <div style={{ display: 'inline-flex', gap: '8px' }}>
+                                <button
+                                  onClick={() => openModal('story', s)}
+                                  className="admin-btn-action-edit"
+                                >
+                                  <Pencil size={13} />
+                                  <span>Ubah</span>
+                                </button>
+                                <button
+                                  onClick={() => handleDelete('story', s.id, s.title)}
+                                  className="admin-btn-action-del"
+                                >
+                                  <Trash2 size={13} />
+                                  <span>Hapus</span>
+                                </button>
+                              </div>
+                            </td>
+                          </tr>
+                        );
+                      })
                     )}
                   </tbody>
                 </table>
@@ -1422,28 +1667,34 @@ export default function AdminCmsView({ onPlayPerformance }) {
                           <tr key={stage.id}>
                             <td>
                               <div
+                                className="admin-photo-thumb stage-kelir"
+                                onClick={() => {
+                                  if (stage.bgImage) {
+                                    setLightboxImage({
+                                      src: stage.bgImage,
+                                      title: stage.name,
+                                      subtitle: stage.atmosphere || stage.description || 'Kelir Panggung Virtual HD',
+                                      type: 'Kelir Panggung Virtual',
+                                    });
+                                  }
+                                }}
+                                title={stage.bgImage ? `Klik untuk perbesar kelir ${stage.name}` : stage.name}
                                 style={{
-                                  width: '104px',
-                                  height: '58px',
-                                  borderRadius: '6px',
-                                  overflow: 'hidden',
-                                  position: 'relative',
-                                  border: '1px solid rgba(212, 175, 55, 0.35)',
-                                  boxShadow: '0 2px 8px rgba(0, 0, 0, 0.15)',
                                   background: stage.gradient || '#17110c',
+                                  cursor: stage.bgImage ? 'pointer' : 'default',
                                 }}
                               >
                                 {isImage && (
                                   <img
                                     src={stage.bgImage}
                                     alt={stage.name}
-                                    style={{
-                                      width: '100%',
-                                      height: '100%',
-                                      objectFit: 'cover',
-                                      display: 'block',
-                                    }}
+                                    className="admin-photo-img"
                                   />
+                                )}
+                                {isImage && (
+                                  <div className="admin-photo-overlay">
+                                    <ZoomIn size={14} />
+                                  </div>
                                 )}
                                 {/* Mini Blencong Glow Accent */}
                                 <div
@@ -1458,6 +1709,7 @@ export default function AdminCmsView({ onPlayPerformance }) {
                                     background: stage.blencongColor || 'rgba(255, 200, 100, 0.65)',
                                     filter: 'blur(4px)',
                                     pointerEvents: 'none',
+                                    zIndex: 3,
                                   }}
                                 />
                               </div>
@@ -1554,7 +1806,7 @@ export default function AdminCmsView({ onPlayPerformance }) {
                 <table className="admin-table">
                   <thead>
                     <tr>
-                      <th>Judul Pagelaran</th>
+                      <th style={{ minWidth: '240px' }}>Judul Pagelaran</th>
                       <th>Dalang / Pengkarya</th>
                       <th>Visibilitas</th>
                       <th>Tanggal Kreasi</th>
@@ -1574,18 +1826,44 @@ export default function AdminCmsView({ onPlayPerformance }) {
                         </td>
                       </tr>
                     ) : (
-                      filteredPerformances.map((p) => (
-                        <tr key={p.id}>
-                          <td>
-                            <div>
-                              <div style={{ fontWeight: '800', color: '#1a140e', fontSize: '14.5px', letterSpacing: '-0.01em' }}>
-                                {p.title}
+                      filteredPerformances.map((p) => {
+                        const perfCover = p.story?.cover_image || galleryCoverGatotkaca;
+                        return (
+                          <tr key={p.id}>
+                            <td>
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+                                <div
+                                  className="admin-photo-thumb story-cover"
+                                  style={{ width: '56px', height: '38px', flexShrink: 0 }}
+                                  title="Klik untuk perbesar sampul pagelaran"
+                                  onClick={() => {
+                                    setLightboxImage({
+                                      src: perfCover,
+                                      title: p.title,
+                                      subtitle: `Dalang: ${p.user?.name || p.author || 'Dalang Muda'} • ${p.story?.title || 'Lakon Mandiri'}`,
+                                      type: 'Pagelaran Komunitas',
+                                    });
+                                  }}
+                                >
+                                  <img
+                                    src={perfCover}
+                                    alt={p.title}
+                                    className="admin-photo-img"
+                                  />
+                                  <div className="admin-photo-overlay">
+                                    <ZoomIn size={12} />
+                                  </div>
+                                </div>
+                                <div>
+                                  <div style={{ fontWeight: '800', color: '#1a140e', fontSize: '14.5px', letterSpacing: '-0.01em' }}>
+                                    {p.title}
+                                  </div>
+                                  <div style={{ fontSize: '12px', color: '#786554', marginTop: '3px' }}>
+                                    {p.story?.title || 'Lakon Mandiri Sanggar'}
+                                  </div>
+                                </div>
                               </div>
-                              <div style={{ fontSize: '12px', color: '#786554', marginTop: '3px' }}>
-                                {p.story?.title || 'Lakon Mandiri Sanggar'}
-                              </div>
-                            </div>
-                          </td>
+                            </td>
                           <td>
                             <div style={{ color: '#1a140e', fontWeight: '750', fontSize: '13.5px' }}>
                               {p.user?.name || p.author || 'Dalang Muda'}
@@ -1630,8 +1908,9 @@ export default function AdminCmsView({ onPlayPerformance }) {
                             </div>
                           </td>
                         </tr>
-                      ))
-                    )}
+                      );
+                    })
+                  )}
                   </tbody>
                 </table>
               )}
@@ -1842,6 +2121,46 @@ export default function AdminCmsView({ onPlayPerformance }) {
                       />
                     </div>
 
+                    <div>
+                      <label style={modalLabelStyle}>URL Foto / Gambar Tokoh (Opsional)</label>
+                      <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                        <input
+                          type="text"
+                          value={form.image_url || form.image_path || ''}
+                          onChange={(e) => setForm({ ...form, image_url: e.target.value, image_path: e.target.value })}
+                          placeholder="https://... atau biarkan kosong untuk kartu pakem"
+                          style={{ ...modalInputStyle, flex: 1 }}
+                        />
+                        {(form.image_url || form.image_path || getCharacterImage(form)) && (
+                          <div
+                            className="admin-photo-thumb"
+                            style={{ width: '40px', height: '40px', flexShrink: 0 }}
+                            onClick={() => {
+                              const p = form.image_url || form.image_path || getCharacterImage(form);
+                              if (p) {
+                                setLightboxImage({
+                                  src: p,
+                                  title: form.name || 'Pratinjau Foto Tokoh',
+                                  subtitle: 'Pratinjau foto kartu tokoh wayang',
+                                  type: 'Form Pratinjau',
+                                });
+                              }
+                            }}
+                            title="Klik untuk perbesar pratinjau foto"
+                          >
+                            <img
+                              src={form.image_url || form.image_path || getCharacterImage(form)}
+                              alt="Preview"
+                              className="admin-photo-img"
+                            />
+                            <div className="admin-photo-overlay">
+                              <ZoomIn size={12} />
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
                       <div>
                         <label style={modalLabelStyle}>Golongan / Trah</label>
@@ -1922,6 +2241,46 @@ export default function AdminCmsView({ onPlayPerformance }) {
                         placeholder="Contoh: Bharatayuddha: Gugurnya Ghatotkaca"
                         style={modalInputStyle}
                       />
+                    </div>
+
+                    <div>
+                      <label style={modalLabelStyle}>URL Sampul Lakon (Opsional)</label>
+                      <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                        <input
+                          type="text"
+                          value={form.cover_image || form.cover_url || ''}
+                          onChange={(e) => setForm({ ...form, cover_image: e.target.value, cover_url: e.target.value })}
+                          placeholder="https://... atau biarkan kosong untuk sampul pakem"
+                          style={{ ...modalInputStyle, flex: 1 }}
+                        />
+                        {(form.cover_image || form.cover_url || getStoryImage(form)) && (
+                          <div
+                            className="admin-photo-thumb story-cover"
+                            style={{ width: '56px', height: '38px', flexShrink: 0 }}
+                            onClick={() => {
+                              const p = form.cover_image || form.cover_url || getStoryImage(form);
+                              if (p) {
+                                setLightboxImage({
+                                  src: p,
+                                  title: form.title || 'Pratinjau Sampul Lakon',
+                                  subtitle: 'Pratinjau sampul naskah lakon',
+                                  type: 'Form Pratinjau',
+                                });
+                              }
+                            }}
+                            title="Klik untuk perbesar pratinjau sampul"
+                          >
+                            <img
+                              src={form.cover_image || form.cover_url || getStoryImage(form)}
+                              alt="Preview"
+                              className="admin-photo-img"
+                            />
+                            <div className="admin-photo-overlay">
+                              <ZoomIn size={12} />
+                            </div>
+                          </div>
+                        )}
+                      </div>
                     </div>
 
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
@@ -2317,6 +2676,82 @@ export default function AdminCmsView({ onPlayPerformance }) {
                   </button>
                 </div>
               </form>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ============================================================
+          4. LIGHTBOX MODAL: PRATINJAU FOTO & DOKUMEN HD BERESOLUSI TINGGI
+          ============================================================ */}
+      {lightboxImage && (
+        <div
+          className="wayang-lightbox-backdrop"
+          onClick={() => setLightboxImage(null)}
+          role="dialog"
+          aria-modal="true"
+        >
+          <div
+            className="wayang-lightbox-modal"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Header */}
+            <div className="wayang-lightbox-header">
+              <div>
+                <div className="wayang-lightbox-eyebrow">
+                  <span className="wayang-lightbox-dot" />
+                  <span>PRATINJAU DOKUMEN PRESERVASI</span>
+                  <span style={{ opacity: 0.5 }}>•</span>
+                  <span>{lightboxImage.type || 'Aset Visual'}</span>
+                </div>
+                <h3 className="wayang-lightbox-title">{lightboxImage.title}</h3>
+                {lightboxImage.subtitle && (
+                  <p className="wayang-lightbox-subtitle">{lightboxImage.subtitle}</p>
+                )}
+              </div>
+              <button
+                type="button"
+                onClick={() => setLightboxImage(null)}
+                className="wayang-modal-close-btn"
+                aria-label="Tutup Pratinjau Foto"
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            {/* Canvas Body */}
+            <div className="wayang-lightbox-body">
+              <img
+                src={lightboxImage.src}
+                alt={lightboxImage.title}
+                className="wayang-lightbox-img"
+              />
+            </div>
+
+            {/* Footer */}
+            <div className="wayang-lightbox-footer">
+              <div className="wayang-lightbox-meta">
+                <span>Format Otentik Preservasi Budaya • Resolusi Penuh HD</span>
+              </div>
+              <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                <a
+                  href={lightboxImage.src}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="wayang-lightbox-btn-secondary"
+                  title="Buka gambar di tab peramban baru"
+                >
+                  <ExternalLink size={13} />
+                  <span>Buka di Tab Baru</span>
+                </a>
+                <button
+                  type="button"
+                  onClick={() => setLightboxImage(null)}
+                  className="wayang-lightbox-btn-primary"
+                >
+                  Tutup
+                </button>
+              </div>
             </div>
           </div>
         </div>

@@ -1213,10 +1213,16 @@ export default function HomeView({ onNavigate, connectionStatus: _connectionStat
                         </div>
 
                         <div className="leaderboard-reel-body">
-                          <h4 className="leaderboard-reel-title">{item.title}</h4>
-                          <div className="leaderboard-reel-dalang">Oleh {item.dalang}</div>
+                          <h4 className="leaderboard-reel-title" title={item.title}>
+                            {item.title}
+                          </h4>
+                          <div className="leaderboard-reel-dalang" title={`Oleh: ${item.dalang}`}>
+                            Oleh {item.dalang}
+                          </div>
                           <div className="leaderboard-reel-meta">
-                            <span className="leaderboard-reel-epos">{item.epos}</span>
+                            <span className="leaderboard-reel-epos" title={`Epos: ${item.epos}`}>
+                              {item.epos}
+                            </span>
                             <span className="leaderboard-reel-dot">•</span>
                             <span className="leaderboard-reel-views">{item.views}</span>
                           </div>

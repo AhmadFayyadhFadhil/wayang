@@ -129,7 +129,7 @@ export default function AtlasStoryShowcase({
         >
           {/* Foto Latar Belakang Otentik */}
           <img
-            src={activeAsset.coverImg}
+            src={activeAsset.coverImg || activeStory.cover_image || activeStory.coverImage || activeStory.imageUrl}
             alt={activeStory.title}
             className="leaderboard-spotlight-bg-img"
             key={activeStory.id}
@@ -248,7 +248,7 @@ export default function AtlasStoryShowcase({
 
               <div className="leaderboard-reel-img-thumb">
                 <img
-                  src={asset.coverImg}
+                  src={asset.coverImg || story.cover_image || story.coverImage || story.imageUrl}
                   alt={story.title}
                   className="leaderboard-reel-img"
                   loading="lazy"
@@ -256,12 +256,20 @@ export default function AtlasStoryShowcase({
               </div>
 
               <div className="leaderboard-reel-body">
-                <h4 className="leaderboard-reel-title">{story.title}</h4>
-                <div className="leaderboard-reel-dalang">
+                <h4 className="leaderboard-reel-title" title={story.title}>
+                  {story.title}
+                </h4>
+                <div
+                  className="leaderboard-reel-dalang"
+                  title={`Pakem: ${asset.versionPakem || story.versionLabel || 'Klasik'}`}
+                >
                   Pakem: {asset.versionPakem || story.versionLabel}
                 </div>
                 <div className="leaderboard-reel-meta">
-                  <span className="leaderboard-reel-epos">
+                  <span
+                    className="leaderboard-reel-epos"
+                    title={`Tradisi: ${asset.traditionBadge || story.tradition || 'Jawa Purwa'}`}
+                  >
                     {asset.traditionBadge || story.tradition}
                   </span>
                   <span className="leaderboard-reel-dot">•</span>

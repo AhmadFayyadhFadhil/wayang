@@ -128,7 +128,7 @@ export default function WayangCoverflowCarousel({
           const offset = getOffset(index);
           const isCenter = offset === 0;
           const isVisible = Math.abs(offset) <= 2;
-          const charImg = charAssets[char.slug];
+          const charImg = char.image_path || char.image_url || char.photo || charAssets[char.slug];
 
           return (
             <div
