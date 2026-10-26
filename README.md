@@ -7,7 +7,14 @@
 [![Laravel](https://img.shields.io/badge/Backend-Laravel%2012-FF2D20?style=for-the-badge&logo=laravel&logoColor=white)](https://laravel.com)
 [![React](https://img.shields.io/badge/Frontend-React%2019%20(Vite)-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://react.dev)
 [![MySQL](https://img.shields.io/badge/Database-MySQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white)](https://mysql.com)
-[![License](https://img.shields.io/badge/License-MIT-green.svg?style=for-the-badge)](LICENSE)
+[![Vercel](https://img.shields.io/badge/Vercel-Live%20Website-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://wayang-phi.vercel.app)
+[![AWS](https://img.shields.io/badge/AWS%20EC2-Backend%20Live-FF9900?style=for-the-badge&logo=amazon-aws&logoColor=white)](https://wayang-phi.vercel.app/api/status)
+[![CI/CD](https://img.shields.io/badge/CI%2FCD-Active%20Automated-22c55e?style=for-the-badge&logo=githubactions&logoColor=white)](docs/LIVE_DEPLOYMENT_AND_CICD_GUIDE.md)
+
+> 🚀 **STATUS DEPLOYMENT: ONLINE & OPERASIONAL**  
+> • **Aplikasi Frontend:** [https://wayang-phi.vercel.app](https://wayang-phi.vercel.app)  
+> • **Health Check API:** [https://wayang-phi.vercel.app/api/status](https://wayang-phi.vercel.app/api/status)  
+> • **Panduan Lengkap Deployment & CI/CD:** [docs/LIVE_DEPLOYMENT_AND_CICD_GUIDE.md](docs/LIVE_DEPLOYMENT_AND_CICD_GUIDE.md)
 
 ---
 
