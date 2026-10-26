@@ -1,0 +1,78 @@
+services:
+  # 1. Database MySQL 8.0
+  db:
+    image: mysql:8.0
+    container_name: wayangverse-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: wayang
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - wayang-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # 2. Backend Laravel 12 API
+  backend:
+    build:
+      context: ./be
+      dockerfile: Dockerfile
+    container_name: wayangverse-backend
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8000:8000"
+    environment:
+      APP_NAME: "Wayang Digital"
+      APP_ENV: local
+      APP_KEY: "base64:7v0vC5eW6gC0t9aZ1xY2w3e4r5t6y7u8i9o0p1a2s3d="
+      APP_DEBUG: "true"
+      APP_URL: "http://localhost:8000"
+      FRONTEND_URL: "http://localhost:5173"
+      DB_CONNECTION: mysql
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_DATABASE: wayang
+      DB_USERNAME: root
+      DB_PASSWORD: ""
+      SESSION_DRIVER: database
+      QUEUE_CONNECTION: database
+      CACHE_STORE: database
+    volumes:
+      - ./be:/var/www/html
+      - /var/www/html/vendor
+    networks:
+      - wayang-network
+
+  # 3. Frontend React 19 (Vite)
+  frontend:
+    build:
+      context: ./fe
+      dockerfile: Dockerfile
+    container_name: wayangverse-frontend
+    restart: unless-stopped
+    ports:
+      - "5173:5173"
+    environment:
+      VITE_API_URL: "http://localhost:8000/api"
+    volumes:
+      - ./fe:/app
+      - /app/node_modules
+    networks:
+      - wayang-network
+
+volumes:
+  mysql_data:
+
+networks:
+  wayang-network:
+    driver: bridge

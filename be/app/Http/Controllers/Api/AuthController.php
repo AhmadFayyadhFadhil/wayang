@@ -39,7 +39,7 @@ class AuthController extends Controller
                 'id' => $user->id,
                 'name' => $user->name,
                 'email' => $user->email,
-                'role' => ($user->email === 'demo@wayangdigital.id' || str_contains($user->email, 'admin')) ? 'admin' : 'user',
+                'role' => $user->role ?? 'user',
                 'token' => $token,
             ],
         ]);
@@ -60,6 +60,7 @@ class AuthController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'role' => 'user',
         ]);
 
         $token = $user->createToken('wayangverse-token')->plainTextToken;
@@ -72,7 +73,7 @@ class AuthController extends Controller
                 'id' => $user->id,
                 'name' => $user->name,
                 'email' => $user->email,
-                'role' => 'user',
+                'role' => $user->role ?? 'user',
                 'token' => $token,
             ],
         ], 201);
@@ -106,7 +107,7 @@ class AuthController extends Controller
                 'id' => $user->id,
                 'name' => $user->name,
                 'email' => $user->email,
-                'role' => ($user->email === 'demo@wayangdigital.id' || str_contains($user->email, 'admin')) ? 'admin' : 'user',
+                'role' => $user->role ?? 'user',
             ],
         ]);
     }

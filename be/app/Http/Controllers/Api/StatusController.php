@@ -35,9 +35,9 @@ class StatusController extends Controller
             ],
             'database' => [
                 'connected' => $dbConnected,
-                'name' => $dbName,
+                'name' => $dbConnected ? $dbName : null,
                 'driver' => config('database.default'),
-                'error' => $dbError,
+                'error' => config('app.debug') ? $dbError : ($dbError ? 'Koneksi database gagal' : null),
             ],
             'timestamp' => now()->toIso8601String(),
         ]);

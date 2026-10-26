@@ -77,7 +77,7 @@ Platform dapat langsung dijalankan dan didemokan di hadapan juri/pengguna meskip
 
 # 2. PANDUAN TEKNIS EKSEKUSI BACKEND (LARAVEL 11)
 
-Panduan ini disusun untuk developer yang akan melanjutkan pengerjaan modul backend di direktori `d:\Wayang\be`.
+Panduan ini disusun untuk developer yang akan melanjutkan pengerjaan modul backend di direktori `be/`.
 
 ---
 
@@ -90,7 +90,7 @@ Panduan ini disusun untuk developer yang akan melanjutkan pengerjaan modul backe
    CREATE DATABASE wayangverse CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
    ```
 3. **Konfigurasi `.env` Backend**:
-   Pastikan file `d:\Wayang\be\.env` memiliki pengaturan berikut:
+   Pastikan file `be/.env` memiliki pengaturan berikut:
    ```ini
    DB_CONNECTION=mysql
    DB_HOST=127.0.0.1

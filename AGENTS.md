@@ -140,31 +140,31 @@ Setiap agen wajib menggunakan dan mengaktifkan skill yang relevan dengan domain 
 
 ### A. Skill untuk Frontend Agent (`fe/`)
 Agen Frontend bertugas menjaga pengalaman pengguna, estetika bebas slop, dan responsivitas interaksi:
-* [**design-taste-frontend**](file:///d:/Wayang/.agents/skills/design-taste-frontend/SKILL.md) *(Utama)*: Menjamin desain anti-AI slop, tipografi berjenjang, dan palet warna otentik Nusantara.
-* [**responsive-craft**](file:///d:/Wayang/.agents/skills/responsive-craft/SKILL.md) *(Wajib)*: Menangani responsivitas multi-device (mobile/tablet), normalisasi panggung 16:9, dan touch target minimum 44×44px.
-* [**high-end-visual-design**](file:///d:/Wayang/.agents/skills/high-end-visual-design/SKILL.md): Memberikan sentuhan mikro mewah: elevasi natural (`0 2px 10px`), border halus 1px, dan hierarki visual berkelas.
-* [**gpt-taste**](file:///d:/Wayang/.agents/skills/gpt-taste/SKILL.md): Menghidupkan motion interaktif, animasi GSAP panggung kelir, dan gapless bento grid.
-* [**frontend-design**](file:///d:/Wayang/.agents/skills/frontend-design/SKILL.md): Fondasi rancangan layout dan antarmuka komponen baru dari nol.
-* [**redesign-existing-projects**](file:///d:/Wayang/.agents/skills/redesign-existing-projects/SKILL.md): Audit dan perombakan halaman lama (membersihkan slop tanpa merusak state/logic React).
-* [**image-to-code**](file:///d:/Wayang/.agents/skills/image-to-code/SKILL.md): Mengubah storyboard adegan wayang dan mock-up visual menjadi komponen SVG & React presisi.
-* [**imagegen-frontend-web**](file:///d:/Wayang/.agents/skills/imagegen-frontend-web/SKILL.md) & [**imagegen-frontend-mobile**](file:///d:/Wayang/.agents/skills/imagegen-frontend-mobile/SKILL.md): Menghasilkan aset referensi visual per-section dan preview tampilan smartphone.
-* [**minimalist-ui**](file:///d:/Wayang/.agents/skills/minimalist-ui/SKILL.md) & [**industrial-brutalist-ui**](file:///d:/Wayang/.agents/skills/industrial-brutalist-ui/SKILL.md): Panduan gaya khusus untuk arsip naskah kuno atau konsol analitik teknis.
-* [**stitch-design-taste**](file:///d:/Wayang/.agents/skills/stitch-design-taste/SKILL.md): Dokumentasi dan standarisasi panduan semantic design system (`DESIGN.md`).
+* [**design-taste-frontend**](.agents/skills/design-taste-frontend/SKILL.md) *(Utama)*: Menjamin desain anti-AI slop, tipografi berjenjang, dan palet warna otentik Nusantara.
+* [**responsive-craft**](.agents/skills/responsive-craft/SKILL.md) *(Wajib)*: Menangani responsivitas multi-device (mobile/tablet), normalisasi panggung 16:9, dan touch target minimum 44×44px.
+* [**high-end-visual-design**](.agents/skills/high-end-visual-design/SKILL.md): Memberikan sentuhan mikro mewah: elevasi natural (`0 2px 10px`), border halus 1px, dan hierarki visual berkelas.
+* [**gpt-taste**](.agents/skills/gpt-taste/SKILL.md): Menghidupkan motion interaktif, animasi GSAP panggung kelir, dan gapless bento grid.
+* [**frontend-design**](.agents/skills/frontend-design/SKILL.md): Fondasi rancangan layout dan antarmuka komponen baru dari nol.
+* [**redesign-existing-projects**](.agents/skills/redesign-existing-projects/SKILL.md): Audit dan perombakan halaman lama (membersihkan slop tanpa merusak state/logic React).
+* [**image-to-code**](.agents/skills/image-to-code/SKILL.md): Mengubah storyboard adegan wayang dan mock-up visual menjadi komponen SVG & React presisi.
+* [**imagegen-frontend-web**](.agents/skills/imagegen-frontend-web/SKILL.md) & [**imagegen-frontend-mobile**](.agents/skills/imagegen-frontend-mobile/SKILL.md): Menghasilkan aset referensi visual per-section dan preview tampilan smartphone.
+* [**minimalist-ui**](.agents/skills/minimalist-ui/SKILL.md) & [**industrial-brutalist-ui**](.agents/skills/industrial-brutalist-ui/SKILL.md): Panduan gaya khusus untuk arsip naskah kuno atau konsol analitik teknis.
+* [**stitch-design-taste**](.agents/skills/stitch-design-taste/SKILL.md): Dokumentasi dan standarisasi panduan semantic design system (`DESIGN.md`).
 
 ### B. Skill untuk Backend Agent (`be/`)
 Agen Backend bertugas menjaga skalabilitas API, integritas transaksi data, keamanan, dan kesehatan sistem Laravel 11:
-* [**context7-mcp**](file:///d:/Wayang/.agents/skills/context7-mcp/SKILL.md) *(Utama)*: Referensi resmi sintaks dan best-practices terkini: Laravel 11, Eloquent ORM, MySQL Indexing, Sanctum Auth, FormRequest, Redis Cache Tagging, dan Pest/PHPUnit.
-* [**valyu-best-practices**](file:///d:/Wayang/.agents/skills/valyu-best-practices/SKILL.md): Penarikan referensi literatur eksternal, validasi sumber pakem wiracarita budaya, dan deep search konten wayang.
-* [**mcp-integration**](file:///d:/Wayang/.agents/skills/mcp-integration/SKILL.md): Integrasi Model Context Protocol untuk koneksi tooling database, inspeksi skema MySQL, dan integrasi microservice.
+* [**context7-mcp**](.agents/skills/context7-mcp/SKILL.md) *(Utama)*: Referensi resmi sintaks dan best-practices terkini: Laravel 11, Eloquent ORM, MySQL Indexing, Sanctum Auth, FormRequest, Redis Cache Tagging, dan Pest/PHPUnit.
+* [**valyu-best-practices**](.agents/skills/valyu-best-practices/SKILL.md): Penarikan referensi literatur eksternal, validasi sumber pakem wiracarita budaya, dan deep search konten wayang.
+* [**mcp-integration**](.agents/skills/mcp-integration/SKILL.md): Integrasi Model Context Protocol untuk koneksi tooling database, inspeksi skema MySQL, dan integrasi microservice.
 
 ### C. General & QA Skills (Linting, Pengujian & Orkestrasi)
 Diterapkan bersama oleh Orchestrator, Frontend, Backend, dan QA:
-* [**full-output-enforcement**](file:///d:/Wayang/.agents/skills/full-output-enforcement/SKILL.md) *(Wajib FE & BE)*: Melarang pemotongan kode atau placeholder (`// rest of code here`). Wajib menghasilkan kode lengkap dan tuntas.
-* [**browser-use**](file:///d:/Wayang/.agents/skills/browser-use/SKILL.md) *(QA Testing)*: Menjalankan pengujian fungsionalitas UI, pengisian form lakon, dan verifikasi alur pengguna di browser nyata.
-* [**brandkit**](file:///d:/Wayang/.agents/skills/brandkit/SKILL.md): Pengawalan konsistensi identitas merek, logo, dan filosofi visual Wayangverse.
-* [**hook-development**](file:///d:/Wayang/.agents/skills/hook-development/SKILL.md): Otomasi workflow pengembang (auto-linting pre-commit, validasi keamanan eksekusi perintah shell).
-* [**agent-development**](file:///d:/Wayang/.agents/skills/agent-development/SKILL.md): Pembuatan dan penyempurnaan persona sub-agen baru.
-* [**skill-development**](file:///d:/Wayang/.agents/skills/skill-development/SKILL.md) & [**find-skills**](file:///d:/Wayang/.agents/skills/find-skills/SKILL.md): Pembuatan dan penemuan skill baru jika terdapat workflow baru dalam tim.
+* [**full-output-enforcement**](.agents/skills/full-output-enforcement/SKILL.md) *(Wajib FE & BE)*: Melarang pemotongan kode atau placeholder (`// rest of code here`). Wajib menghasilkan kode lengkap dan tuntas.
+* [**browser-use**](.agents/skills/browser-use/SKILL.md) *(QA Testing)*: Menjalankan pengujian fungsionalitas UI, pengisian form lakon, dan verifikasi alur pengguna di browser nyata.
+* [**brandkit**](.agents/skills/brandkit/SKILL.md): Pengawalan konsistensi identitas merek, logo, dan filosofi visual Wayangverse.
+* [**hook-development**](.agents/skills/hook-development/SKILL.md): Otomasi workflow pengembang (auto-linting pre-commit, validasi keamanan eksekusi perintah shell).
+* [**agent-development**](.agents/skills/agent-development/SKILL.md): Pembuatan dan penyempurnaan persona sub-agen baru.
+* [**skill-development**](.agents/skills/skill-development/SKILL.md) & [**find-skills**](.agents/skills/find-skills/SKILL.md): Pembuatan dan penemuan skill baru jika terdapat workflow baru dalam tim.
 
 ---
 

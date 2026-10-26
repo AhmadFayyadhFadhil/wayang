@@ -24,9 +24,11 @@ Route::get('/sanctum/csrf-cookie', function () {
     return response()->json(['status' => 'ok', 'message' => 'CSRF cookie initialized']);
 });
 
-// 3. Autentikasi Publik
-Route::post('/login', [AuthController::class, 'login']);
-Route::post('/register', [AuthController::class, 'register']);
+// 3. Autentikasi Publik (Dilindungi Rate Limiter)
+Route::middleware('throttle:10,1')->group(function () {
+    Route::post('/login', [AuthController::class, 'login']);
+    Route::post('/register', [AuthController::class, 'register']);
+});
 
 // 4. Master Data Terbuka (Public Catalog & Atlas)
 Route::get('/stories', [StoryController::class, 'index']);
@@ -54,8 +56,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/performances/{id}', [PerformanceController::class, 'update']);
     Route::delete('/performances/{id}', [PerformanceController::class, 'destroy']);
 
-    // 7. Modul CMS Administrator (Master Data, Metrik & Moderasi)
-    Route::prefix('admin')->group(function () {
+    // 7. Modul CMS Administrator (Master Data, Metrik & Moderasi - Wajib Role Admin)
+    Route::prefix('admin')->middleware('role.admin')->group(function () {
         Route::get('/dashboard-data', [\App\Http\Controllers\Api\AdminController::class, 'dashboardData']);
         Route::get('/stats', [\App\Http\Controllers\Api\AdminController::class, 'stats']);
         Route::get('/users', [\App\Http\Controllers\Api\AdminController::class, 'users']);

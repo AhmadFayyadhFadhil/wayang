@@ -5,9 +5,10 @@
   "scripts": {
     "dev": "npm --prefix fe run dev",
     "dev:fe": "npm --prefix fe run dev",
-    "dev:be": "npm --prefix be run dev",
     "build": "npm --prefix fe run build",
     "build:fe": "npm --prefix fe run build",
-    "build:be": "npm --prefix be run build"
+    "lint": "npm --prefix fe run lint",
+    "lint:fe": "npm --prefix fe run lint",
+    "preview": "npm --prefix fe run preview"
   }
 }

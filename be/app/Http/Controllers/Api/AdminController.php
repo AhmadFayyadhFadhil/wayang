@@ -19,12 +19,8 @@ class AdminController extends Controller
     private function authorizeAdmin(Request $request): void
     {
         $user = $request->user();
-        $isAdmin = $user && (
-            $user->email === 'demo@wayangdigital.id' ||
-            str_contains($user->email, 'admin')
-        );
 
-        if (!$isAdmin) {
+        if (!$user || !$user->isAdmin()) {
             abort(403, 'Akses ditolak. Fitur ini hanya dapat diakses oleh Administrator.');
         }
     }

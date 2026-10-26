@@ -16,12 +16,8 @@ class CharacterController extends Controller
     private function authorizeAdmin(Request $request): void
     {
         $user = $request->user();
-        $isAdmin = $user && (
-            $user->email === 'demo@wayangdigital.id' ||
-            str_contains($user->email, 'admin')
-        );
 
-        if (!$isAdmin) {
+        if (!$user || !$user->isAdmin()) {
             abort(403, 'Akses ditolak. Tindakan ini hanya diperbolehkan untuk Administrator.');
         }
     }
