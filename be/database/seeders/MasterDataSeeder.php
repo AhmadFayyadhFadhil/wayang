@@ -195,6 +195,32 @@ class MasterDataSeeder extends Seeder
                     ],
                 ],
             ],
+            [
+                'id' => 4,
+                'slug' => 'karno-tanding',
+                'title' => 'Mahabharata: Perang Tanding Karno Tanding',
+                'synopsis' => 'Pertarungan sengit antara Raden Arjuna dan Adipati Karna pada hari ke-17 Baratayuda. Keduanya saling berhadapan di atas kereta perang dengan panah-panah sakti, mempertemukan takdir persaudaraan sedarah dalam kepatuhan sumpah kesatria yang tak terelakkan.',
+                'philosophy' => 'Keluhuran dharma dan keteguhan memegang sumpah ksatria di atas ikatan darah keluarga. Pengorbanan sejati demi memegang teguh kehormatan janji diri hingga akhir hayat.',
+                'tradition' => 'Gaya Surakarta & Yogyakarta (Gagrag Mataram)',
+                'version_label' => 'Serat Bharatayuddha - Babak Karna Parwa',
+                'recommended_background' => 'kelir-kayon-keraton-kencana',
+                'theme_song' => 'Gamelan Srepeg Manyura',
+                'character_slugs' => ['arjuna', 'karna'],
+                'sources' => [
+                    [
+                        'title' => 'Serat Bharatayuddha Purwa',
+                        'author_or_publisher' => 'Pujangga Kasunanan Surakarta',
+                        'url_or_reference' => 'Reksa Pustaka Mangkunegaran',
+                        'rights_note' => 'Warisan Budaya Nusantara / Domain Publik',
+                    ],
+                    [
+                        'title' => 'Naskah Lakon Karno Tanding Ki Manteb Soedharsono',
+                        'author_or_publisher' => 'Ki Manteb Soedharsono (Adaptasi 1995)',
+                        'url_or_reference' => 'Dokumentasi Pedalangan Kasunanan',
+                        'rights_note' => 'Arsip Kurasi Pedalangan',
+                    ],
+                ],
+            ],
         ];
 
         foreach ($storiesData as $sItem) {

@@ -1,5 +1,5 @@
 import React, { useState, useRef, useCallback, useEffect } from 'react';
-import { BookOpen, Play, Sparkles, ArrowRight } from 'lucide-react';
+import { Sparkles, ArrowRight } from 'lucide-react';
 
 /**
  * AtlasStoryShowcase
@@ -7,15 +7,14 @@ import { BookOpen, Play, Sparkles, ArrowRight } from 'lucide-react';
  * Format Theatrical Master Spotlight & Interactive Playlist Grid
  * untuk Khazanah Lakon Cerita Wayang di Story Atlas.
  * - Sisi Kiri (Spotlight): Panggung 3D Tilt & Parallax Glare dinamis beresolusi tinggi.
- * - Sisi Kanan (Playlist): Daftar 4 kartu naskah bernomor urut dengan highlight emas prada aktif.
- * - Dual Action Buttons: "Buka Naskah Pakem" (modal) & "Mainkan di Panggung" (virtual stage).
+ * - Sisi Kanan (Playlist): Daftar kartu naskah bernomor urut dengan highlight emas prada aktif.
  * - 60 FPS hardware accelerated dengan requestAnimationFrame dan clean unmount.
  */
 export default function AtlasStoryShowcase({
   stories = [],
   storyAssets = {},
   onSelectStoryModal,
-  onPlayCharacterOnStage,
+  _onPlayCharacterOnStage,
 }) {
   const [activeStoryId, setActiveStoryId] = useState(stories[0]?.id || null);
 
@@ -105,6 +104,7 @@ export default function AtlasStoryShowcase({
       <div
         ref={containerRef}
         className="leaderboard-spotlight-stage"
+        onClick={() => onSelectStoryModal && onSelectStoryModal(activeStory)}
         onMouseMove={handleMouseMove}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
@@ -181,43 +181,6 @@ export default function AtlasStoryShowcase({
             <p className="leaderboard-spotlight-desc">
               {activeStory.shortSynopsis || activeStory.synopsis}
             </p>
-
-            {/* Tombol Aksi Khas Story Atlas */}
-            <div
-              className="leaderboard-spotlight-actions"
-              style={{ transform: 'translateZ(46px)', transformStyle: 'preserve-3d' }}
-            >
-              <button
-                type="button"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  if (onSelectStoryModal) onSelectStoryModal(activeStory);
-                }}
-                className="leaderboard-btn-primary"
-                aria-label={`Buka naskah pakem ${activeStory.title}`}
-              >
-                <BookOpen size={15} style={{ marginRight: '7px' }} />
-                Buka Naskah Pakem
-              </button>
-              <button
-                type="button"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  if (onPlayCharacterOnStage) {
-                    onPlayCharacterOnStage(activeStory.characterIds?.[0] || 1);
-                  }
-                }}
-                className="leaderboard-btn-secondary"
-                aria-label={`Mainkan lakon ${activeStory.title} di panggung virtual`}
-              >
-                <Play
-                  size={14}
-                  fill="#ffffff"
-                  style={{ marginRight: '7px' }}
-                />
-                Mainkan di Panggung
-              </button>
-            </div>
           </div>
         </div>
       </div>
