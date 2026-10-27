@@ -8,6 +8,11 @@ import {
   saveCustomBackground,
   deleteCustomBackground,
 } from '../../data/master/stageConfigMaster';
+import {
+  getFooterTeam,
+  saveFooterTeam,
+  resetFooterTeam,
+} from '../../data/master/footerMaster';
 import persistenceService from '../../services/persistenceService';
 import { soundEngine } from '../../services/soundscape';
 import JavaneseCloudBackground from '../../components/ui/JavaneseCloudBackground';
@@ -53,6 +58,7 @@ import {
   ZoomIn,
   Check,
   ExternalLink,
+  Settings,
 } from 'lucide-react';
 
 const CHARACTER_IMAGE_MAP = {
@@ -112,6 +118,7 @@ export default function AdminCmsView({ onPlayPerformance }) {
   const [performances, setPerformances] = useState([]);
   const [usersList, setUsersList] = useState([]);
   const [stageBackgrounds, setStageBackgrounds] = useState([]);
+  const [footerTeam, setFooterTeam] = useState(getFooterTeam);
   const [notice, setNotice] = useState(null);
 
   // Search & Filter State
@@ -624,6 +631,92 @@ export default function AdminCmsView({ onPlayPerformance }) {
     });
   }, [usersList, searchQuery]);
 
+  // Handlers & State Khusus Modul Pengaturan Footer & Tim Pengembang
+  const handleSaveFooterTeam = () => {
+    const ok = saveFooterTeam(footerTeam);
+    if (ok) {
+      showNotice('Pengaturan footer dan master profil tim pengembang berhasil disimpan & disinkronkan!');
+    } else {
+      showNotice('Gagal menyimpan pengaturan footer ke penyimpanan lokal.', true);
+    }
+  };
+
+  const handleResetFooterTeam = () => {
+    if (window.confirm('Kembalikan konfigurasi tim pengembang footer ke profil bawaan awal?')) {
+      const def = resetFooterTeam();
+      setFooterTeam(def);
+      showNotice('Pengaturan profil tim footer berhasil dikembalikan ke bawaan.');
+    }
+  };
+
+  const handleAddFooterMember = () => {
+    const newMember = {
+      id: `dev_${Date.now()}`,
+      name: 'Nama Anggota Baru',
+      role: 'Kreator Konten & Pengembang',
+      badge: 'TIM KREATIF',
+      username: 'username_ig',
+      url: 'https://www.instagram.com/',
+      avatar: '',
+      bio: 'Dedikasi pelestarian seni budaya pedalangan wayang purwa pada era digital.',
+    };
+    const updated = [...footerTeam, newMember];
+    setFooterTeam(updated);
+    saveFooterTeam(updated);
+    showNotice('Anggota tim baru berhasil ditambahkan! Silakan lengkapi data dan foto.');
+  };
+
+  const handleDeleteFooterMember = (id) => {
+    if (window.confirm('Apakah Anda yakin ingin menghapus profil anggota tim ini?')) {
+      const updated = footerTeam.filter((m) => m.id !== id);
+      setFooterTeam(updated);
+      saveFooterTeam(updated);
+      showNotice('Profil anggota tim berhasil dihapus.');
+    }
+  };
+
+  const handleUpdateFooterMember = (id, field, value) => {
+    setFooterTeam((prev) =>
+      prev.map((m) => (m.id === id ? { ...m, [field]: value } : m))
+    );
+  };
+
+  const handlePhotoUpload = (id, file) => {
+    if (!file) return;
+    if (!file.type.startsWith('image/')) {
+      showNotice('Berkas harus berupa gambar (JPG, PNG, atau WebP).', true);
+      return;
+    }
+    if (file.size > 2.5 * 1024 * 1024) {
+      showNotice('Ukuran gambar maksimal 2.5MB agar penyimpanan tetap optimal.', true);
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const base64Url = e.target.result;
+      handleUpdateFooterMember(id, 'avatar', base64Url);
+      showNotice('Foto profil berhasil diunggah! Klik "Simpan Pengaturan" untuk menetapkan.');
+    };
+    reader.onerror = () => {
+      showNotice('Gagal membaca berkas gambar.', true);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const filteredFooterTeam = useMemo(() => {
+    return footerTeam.filter((m) => {
+      const q = searchQuery.toLowerCase().trim();
+      return (
+        !q ||
+        (m.name && m.name.toLowerCase().includes(q)) ||
+        (m.role && m.role.toLowerCase().includes(q)) ||
+        (m.badge && m.badge.toLowerCase().includes(q)) ||
+        (m.username && m.username.toLowerCase().includes(q)) ||
+        (m.bio && m.bio.toLowerCase().includes(q))
+      );
+    });
+  }, [footerTeam, searchQuery]);
+
 
   // Helper golongan badge class
   const getGolonganClass = (type) => {
@@ -1000,6 +1093,35 @@ export default function AdminCmsView({ onPlayPerformance }) {
                 Kurator & Dalang
               </div>
             </div>
+
+            {/* Metrik 7: Pengaturan Footer & Tim */}
+            <div
+              className={`admin-floating-stat-item ${activeTab === 'footer' ? 'active' : ''}`}
+              onClick={() => {
+                setActiveTab('footer');
+                setSearchQuery('');
+              }}
+            >
+              <div
+                style={{
+                  fontSize: '25px',
+                  fontWeight: '850',
+                  color: '#e8bb5c',
+                  letterSpacing: '-0.3px',
+                  lineHeight: '1.15',
+                  marginBottom: '3px',
+                  fontVariantNumeric: 'tabular-nums',
+                }}
+              >
+                {footerTeam.length}
+              </div>
+              <div style={{ fontSize: '13px', fontWeight: '750', color: '#fdfbf7', marginBottom: '2px', letterSpacing: '0.15px' }}>
+                Footer & Tim
+              </div>
+              <div style={{ fontSize: '11px', color: '#bfae9c', fontWeight: '400', lineHeight: '1.3' }}>
+                Kreator & Pengembang
+              </div>
+            </div>
           </div>
         </div>
 
@@ -1119,6 +1241,7 @@ export default function AdminCmsView({ onPlayPerformance }) {
               { id: 'panggung', label: 'Kelir Panggung', count: stageBackgrounds.length, icon: Layers },
               { id: 'karya', label: 'Karya Pagelaran', count: performances.length, icon: Film },
               { id: 'users', label: 'Pengguna', count: usersList.length, icon: ShieldCheck },
+              { id: 'footer', label: 'Pengaturan Footer & Tim', count: footerTeam.length, icon: Settings },
             ].map((tab) => {
               const isActive = activeTab === tab.id;
               const TabIcon = tab.icon;
@@ -1165,6 +1288,8 @@ export default function AdminCmsView({ onPlayPerformance }) {
                       ? 'Cari nama kelir, suasana, lakon, atau id panggung...'
                       : activeTab === 'karya'
                       ? 'Cari judul lakon atau dalang...'
+                      : activeTab === 'footer'
+                      ? 'Cari nama anggota, peran, badge, atau username IG...'
                       : 'Cari nama kurator atau surel...'
                   }
                   className="admin-control-search-input"
@@ -1272,29 +1397,86 @@ export default function AdminCmsView({ onPlayPerformance }) {
               )}
             </div>
 
-            {/* Tombol Tambah Data Master (Prada Gold CTA Aligned) */}
-            {activeTab !== 'karya' && activeTab !== 'users' && (
-              <button
-                type="button"
-                onClick={() => {
-                  if (activeTab === 'karakter') openModal('character');
-                  else if (activeTab === 'cerita') openModal('story');
-                  else if (activeTab === 'audio') openModal('audio');
-                  else if (activeTab === 'panggung') openModal('stage');
-                }}
-                className="admin-control-add-btn"
-              >
-                <Plus size={16} strokeWidth={2.5} />
-                <span>
-                  {activeTab === 'karakter'
-                    ? 'Tambah Tokoh'
-                    : activeTab === 'cerita'
-                    ? 'Tambah Lakon'
-                    : activeTab === 'audio'
-                    ? 'Tambah Audio'
-                    : 'Tambah Kelir'}
-                </span>
-              </button>
+            {/* Tombol Tambah Data Master / Kontrol Cepat Footer (Prada Gold CTA Aligned) */}
+            {activeTab === 'footer' ? (
+              <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                <button
+                  type="button"
+                  onClick={handleResetFooterTeam}
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '6px',
+                    background: '#ffffff',
+                    color: '#6e5e4d',
+                    border: '1px solid rgba(40, 28, 16, 0.2)',
+                    padding: '8px 14px',
+                    borderRadius: '9999px',
+                    fontSize: '12.5px',
+                    fontWeight: '700',
+                    cursor: 'pointer',
+                    transition: 'all 0.2s ease',
+                  }}
+                  title="Kembalikan ke profil bawaan awal"
+                >
+                  <RefreshCw size={13} />
+                  <span>Reset Bawaan</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={handleAddFooterMember}
+                  className="admin-control-add-btn"
+                >
+                  <Plus size={15} strokeWidth={2.5} />
+                  <span>Tambah Anggota</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={handleSaveFooterTeam}
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '6px',
+                    background: 'linear-gradient(135deg, #d4af37 0%, #b89127 100%)',
+                    color: '#1a140e',
+                    border: 'none',
+                    padding: '8px 16px',
+                    borderRadius: '9999px',
+                    fontSize: '12.5px',
+                    fontWeight: '800',
+                    cursor: 'pointer',
+                    boxShadow: '0 3px 12px rgba(212, 175, 55, 0.35)',
+                    transition: 'all 0.2s ease',
+                  }}
+                >
+                  <Save size={14} strokeWidth={2.5} />
+                  <span>Simpan Pengaturan</span>
+                </button>
+              </div>
+            ) : (
+              activeTab !== 'karya' && activeTab !== 'users' && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (activeTab === 'karakter') openModal('character');
+                    else if (activeTab === 'cerita') openModal('story');
+                    else if (activeTab === 'audio') openModal('audio');
+                    else if (activeTab === 'panggung') openModal('stage');
+                  }}
+                  className="admin-control-add-btn"
+                >
+                  <Plus size={16} strokeWidth={2.5} />
+                  <span>
+                    {activeTab === 'karakter'
+                      ? 'Tambah Tokoh'
+                      : activeTab === 'cerita'
+                      ? 'Tambah Lakon'
+                      : activeTab === 'audio'
+                      ? 'Tambah Audio'
+                      : 'Tambah Kelir'}
+                  </span>
+                </button>
+              )
             )}
           </div>
 
@@ -1975,6 +2157,602 @@ export default function AdminCmsView({ onPlayPerformance }) {
                 </table>
               )}
 
+              {/* TAB 7: PENGATURAN FOOTER & TIM PENGEMBANG */}
+              {activeTab === 'footer' && (
+                <div style={{ padding: '24px', boxSizing: 'border-box' }}>
+                  {/* Banner Header Modul Footer */}
+                  <div
+                    style={{
+                      background: 'linear-gradient(135deg, rgba(212, 175, 55, 0.08) 0%, rgba(40, 28, 16, 0.04) 100%)',
+                      border: '1px solid rgba(212, 175, 55, 0.28)',
+                      borderRadius: '16px',
+                      padding: '20px 24px',
+                      marginBottom: '28px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      flexWrap: 'wrap',
+                      gap: '16px',
+                    }}
+                  >
+                    <div>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+                        <span
+                          style={{
+                            background: '#1c140d',
+                            color: '#e8bb5c',
+                            border: '1px solid rgba(212, 175, 55, 0.35)',
+                            padding: '3px 10px',
+                            borderRadius: '9999px',
+                            fontSize: '10px',
+                            fontWeight: '850',
+                            letterSpacing: '0.08em',
+                            textTransform: 'uppercase',
+                          }}
+                        >
+                          MASTER FOOTER CMS
+                        </span>
+                        <h3 style={{ margin: 0, fontSize: '17px', fontWeight: '850', color: '#1a140e' }}>
+                          Kelola Profil Tim Pengembang & Kreator
+                        </h3>
+                      </div>
+                      <p style={{ margin: 0, fontSize: '13px', color: '#6e5e4d', lineHeight: '1.5', maxWidth: '680px' }}>
+                        Atur nama, master foto profil, peran arsitektur, badge status, tautan Instagram, dan deskripsi kontribusi untuk setiap anggota tim. Perubahan langsung disinkronkan secara real-time ke kartu modal footer Wayangverse.
+                      </p>
+                    </div>
+
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
+                      <button
+                        type="button"
+                        onClick={handleResetFooterTeam}
+                        style={{
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: '6px',
+                          background: '#ffffff',
+                          color: '#6e5e4d',
+                          border: '1px solid rgba(40, 28, 16, 0.18)',
+                          padding: '9px 16px',
+                          borderRadius: '9999px',
+                          fontSize: '12.5px',
+                          fontWeight: '700',
+                          cursor: 'pointer',
+                          transition: 'all 0.2s ease',
+                        }}
+                        title="Kembalikan ke profil bawaan awal"
+                      >
+                        <RefreshCw size={14} />
+                        <span>Reset ke Bawaan</span>
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={handleAddFooterMember}
+                        style={{
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: '6px',
+                          background: '#ffffff',
+                          color: '#8b4513',
+                          border: '1.5px solid rgba(139, 69, 19, 0.4)',
+                          padding: '9px 16px',
+                          borderRadius: '9999px',
+                          fontSize: '12.5px',
+                          fontWeight: '750',
+                          cursor: 'pointer',
+                          transition: 'all 0.2s ease',
+                        }}
+                      >
+                        <Plus size={15} strokeWidth={2.5} />
+                        <span>Tambah Anggota</span>
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={handleSaveFooterTeam}
+                        style={{
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: '6px',
+                          background: 'linear-gradient(135deg, #d4af37 0%, #b89127 100%)',
+                          color: '#1a140e',
+                          border: 'none',
+                          padding: '9px 20px',
+                          borderRadius: '9999px',
+                          fontSize: '12.5px',
+                          fontWeight: '800',
+                          cursor: 'pointer',
+                          boxShadow: '0 3px 12px rgba(212, 175, 55, 0.35)',
+                          transition: 'all 0.2s ease',
+                        }}
+                      >
+                        <Save size={15} strokeWidth={2.5} />
+                        <span>Simpan Pengaturan</span>
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Daftar Anggota Tim - Grid Editor dengan Live Interactive Preview */}
+                  {filteredFooterTeam.length === 0 ? (
+                    <div style={{ textAlign: 'center', padding: '60px 20px', color: '#6e5e4d' }}>
+                      <div style={{ fontSize: '16px', fontWeight: '800', color: '#1a140e', marginBottom: '8px' }}>
+                        Tidak Ada Anggota Tim
+                      </div>
+                      <div style={{ fontSize: '13px', marginBottom: '16px' }}>
+                        Tidak ditemukan profil anggota tim yang sesuai dengan kata kunci "{searchQuery}".
+                      </div>
+                      <button
+                        type="button"
+                        onClick={handleAddFooterMember}
+                        className="admin-control-add-btn"
+                        style={{ margin: '0 auto' }}
+                      >
+                        <Plus size={15} />
+                        <span>Tambah Anggota Baru</span>
+                      </button>
+                    </div>
+                  ) : (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '28px' }}>
+                      {filteredFooterTeam.map((member, index) => (
+                        <div
+                          key={member.id || index}
+                          style={{
+                            background: '#ffffff',
+                            border: '1.5px solid rgba(212, 175, 55, 0.35)',
+                            borderRadius: '20px',
+                            padding: '24px',
+                            boxShadow: '0 4px 20px rgba(40, 28, 16, 0.05)',
+                            display: 'grid',
+                            gridTemplateColumns: 'repeat(auto-fit, minmax(290px, 1fr))',
+                            gap: '28px',
+                            alignItems: 'start',
+                            position: 'relative',
+                            boxSizing: 'border-box',
+                          }}
+                        >
+                          {/* SISI KIRI: PRATINJAU KARTU MINI (SAMA PERSIS SEPERTI DI MODAL FOOTER) */}
+                          <div style={{ maxWidth: '320px', width: '100%', margin: '0 auto' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px' }}>
+                              <span style={{ fontSize: '11px', fontWeight: '800', color: '#8b4513', letterSpacing: '0.05em', textTransform: 'uppercase' }}>
+                                Pratinjau Tampilan #{index + 1}
+                              </span>
+                              <span style={{ fontSize: '10.5px', color: '#8a7d6e', background: 'rgba(40, 28, 16, 0.06)', padding: '2px 8px', borderRadius: '6px', fontWeight: '650' }}>
+                                Live Preview
+                              </span>
+                            </div>
+
+                            {/* Wayang Showcase Card Miniatur */}
+                            <div
+                              style={{
+                                background: '#fbf9f4',
+                                border: '1.5px solid rgba(212, 175, 55, 0.45)',
+                                borderRadius: '16px',
+                                padding: '16px 14px',
+                                display: 'flex',
+                                flexDirection: 'column',
+                                boxShadow: '0 4px 16px rgba(40, 28, 16, 0.06)',
+                                position: 'relative',
+                                boxSizing: 'border-box',
+                              }}
+                            >
+                              {/* Badge Kategori */}
+                              <div style={{ display: 'flex', justifyContent: 'flex-start', marginBottom: '10px' }}>
+                                <span
+                                  style={{
+                                    background: '#1c140d',
+                                    color: '#e8bb5c',
+                                    border: '1px solid rgba(212, 175, 55, 0.35)',
+                                    padding: '3px 10px',
+                                    borderRadius: '9999px',
+                                    fontSize: '9px',
+                                    fontWeight: '850',
+                                    letterSpacing: '0.08em',
+                                    textTransform: 'uppercase',
+                                  }}
+                                >
+                                  {member.badge || 'TIM PENGEMBANG'}
+                                </span>
+                              </div>
+
+                              {/* Wadah Foto / Avatar */}
+                              <div
+                                style={{
+                                  width: '100%',
+                                  height: '135px',
+                                  borderRadius: '12px',
+                                  overflow: 'hidden',
+                                  background: 'radial-gradient(circle at 50% 40%, #2a1c12 0%, #120c08 100%)',
+                                  border: '1px solid rgba(212, 175, 55, 0.25)',
+                                  marginBottom: '12px',
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  justifyContent: 'center',
+                                  position: 'relative',
+                                }}
+                              >
+                                {member.avatar ? (
+                                  <img
+                                    src={member.avatar}
+                                    alt={member.name}
+                                    style={{
+                                      width: '100%',
+                                      height: '100%',
+                                      objectFit: 'cover',
+                                      objectPosition: 'center top',
+                                    }}
+                                  />
+                                ) : (
+                                  <div
+                                    style={{
+                                      display: 'flex',
+                                      flexDirection: 'column',
+                                      alignItems: 'center',
+                                      justifyContent: 'center',
+                                      color: '#e8bb5c',
+                                      gap: '6px',
+                                    }}
+                                  >
+                                    <div
+                                      style={{
+                                        width: '46px',
+                                        height: '46px',
+                                        borderRadius: '50%',
+                                        background: 'rgba(212, 175, 55, 0.15)',
+                                        border: '1.5px solid rgba(212, 175, 55, 0.45)',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        fontSize: '16px',
+                                        fontWeight: '800',
+                                        color: '#fcfaf2',
+                                      }}
+                                    >
+                                      {(member.name || 'W').split(' ').map((n) => n[0]).slice(0, 2).join('')}
+                                    </div>
+                                    <span style={{ fontSize: '10px', color: '#bfae9c', letterSpacing: '0.05em', fontWeight: '700' }}>
+                                      KREATOR WAYANG
+                                    </span>
+                                  </div>
+                                )}
+                              </div>
+
+                              {/* Body Info */}
+                              <div style={{ flex: 1, display: 'flex', flexDirection: 'column', marginBottom: '14px' }}>
+                                <div style={{ fontSize: '10px', color: '#8b4513', fontWeight: '800', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: '2px' }}>
+                                  Gelar: {member.role || 'Peran Pengembang'}
+                                </div>
+                                <h4
+                                  style={{
+                                    margin: '0 0 3px 0',
+                                    fontSize: '14.5px',
+                                    fontWeight: '850',
+                                    color: '#1a140e',
+                                    lineHeight: '1.25',
+                                  }}
+                                >
+                                  {member.name || 'Nama Anggota'}
+                                </h4>
+                                <div style={{ fontSize: '11.5px', color: '#8b5a1b', fontWeight: '700', marginBottom: '6px' }}>
+                                  @{member.username || 'username'}
+                                </div>
+                                <p
+                                  style={{
+                                    margin: 0,
+                                    fontSize: '11px',
+                                    lineHeight: '1.5',
+                                    color: '#5c4a3b',
+                                    display: '-webkit-box',
+                                    WebkitLineClamp: 3,
+                                    WebkitBoxOrient: 'vertical',
+                                    overflow: 'hidden',
+                                  }}
+                                >
+                                  {member.bio || 'Deskripsi kontribusi karya digital Wayangverse.'}
+                                </p>
+                              </div>
+
+                              {/* Golden Capsule Button Preview */}
+                              <div
+                                style={{
+                                  display: 'inline-flex',
+                                  alignItems: 'center',
+                                  justifyContent: 'center',
+                                  gap: '6px',
+                                  background: '#c27827',
+                                  color: '#ffffff',
+                                  padding: '8px 14px',
+                                  borderRadius: '9999px',
+                                  fontSize: '12px',
+                                  fontWeight: '750',
+                                  boxSizing: 'border-box',
+                                  width: '100%',
+                                }}
+                              >
+                                <span>Lihat Instagram</span>
+                                <ExternalLink size={12} />
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* SISI KANAN: FORM EDITOR LENGKAP & MASTER UPLOAD FOTO */}
+                          <div>
+                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '18px', borderBottom: '1px solid rgba(212, 175, 55, 0.18)', paddingBottom: '12px' }}>
+                              <h4 style={{ margin: 0, fontSize: '15px', fontWeight: '850', color: '#1a140e' }}>
+                                Form Konfigurasi: {member.name || `Anggota #${index + 1}`}
+                              </h4>
+
+                              <button
+                                type="button"
+                                onClick={() => handleDeleteFooterMember(member.id)}
+                                style={{
+                                  display: 'inline-flex',
+                                  alignItems: 'center',
+                                  gap: '5px',
+                                  background: 'rgba(239, 68, 68, 0.08)',
+                                  color: '#dc2626',
+                                  border: '1px solid rgba(239, 68, 68, 0.25)',
+                                  padding: '6px 12px',
+                                  borderRadius: '8px',
+                                  fontSize: '12px',
+                                  fontWeight: '700',
+                                  cursor: 'pointer',
+                                  transition: 'all 0.2s ease',
+                                }}
+                                title="Hapus profil anggota tim ini"
+                              >
+                                <Trash2 size={13} />
+                                <span>Hapus Profil</span>
+                              </button>
+                            </div>
+
+                            {/* Master Upload Foto Box */}
+                            <div
+                              style={{
+                                background: '#fdfbf7',
+                                border: '1px dashed rgba(212, 175, 55, 0.45)',
+                                borderRadius: '12px',
+                                padding: '14px 16px',
+                                marginBottom: '20px',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '16px',
+                                flexWrap: 'wrap',
+                              }}
+                            >
+                              <div
+                                style={{
+                                  width: '52px',
+                                  height: '52px',
+                                  borderRadius: '10px',
+                                  overflow: 'hidden',
+                                  background: '#1a140e',
+                                  border: '1px solid rgba(212, 175, 55, 0.35)',
+                                  flexShrink: 0,
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  justifyContent: 'center',
+                                }}
+                              >
+                                {member.avatar ? (
+                                  <img
+                                    src={member.avatar}
+                                    alt="Foto"
+                                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                                  />
+                                ) : (
+                                  <span style={{ fontSize: '11px', color: '#e8bb5c', fontWeight: '800' }}>FOTO</span>
+                                )}
+                              </div>
+
+                              <div style={{ flex: 1, minWidth: '180px' }}>
+                                <div style={{ fontSize: '13px', fontWeight: '750', color: '#1a140e', marginBottom: '3px' }}>
+                                  Master Foto Profil / Avatar
+                                </div>
+                                <div style={{ fontSize: '11.5px', color: '#786554' }}>
+                                  Unggah berkas foto (JPG/PNG/WebP maks 2.5MB) atau tempel URL gambar.
+                                </div>
+                              </div>
+
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+                                <label
+                                  style={{
+                                    display: 'inline-flex',
+                                    alignItems: 'center',
+                                    gap: '6px',
+                                    background: '#1a140e',
+                                    color: '#fdfbf7',
+                                    padding: '7px 14px',
+                                    borderRadius: '8px',
+                                    fontSize: '12px',
+                                    fontWeight: '700',
+                                    cursor: 'pointer',
+                                    transition: 'all 0.2s ease',
+                                  }}
+                                >
+                                  <Upload size={13} color="#e8bb5c" />
+                                  <span>Unggah Foto</span>
+                                  <input
+                                    type="file"
+                                    accept="image/*"
+                                    style={{ display: 'none' }}
+                                    onChange={(e) => {
+                                      const file = e.target.files?.[0];
+                                      if (file) handlePhotoUpload(member.id, file);
+                                    }}
+                                  />
+                                </label>
+
+                                {member.avatar && (
+                                  <button
+                                    type="button"
+                                    onClick={() => handleUpdateFooterMember(member.id, 'avatar', '')}
+                                    style={{
+                                      background: 'none',
+                                      border: '1px solid rgba(40, 28, 16, 0.2)',
+                                      color: '#786554',
+                                      padding: '7px 12px',
+                                      borderRadius: '8px',
+                                      fontSize: '12px',
+                                      fontWeight: '650',
+                                      cursor: 'pointer',
+                                    }}
+                                  >
+                                    Hapus Foto
+                                  </button>
+                                )}
+                              </div>
+                            </div>
+
+                            {/* Grid Input Form */}
+                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '14px', marginBottom: '14px' }}>
+                              {/* Nama Lengkap */}
+                              <div>
+                                <label style={{ display: 'block', fontSize: '11.5px', fontWeight: '800', color: '#1a140e', marginBottom: '5px' }}>
+                                  Nama Lengkap:
+                                </label>
+                                <input
+                                  type="text"
+                                  value={member.name}
+                                  onChange={(e) => handleUpdateFooterMember(member.id, 'name', e.target.value)}
+                                  placeholder="Contoh: Ahmad Fayyadh Fadhil"
+                                  style={{
+                                    width: '100%',
+                                    padding: '9px 12px',
+                                    borderRadius: '8px',
+                                    border: '1px solid rgba(40, 28, 16, 0.2)',
+                                    fontSize: '13px',
+                                    boxSizing: 'border-box',
+                                    color: '#1a140e',
+                                    outline: 'none',
+                                  }}
+                                />
+                              </div>
+
+                              {/* Peran / Gelar */}
+                              <div>
+                                <label style={{ display: 'block', fontSize: '11.5px', fontWeight: '800', color: '#1a140e', marginBottom: '5px' }}>
+                                  Peran & Jabatan (Role):
+                                </label>
+                                <input
+                                  type="text"
+                                  value={member.role}
+                                  onChange={(e) => handleUpdateFooterMember(member.id, 'role', e.target.value)}
+                                  placeholder="Contoh: Lead Developer & Software Architect"
+                                  style={{
+                                    width: '100%',
+                                    padding: '9px 12px',
+                                    borderRadius: '8px',
+                                    border: '1px solid rgba(40, 28, 16, 0.2)',
+                                    fontSize: '13px',
+                                    boxSizing: 'border-box',
+                                    color: '#1a140e',
+                                    outline: 'none',
+                                  }}
+                                />
+                              </div>
+
+                              {/* Badge Kategori */}
+                              <div>
+                                <label style={{ display: 'block', fontSize: '11.5px', fontWeight: '800', color: '#1a140e', marginBottom: '5px' }}>
+                                  Label Badge (Huruf Kapital):
+                                </label>
+                                <input
+                                  type="text"
+                                  value={member.badge}
+                                  onChange={(e) => handleUpdateFooterMember(member.id, 'badge', e.target.value.toUpperCase())}
+                                  placeholder="Contoh: LEAD ARCHITECT"
+                                  style={{
+                                    width: '100%',
+                                    padding: '9px 12px',
+                                    borderRadius: '8px',
+                                    border: '1px solid rgba(40, 28, 16, 0.2)',
+                                    fontSize: '13px',
+                                    boxSizing: 'border-box',
+                                    color: '#1a140e',
+                                    outline: 'none',
+                                  }}
+                                />
+                              </div>
+
+                              {/* Username Instagram */}
+                              <div>
+                                <label style={{ display: 'block', fontSize: '11.5px', fontWeight: '800', color: '#1a140e', marginBottom: '5px' }}>
+                                  Username Instagram (tanpa @):
+                                </label>
+                                <input
+                                  type="text"
+                                  value={member.username}
+                                  onChange={(e) => handleUpdateFooterMember(member.id, 'username', e.target.value.replace('@', ''))}
+                                  placeholder="Contoh: fadhillllll15"
+                                  style={{
+                                    width: '100%',
+                                    padding: '9px 12px',
+                                    borderRadius: '8px',
+                                    border: '1px solid rgba(40, 28, 16, 0.2)',
+                                    fontSize: '13px',
+                                    boxSizing: 'border-box',
+                                    color: '#1a140e',
+                                    outline: 'none',
+                                  }}
+                                />
+                              </div>
+                            </div>
+
+                            {/* URL Instagram Link */}
+                            <div style={{ marginBottom: '14px' }}>
+                              <label style={{ display: 'block', fontSize: '11.5px', fontWeight: '800', color: '#1a140e', marginBottom: '5px' }}>
+                                Tautan URL Profil Instagram:
+                              </label>
+                              <input
+                                type="url"
+                                value={member.url}
+                                onChange={(e) => handleUpdateFooterMember(member.id, 'url', e.target.value)}
+                                placeholder="Contoh: https://www.instagram.com/fadhillllll15"
+                                style={{
+                                  width: '100%',
+                                  padding: '9px 12px',
+                                  borderRadius: '8px',
+                                  border: '1px solid rgba(40, 28, 16, 0.2)',
+                                  fontSize: '13px',
+                                  boxSizing: 'border-box',
+                                  color: '#1a140e',
+                                  outline: 'none',
+                                }}
+                              />
+                            </div>
+
+                            {/* Bio / Ringkasan Kontribusi */}
+                            <div>
+                              <label style={{ display: 'block', fontSize: '11.5px', fontWeight: '800', color: '#1a140e', marginBottom: '5px' }}>
+                                Deskripsi Dedikasi & Kontribusi (Bio):
+                              </label>
+                              <textarea
+                                rows={2}
+                                value={member.bio}
+                                onChange={(e) => handleUpdateFooterMember(member.id, 'bio', e.target.value)}
+                                placeholder="Tuliskan dedikasi atau kontribusi anggota dalam pengembangan Wayangverse..."
+                                style={{
+                                  width: '100%',
+                                  padding: '9px 12px',
+                                  borderRadius: '8px',
+                                  border: '1px solid rgba(40, 28, 16, 0.2)',
+                                  fontSize: '13px',
+                                  boxSizing: 'border-box',
+                                  color: '#1a140e',
+                                  outline: 'none',
+                                  resize: 'vertical',
+                                  fontFamily: 'inherit',
+                                }}
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
+
             </div>
 
             {/* Footer Ringkasan Metadata Tabel */}
@@ -2005,7 +2783,9 @@ export default function AdminCmsView({ onPlayPerformance }) {
                     ? filteredStages.length
                     : activeTab === 'karya'
                     ? filteredPerformances.length
-                    : filteredUsers.length}
+                    : activeTab === 'users'
+                    ? filteredUsers.length
+                    : filteredFooterTeam.length}
                 </strong>{' '}
                 data terkurasi
               </div>

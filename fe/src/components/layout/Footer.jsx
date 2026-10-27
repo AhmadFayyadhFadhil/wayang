@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { X, ExternalLink } from 'lucide-react';
 import footerHeritageHd from '../../assets/footer_heritage_hd.jpg';
+import { getFooterTeam } from '../../data/master/footerMaster';
 
 // ============================================================
 // IKON INSTAGRAM MINIMALIS EMAS (VEKTOR MURNI)
@@ -13,28 +14,6 @@ const InstagramIcon = () => (
   </svg>
 );
 
-// Profil Resmi Tim Pengembang & Kreator Wayangverse
-const DEVELOPER_PROFILES = [
-  {
-    name: 'Ahmad Fayyadh Fadhil',
-    role: 'Lead Developer & Software Architect',
-    username: 'fadhillllll15',
-    url: 'https://www.instagram.com/fadhillllll15?dlrf=cTJ4dGNvbHFtb2t0',
-  },
-  {
-    name: 'Raffi Akbar / Skywalker',
-    role: 'UI/UX Designer & Project Lead',
-    username: '_.skywalkerr',
-    url: 'https://www.instagram.com/_.skywalkerr?cplk=dHE0MGp5MHl5cTkx',
-  },
-  {
-    name: 'Haycell',
-    role: 'Frontend & Interactive Audio Engineer',
-    username: 'haycell._',
-    url: 'https://www.instagram.com/haycell._?rpxt=cDg5dDkwODI3c3Jw',
-  },
-];
-
 // ============================================================
 // TAHUN SAAT INI (RENDER MURNI REACT 19)
 // ============================================================
@@ -42,6 +21,20 @@ const CURRENT_YEAR = new Date().getFullYear();
 
 export default function Footer({ onNavigate }) {
   const [modalData, setModalData] = useState(null);
+  const [teamMembers, setTeamMembers] = useState(getFooterTeam);
+
+  // Sinkronisasi dinamis jika admin mengubah foto atau data tim di Admin CMS
+  useEffect(() => {
+    const handleSync = () => {
+      setTeamMembers(getFooterTeam());
+    };
+    window.addEventListener('wayangverse_footer_updated', handleSync);
+    window.addEventListener('storage', handleSync);
+    return () => {
+      window.removeEventListener('wayangverse_footer_updated', handleSync);
+      window.removeEventListener('storage', handleSync);
+    };
+  }, []);
 
   return (
     <footer className="wayang-footer-root">
@@ -90,9 +83,9 @@ export default function Footer({ onNavigate }) {
                 <span>Instagram Tim Pengembang:</span>
               </div>
               <div className="wayang-footer-dev-pills">
-                {DEVELOPER_PROFILES.map((dev) => (
+                {teamMembers.map((dev) => (
                   <a
-                    key={dev.username}
+                    key={dev.username || dev.id}
                     href={dev.url}
                     target="_blank"
                     rel="noopener noreferrer"
@@ -163,7 +156,7 @@ export default function Footer({ onNavigate }) {
                       subtitle: 'Pusat Pelestarian Warisan Pedalangan Digital & Tim Pengembang',
                       content:
                         'Wayangverse lahir dari ikhtiar merawat warisan adiluhung seni wayang kulit Nusantara melalui perpaduan seni tradisi dan rekayasa teknologi web modern. Dikembangkan secara independen oleh tim kreator muda yang berdedikasi menghadirkan panggung pedalangan digital yang dapat dinikmati dan dipelajari oleh seluruh generasi.',
-                      team: DEVELOPER_PROFILES,
+                      team: teamMembers,
                     })
                   }
                   className="wayang-footer-link-btn"
@@ -212,7 +205,7 @@ export default function Footer({ onNavigate }) {
                       subtitle: 'Terhubung Langsung dengan Tim Pengembang',
                       content:
                         'Ingin berdiskusi, memberikan apresiasi, masukan pengembangan, atau menjalin kolaborasi edukasi budaya? Silakan sapa dan terhubung langsung dengan tim pengembang Wayangverse melalui Instagram resmi kami:',
-                      team: DEVELOPER_PROFILES,
+                      team: teamMembers,
                     })
                   }
                   className="wayang-footer-link-btn"
@@ -332,7 +325,7 @@ export default function Footer({ onNavigate }) {
         >
           <div
             className="wayang-modal-chassis"
-            style={{ maxWidth: '560px', width: '100%' }}
+            style={{ maxWidth: modalData?.team ? '780px' : '560px', width: '100%' }}
             onClick={(e) => e.stopPropagation()}
           >
             <div
@@ -407,79 +400,218 @@ export default function Footer({ onNavigate }) {
                   {modalData.content}
                 </p>
 
-                {/* Kartu Profil Tim Pengembang / Narahubung Instagram Interaktif */}
+                {/* Kartu Profil Tim Pengembang / Narahubung Instagram (Format Kartu Showcase Wayang) */}
                 {modalData.team && (
                   <div
                     style={{
-                      display: 'flex',
-                      flexDirection: 'column',
-                      gap: '10px',
-                      marginTop: '18px',
-                      borderTop: '1px solid rgba(212, 175, 55, 0.2)',
-                      paddingTop: '16px',
+                      marginTop: '20px',
+                      borderTop: '1px solid rgba(212, 175, 55, 0.25)',
+                      paddingTop: '18px',
                     }}
                   >
                     <div
                       style={{
-                        fontSize: '11px',
-                        fontWeight: '800',
-                        color: '#8b4513',
-                        letterSpacing: '0.08em',
-                        textTransform: 'uppercase',
-                        marginBottom: '4px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        marginBottom: '14px',
+                        flexWrap: 'wrap',
+                        gap: '8px',
                       }}
                     >
-                      Daftar Tim Pengembang & Kreator
-                    </div>
-                    {modalData.team.map((member) => (
                       <div
-                        key={member.username}
                         style={{
+                          fontSize: '11px',
+                          fontWeight: '800',
+                          color: '#8b4513',
+                          letterSpacing: '0.1em',
+                          textTransform: 'uppercase',
                           display: 'flex',
                           alignItems: 'center',
-                          justifyContent: 'space-between',
-                          padding: '10px 14px',
-                          background: 'rgba(212, 175, 55, 0.06)',
-                          border: '1px solid rgba(212, 175, 55, 0.25)',
-                          borderRadius: '10px',
-                          gap: '12px',
-                          flexWrap: 'wrap',
+                          gap: '6px',
                         }}
                       >
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
-                          <span style={{ fontSize: '13.5px', fontWeight: '750', color: '#1a140e' }}>
-                            {member.name}
-                          </span>
-                          <span style={{ fontSize: '11.5px', color: '#6e5e4d', fontWeight: '600' }}>
-                            {member.role}
-                          </span>
-                        </div>
-                        <a
-                          href={member.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
+                        <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#d4af37' }} />
+                        <span>Daftar Tim Pengembang & Kreator</span>
+                      </div>
+                      <span style={{ fontSize: '11px', color: '#6e5e4d', fontStyle: 'italic' }}>
+                        Panggung Wayang Kulit Digital
+                      </span>
+                    </div>
+
+                    {/* Responsive Grid of Compact Showcase Cards (Desain Kartu Wayang Mini) */}
+                    <div
+                      style={{
+                        display: 'grid',
+                        gridTemplateColumns: 'repeat(auto-fit, minmax(210px, 1fr))',
+                        gap: '16px',
+                        alignItems: 'stretch',
+                      }}
+                    >
+                      {modalData.team.map((member) => (
+                        <div
+                          key={member.username || member.id}
+                          className="wayang-team-card"
                           style={{
-                            display: 'inline-flex',
-                            alignItems: 'center',
-                            gap: '6px',
-                            background: '#1a140e',
-                            color: '#e8bb5c',
-                            padding: '6px 14px',
-                            borderRadius: '9999px',
-                            fontSize: '12px',
-                            fontWeight: '700',
-                            textDecoration: 'none',
-                            border: '1px solid rgba(212, 175, 55, 0.3)',
-                            whiteSpace: 'nowrap',
-                            transition: 'all 0.2s ease',
+                            background: '#fcfaf5',
+                            border: '1px solid rgba(212, 175, 55, 0.32)',
+                            borderRadius: '16px',
+                            padding: '14px',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            justifyContent: 'space-between',
+                            boxShadow: '0 4px 16px rgba(40, 28, 16, 0.06)',
+                            position: 'relative',
+                            transition: 'all 0.22s ease',
+                            boxSizing: 'border-box',
                           }}
                         >
-                          <InstagramIcon />
-                          <span>@{member.username}</span>
-                          <ExternalLink size={11} />
-                        </a>
-                      </div>
-                    ))}
+                          {/* Badge Kategori Melayang Sesuai Card Wayang */}
+                          <div style={{ display: 'flex', justifyContent: 'flex-start', marginBottom: '10px' }}>
+                            <span
+                              style={{
+                                background: '#1c140d',
+                                color: '#e8bb5c',
+                                border: '1px solid rgba(212, 175, 55, 0.35)',
+                                padding: '3px 10px',
+                                borderRadius: '9999px',
+                                fontSize: '9px',
+                                fontWeight: '850',
+                                letterSpacing: '0.08em',
+                                textTransform: 'uppercase',
+                              }}
+                            >
+                              {member.badge || 'TIM PENGEMBANG'}
+                            </span>
+                          </div>
+
+                          {/* Wadah Foto / Avatar Pengembang */}
+                          <div
+                            style={{
+                              width: '100%',
+                              height: '135px',
+                              borderRadius: '12px',
+                              overflow: 'hidden',
+                              background: 'radial-gradient(circle at 50% 40%, #2a1c12 0%, #120c08 100%)',
+                              border: '1px solid rgba(212, 175, 55, 0.25)',
+                              marginBottom: '12px',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              position: 'relative',
+                            }}
+                          >
+                            {member.avatar ? (
+                              <img
+                                src={member.avatar}
+                                alt={member.name}
+                                style={{
+                                  width: '100%',
+                                  height: '100%',
+                                  objectFit: 'cover',
+                                  objectPosition: 'center top',
+                                }}
+                              />
+                            ) : (
+                              <div
+                                style={{
+                                  display: 'flex',
+                                  flexDirection: 'column',
+                                  alignItems: 'center',
+                                  justifyContent: 'center',
+                                  color: '#e8bb5c',
+                                  gap: '6px',
+                                }}
+                              >
+                                <div
+                                  style={{
+                                    width: '46px',
+                                    height: '46px',
+                                    borderRadius: '50%',
+                                    background: 'rgba(212, 175, 55, 0.15)',
+                                    border: '1.5px solid rgba(212, 175, 55, 0.45)',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    fontSize: '16px',
+                                    fontWeight: '800',
+                                    color: '#fcfaf2',
+                                  }}
+                                >
+                                  {member.name.split(' ').map((n) => n[0]).slice(0, 2).join('')}
+                                </div>
+                                <span style={{ fontSize: '10px', color: '#bfae9c', letterSpacing: '0.05em', fontWeight: '700' }}>
+                                  KREATOR WAYANG
+                                </span>
+                              </div>
+                            )}
+                          </div>
+
+                          {/* Body Informasi Anggota */}
+                          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', marginBottom: '14px' }}>
+                            <div style={{ fontSize: '10px', color: '#8b4513', fontWeight: '800', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: '2px' }}>
+                              Gelar: {member.role}
+                            </div>
+                            <h4
+                              style={{
+                                margin: '0 0 3px 0',
+                                fontSize: '14.5px',
+                                fontWeight: '850',
+                                color: '#1a140e',
+                                lineHeight: '1.25',
+                              }}
+                            >
+                              {member.name}
+                            </h4>
+                            <div style={{ fontSize: '11.5px', color: '#8b5a1b', fontWeight: '700', marginBottom: '6px' }}>
+                              @{member.username}
+                            </div>
+                            <p
+                              style={{
+                                margin: 0,
+                                fontSize: '11px',
+                                lineHeight: '1.5',
+                                color: '#5c4a3b',
+                                display: '-webkit-box',
+                                WebkitLineClamp: 3,
+                                WebkitBoxOrient: 'vertical',
+                                overflow: 'hidden',
+                              }}
+                            >
+                              {member.bio || 'Pengembang platform pelestarian wayang kulit digital Nusantara.'}
+                            </p>
+                          </div>
+
+                          {/* Tombol Aksi Golden Capsule */}
+                          <a
+                            href={member.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            style={{
+                              display: 'inline-flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              gap: '6px',
+                              background: '#c27827',
+                              color: '#ffffff',
+                              padding: '8px 14px',
+                              borderRadius: '9999px',
+                              fontSize: '12px',
+                              fontWeight: '750',
+                              textDecoration: 'none',
+                              border: 'none',
+                              transition: 'all 0.2s ease',
+                              boxSizing: 'border-box',
+                              width: '100%',
+                            }}
+                          >
+                            <InstagramIcon />
+                            <span>Lihat Instagram</span>
+                            <ExternalLink size={12} />
+                          </a>
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 )}
               </div>
