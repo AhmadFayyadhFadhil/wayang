@@ -128,7 +128,13 @@ export default function WayangCoverflowCarousel({
           const offset = getOffset(index);
           const isCenter = offset === 0;
           const isVisible = Math.abs(offset) <= 2;
-          const charImg = char.image_path || char.image_url || char.photo || charAssets[char.slug];
+          const charImg =
+            char.image_path ||
+            char.image_url ||
+            char.photo ||
+            (charAssets && (charAssets[char.slug] || charAssets[char.silhouetteSvg] || charAssets[char.id])) ||
+            charAssets?.gatotkaca ||
+            null;
 
           return (
             <div
@@ -162,6 +168,14 @@ export default function WayangCoverflowCarousel({
                     alt={char.name}
                     className="wayang-coverflow-char-img"
                     loading="lazy"
+                    onError={(e) => {
+                      const fallback =
+                        (charAssets && (charAssets[char.slug] || charAssets[char.silhouetteSvg])) ||
+                        charAssets?.gatotkaca;
+                      if (fallback && e.currentTarget.src !== fallback) {
+                        e.currentTarget.src = fallback;
+                      }
+                    }}
                   />
                 ) : (
                   <div className="wayang-coverflow-svg-holder">

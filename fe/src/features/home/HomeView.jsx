@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { BookOpen, Music, Film, ArrowUpRight, ArrowRight, Sparkles } from 'lucide-react';
+import { BookOpen, Play, Music, Film, ArrowUpRight, ArrowRight, Sparkles } from 'lucide-react';
 import AnimatedCounter from '../../components/ui/AnimatedCounter';
 import JavaneseCloudBackground from '../../components/ui/JavaneseCloudBackground';
 import HeritageBatikRibbon from '../../components/ui/HeritageBatikRibbon';
@@ -434,76 +434,32 @@ export default function HomeView({ onNavigate, connectionStatus: _connectionStat
             Wayangverse menghadirkan panggung wayang digital interaktif dua dimensi berbasis kelir dengan visual tatah-sungging otentik, animasi solah dalang, tata suara gamelan real-time, dan relasi data ke naskah pakem bersejarah.
           </p>
 
-          {/* Dual Action Buttons (Warna Solid Alami Bersih Tanpa Shadow/Stroke Berlebih) */}
+          {/* Dual Action Buttons (Standardized Hero CTA Classes) */}
           <div
+            className="hero-cta-group"
             data-aos="fade-up"
             data-aos-delay="300"
             data-aos-duration="700"
-            style={{
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              gap: '14px',
-              flexWrap: 'wrap',
-              marginBottom: '0',
-            }}
           >
             {/* Primary Capsule Button -> Panggung Virtual */}
             <button
+              type="button"
+              className="hero-cta-btn hero-cta-btn-primary"
               onClick={() => onNavigate('stage')}
-              style={{
-                background: '#e8bb5c',
-                border: 'none',
-                color: '#0d0a07',
-                padding: '12px 28px',
-                borderRadius: '20px',
-                fontSize: '14px',
-                fontWeight: '750',
-                cursor: 'pointer',
-                display: 'inline-flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                boxShadow: 'none',
-                transition: 'all 0.2s ease',
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.transform = 'translateY(-1px)';
-                e.currentTarget.style.background = '#dcae4d';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.transform = 'translateY(0)';
-                e.currentTarget.style.background = '#e8bb5c';
-              }}
+              aria-label="Buka Panggung Virtual"
             >
+              <Play size={16} style={{ marginRight: '8px', fill: 'currentColor' }} />
               Buka Panggung Virtual
             </button>
 
             {/* Secondary Capsule Button -> Story Atlas */}
             <button
+              type="button"
+              className="hero-cta-btn hero-cta-btn-secondary"
               onClick={() => onNavigate('atlas')}
-              style={{
-                background: '#1c140d',
-                border: '1px solid rgba(212, 175, 55, 0.3)',
-                color: '#fcfaf2',
-                padding: '13px 28px',
-                borderRadius: '20px',
-                fontSize: '14px',
-                fontWeight: '650',
-                cursor: 'pointer',
-                display: 'inline-flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                transition: 'all 0.2s ease',
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.transform = 'translateY(-2px)';
-                e.currentTarget.style.background = '#281c12';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.transform = 'translateY(0)';
-                e.currentTarget.style.background = '#1c140d';
-              }}
+              aria-label="Jelajahi Story Atlas"
             >
+              <BookOpen size={16} style={{ marginRight: '8px' }} />
               Jelajahi Story Atlas
             </button>
           </div>

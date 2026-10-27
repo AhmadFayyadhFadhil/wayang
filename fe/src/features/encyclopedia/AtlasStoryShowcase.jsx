@@ -129,10 +129,23 @@ export default function AtlasStoryShowcase({
         >
           {/* Foto Latar Belakang Otentik */}
           <img
-            src={activeAsset.coverImg || activeStory.cover_image || activeStory.coverImage || activeStory.imageUrl}
+            src={
+              activeAsset.coverImg ||
+              activeStory.cover_image ||
+              activeStory.coverImage ||
+              activeStory.imageUrl ||
+              (storyAssets && (storyAssets[activeStory.slug]?.coverImg || Object.values(storyAssets)[0]?.coverImg))
+            }
             alt={activeStory.title}
             className="leaderboard-spotlight-bg-img"
             key={activeStory.id}
+            onError={(e) => {
+              const fallback =
+                (storyAssets && (storyAssets[activeStory.slug]?.coverImg || Object.values(storyAssets)[0]?.coverImg)) || null;
+              if (fallback && e.currentTarget.src !== fallback) {
+                e.currentTarget.src = fallback;
+              }
+            }}
           />
 
           {/* Dynamic Blencong Oil Lamp Glare */}
@@ -211,10 +224,23 @@ export default function AtlasStoryShowcase({
 
               <div className="leaderboard-reel-img-thumb">
                 <img
-                  src={asset.coverImg || story.cover_image || story.coverImage || story.imageUrl}
+                  src={
+                    asset.coverImg ||
+                    story.cover_image ||
+                    story.coverImage ||
+                    story.imageUrl ||
+                    (storyAssets && (storyAssets[story.slug]?.coverImg || Object.values(storyAssets)[0]?.coverImg))
+                  }
                   alt={story.title}
                   className="leaderboard-reel-img"
                   loading="lazy"
+                  onError={(e) => {
+                    const fallback =
+                      (storyAssets && (storyAssets[story.slug]?.coverImg || Object.values(storyAssets)[0]?.coverImg)) || null;
+                    if (fallback && e.currentTarget.src !== fallback) {
+                      e.currentTarget.src = fallback;
+                    }
+                  }}
                 />
               </div>
 

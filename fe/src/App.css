@@ -9025,11 +9025,122 @@ html, body {
   }
 }
 
+/* ============================================================
+   DESIGN TOKENS & BUTTON STANDARDIZATION (PM AUDIT REVISION)
+   Tingkat 1 (Major CTA / Hero): 48px, radius 9999px / 24px
+   Tingkat 2 (Secondary / Modal / Tab / Filter): 40-42px
+   Tingkat 3 (Compact / Badge / Chip): 32-36px
+   ============================================================ */
 
+/* Universal Box-Sizing & Alignment Guard for Interactive Elements */
+.hero-cta-btn,
+.atlas-filter-chip,
+.wayang-btn-standard,
+.wayang-filter-pill,
+.wayang-modal-action-btn {
+  box-sizing: border-box !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
 
+/* --- Hero CTA Group & Unified Buttons --- */
+.hero-cta-group {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-bottom: 0;
+  width: 100%;
+}
 
+.hero-cta-btn {
+  height: 48px;
+  min-height: 48px;
+  padding: 0 28px;
+  border-radius: 9999px;
+  font-size: 14px;
+  font-weight: 750;
+  cursor: pointer;
+  box-shadow: none;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  text-decoration: none;
+  white-space: nowrap;
+}
 
+.hero-cta-btn:active {
+  transform: scale(0.98);
+}
 
+.hero-cta-btn-primary {
+  background: #e8bb5c;
+  border: none;
+  color: #0d0a07;
+}
 
+.hero-cta-btn-primary:hover {
+  background: #dcae4d;
+  transform: translateY(-1px);
+}
+
+.hero-cta-btn-secondary {
+  background: #1c140d;
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  color: #fcfaf2;
+}
+
+.hero-cta-btn-secondary:hover {
+  background: #281c12;
+  border-color: rgba(212, 175, 55, 0.5);
+  transform: translateY(-1px);
+}
+
+/* Mobile Hero CTA Alignment: Equal width and height up to 320px */
+@media (max-width: 640px) {
+  .hero-cta-group {
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .hero-cta-btn {
+    width: 100%;
+    max-width: 320px;
+    height: 48px;
+    min-height: 48px;
+    font-size: 14px;
+    padding: 0 20px;
+  }
+}
+
+/* --- Atlas Filter Chips Standard (Level 2) --- */
+.atlas-filter-chip {
+  height: 40px;
+  min-height: 40px;
+  padding: 0 22px;
+  border-radius: 9999px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid #dcd7ce;
+  background: #ffffff;
+  color: #2d1f14;
+  transition: all 0.18s ease;
+  white-space: nowrap;
+}
+
+.atlas-filter-chip.is-active {
+  background: #c27827;
+  color: #ffffff;
+  border-color: #c27827;
+  font-weight: 700;
+}
+
+.atlas-filter-chip:hover:not(.is-active) {
+  border-color: #c27827;
+  color: #c27827;
+  transform: translateY(-1px);
+}
 
 

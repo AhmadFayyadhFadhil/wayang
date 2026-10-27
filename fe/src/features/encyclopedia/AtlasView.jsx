@@ -143,22 +143,31 @@ export default function AtlasView({ onPlayCharacterOnStage }) {
           // Fallback lokal jika offline
         }
 
-        const baseChars = apiChars && apiChars.length > 0 ? apiChars : CHARACTERS_MASTER;
-        const baseStories = apiStories && apiStories.length > 0 ? apiStories : STORIES_MASTER;
-
-        setCharacters(
-          baseChars.map((c) => ({
+        const baseChars = (apiChars && apiChars.length > 0 ? apiChars : CHARACTERS_MASTER).map((c) => {
+          const master = CHARACTERS_MASTER.find((m) => m.id === c.id || m.slug === c.slug) || {};
+          return {
+            ...master,
             ...c,
+            availablePoses: c.availablePoses || c.available_poses || master.availablePoses || ['default', 'sembah', 'perang'],
+            accentColor: c.accentColor || c.accent_color || master.accentColor || '#d4af37',
+            image_path: c.image_path || c.image_url || master.image_path || master.photo || null,
+            silhouetteSvg: c.silhouetteSvg || master.silhouetteSvg || c.slug,
             status: charOverrides[c.id] !== undefined ? charOverrides[c.id] : (c.status || 'published'),
-          }))
-        );
+          };
+        });
 
-        setStories(
-          baseStories.map((s) => ({
+        const baseStories = (apiStories && apiStories.length > 0 ? apiStories : STORIES_MASTER).map((s) => {
+          const master = STORIES_MASTER.find((m) => m.id === s.id || m.slug === s.slug) || {};
+          return {
+            ...master,
             ...s,
+            sources: s.sources || master.sources || [],
             status: storyOverrides[s.id] !== undefined ? storyOverrides[s.id] : (s.status || 'published'),
-          }))
-        );
+          };
+        });
+
+        setCharacters(baseChars);
+        setStories(baseStories);
       } catch (err) {
         console.warn('Gagal sinkron data Story Atlas:', err);
       }
@@ -641,32 +650,8 @@ export default function AtlasView({ onPlayCharacterOnStage }) {
                   key={chip.id}
                   type="button"
                   onClick={() => setActiveFilter(chip.id)}
-                  style={{
-                    background: isActive ? '#c27827' : '#ffffff',
-                    color: isActive ? '#ffffff' : '#2d1f14',
-                    border: isActive ? '1px solid #c27827' : '1px solid #dcd7ce',
-                    borderRadius: '9999px',
-                    padding: '8px 22px',
-                    fontSize: '14px',
-                    fontWeight: isActive ? '700' : '600',
-                    cursor: 'pointer',
-                    boxShadow: 'none',
-                    transition: 'all 0.18s ease',
-                  }}
-                  onMouseEnter={(e) => {
-                    if (!isActive) {
-                      e.currentTarget.style.borderColor = '#c27827';
-                      e.currentTarget.style.color = '#c27827';
-                      e.currentTarget.style.transform = 'translateY(-1px)';
-                    }
-                  }}
-                  onMouseLeave={(e) => {
-                    if (!isActive) {
-                      e.currentTarget.style.borderColor = '#dcd7ce';
-                      e.currentTarget.style.color = '#2d1f14';
-                      e.currentTarget.style.transform = 'translateY(0)';
-                    }
-                  }}
+                  className={`atlas-filter-chip ${isActive ? 'is-active' : ''}`}
+                  aria-pressed={isActive}
                 >
                   {chip.label}
                 </button>
@@ -784,7 +769,13 @@ export default function AtlasView({ onPlayCharacterOnStage }) {
                     characters={filteredCharacters}
                     charAssets={CHAR_ASSETS}
                     onSelectCharacter={(char) => {
-                      setSelectedCharModal(char);
+                      const master = CHARACTERS_MASTER.find((m) => m.id === char.id || m.slug === char.slug) || {};
+                      setSelectedCharModal({
+                        ...master,
+                        ...char,
+                        availablePoses: char.availablePoses || char.available_poses || master.availablePoses || ['default', 'sembah', 'perang'],
+                        accentColor: char.accentColor || char.accent_color || master.accentColor || '#d4af37',
+                      });
                       setPreviewPose('default');
                     }}
                     onPlayOnStage={(charId) => {
@@ -1137,7 +1128,7 @@ export default function AtlasView({ onPlayCharacterOnStage }) {
                       fontSize: '12.5px',
                     }}
                   >
-                    {selectedStoryModal.sources.map((src, i) => (
+                    {(selectedStoryModal.sources || []).map((src, i) => (
                       <div key={i} style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
                         <div style={{ color: '#8b4513', fontWeight: '750' }}>{src.title}</div>
                         <div style={{ color: '#5c4a3b', fontSize: '12px' }}>
@@ -1282,16 +1273,16 @@ export default function AtlasView({ onPlayCharacterOnStage }) {
                       scale={0.88}
                       width={160}
                       height={220}
-                      accentColor={selectedCharModal.accentColor}
+                      accentColor={selectedCharModal.accentColor || selectedCharModal.accent_color || '#d4af37'}
                     />
                   </div>
                   <div style={{ fontSize: '11.5px', color: '#bfae9c', marginBottom: '12px' }}>
-                    Pose Aktif: <strong style={{ color: selectedCharModal.accentColor || '#d4af37' }}>{previewPose.toUpperCase()}</strong>
+                    Pose Aktif: <strong style={{ color: selectedCharModal.accentColor || selectedCharModal.accent_color || '#d4af37' }}>{previewPose.toUpperCase()}</strong>
                   </div>
 
                   {/* Tombol Pilihan Pose */}
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', justifyContent: 'center' }}>
-                    {selectedCharModal.availablePoses.map((p) => (
+                    {(selectedCharModal.availablePoses || selectedCharModal.available_poses || ['default', 'sembah', 'perang']).map((p) => (
                       <button
                         key={p}
                         type="button"
