@@ -1,36 +1,39 @@
 import React, { useState } from 'react';
-import { X } from 'lucide-react';
+import { X, ExternalLink } from 'lucide-react';
 import footerHeritageHd from '../../assets/footer_heritage_hd.jpg';
 
 // ============================================================
-// IKON SOSIAL MEDIA MINIMALIS EMAS (VEKTOR MURNI TANPA LINGKARAN KLISE)
+// IKON INSTAGRAM MINIMALIS EMAS (VEKTOR MURNI)
 // ============================================================
-const YoutubeIcon = () => (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-    <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
-  </svg>
-);
-
-const FacebookIcon = () => (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-    <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
-  </svg>
-);
-
-// Ikon X modern (menggantikan ikon Twitter burung lama)
-const XIcon = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
-  </svg>
-);
-
 const InstagramIcon = () => (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
     <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
     <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
   </svg>
 );
+
+// Profil Resmi Tim Pengembang & Kreator Wayangverse
+const DEVELOPER_PROFILES = [
+  {
+    name: 'Ahmad Fayyadh Fadhil',
+    role: 'Lead Developer & Software Architect',
+    username: 'fadhillllll15',
+    url: 'https://www.instagram.com/fadhillllll15?dlrf=cTJ4dGNvbHFtb2t0',
+  },
+  {
+    name: 'Raffi Akbar / Skywalker',
+    role: 'UI/UX Designer & Project Lead',
+    username: '_.skywalkerr',
+    url: 'https://www.instagram.com/_.skywalkerr?cplk=dHE0MGp5MHl5cTkx',
+  },
+  {
+    name: 'Haycell',
+    role: 'Frontend & Interactive Audio Engineer',
+    username: 'haycell._',
+    url: 'https://www.instagram.com/haycell._?rpxt=cDg5dDkwODI3c3Jw',
+  },
+];
 
 // ============================================================
 // TAHUN SAAT INI (RENDER MURNI REACT 19)
@@ -39,13 +42,6 @@ const CURRENT_YEAR = new Date().getFullYear();
 
 export default function Footer({ onNavigate }) {
   const [modalData, setModalData] = useState(null);
-
-  const socialLinks = [
-    { name: 'YouTube', icon: <YoutubeIcon />, href: 'https://youtube.com', title: 'Saluran YouTube Wayangverse' },
-    { name: 'Facebook', icon: <FacebookIcon />, href: 'https://facebook.com', title: 'Laman Facebook Wayangverse' },
-    { name: 'X', icon: <XIcon />, href: 'https://x.com', title: 'Akun Resmi X Wayangverse' },
-    { name: 'Instagram', icon: <InstagramIcon />, href: 'https://instagram.com', title: 'Instagram @wayangverse' },
-  ];
 
   return (
     <footer className="wayang-footer-root">
@@ -87,27 +83,27 @@ export default function Footer({ onNavigate }) {
               Merawat wayang lewat karya yang bisa dibawa pulang — melestarikan seni pedalangan Nusantara ke dalam kanvas digital interaktif dan arsip wiracarita adiluhung.
             </p>
 
-            {/* Format Alamat Riil Rapi (Dapat Disesuaikan Pengguna) */}
-            <div className="wayang-footer-address-block">
-              <div className="wayang-footer-address-name">Studio & Galeri Wayangverse</div>
-              <div className="wayang-footer-address-street">Jl. Slamet Riyadi No. 284, Sriwedari, Laweyan</div>
-              <div className="wayang-footer-address-city">Surakarta, Jawa Tengah 57141, Indonesia</div>
-            </div>
-
-            {/* Ikon Sosial Emas Minimalis (Vektor Murni Tanpa Lingkaran Klise) */}
-            <div className="wayang-footer-social-row">
-              {socialLinks.map((item) => (
-                <a
-                  key={item.name}
-                  href={item.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  title={item.title}
-                  className="wayang-footer-social-link"
-                >
-                  {item.icon}
-                </a>
-              ))}
+            {/* Tautan Instagram Resmi Tim Pengembang */}
+            <div className="wayang-footer-dev-section">
+              <div className="wayang-footer-dev-label">
+                <InstagramIcon />
+                <span>Instagram Tim Pengembang:</span>
+              </div>
+              <div className="wayang-footer-dev-pills">
+                {DEVELOPER_PROFILES.map((dev) => (
+                  <a
+                    key={dev.username}
+                    href={dev.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="wayang-footer-dev-pill"
+                    title={`Instagram ${dev.name} (@${dev.username})`}
+                  >
+                    <span>@{dev.username}</span>
+                    <ExternalLink size={11} style={{ opacity: 0.7 }} />
+                  </a>
+                ))}
+              </div>
             </div>
           </div>
 
@@ -164,9 +160,10 @@ export default function Footer({ onNavigate }) {
                   onClick={() =>
                     setModalData({
                       title: 'Tentang Kami',
-                      subtitle: 'Pusat Pelestarian Warisan Pedalangan Digital',
+                      subtitle: 'Pusat Pelestarian Warisan Pedalangan Digital & Tim Pengembang',
                       content:
-                        'Wayangverse lahir dari ikhtiar merawat warisan adiluhung seni wayang kulit Nusantara. Melalui kanvas kelir digital interaktif, ensiklopedia lakon serat klasik, dan soundscape gamelan prosedural real-time, kami menghadirkan panggung pedalangan yang dapat dinikmati generasi muda di mana pun berada.',
+                        'Wayangverse lahir dari ikhtiar merawat warisan adiluhung seni wayang kulit Nusantara melalui perpaduan seni tradisi dan rekayasa teknologi web modern. Dikembangkan secara independen oleh tim kreator muda yang berdedikasi menghadirkan panggung pedalangan digital yang dapat dinikmati dan dipelajari oleh seluruh generasi.',
+                      team: DEVELOPER_PROFILES,
                     })
                   }
                   className="wayang-footer-link-btn"
@@ -180,9 +177,9 @@ export default function Footer({ onNavigate }) {
                   onClick={() =>
                     setModalData({
                       title: 'Cerita di Balik Karya',
-                      subtitle: 'Dari Tatah Sungging Kulit Kerbau ke Kanvas Digital',
+                      subtitle: 'Modernisasi Warisan Budaya & Ruang Kreativitas Lintas Generasi',
                       content:
-                        'Setiap tokoh wayang digital di Wayangverse digambar berdasarkan pakem gagrag Surakarta dan Yogyakarta. Kami mendokumentasikan detail tatah sungging, anatomi proporsi karakter (satria, raseksa, pamong), serta filosofi warna muka untuk menjamin keaslian budaya tetap terjaga.',
+                        'Wayangverse lahir dari tekad untuk menjembatani warisan adiluhung seni pedalangan Nusantara dengan generasi masa kini. Di era perkembangan teknologi pesat, kami menghadirkan terobosan modernisasi: mengemas pakem wiracarita dan keindahan visual wayang kulit purwa ke dalam kanvas digital interaktif yang memikat daya tarik lintas generasi.\n\nLebih dari sekadar etalase tontonan pasif, Panggung Kelir Virtual kami ciptakan sebagai ruang eksplorasi kreatif tanpa batas—tempat generasi muda dapat bebas berimajinasi, menyusun adegan, memainkan tokoh wayang, dan mengasah daya cipta seni pedalangan secara mandiri demi menjaga kelestarian warisan leluhur bangsa.',
                     })
                   }
                   className="wayang-footer-link-btn"
@@ -212,9 +209,10 @@ export default function Footer({ onNavigate }) {
                   onClick={() =>
                     setModalData({
                       title: 'Hubungi Kami',
-                      subtitle: 'Redaksi, Sanggar & Komunitas Pedalangan',
+                      subtitle: 'Terhubung Langsung dengan Tim Pengembang',
                       content:
-                        'Surel: redaksi@wayangverse.id\nNarahubung: +62 812-2849-5714\nSanggar: Jl. Slamet Riyadi No. 284, Sriwedari, Surakarta, Jawa Tengah.',
+                        'Ingin berdiskusi, memberikan apresiasi, masukan pengembangan, atau menjalin kolaborasi edukasi budaya? Silakan sapa dan terhubung langsung dengan tim pengembang Wayangverse melalui Instagram resmi kami:',
+                      team: DEVELOPER_PROFILES,
                     })
                   }
                   className="wayang-footer-link-btn"
@@ -392,7 +390,7 @@ export default function Footer({ onNavigate }) {
                   background: '#ffffff',
                   border: '1px solid rgba(212, 175, 55, 0.35)',
                   borderRadius: '14px',
-                  padding: '18px 20px',
+                  padding: '20px 22px',
                   marginBottom: '24px',
                   boxShadow: '0 2px 8px rgba(40, 28, 16, 0.04)',
                 }}
@@ -408,6 +406,82 @@ export default function Footer({ onNavigate }) {
                 >
                   {modalData.content}
                 </p>
+
+                {/* Kartu Profil Tim Pengembang / Narahubung Instagram Interaktif */}
+                {modalData.team && (
+                  <div
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: '10px',
+                      marginTop: '18px',
+                      borderTop: '1px solid rgba(212, 175, 55, 0.2)',
+                      paddingTop: '16px',
+                    }}
+                  >
+                    <div
+                      style={{
+                        fontSize: '11px',
+                        fontWeight: '800',
+                        color: '#8b4513',
+                        letterSpacing: '0.08em',
+                        textTransform: 'uppercase',
+                        marginBottom: '4px',
+                      }}
+                    >
+                      Daftar Tim Pengembang & Kreator
+                    </div>
+                    {modalData.team.map((member) => (
+                      <div
+                        key={member.username}
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'space-between',
+                          padding: '10px 14px',
+                          background: 'rgba(212, 175, 55, 0.06)',
+                          border: '1px solid rgba(212, 175, 55, 0.25)',
+                          borderRadius: '10px',
+                          gap: '12px',
+                          flexWrap: 'wrap',
+                        }}
+                      >
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                          <span style={{ fontSize: '13.5px', fontWeight: '750', color: '#1a140e' }}>
+                            {member.name}
+                          </span>
+                          <span style={{ fontSize: '11.5px', color: '#6e5e4d', fontWeight: '600' }}>
+                            {member.role}
+                          </span>
+                        </div>
+                        <a
+                          href={member.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          style={{
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: '6px',
+                            background: '#1a140e',
+                            color: '#e8bb5c',
+                            padding: '6px 14px',
+                            borderRadius: '9999px',
+                            fontSize: '12px',
+                            fontWeight: '700',
+                            textDecoration: 'none',
+                            border: '1px solid rgba(212, 175, 55, 0.3)',
+                            whiteSpace: 'nowrap',
+                            transition: 'all 0.2s ease',
+                          }}
+                        >
+                          <InstagramIcon />
+                          <span>@{member.username}</span>
+                          <ExternalLink size={11} />
+                        </a>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
 
               {/* Tombol Aksi */}
