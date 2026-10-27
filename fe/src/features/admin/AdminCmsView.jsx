@@ -2321,53 +2321,35 @@ export default function AdminCmsView({ onPlayPerformance }) {
                               </span>
                             </div>
 
-                            {/* Wayang Showcase Card Miniatur */}
+                            {/* Wayang Showcase Card Miniatur (Persis Desain Tokoh & Karakter Wayang) */}
                             <div
                               style={{
-                                background: '#fbf9f4',
-                                border: '1.5px solid rgba(212, 175, 55, 0.45)',
-                                borderRadius: '16px',
-                                padding: '16px 14px',
+                                background: '#ffffff',
+                                borderRadius: '22px',
+                                border: '1px solid rgba(0, 0, 0, 0.08)',
+                                boxShadow: '0 4px 18px rgba(40, 28, 16, 0.06)',
+                                padding: '16px 16px 18px 16px',
                                 display: 'flex',
                                 flexDirection: 'column',
-                                boxShadow: '0 4px 16px rgba(40, 28, 16, 0.06)',
                                 position: 'relative',
+                                overflow: 'hidden',
                                 boxSizing: 'border-box',
                               }}
                             >
-                              {/* Badge Kategori */}
-                              <div style={{ display: 'flex', justifyContent: 'flex-start', marginBottom: '10px' }}>
-                                <span
-                                  style={{
-                                    background: '#1c140d',
-                                    color: '#e8bb5c',
-                                    border: '1px solid rgba(212, 175, 55, 0.35)',
-                                    padding: '3px 10px',
-                                    borderRadius: '9999px',
-                                    fontSize: '9px',
-                                    fontWeight: '850',
-                                    letterSpacing: '0.08em',
-                                    textTransform: 'uppercase',
-                                  }}
-                                >
-                                  {member.badge || 'TIM PENGEMBANG'}
-                                </span>
-                              </div>
-
-                              {/* Wadah Foto / Avatar */}
+                              {/* Wadah Foto / Avatar & Badge Melayang */}
                               <div
                                 style={{
+                                  position: 'relative',
                                   width: '100%',
-                                  height: '135px',
-                                  borderRadius: '12px',
+                                  height: '180px',
+                                  borderRadius: '16px',
                                   overflow: 'hidden',
-                                  background: 'radial-gradient(circle at 50% 40%, #2a1c12 0%, #120c08 100%)',
-                                  border: '1px solid rgba(212, 175, 55, 0.25)',
-                                  marginBottom: '12px',
+                                  background: '#140e09',
                                   display: 'flex',
                                   alignItems: 'center',
                                   justifyContent: 'center',
-                                  position: 'relative',
+                                  marginBottom: '14px',
+                                  flexShrink: 0,
                                 }}
                               >
                                 {member.avatar ? (
@@ -2378,7 +2360,7 @@ export default function AdminCmsView({ onPlayPerformance }) {
                                       width: '100%',
                                       height: '100%',
                                       objectFit: 'cover',
-                                      objectPosition: 'center top',
+                                      objectPosition: 'center 20%',
                                     }}
                                   />
                                 ) : (
@@ -2389,87 +2371,169 @@ export default function AdminCmsView({ onPlayPerformance }) {
                                       alignItems: 'center',
                                       justifyContent: 'center',
                                       color: '#e8bb5c',
-                                      gap: '6px',
+                                      gap: '8px',
                                     }}
                                   >
                                     <div
                                       style={{
-                                        width: '46px',
-                                        height: '46px',
+                                        width: '52px',
+                                        height: '52px',
                                         borderRadius: '50%',
                                         background: 'rgba(212, 175, 55, 0.15)',
                                         border: '1.5px solid rgba(212, 175, 55, 0.45)',
                                         display: 'flex',
                                         alignItems: 'center',
                                         justifyContent: 'center',
-                                        fontSize: '16px',
+                                        fontSize: '18px',
                                         fontWeight: '800',
                                         color: '#fcfaf2',
                                       }}
                                     >
                                       {(member.name || 'W').split(' ').map((n) => n[0]).slice(0, 2).join('')}
                                     </div>
-                                    <span style={{ fontSize: '10px', color: '#bfae9c', letterSpacing: '0.05em', fontWeight: '700' }}>
+                                    <span style={{ fontSize: '10px', color: '#bfae9c', letterSpacing: '0.08em', fontWeight: '800' }}>
                                       KREATOR WAYANG
                                     </span>
                                   </div>
                                 )}
+
+                                {/* Badge Kategori Melayang Persis di Pojok Kiri Atas Foto */}
+                                <div
+                                  style={{
+                                    position: 'absolute',
+                                    top: '10px',
+                                    left: '10px',
+                                    zIndex: 5,
+                                    background: 'rgba(255, 255, 255, 0.94)',
+                                    backdropFilter: 'blur(8px)',
+                                    WebkitBackdropFilter: 'blur(8px)',
+                                    borderRadius: '9999px',
+                                    padding: '4px 12px',
+                                    fontSize: '9.5px',
+                                    fontWeight: '800',
+                                    color: '#1a140e',
+                                    letterSpacing: '0.04em',
+                                    textTransform: 'uppercase',
+                                    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.12)',
+                                    pointerEvents: 'none',
+                                  }}
+                                >
+                                  <span>{member.badge || 'TIM PENGEMBANG'}</span>
+                                </div>
+
+                                {/* Gradient Penyeimbang Visual */}
+                                <div
+                                  style={{
+                                    position: 'absolute',
+                                    inset: 0,
+                                    background: 'linear-gradient(180deg, rgba(0, 0, 0, 0) 65%, rgba(20, 14, 9, 0.35) 100%)',
+                                    pointerEvents: 'none',
+                                  }}
+                                />
                               </div>
 
-                              {/* Body Info */}
-                              <div style={{ flex: 1, display: 'flex', flexDirection: 'column', marginBottom: '14px' }}>
-                                <div style={{ fontSize: '10px', color: '#8b4513', fontWeight: '800', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: '2px' }}>
-                                  Gelar: {member.role || 'Peran Pengembang'}
+                              {/* Konten / Keterangan Tokoh & Meta */}
+                              <div style={{ display: 'flex', flexDirection: 'column', flex: 1, justifyContent: 'space-between' }}>
+                                {/* Gelar & Pusaka Luhur */}
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: '3px', marginBottom: '8px', fontSize: '12px' }}>
+                                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                    <span style={{ color: '#8b5a1b', fontWeight: '750', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.03em', flexShrink: 0 }}>
+                                      Gelar:
+                                    </span>
+                                    <span style={{ color: '#2b2118', fontWeight: '600', fontSize: '11.5px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                                      {member.role || 'Peran Pengembang'}
+                                    </span>
+                                  </div>
+                                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                    <span style={{ color: '#8b5a1b', fontWeight: '750', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.03em', flexShrink: 0 }}>
+                                      Pusaka:
+                                    </span>
+                                    <span style={{ color: '#2b2118', fontWeight: '600', fontSize: '11.5px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                                      @{member.username || 'username'}
+                                    </span>
+                                  </div>
                                 </div>
-                                <h4
+
+                                {/* Nama Tokoh */}
+                                <h3
                                   style={{
-                                    margin: '0 0 3px 0',
-                                    fontSize: '14.5px',
-                                    fontWeight: '850',
+                                    margin: '0 0 6px 0',
+                                    fontSize: '17.5px',
+                                    fontWeight: '800',
                                     color: '#1a140e',
+                                    letterSpacing: '-0.3px',
                                     lineHeight: '1.25',
+                                    whiteSpace: 'nowrap',
+                                    overflow: 'hidden',
+                                    textOverflow: 'ellipsis',
                                   }}
                                 >
                                   {member.name || 'Nama Anggota'}
-                                </h4>
-                                <div style={{ fontSize: '11.5px', color: '#8b5a1b', fontWeight: '700', marginBottom: '6px' }}>
-                                  @{member.username || 'username'}
-                                </div>
+                                </h3>
+
+                                {/* Deskripsi Singkat */}
                                 <p
                                   style={{
-                                    margin: 0,
-                                    fontSize: '11px',
-                                    lineHeight: '1.5',
-                                    color: '#5c4a3b',
+                                    margin: '0 0 14px 0',
+                                    fontSize: '12px',
+                                    color: '#6b7280',
+                                    lineHeight: '1.55',
                                     display: '-webkit-box',
-                                    WebkitLineClamp: 3,
+                                    WebkitLineClamp: 2,
                                     WebkitBoxOrient: 'vertical',
                                     overflow: 'hidden',
+                                    height: '38px',
                                   }}
                                 >
-                                  {member.bio || 'Deskripsi kontribusi karya digital Wayangverse.'}
+                                  {member.bio || 'Tokoh kreator dan pengembang platform pelestarian wayang kulit digital Nusantara.'}
                                 </p>
-                              </div>
 
-                              {/* Golden Capsule Button Preview */}
-                              <div
-                                style={{
-                                  display: 'inline-flex',
-                                  alignItems: 'center',
-                                  justifyContent: 'center',
-                                  gap: '6px',
-                                  background: '#c27827',
-                                  color: '#ffffff',
-                                  padding: '8px 14px',
-                                  borderRadius: '9999px',
-                                  fontSize: '12px',
-                                  fontWeight: '750',
-                                  boxSizing: 'border-box',
-                                  width: '100%',
-                                }}
-                              >
-                                <span>Lihat Instagram</span>
-                                <ExternalLink size={12} />
+                                {/* Dua Tombol Aksi Kapsul Persis Seperti Card Tokoh Wayang (Profil & Pose + Mainkan) */}
+                                <div style={{ display: 'flex', gap: '8px', marginTop: 'auto' }}>
+                                  <div
+                                    style={{
+                                      flex: 1,
+                                      background: '#f7f4eb',
+                                      border: '1px solid rgba(212, 175, 55, 0.45)',
+                                      color: '#1a140e',
+                                      padding: '9px 10px',
+                                      borderRadius: '9999px',
+                                      fontSize: '11.5px',
+                                      fontWeight: '750',
+                                      display: 'inline-flex',
+                                      alignItems: 'center',
+                                      justifyContent: 'center',
+                                      minHeight: '38px',
+                                      boxSizing: 'border-box',
+                                      whiteSpace: 'nowrap',
+                                    }}
+                                  >
+                                    <Eye size={14} style={{ marginRight: '5px' }} />
+                                    <span>Profil & Pose</span>
+                                  </div>
+
+                                  <div
+                                    style={{
+                                      flex: 1,
+                                      background: '#e8bb5c',
+                                      border: 'none',
+                                      color: '#0d0a07',
+                                      padding: '9px 10px',
+                                      borderRadius: '9999px',
+                                      fontSize: '11.5px',
+                                      fontWeight: '750',
+                                      display: 'inline-flex',
+                                      alignItems: 'center',
+                                      justifyContent: 'center',
+                                      minHeight: '38px',
+                                      boxSizing: 'border-box',
+                                      whiteSpace: 'nowrap',
+                                    }}
+                                  >
+                                    <Play size={13} fill="#0d0a07" style={{ marginRight: '5px' }} />
+                                    <span>Mainkan</span>
+                                  </div>
+                                </div>
                               </div>
                             </div>
                           </div>
