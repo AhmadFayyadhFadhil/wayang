@@ -4002,13 +4002,37 @@ html, body {
   flex-shrink: 0;
 }
 
+/* Tombol Panduan Panggung Dalang */
+.studio-guide-header-btn {
+  background: rgba(35, 26, 19, 0.7);
+  border: 1px solid rgba(212, 175, 55, 0.35);
+  color: #fcfaf2;
+  padding: 7px 16px;
+  border-radius: 9999px;
+  font-size: 12.5px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  min-height: 38px;
+}
+
+.studio-guide-header-btn:hover {
+  border-color: #c27827;
+  color: #ffffff;
+  background: rgba(194, 120, 39, 0.15);
+  transform: translateY(-1px);
+}
+
 /* Tombol Dalang Vision (Camera Hand Tracking) */
 .studio-vision-toggle-btn {
   background: rgba(35, 26, 19, 0.7);
   border: 1px solid rgba(212, 175, 55, 0.35);
-  color: #e8bb5c;
-  padding: 7px 14px;
-  border-radius: 10px;
+  color: #fcfaf2;
+  padding: 7px 16px;
+  border-radius: 9999px;
   font-size: 12.5px;
   font-weight: 700;
   cursor: pointer;
@@ -4020,15 +4044,16 @@ html, body {
 }
 
 .studio-vision-toggle-btn:hover {
-  border-color: #d4af37;
-  color: #fef08a;
-  background: #2a1f15;
+  border-color: #c27827;
+  color: #ffffff;
+  background: rgba(194, 120, 39, 0.15);
+  transform: translateY(-1px);
 }
 
 .studio-vision-toggle-btn.is-active {
-  background: linear-gradient(135deg, rgba(34, 197, 94, 0.15) 0%, rgba(35, 26, 19, 0.95) 100%);
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.18) 0%, rgba(35, 26, 19, 0.95) 100%);
   border-color: #22c55e;
-  color: #fef08a;
+  color: #ffffff;
   box-shadow: 0 0 12px rgba(34, 197, 94, 0.22);
 }
 
@@ -4039,7 +4064,7 @@ html, body {
   background: rgba(34, 197, 94, 0.18);
   border: 1px solid rgba(34, 197, 94, 0.4);
   padding: 1px 6px;
-  border-radius: 5px;
+  border-radius: 9999px;
   letter-spacing: 0.04em;
   text-transform: uppercase;
 }
@@ -4048,9 +4073,9 @@ html, body {
 .studio-preview-outline-btn {
   background: rgba(35, 26, 19, 0.7);
   border: 1px solid rgba(212, 175, 55, 0.45);
-  color: #e8bb5c;
-  padding: 7px 16px;
-  border-radius: 10px;
+  color: #fcfaf2;
+  padding: 7px 18px;
+  border-radius: 9999px;
   font-size: 12.5px;
   font-weight: 700;
   cursor: pointer;
@@ -4062,35 +4087,35 @@ html, body {
 }
 
 .studio-preview-outline-btn:hover {
-  border-color: #d4af37;
-  color: #fef08a;
-  background: #2a1f15;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  border-color: #c27827;
+  color: #ffffff;
+  background: rgba(194, 120, 39, 0.15);
+  transform: translateY(-1px);
 }
 
-/* TOMBOL EMAS SOLID HERITAGE (PRADA KENCANA) */
+/* TOMBOL SIMPAN KARYA (SELARAS DENGAN NAVBAR & SISTEM DESAIN) */
 .studio-save-solid-gold-btn {
-  background: linear-gradient(135deg, #d4af37 0%, #c59b27 50%, #b8860b 100%);
-  border: 1px solid rgba(255, 235, 180, 0.4);
-  color: #160f08;
-  padding: 8px 18px;
-  border-radius: 10px;
+  background: #c27827;
+  border: none;
+  color: #ffffff;
+  padding: 8px 20px;
+  border-radius: 9999px;
   font-size: 12.5px;
-  font-weight: 800;
+  font-weight: 750;
   cursor: pointer;
   display: flex;
   align-items: center;
   gap: 7px;
-  box-shadow: 0 3px 12px rgba(212, 175, 55, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+  box-shadow: none;
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   min-height: 38px;
 }
 
 .studio-save-solid-gold-btn:hover {
-  background: linear-gradient(135deg, #e8bb5c 0%, #d4af37 100%);
+  background: #ad671d;
+  color: #ffffff;
   transform: translateY(-1px);
-  box-shadow: 0 5px 16px rgba(212, 175, 55, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.5);
-  color: #0d0804;
+  box-shadow: none;
 }
 
 .studio-save-solid-gold-btn:active {
@@ -5611,20 +5636,20 @@ html, body {
 }
 
 .kelir-empty-add-btn {
-  background: linear-gradient(135deg, #d4af37 0%, #c59b27 100%);
-  color: #0d0a07;
+  background: #c27827;
+  color: #ffffff;
   border: none;
-  padding: 8px 18px;
-  border-radius: 8px;
-  font-size: 12px;
-  font-weight: 800;
+  padding: 8px 20px;
+  border-radius: 9999px;
+  font-size: 12.5px;
+  font-weight: 750;
   cursor: pointer;
-  box-shadow: 0 4px 12px rgba(212, 175, 55, 0.25);
-  transition: all 0.15s ease;
+  box-shadow: none;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .kelir-empty-add-btn:hover {
-  filter: brightness(1.08);
+  background: #ad671d;
   transform: translateY(-1px);
 }
 

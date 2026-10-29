@@ -277,23 +277,67 @@ export default function SavePerformanceModal({
           )}
 
           {/* Tombol Aksi */}
-          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px', paddingTop: '10px', borderTop: '1px solid rgba(212, 175, 55, 0.25)' }}>
+          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px', paddingTop: '14px', borderTop: '1px solid rgba(212, 175, 55, 0.25)' }}>
             <button
               type="button"
               onClick={onClose}
-              className="wayang-btn-ghost"
+              style={{
+                background: '#ffffff',
+                border: '1.5px solid rgba(212, 175, 55, 0.45)',
+                color: '#1a140e',
+                padding: '10px 22px',
+                borderRadius: '9999px',
+                fontSize: '13.5px',
+                fontWeight: '700',
+                cursor: 'pointer',
+                minHeight: '42px',
+                transition: 'all 0.2s ease',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.borderColor = '#c27827';
+                e.currentTarget.style.background = '#fcfaf5';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.borderColor = 'rgba(212, 175, 55, 0.45)';
+                e.currentTarget.style.background = '#ffffff';
+              }}
             >
               Batal
             </button>
             <button
               type="submit"
               disabled={saving}
-              className="wayang-btn-cta"
+              style={{
+                background: '#c27827',
+                border: 'none',
+                color: '#ffffff',
+                padding: '10px 24px',
+                borderRadius: '9999px',
+                fontSize: '14px',
+                fontWeight: '750',
+                cursor: saving ? 'not-allowed' : 'pointer',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '8px',
+                boxShadow: 'none',
+                minHeight: '42px',
+                transition: 'all 0.2s ease',
+              }}
+              onMouseEnter={(e) => {
+                if (!saving) {
+                  e.currentTarget.style.background = '#ad671d';
+                  e.currentTarget.style.transform = 'translateY(-1px)';
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (!saving) {
+                  e.currentTarget.style.background = '#c27827';
+                  e.currentTarget.style.transform = 'translateY(0)';
+                }
+              }}
             >
+              <Save size={15} style={{ color: '#ffffff' }} />
               <span>{saving ? 'Menyimpan...' : 'Simpan Lakon Sekarang'}</span>
-              <span className="wayang-btn-cta-icon">
-                <Save size={15} color="#16100a" />
-              </span>
             </button>
           </div>
         </form>

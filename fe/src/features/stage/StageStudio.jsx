@@ -1321,8 +1321,27 @@ export default function StageStudio({ onNavigate, currentUser = null, onOpenAuth
                 <button
                   type="button"
                   onClick={() => setShowResetConfirmModal(false)}
-                  className="wayang-btn-ghost"
-                  style={{ flex: 1 }}
+                  style={{
+                    flex: 1,
+                    background: 'rgba(255, 255, 255, 0.06)',
+                    border: '1.5px solid rgba(212, 175, 55, 0.35)',
+                    color: '#fcfaf2',
+                    padding: '10px 20px',
+                    borderRadius: '9999px',
+                    fontWeight: '700',
+                    fontSize: '13.5px',
+                    cursor: 'pointer',
+                    minHeight: '42px',
+                    transition: 'all 0.2s ease',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.borderColor = '#d4af37';
+                    e.currentTarget.style.background = 'rgba(255, 255, 255, 0.1)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.borderColor = 'rgba(212, 175, 55, 0.35)';
+                    e.currentTarget.style.background = 'rgba(255, 255, 255, 0.06)';
+                  }}
                 >
                   Batalkan
                 </button>
@@ -1333,13 +1352,35 @@ export default function StageStudio({ onNavigate, currentUser = null, onOpenAuth
                     resetStudio();
                     setShowResetConfirmModal(false);
                   }}
-                  className="wayang-btn-cta"
-                  style={{ flex: 1, justifyContent: 'space-between' }}
+                  style={{
+                    flex: 1,
+                    background: '#c27827',
+                    border: 'none',
+                    color: '#ffffff',
+                    padding: '10px 22px',
+                    borderRadius: '9999px',
+                    fontWeight: '750',
+                    fontSize: '14px',
+                    cursor: 'pointer',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '8px',
+                    minHeight: '42px',
+                    boxShadow: 'none',
+                    transition: 'all 0.2s ease',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = '#ad671d';
+                    e.currentTarget.style.transform = 'translateY(-1px)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = '#c27827';
+                    e.currentTarget.style.transform = 'translateY(0)';
+                  }}
                 >
+                  <RotateCcw size={15} style={{ color: '#ffffff' }} />
                   <span>Reset Lakon</span>
-                  <span className="wayang-btn-cta-icon">
-                    <RotateCcw size={15} color="#16100a" />
-                  </span>
                 </button>
               </div>
             </div>
