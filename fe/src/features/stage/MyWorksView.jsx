@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import persistenceService from '../../services/persistenceService';
 import { useStageStore } from './useStageStore';
 import { getStoryById } from '../../data/master/storiesMaster';
@@ -32,6 +32,7 @@ import {
   LayoutGrid,
   Columns,
   X,
+  User,
 } from 'lucide-react';
 
 // Aset Visual Heritage & Ornamen Budaya
@@ -332,9 +333,14 @@ const TEMPLATE_STARTERS = [
   },
 ];
 
-export default function MyWorksView({ onOpenStudio, onPlayPerformance }) {
+export default function MyWorksView({
+  onOpenStudio,
+  onPlayPerformance,
+  currentUser = null,
+  onOpenAuth = null,
+}) {
   const [works, setWorks] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(() => Boolean(currentUser));
   const [searchQuery, setSearchQuery] = useState('');
   const [activeFilter, setActiveFilter] = useState('all'); // 'all' | 'public' | 'private' | 'pakem'
   const [sortBy, setSortBy] = useState('newest'); // 'newest' | 'oldest' | 'title' | 'scenes'
@@ -354,24 +360,40 @@ export default function MyWorksView({ onOpenStudio, onPlayPerformance }) {
 
   const { loadPerformanceFromData, resetStudio } = useStageStore();
 
-  const loadWorks = async () => {
+  const loadWorks = useCallback(async () => {
+    if (!currentUser) {
+      setWorks([]);
+      setLoading(false);
+      return;
+    }
     try {
-      const data = await persistenceService.getMyWorks();
+      const data = await persistenceService.getMyWorks(currentUser);
       setWorks(data || []);
     } finally {
       setLoading(false);
     }
-  };
+  }, [currentUser]);
 
   useEffect(() => {
-    async function initWorks() {
-      await loadWorks();
+    let isCancelled = false;
+    if (!currentUser) {
+      return () => {
+        soundEngine.stopBgm();
+      };
     }
-    initWorks();
+
+    persistenceService.getMyWorks(currentUser).then((data) => {
+      if (!isCancelled) {
+        setWorks(data || []);
+        setLoading(false);
+      }
+    });
+
     return () => {
+      isCancelled = true;
       soundEngine.stopBgm();
     };
-  }, []);
+  }, [currentUser]);
 
   // Filter template lakon berdasarkan kategori
   const filteredTemplates = useMemo(() => {
@@ -458,6 +480,10 @@ export default function MyWorksView({ onOpenStudio, onPlayPerformance }) {
 
   // Aksi Rancang Lakon Baru Kosong
   const handleCreateNew = () => {
+    if (!currentUser) {
+      if (onOpenAuth) onOpenAuth();
+      return;
+    }
     triggerWayangLoading({
       message: 'MENYIAPKAN PANGGUNG...',
       subtitle: 'Merancang lembar lakon baru dari awal',
@@ -469,6 +495,10 @@ export default function MyWorksView({ onOpenStudio, onPlayPerformance }) {
 
   // Aksi Mulai dari Template Inspirasi Pakem
   const handleUseTemplate = async (template) => {
+    if (!currentUser) {
+      if (onOpenAuth) onOpenAuth();
+      return;
+    }
     triggerWayangLoading({
       message: 'MENYIAPKAN TEMPLATE PAKEM...',
       subtitle: `Memuat adegan & tokoh: ${template.title}`,
@@ -488,7 +518,7 @@ export default function MyWorksView({ onOpenStudio, onPlayPerformance }) {
       version: 1,
     };
 
-    const saved = await persistenceService.savePerformance(newWorkData, scenePayload);
+    const saved = await persistenceService.savePerformance(newWorkData, scenePayload, currentUser);
     await loadWorks();
 
     if (saved && saved.data) {
@@ -506,6 +536,10 @@ export default function MyWorksView({ onOpenStudio, onPlayPerformance }) {
 
   // Aksi Duplikasi Karya
   const handleDuplicate = async (perf) => {
+    if (!currentUser) {
+      if (onOpenAuth) onOpenAuth();
+      return;
+    }
     const sceneData = typeof perf.scene_data === 'string' ? JSON.parse(perf.scene_data) : perf.scene_data;
     const duplicateMeta = {
       id: null,
@@ -514,7 +548,7 @@ export default function MyWorksView({ onOpenStudio, onPlayPerformance }) {
       storyId: perf.story_id || null,
       visibility: 'private',
     };
-    await persistenceService.savePerformance(duplicateMeta, sceneData);
+    await persistenceService.savePerformance(duplicateMeta, sceneData, currentUser);
     await loadWorks();
     triggerToast(`Karya "${perf.title}" berhasil diduplikasi sebagai draf privat.`);
   };
@@ -540,8 +574,8 @@ export default function MyWorksView({ onOpenStudio, onPlayPerformance }) {
 
   // Aksi Hapus Karya (Konfirmasi via Modal Custom)
   const handleConfirmDelete = async () => {
-    if (!deleteTarget) return;
-    await persistenceService.deletePerformance(deleteTarget.id);
+    if (!deleteTarget || !currentUser) return;
+    await persistenceService.deletePerformance(deleteTarget.id, currentUser);
     await loadWorks();
     triggerToast(`Karya "${deleteTarget.title}" telah dihapus.`, 'info');
     setDeleteTarget(null);
@@ -2431,6 +2465,144 @@ export default function MyWorksView({ onOpenStudio, onPlayPerformance }) {
                 }}
               />
               <div style={{ fontSize: '15px', fontWeight: '700' }}>Memuat khazanah karya tersimpan...</div>
+            </div>
+          ) : !currentUser ? (
+            /* Empty State Khusus Pengguna Tamu (Belum Login) */
+            <div
+              style={{
+                background: 'linear-gradient(180deg, #ffffff 0%, #fbf9f4 100%)',
+                border: '1px solid rgba(212, 175, 55, 0.35)',
+                borderRadius: '24px',
+                padding: 'clamp(36px, 6vw, 64px) 24px',
+                textAlign: 'center',
+                maxWidth: '720px',
+                margin: '0 auto',
+                boxShadow: '0 8px 32px rgba(40, 28, 16, 0.05)',
+                position: 'relative',
+                overflow: 'hidden',
+              }}
+            >
+              <div
+                style={{
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  height: '4px',
+                  background: 'linear-gradient(90deg, transparent, #d4af37, #8b4513, transparent)',
+                }}
+              />
+              <div
+                style={{
+                  width: '76px',
+                  height: '76px',
+                  borderRadius: '24px',
+                  background: 'rgba(212, 175, 55, 0.12)',
+                  border: '1px solid rgba(212, 175, 55, 0.35)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  margin: '0 auto 24px auto',
+                  boxShadow: '0 4px 16px rgba(212, 175, 55, 0.15)',
+                }}
+              >
+                <Lock size={34} style={{ color: '#8b4513' }} />
+              </div>
+
+              <div
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  padding: '5px 14px',
+                  borderRadius: '20px',
+                  background: 'rgba(139, 69, 19, 0.08)',
+                  color: '#8b4513',
+                  fontSize: '12px',
+                  fontWeight: '700',
+                  letterSpacing: '0.8px',
+                  textTransform: 'uppercase',
+                  marginBottom: '14px',
+                }}
+              >
+                <span>SANGGAR LAKON PRIBADI</span>
+              </div>
+
+              <h3
+                style={{
+                  margin: '0 0 14px 0',
+                  fontSize: 'clamp(20px, 3vw, 26px)',
+                  color: '#1a140e',
+                  fontWeight: '850',
+                  letterSpacing: '-0.4px',
+                }}
+              >
+                Masuk Akun Dalang untuk Mengakses Sanggar Anda
+              </h3>
+              <p
+                style={{
+                  margin: '0 auto 32px auto',
+                  fontSize: '15px',
+                  color: '#5c4b3a',
+                  lineHeight: '1.7',
+                  maxWidth: '520px',
+                }}
+              >
+                Anda sedang dalam <strong>Mode Penjelajah Tamu</strong>. Halaman ini adalah sanggar privat tempat Anda menyusun, menyimpan draf babak, dan mengelola pementasan lakon wayang Anda sendiri.
+              </p>
+
+              <div style={{ display: 'flex', justifyContent: 'center', gap: '14px', flexWrap: 'wrap' }}>
+                <button
+                  type="button"
+                  onClick={() => onOpenAuth && onOpenAuth()}
+                  style={{
+                    background: 'linear-gradient(135deg, #d4af37 0%, #b8861d 100%)',
+                    border: 'none',
+                    color: '#0e0a14',
+                    padding: '13px 32px',
+                    borderRadius: '12px',
+                    fontSize: '15px',
+                    fontWeight: '800',
+                    cursor: 'pointer',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '9px',
+                    boxShadow: '0 4px 18px rgba(212, 175, 55, 0.35)',
+                    minHeight: '44px',
+                  }}
+                >
+                  <User size={16} />
+                  <span>Masuk / Daftar Akun Dalang</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (!currentUser && onOpenAuth) {
+                      onOpenAuth();
+                      return;
+                    }
+                    if (onOpenStudio) onOpenStudio();
+                  }}
+                  style={{
+                    background: '#ffffff',
+                    border: '1px solid rgba(212, 175, 55, 0.45)',
+                    color: '#1a140e',
+                    padding: '13px 26px',
+                    borderRadius: '12px',
+                    fontSize: '15px',
+                    fontWeight: '700',
+                    cursor: 'pointer',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    minHeight: '44px',
+                  }}
+                >
+                  <Play size={15} style={{ color: '#8b4513' }} />
+                  <span>Buka Studio Panggung</span>
+                </button>
+              </div>
             </div>
           ) : filteredWorks.length === 0 ? (
             /* Empty State Berseni Tinggi */

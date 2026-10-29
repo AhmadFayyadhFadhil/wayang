@@ -62,8 +62,17 @@ const CHAR_AVATARS = {
   semar: cardSemar,
 };
 
-export default function StageStudio({ onNavigate }) {
+export default function StageStudio({ onNavigate, currentUser = null, onOpenAuth = null }) {
   const stageCanvasRef = useRef(null);
+
+  // Helper pengaman otentikasi: mencegah tamu mengutak-atik panggung atau menyimpan
+  const requireAuth = (_actionDesc = 'mengutak-atik panggung') => {
+    if (!currentUser) {
+      if (onOpenAuth) onOpenAuth();
+      return false;
+    }
+    return true;
+  };
   const handleDirectUpdate = useCallback((instanceId, updates) => {
     stageCanvasRef.current?.directUpdate(instanceId, updates);
   }, []);
@@ -259,6 +268,7 @@ export default function StageStudio({ onNavigate }) {
               <button
                 type="button"
                 onClick={() => {
+                  if (!requireAuth('mengubah judul lakon')) return;
                   setTitleInput(metadata.title || 'Lakon Wayang Baru');
                   setIsEditingTitle(true);
                 }}
@@ -327,7 +337,10 @@ export default function StageStudio({ onNavigate }) {
           {/* SATU-SATUNYA TOMBOL EMAS SOLID DI HALAMAN */}
           <button
             type="button"
-            onClick={() => setShowSaveModal(true)}
+            onClick={() => {
+              if (!requireAuth('menyimpan karya lakon')) return;
+              setShowSaveModal(true);
+            }}
             className="studio-save-solid-gold-btn"
             title="Simpan Karya Lakon Wayang"
           >
@@ -433,6 +446,7 @@ export default function StageStudio({ onNavigate }) {
                 <button
                   type="button"
                   onClick={() => {
+                    if (!requireAuth('mereset panggung')) return;
                     setShowMoreMenu(false);
                     setShowResetConfirmModal(true);
                   }}
@@ -517,7 +531,10 @@ export default function StageStudio({ onNavigate }) {
                 {/* Tombol Tambah Tokoh */}
                 <button
                   type="button"
-                  onClick={() => setShowAddCharModal(true)}
+                  onClick={() => {
+                    if (!requireAuth('menambah tokoh ke panggung')) return;
+                    setShowAddCharModal(true);
+                  }}
                   className="rail-add-char-action-btn"
                 >
                   <Plus size={14} />
@@ -534,7 +551,10 @@ export default function StageStudio({ onNavigate }) {
                 />
                 <button
                   type="button"
-                  onClick={() => customFileInputRef.current?.click()}
+                  onClick={() => {
+                    if (!requireAuth('mengunggah wayang kustom')) return;
+                    customFileInputRef.current?.click();
+                  }}
                   className="rail-upload-custom-btn"
                 >
                   <Upload size={12} />
@@ -642,6 +662,7 @@ export default function StageStudio({ onNavigate }) {
                         key={bg.id}
                         type="button"
                         onClick={() => {
+                          if (!requireAuth('mengganti latar kelir')) return;
                           if (applyBgToAll) {
                             updateAllScenes({ background: bg.id });
                           } else {
@@ -768,6 +789,7 @@ export default function StageStudio({ onNavigate }) {
                       <div
                         key={track.id}
                         onClick={() => {
+                          if (!requireAuth('mengubah tata suara babak')) return;
                           updateActiveScene({ audioAssetId: track.id });
                         }}
                         className={`rail-bgm-track-card ${isSelectedTrack ? 'is-selected' : ''}`}
@@ -837,12 +859,26 @@ export default function StageStudio({ onNavigate }) {
               ref={stageCanvasRef}
               scene={currentScene}
               selectedInstanceId={selectedInstanceId}
-              onSelectCharacter={setSelectedInstanceId}
-              onUpdateCharacter={updateCharacter}
-              onRemoveCharacter={removeCharacterFromActiveScene}
-              onOpenAddCharacter={() => setShowAddCharModal(true)}
+              onSelectCharacter={(id) => {
+                if (!requireAuth('memilih tokoh')) return;
+                setSelectedInstanceId(id);
+              }}
+              onUpdateCharacter={(id, updates) => {
+                if (!requireAuth('menggeser posisi tokoh')) return;
+                updateCharacter(id, updates);
+              }}
+              onRemoveCharacter={(id) => {
+                if (!requireAuth('menghapus tokoh')) return;
+                removeCharacterFromActiveScene(id);
+              }}
+              onOpenAddCharacter={() => {
+                if (!requireAuth('menambah tokoh')) return;
+                setShowAddCharModal(true);
+              }}
               isInteractive={true}
               isVisionActive={isDalangVisionActive}
+              isGuest={!currentUser}
+              onGuestInteract={() => onOpenAuth && onOpenAuth()}
             />
           </div>
         </main>
@@ -878,6 +914,7 @@ export default function StageStudio({ onNavigate }) {
                   <button
                     type="button"
                     onClick={() => {
+                      if (!requireAuth('membalik arah hadap tokoh')) return;
                       updateCharacter(selectedChar.instanceId, {
                         facing: selectedChar.facing === 'left' ? 'right' : 'left',
                       });
@@ -891,7 +928,10 @@ export default function StageStudio({ onNavigate }) {
 
                   <select
                     value={selectedChar.pose || 'default'}
-                    onChange={(e) => updateCharacter(selectedChar.instanceId, { pose: e.target.value })}
+                    onChange={(e) => {
+                      if (!requireAuth('mengubah pose tokoh')) return;
+                      updateCharacter(selectedChar.instanceId, { pose: e.target.value });
+                    }}
                     className="context-pose-select"
                   >
                     {STAGE_CONFIG_MASTER.poses.map((p) => (
@@ -911,11 +951,12 @@ export default function StageStudio({ onNavigate }) {
                   <div className="context-scale-cluster">
                     <button
                       type="button"
-                      onClick={() =>
+                      onClick={() => {
+                        if (!requireAuth('mengubah ukuran tokoh')) return;
                         updateCharacter(selectedChar.instanceId, {
                           scale: Math.max(0.6, Number(((selectedChar.scale || 1.0) - 0.1).toFixed(1))),
-                        })
-                      }
+                        });
+                      }}
                       title="Perkecil Wayang"
                       className="context-mini-btn"
                     >
@@ -926,11 +967,12 @@ export default function StageStudio({ onNavigate }) {
                     </span>
                     <button
                       type="button"
-                      onClick={() =>
+                      onClick={() => {
+                        if (!requireAuth('mengubah ukuran tokoh')) return;
                         updateCharacter(selectedChar.instanceId, {
                           scale: Math.min(2.0, Number(((selectedChar.scale || 1.0) + 0.1).toFixed(1))),
-                        })
-                      }
+                        });
+                      }}
                       title="Perbesar Wayang"
                       className="context-mini-btn"
                     >
@@ -942,7 +984,10 @@ export default function StageStudio({ onNavigate }) {
                   <div className="context-dpad-cluster">
                     <button
                       type="button"
-                      onClick={() => updateCharacter(selectedChar.instanceId, { x: selectedChar.x - 0.02 })}
+                      onClick={() => {
+                        if (!requireAuth('menggeser posisi tokoh')) return;
+                        updateCharacter(selectedChar.instanceId, { x: selectedChar.x - 0.02 });
+                      }}
                       title="Geser Kiri (Panah Kiri)"
                       className="context-dpad-btn"
                     >
@@ -950,7 +995,10 @@ export default function StageStudio({ onNavigate }) {
                     </button>
                     <button
                       type="button"
-                      onClick={() => updateCharacter(selectedChar.instanceId, { y: selectedChar.y - 0.02 })}
+                      onClick={() => {
+                        if (!requireAuth('menggeser posisi tokoh')) return;
+                        updateCharacter(selectedChar.instanceId, { y: selectedChar.y - 0.02 });
+                      }}
                       title="Geser Atas (Panah Atas)"
                       className="context-dpad-btn"
                     >
@@ -958,7 +1006,10 @@ export default function StageStudio({ onNavigate }) {
                     </button>
                     <button
                       type="button"
-                      onClick={() => updateCharacter(selectedChar.instanceId, { y: selectedChar.y + 0.02 })}
+                      onClick={() => {
+                        if (!requireAuth('menggeser posisi tokoh')) return;
+                        updateCharacter(selectedChar.instanceId, { y: selectedChar.y + 0.02 });
+                      }}
                       title="Geser Bawah (Panah Bawah)"
                       className="context-dpad-btn"
                     >
@@ -966,7 +1017,10 @@ export default function StageStudio({ onNavigate }) {
                     </button>
                     <button
                       type="button"
-                      onClick={() => updateCharacter(selectedChar.instanceId, { x: selectedChar.x + 0.02 })}
+                      onClick={() => {
+                        if (!requireAuth('menggeser posisi tokoh')) return;
+                        updateCharacter(selectedChar.instanceId, { x: selectedChar.x + 0.02 });
+                      }}
                       title="Geser Kanan (Panah Kanan)"
                       className="context-dpad-btn"
                     >
@@ -982,7 +1036,13 @@ export default function StageStudio({ onNavigate }) {
                 <textarea
                   rows={4}
                   value={selectedChar.dialogue || ''}
-                  onChange={(e) => updateCharacter(selectedChar.instanceId, { dialogue: e.target.value })}
+                  onChange={(e) => {
+                    if (!requireAuth('mengubah sabda tokoh')) return;
+                    updateCharacter(selectedChar.instanceId, { dialogue: e.target.value });
+                  }}
+                  onFocus={() => {
+                    if (!currentUser && onOpenAuth) onOpenAuth();
+                  }}
                   placeholder={`Tuliskan sabda pedalangan untuk ${selectedChar.name}...`}
                   className="context-dialogue-textarea"
                 />
@@ -996,6 +1056,7 @@ export default function StageStudio({ onNavigate }) {
                 <button
                   type="button"
                   onClick={() => {
+                    if (!requireAuth('melepas tokoh dari kelir')) return;
                     removeCharacterFromActiveScene(selectedChar.instanceId);
                     try { soundEngine.playKepyak(); } catch {}
                   }}
@@ -1017,7 +1078,10 @@ export default function StageStudio({ onNavigate }) {
                     <input
                       type="text"
                       value={currentScene?.title || ''}
-                      onChange={(e) => updateActiveScene({ title: e.target.value })}
+                      onChange={(e) => {
+                        if (!requireAuth('mengubah judul babak')) return;
+                        updateActiveScene({ title: e.target.value });
+                      }}
                       placeholder={`Babak ${activeSceneIndex + 1}`}
                       className="scene-summary-title-input"
                     />
@@ -1080,7 +1144,10 @@ export default function StageStudio({ onNavigate }) {
               <div className="context-quick-add-wrap">
                 <button
                   type="button"
-                  onClick={() => setShowAddCharModal(true)}
+                  onClick={() => {
+                    if (!requireAuth('menambah tokoh ke babak')) return;
+                    setShowAddCharModal(true);
+                  }}
                   className="context-quick-add-btn"
                 >
                   <Plus size={14} />
@@ -1103,9 +1170,18 @@ export default function StageStudio({ onNavigate }) {
           scenes={scenes}
           activeSceneIndex={activeSceneIndex}
           onSelectScene={setActiveSceneIndex}
-          onAddScene={addScene}
-          onDuplicateScene={duplicateScene}
-          onRemoveScene={removeScene}
+          onAddScene={() => {
+            if (!requireAuth('menambah babak')) return;
+            addScene();
+          }}
+          onDuplicateScene={(idx) => {
+            if (!requireAuth('menduplikasi babak')) return;
+            duplicateScene(idx);
+          }}
+          onRemoveScene={(idx) => {
+            if (!requireAuth('menghapus babak')) return;
+            removeScene(idx);
+          }}
           onReorderScene={reorderScene}
         />
       </footer>
@@ -1121,12 +1197,18 @@ export default function StageStudio({ onNavigate }) {
       />
 
       {/* Modal Preview Client-Side Layar Penuh */}
-      <StagePreviewModal
-        isOpen={showPreviewModal}
+      <ErrorBoundary
         onClose={() => setShowPreviewModal(false)}
-        scenes={scenes}
-        metadata={metadata}
-      />
+        onReset={() => setShowPreviewModal(false)}
+      >
+        <StagePreviewModal
+          isOpen={showPreviewModal}
+          onClose={() => setShowPreviewModal(false)}
+          scenes={scenes}
+          metadata={metadata}
+          initialSceneIndex={activeSceneIndex}
+        />
+      </ErrorBoundary>
 
       {/* Modal Simpan Karya Lakon */}
       <SavePerformanceModal
@@ -1138,6 +1220,8 @@ export default function StageStudio({ onNavigate }) {
         onSavedSuccess={(savedRecord) => {
           if (savedRecord?.id) setMetadata({ id: savedRecord.id });
         }}
+        currentUser={currentUser}
+        onOpenAuth={onOpenAuth}
       />
 
       {/* Modal Panduan Interaktif Studio Dalang (Onboarding Walkthrough) */}

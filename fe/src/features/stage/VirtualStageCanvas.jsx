@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect, useMemo, forwardRef, useImperativeHandle } from 'react';
-import { X, MessageSquare } from 'lucide-react';
+import { X, MessageSquare, Lock } from 'lucide-react';
 import RealLeatherPuppet from '../../components/stage/RealLeatherPuppet';
 import { updatePuppetArmsDOM } from '../../services/vision/puppetIkSolver';
 import { getBackgroundById } from '../../data/master/stageConfigMaster';
@@ -13,9 +13,12 @@ const VirtualStageCanvas = forwardRef(function VirtualStageCanvas({
   selectedInstanceId,
   onSelectCharacter,
   onUpdateCharacter,
+  _onRemoveCharacter,
   onOpenAddCharacter,
   isInteractive = true,
   isVisionActive = false,
+  isGuest = false,
+  onGuestInteract = null,
 }, ref) {
   const containerRef = useRef(null);
   const charDomRefs = useRef({});
@@ -82,6 +85,10 @@ const VirtualStageCanvas = forwardRef(function VirtualStageCanvas({
 
   // Kontrol Skala Global Cepat Wayang (Memperbesar / Memperkecil)
   const handleGlobalScaleChange = (delta) => {
+    if (isGuest) {
+      if (onGuestInteract) onGuestInteract();
+      return;
+    }
     if (characters.length === 0) return;
     const current = (selectedChar || characters[0])?.scale || 1.0;
     const newScale = Math.max(0.5, Math.min(2.2, Number((current + delta).toFixed(1))));
@@ -96,6 +103,11 @@ const VirtualStageCanvas = forwardRef(function VirtualStageCanvas({
 
   // Dragging Handlers: Direct DOM 120 FPS Hardware Accelerated Dragging
   const handlePointerDown = (e, char) => {
+    if (isGuest) {
+      e.stopPropagation();
+      if (onGuestInteract) onGuestInteract();
+      return;
+    }
     if (!isInteractive) return;
     e.stopPropagation();
     onSelectCharacter(char.instanceId);
@@ -471,6 +483,10 @@ const VirtualStageCanvas = forwardRef(function VirtualStageCanvas({
                   type="button"
                   onClick={(e) => {
                     e.stopPropagation();
+                    if (isGuest) {
+                      if (onGuestInteract) onGuestInteract();
+                      return;
+                    }
                     onOpenAddCharacter();
                   }}
                   className="kelir-empty-add-btn"
@@ -478,6 +494,41 @@ const VirtualStageCanvas = forwardRef(function VirtualStageCanvas({
                   ＋ Tancap Tokoh Pertama
                 </button>
               )}
+            </div>
+          )}
+
+          {/* Badge Mode Pratinjau Tamu */}
+          {isGuest && (
+            <div
+              onClick={(e) => {
+                e.stopPropagation();
+                if (onGuestInteract) onGuestInteract();
+              }}
+              style={{
+                position: 'absolute',
+                top: '16px',
+                left: '50%',
+                transform: 'translateX(-50%)',
+                zIndex: 40,
+                background: 'rgba(15, 10, 20, 0.88)',
+                backdropFilter: 'blur(8px)',
+                border: '1px solid rgba(212, 175, 55, 0.4)',
+                borderRadius: '24px',
+                padding: '7px 18px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                color: '#f0c952',
+                fontSize: '12px',
+                fontWeight: '600',
+                cursor: 'pointer',
+                boxShadow: '0 4px 18px rgba(0,0,0,0.4)',
+                userSelect: 'none',
+              }}
+              title="Klik untuk masuk atau mendaftar akun dalang"
+            >
+              <Lock size={13} style={{ color: '#d4af37' }} />
+              <span>Mode Pratinjau • Masuk untuk mengutak-atik tokoh &amp; menyimpan lakon</span>
             </div>
           )}
         </div>

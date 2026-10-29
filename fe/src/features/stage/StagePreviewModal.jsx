@@ -10,14 +10,27 @@ export default function StagePreviewModal({
   onClose,
   scenes = [],
   metadata,
+  initialSceneIndex = 0,
 }) {
-  const [currentSceneIdx, setCurrentSceneIdx] = useState(0);
+  const [currentSceneIdx, setCurrentSceneIdx] = useState(initialSceneIndex);
   const [isPlaying, setIsPlaying] = useState(true);
   const [progress, setProgress] = useState(0);
 
-  const activeScene = scenes[currentSceneIdx] || scenes[0];
-  const totalScenes = scenes.length || 1;
-  const currentDuration = activeScene?.durationMs || 5000;
+  const safeScenes = scenes && scenes.length > 0 ? scenes : [{ title: 'Adegan 1', background: 'kelir-naskah-prada-kencana', characters: [] }];
+  const totalScenes = safeScenes.length;
+  const activeScene = safeScenes[currentSceneIdx] || safeScenes[0];
+  const audioConfig = AUDIO_MASTER.find((a) => a.id === activeScene?.audioAssetId) || AUDIO_MASTER[0];
+  const currentDuration = activeScene?.durationMs || (activeScene?.duration ? activeScene.duration * 1000 : 5000);
+
+  // Sinkronisasi index awal saat modal dibuka
+  useEffect(() => {
+    if (isOpen) {
+      const validIndex = Math.min(Math.max(0, initialSceneIndex), totalScenes - 1);
+      setCurrentSceneIdx(validIndex);
+      setIsPlaying(true);
+      setProgress(0);
+    }
+  }, [isOpen, initialSceneIndex, totalScenes]);
 
   // Sinkronisasi Audio & Soundscape per pergantian adegan
   useEffect(() => {
@@ -27,11 +40,13 @@ export default function StagePreviewModal({
     }
 
     if (activeScene) {
-      const audioConfig = AUDIO_MASTER.find((a) => a.id === activeScene.audioAssetId) || AUDIO_MASTER[0];
+      const audioToPlay = AUDIO_MASTER.find((a) => a.id === activeScene.audioAssetId) || AUDIO_MASTER[0];
       if (isPlaying) {
-        soundEngine.startBgm(audioConfig.synthType || 'srepeg', audioConfig.title);
+        soundEngine.startBgm(audioToPlay.synthType || 'srepeg', audioToPlay.title);
         // Bunyikan gong/dodogan penanda peralihan adegan
-        soundEngine.playDodogan();
+        try {
+          soundEngine.playDodogan();
+        } catch {}
       }
     }
 
@@ -44,9 +59,8 @@ export default function StagePreviewModal({
   useEffect(() => {
     if (!isOpen || !isPlaying) return;
 
-    setProgress(0);
     const intervalMs = 100;
-    const stepIncrement = (intervalMs / currentDuration) * 100;
+    const stepIncrement = (intervalMs / Math.max(1000, currentDuration)) * 100;
 
     const timer = setInterval(() => {
       setProgress((prev) => {
@@ -67,7 +81,7 @@ export default function StagePreviewModal({
                 });
               }
               soundEngine.playGong();
-            } catch (_err) {}
+            } catch {}
             return 100;
           }
         }
@@ -117,7 +131,7 @@ export default function StagePreviewModal({
               {metadata?.title || 'Pagelaran Lakon'}
             </h2>
             <span style={{ fontSize: '12px', color: '#bfae9c' }}>
-              Adegan {currentSceneIdx + 1} dari {totalScenes}: <strong style={{ color: '#e8bb5c' }}>{activeScene?.title}</strong>
+              Adegan {currentSceneIdx + 1} dari {totalScenes}: <strong style={{ color: '#e8bb5c' }}>{activeScene?.title || `Adegan ${currentSceneIdx + 1}`}</strong>
             </span>
           </div>
         </div>
@@ -126,6 +140,7 @@ export default function StagePreviewModal({
           type="button"
           onClick={() => {
             soundEngine.stopBgm();
+            setProgress(0);
             onClose();
           }}
           aria-label="Tutup Pementasan"
@@ -172,7 +187,7 @@ export default function StagePreviewModal({
               selectedInstanceId={null}
               onSelectCharacter={() => {}}
               onUpdateCharacter={() => {}}
-              onRemoveCharacter={() => {}}
+              _onRemoveCharacter={() => {}}
               isInteractive={false}
             />
           </div>
@@ -245,7 +260,7 @@ export default function StagePreviewModal({
               <Music size={14} />
             </div>
             <div style={{ fontSize: '12px', color: '#c4b5a5' }}>
-              Gamelan: <strong style={{ color: '#fcfaf2' }}>{activeScene?.audioAssetId ? activeScene.audioAssetId.replace(/-/g, ' ') : 'Srepeg Klasik'}</strong>
+              Gamelan: <strong style={{ color: '#fcfaf2' }}>{audioConfig?.title || 'Gamelan Srepeg Mataram'}</strong>
             </div>
           </div>
 
@@ -254,7 +269,10 @@ export default function StagePreviewModal({
             <button
               type="button"
               onClick={() => {
-                if (currentSceneIdx > 0) setCurrentSceneIdx((c) => c - 1);
+                if (currentSceneIdx > 0) {
+                  setCurrentSceneIdx((c) => c - 1);
+                  setProgress(0);
+                }
               }}
               disabled={currentSceneIdx === 0}
               aria-label="Babak Sebelumnya"
@@ -304,7 +322,10 @@ export default function StagePreviewModal({
             <button
               type="button"
               onClick={() => {
-                if (currentSceneIdx < totalScenes - 1) setCurrentSceneIdx((c) => c + 1);
+                if (currentSceneIdx < totalScenes - 1) {
+                  setCurrentSceneIdx((c) => c + 1);
+                  setProgress(0);
+                }
               }}
               disabled={currentSceneIdx === totalScenes - 1}
               aria-label="Babak Berikutnya"
