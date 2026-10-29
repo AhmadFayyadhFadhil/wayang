@@ -872,12 +872,15 @@ export default function AdminCmsView({ onPlayPerformance }) {
                 cursor: isSyncing ? 'wait' : 'pointer',
                 borderRadius: '9999px',
                 boxSizing: 'border-box',
-                boxShadow: '0 4px 18px rgba(212, 175, 55, 0.32)',
+                boxShadow: 'none',
+                background: '#c27827',
+                color: '#ffffff',
+                border: 'none',
               }}
             >
               <span>{isSyncing ? 'Menyinkronkan...' : 'Sinkronkan Data'}</span>
-              <span className="wayang-btn-cta-icon">
-                <RefreshCw size={14} color="#16100a" className={isSyncing ? 'admin-spin-anim' : ''} />
+              <span className="wayang-btn-cta-icon" style={{ background: 'rgba(255, 255, 255, 0.2)' }}>
+                <RefreshCw size={14} color="#ffffff" className={isSyncing ? 'admin-spin-anim' : ''} />
               </span>
             </button>
           </div>
@@ -1412,19 +1415,27 @@ export default function AdminCmsView({ onPlayPerformance }) {
                     display: 'inline-flex',
                     alignItems: 'center',
                     gap: '6px',
-                    background: 'linear-gradient(135deg, #d4af37 0%, #b89127 100%)',
-                    color: '#1a140e',
+                    background: '#c27827',
+                    color: '#ffffff',
                     border: 'none',
-                    padding: '8px 16px',
+                    padding: '8px 18px',
                     borderRadius: '9999px',
                     fontSize: '12.5px',
-                    fontWeight: '800',
+                    fontWeight: '750',
                     cursor: 'pointer',
-                    boxShadow: '0 3px 12px rgba(212, 175, 55, 0.35)',
+                    boxShadow: 'none',
                     transition: 'all 0.2s ease',
                   }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = '#ad671d';
+                    e.currentTarget.style.transform = 'translateY(-1px)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = '#c27827';
+                    e.currentTarget.style.transform = 'translateY(0)';
+                  }}
                 >
-                  <Save size={14} strokeWidth={2.5} />
+                  <Save size={14} strokeWidth={2.5} style={{ color: '#ffffff' }} />
                   <span>Simpan Pengaturan</span>
                 </button>
               </div>
@@ -2229,20 +2240,28 @@ export default function AdminCmsView({ onPlayPerformance }) {
                           display: 'inline-flex',
                           alignItems: 'center',
                           gap: '6px',
-                          background: 'linear-gradient(135deg, #d4af37 0%, #b89127 100%)',
-                          color: '#1a140e',
+                          background: '#c27827',
+                          color: '#ffffff',
                           border: 'none',
                           padding: '9px 20px',
                           borderRadius: '9999px',
                           fontSize: '12.5px',
-                          fontWeight: '800',
+                          fontWeight: '750',
                           cursor: 'pointer',
-                          boxShadow: '0 3px 12px rgba(212, 175, 55, 0.35)',
+                          boxShadow: 'none',
                           transition: 'all 0.2s ease',
                         }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.background = '#ad671d';
+                          e.currentTarget.style.transform = 'translateY(-1px)';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.background = '#c27827';
+                          e.currentTarget.style.transform = 'translateY(0)';
+                        }}
                       >
-                        <Save size={15} strokeWidth={2.5} />
-                        <span>Simpan Pengaturan</span>
+                        <Save size={14} strokeWidth={2.5} style={{ color: '#ffffff' }} />
+                        <span>Simpan Pengaturan Footer</span>
                       </button>
                     </div>
                   </div>
@@ -3490,20 +3509,59 @@ export default function AdminCmsView({ onPlayPerformance }) {
                   <button
                     type="button"
                     onClick={() => setModalType(null)}
-                    className="wayang-btn-ghost"
+                    style={{
+                      background: '#ffffff',
+                      border: '1.5px solid rgba(212, 175, 55, 0.45)',
+                      color: '#1a140e',
+                      padding: '10px 22px',
+                      borderRadius: '9999px',
+                      fontSize: '13.5px',
+                      fontWeight: '700',
+                      cursor: 'pointer',
+                      minHeight: '42px',
+                      transition: 'all 0.2s ease',
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.borderColor = '#c27827';
+                      e.currentTarget.style.background = '#fcfaf5';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.borderColor = 'rgba(212, 175, 55, 0.45)';
+                      e.currentTarget.style.background = '#ffffff';
+                    }}
                   >
                     Batal
                   </button>
 
                   <button
                     type="submit"
-                    className="wayang-btn-cta"
-                    style={{ justifyContent: 'space-between' }}
+                    style={{
+                      background: '#c27827',
+                      border: 'none',
+                      color: '#ffffff',
+                      padding: '10px 24px',
+                      borderRadius: '9999px',
+                      fontSize: '14px',
+                      fontWeight: '750',
+                      cursor: 'pointer',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '8px',
+                      boxShadow: 'none',
+                      minHeight: '42px',
+                      transition: 'all 0.2s ease',
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.background = '#ad671d';
+                      e.currentTarget.style.transform = 'translateY(-1px)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.background = '#c27827';
+                      e.currentTarget.style.transform = 'translateY(0)';
+                    }}
                   >
+                    <Save size={15} style={{ color: '#ffffff' }} />
                     <span>Simpan Data Master</span>
-                    <span className="wayang-btn-cta-icon">
-                      <Save size={15} color="#16100a" />
-                    </span>
                   </button>
                 </div>
               </form>
