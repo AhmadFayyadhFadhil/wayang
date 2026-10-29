@@ -580,13 +580,13 @@ export default function AtlasView({ onPlayCharacterOnStage }) {
             <button
               type="submit"
               style={{
-                background: '#c27827',
-                color: '#ffffff',
+                background: '#e8bb5c',
+                color: '#0d0a07',
                 border: 'none',
                 borderRadius: '9999px',
                 padding: '12px 34px',
                 fontSize: '15px',
-                fontWeight: '700',
+                fontWeight: '750',
                 cursor: 'pointer',
                 letterSpacing: '0.02em',
                 flexShrink: 0,
@@ -594,10 +594,10 @@ export default function AtlasView({ onPlayCharacterOnStage }) {
                 transition: 'all 0.2s ease',
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.background = '#ad671d';
+                e.currentTarget.style.background = '#dcae4d';
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.background = '#c27827';
+                e.currentTarget.style.background = '#e8bb5c';
               }}
             >
               Search
@@ -661,14 +661,23 @@ export default function AtlasView({ onPlayCharacterOnStage }) {
                   setActiveFilter('all');
                 }}
                 style={{
-                  background: '#c27827',
-                  color: '#ffffff',
+                  background: '#e8bb5c',
+                  color: '#0d0a07',
                   border: 'none',
                   borderRadius: '9999px',
                   padding: '10px 26px',
                   fontSize: '13.5px',
-                  fontWeight: '700',
+                  fontWeight: '750',
                   cursor: 'pointer',
+                  minHeight: '44px',
+                  boxShadow: 'none',
+                  transition: 'all 0.2s ease',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = '#dcae4d';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = '#e8bb5c';
                 }}
               >
                 Tampilkan Semua Koleksi

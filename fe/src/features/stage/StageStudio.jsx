@@ -1354,9 +1354,9 @@ export default function StageStudio({ onNavigate, currentUser = null, onOpenAuth
                   }}
                   style={{
                     flex: 1,
-                    background: '#c27827',
+                    background: '#e8bb5c',
                     border: 'none',
-                    color: '#ffffff',
+                    color: '#0d0a07',
                     padding: '10px 22px',
                     borderRadius: '9999px',
                     fontWeight: '750',
@@ -1371,15 +1371,15 @@ export default function StageStudio({ onNavigate, currentUser = null, onOpenAuth
                     transition: 'all 0.2s ease',
                   }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.background = '#ad671d';
+                    e.currentTarget.style.background = '#dcae4d';
                     e.currentTarget.style.transform = 'translateY(-1px)';
                   }}
                   onMouseLeave={(e) => {
-                    e.currentTarget.style.background = '#c27827';
+                    e.currentTarget.style.background = '#e8bb5c';
                     e.currentTarget.style.transform = 'translateY(0)';
                   }}
                 >
-                  <RotateCcw size={15} style={{ color: '#ffffff' }} />
+                  <RotateCcw size={15} style={{ color: '#0d0a07' }} />
                   <span>Reset Lakon</span>
                 </button>
               </div>

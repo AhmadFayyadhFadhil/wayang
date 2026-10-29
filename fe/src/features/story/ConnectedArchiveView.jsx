@@ -599,7 +599,7 @@ export default function ConnectedArchiveView({
               letterSpacing: '-0.02em',
             }}
           >
-            Koleksi Pagelaran <span style={{ color: '#c27827' }}>Wayang Digital</span>
+            Koleksi Pagelaran <span style={{ color: '#e8bb5c' }}>Wayang Digital</span>
           </h2>
 
           <p
@@ -683,8 +683,8 @@ export default function ConnectedArchiveView({
             <button
               type="submit"
               style={{
-                background: '#c27827',
-                color: '#ffffff',
+                background: '#e8bb5c',
+                color: '#0d0a07',
                 border: 'none',
                 borderRadius: '9999px',
                 padding: '12px 34px',
@@ -697,10 +697,10 @@ export default function ConnectedArchiveView({
                 transition: 'all 0.2s ease',
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.background = '#ad671d';
+                e.currentTarget.style.background = '#dcae4d';
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.background = '#c27827';
+                e.currentTarget.style.background = '#e8bb5c';
               }}
             >
               Cari
@@ -729,9 +729,9 @@ export default function ConnectedArchiveView({
                   type="button"
                   onClick={() => setActiveCategory(chip.id)}
                   style={{
-                    background: isActive ? '#c27827' : '#ffffff',
-                    color: isActive ? '#ffffff' : '#2d1f14',
-                    border: isActive ? '1px solid #c27827' : '1px solid #dcd7ce',
+                    background: isActive ? '#e8bb5c' : '#ffffff',
+                    color: isActive ? '#0d0a07' : '#2d1f14',
+                    border: isActive ? '1px solid #e8bb5c' : '1px solid #dcd7ce',
                     borderRadius: '9999px',
                     padding: '8px 22px',
                     fontSize: '14px',
@@ -742,8 +742,8 @@ export default function ConnectedArchiveView({
                   }}
                   onMouseEnter={(e) => {
                     if (!isActive) {
-                      e.currentTarget.style.borderColor = '#c27827';
-                      e.currentTarget.style.color = '#c27827';
+                      e.currentTarget.style.borderColor = '#e8bb5c';
+                      e.currentTarget.style.color = '#8b5a1b';
                       e.currentTarget.style.transform = 'translateY(-1px)';
                     }
                   }}
@@ -834,8 +834,8 @@ export default function ConnectedArchiveView({
                   setActiveCategory('all');
                 }}
                 style={{
-                  background: '#c27827',
-                  color: '#ffffff',
+                  background: '#e8bb5c',
+                  color: '#0d0a07',
                   border: 'none',
                   borderRadius: '9999px',
                   padding: '10px 26px',
@@ -843,6 +843,14 @@ export default function ConnectedArchiveView({
                   fontWeight: '750',
                   cursor: 'pointer',
                   minHeight: '44px',
+                  boxShadow: 'none',
+                  transition: 'all 0.2s ease',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = '#dcae4d';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = '#e8bb5c';
                 }}
               >
                 Tampilkan Semua Pagelaran
@@ -1069,8 +1077,8 @@ export default function ConnectedArchiveView({
                               minHeight: '44px',
                             }}
                             onMouseEnter={(e) => {
-                              e.currentTarget.style.borderColor = '#c27827';
-                              e.currentTarget.style.color = '#c27827';
+                              e.currentTarget.style.borderColor = '#e8bb5c';
+                              e.currentTarget.style.color = '#8b5a1b';
                             }}
                             onMouseLeave={(e) => {
                               e.currentTarget.style.borderColor = '#dcd7ce';

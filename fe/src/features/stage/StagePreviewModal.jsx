@@ -291,28 +291,28 @@ export default function StagePreviewModal({
               onClick={() => setIsPlaying(!isPlaying)}
               aria-label={isPlaying ? 'Jeda Pementasan' : 'Lanjutkan Pementasan'}
               style={{
-                background: 'linear-gradient(135deg, #e8bb5c 0%, #d4af37 100%)',
+                background: '#e8bb5c',
                 border: 'none',
                 color: '#0d0a07',
                 padding: '9px 24px',
                 borderRadius: '9999px',
                 fontSize: '13.5px',
-                fontWeight: '800',
+                fontWeight: '750',
                 cursor: 'pointer',
                 display: 'inline-flex',
                 alignItems: 'center',
                 gap: '8px',
                 minHeight: '44px',
-                boxShadow: '0 2px 10px rgba(212, 175, 55, 0.35)',
+                boxShadow: 'none',
                 transition: 'all 0.2s ease',
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.filter = 'brightness(1.08)';
-                e.currentTarget.style.transform = 'scale(1.02)';
+                e.currentTarget.style.background = '#dcae4d';
+                e.currentTarget.style.transform = 'translateY(-1px)';
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.filter = 'brightness(1)';
-                e.currentTarget.style.transform = 'scale(1)';
+                e.currentTarget.style.background = '#e8bb5c';
+                e.currentTarget.style.transform = 'translateY(0)';
               }}
             >
               {isPlaying ? <Pause size={16} fill="#0d0a07" /> : <Play size={16} fill="#0d0a07" />}

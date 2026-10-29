@@ -1104,8 +1104,8 @@ export default function MyWorksView({
               <button
                 onClick={() => setShowTemplatesDrawer(true)}
                 style={{
-                  background: '#c27827',
-                  color: '#ffffff',
+                  background: '#e8bb5c',
+                  color: '#0d0a07',
                   border: 'none',
                   borderRadius: '9999px',
                   padding: '9px 22px',
@@ -1119,10 +1119,10 @@ export default function MyWorksView({
                   transition: 'all 0.2s ease',
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.background = '#ad671d';
+                  e.currentTarget.style.background = '#dcae4d';
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.background = '#c27827';
+                  e.currentTarget.style.background = '#e8bb5c';
                 }}
               >
                 <span>Buka Inspirasi Pakem (4)</span>
@@ -1209,8 +1209,8 @@ export default function MyWorksView({
                     boxShadow: '0 2px 8px rgba(0, 0, 0, 0.04)',
                   }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.borderColor = '#c27827';
-                    e.currentTarget.style.color = '#c27827';
+                    e.currentTarget.style.borderColor = '#e8bb5c';
+                    e.currentTarget.style.color = '#8b5a1b';
                   }}
                   onMouseLeave={(e) => {
                     e.currentTarget.style.borderColor = 'rgba(212, 175, 55, 0.4)';
@@ -1253,17 +1253,15 @@ export default function MyWorksView({
                         type="button"
                         onClick={() => setTemplateFilter(chip.id)}
                         style={{
-                          background: isActive ? '#c27827' : '#ffffff',
-                          color: isActive ? '#ffffff' : '#2d1f14',
-                          border: isActive ? '1.5px solid #c27827' : '1.5px solid #dcd7ce',
+                          background: isActive ? '#e8bb5c' : '#ffffff',
+                          color: isActive ? '#0d0a07' : '#2d1f14',
+                          border: isActive ? '1.5px solid #e8bb5c' : '1.5px solid #dcd7ce',
                           borderRadius: '9999px',
                           padding: '7px 18px',
                           fontSize: '13px',
                           fontWeight: isActive ? '750' : '600',
                           cursor: 'pointer',
-                          boxShadow: isActive
-                            ? '0 2px 10px rgba(194, 120, 39, 0.35)'
-                            : '0 2px 6px rgba(0, 0, 0, 0.04)',
+                          boxShadow: 'none',
                           transition: 'all 0.18s ease',
                         }}
                       >
@@ -1304,7 +1302,7 @@ export default function MyWorksView({
                       transition: 'all 0.2s ease',
                     }}
                   >
-                    <LayoutGrid size={14} style={{ color: templateViewMode === 'grid' ? '#c27827' : 'inherit' }} />
+                    <LayoutGrid size={14} style={{ color: templateViewMode === 'grid' ? '#8b5a1b' : 'inherit' }} />
                     <span>Kartu Pustaka</span>
                   </button>
 
@@ -1327,7 +1325,7 @@ export default function MyWorksView({
                       transition: 'all 0.2s ease',
                     }}
                   >
-                    <Columns size={14} style={{ color: templateViewMode === 'inspector' ? '#c27827' : 'inherit' }} />
+                    <Columns size={14} style={{ color: templateViewMode === 'inspector' ? '#8b5a1b' : 'inherit' }} />
                     <span>Bedah Babak Panggung</span>
                   </button>
                 </div>
@@ -1624,15 +1622,15 @@ export default function MyWorksView({
                                 width: '28px',
                                 height: '28px',
                                 borderRadius: '50%',
-                                background: isPlaying ? '#c27827' : 'rgba(212, 175, 55, 0.15)',
+                                background: isPlaying ? '#e8bb5c' : 'rgba(212, 175, 55, 0.15)',
                                 display: 'flex',
                                 alignItems: 'center',
                                 justifyContent: 'center',
-                                color: isPlaying ? '#ffffff' : '#8b5a1b',
+                                color: isPlaying ? '#0d0a07' : '#8b5a1b',
                                 flexShrink: 0,
                               }}
                             >
-                              {isPlaying ? <Square size={13} fill="#ffffff" /> : <Play size={13} fill="#8b5a1b" />}
+                              {isPlaying ? <Square size={13} fill="#0d0a07" /> : <Play size={13} fill="#8b5a1b" />}
                             </div>
                             <div>
                               <div style={{ fontSize: '12px', fontWeight: '750', color: '#1a140e' }}>
@@ -1646,7 +1644,7 @@ export default function MyWorksView({
                             style={{
                               fontSize: '11.5px',
                               fontWeight: '750',
-                              color: isPlaying ? '#c27827' : '#8b5a1b',
+                              color: isPlaying ? '#8b5a1b' : '#8b5a1b',
                               display: 'inline-flex',
                               alignItems: 'center',
                               gap: '4px',
@@ -1788,7 +1786,7 @@ export default function MyWorksView({
                               width: '8px',
                               height: '8px',
                               borderRadius: '50%',
-                              background: isSelected ? '#e8bb5c' : '#c27827',
+                              background: isSelected ? '#e8bb5c' : '#d4af37',
                             }}
                           />
                           <span>{t.title.split(':')[0]}</span>
@@ -2003,9 +2001,9 @@ export default function MyWorksView({
                                   onClick={() => setInspectorSceneIdx(sIdx)}
                                   style={{
                                     flex: 1,
-                                    background: isCurr ? '#c27827' : '#ffffff',
-                                    color: isCurr ? '#ffffff' : '#2b2118',
-                                    border: isCurr ? '1.5px solid #c27827' : '1.5px solid rgba(212, 175, 55, 0.3)',
+                                    background: isCurr ? '#e8bb5c' : '#ffffff',
+                                    color: isCurr ? '#0d0a07' : '#2b2118',
+                                    border: isCurr ? '1.5px solid #e8bb5c' : '1.5px solid rgba(212, 175, 55, 0.3)',
                                     borderRadius: '12px',
                                     padding: '7px 12px',
                                     fontSize: '12px',
@@ -2121,15 +2119,15 @@ export default function MyWorksView({
                                     width: '32px',
                                     height: '32px',
                                     borderRadius: '50%',
-                                    background: isAudioPlaying ? '#c27827' : 'rgba(212, 175, 55, 0.15)',
+                                    background: isAudioPlaying ? '#e8bb5c' : 'rgba(212, 175, 55, 0.15)',
                                     display: 'flex',
                                     alignItems: 'center',
                                     justifyContent: 'center',
-                                    color: isAudioPlaying ? '#ffffff' : '#8b5a1b',
+                                    color: isAudioPlaying ? '#0d0a07' : '#8b5a1b',
                                   }}
                                 >
                                   {isAudioPlaying ? (
-                                    <Square size={14} fill="#ffffff" />
+                                    <Square size={14} fill="#0d0a07" />
                                   ) : (
                                     <Play size={14} fill="#8b5a1b" />
                                   )}
@@ -2146,9 +2144,9 @@ export default function MyWorksView({
                                 type="button"
                                 onClick={() => handleToggleAudio(currentTpl)}
                                 style={{
-                                  background: isAudioPlaying ? '#c27827' : '#ffffff',
-                                  color: isAudioPlaying ? '#ffffff' : '#8b5a1b',
-                                  border: isAudioPlaying ? 'none' : '1px solid rgba(212, 175, 55, 0.4)',
+                                  background: isAudioPlaying ? '#e8bb5c' : '#ffffff',
+                                  color: isAudioPlaying ? '#0d0a07' : '#8b5a1b',
+                                  border: isAudioPlaying ? '1px solid #e8bb5c' : '1px solid rgba(212, 175, 55, 0.4)',
                                   borderRadius: '9999px',
                                   padding: '6px 14px',
                                   fontSize: '11.5px',
@@ -2167,28 +2165,28 @@ export default function MyWorksView({
                             onClick={() => handleUseTemplate(currentTpl)}
                             style={{
                               width: '100%',
-                              background: 'linear-gradient(135deg, #e8bb5c 0%, #d4af37 100%)',
+                              background: '#e8bb5c',
                               border: 'none',
-                              color: '#1a140e',
+                              color: '#0d0a07',
                               padding: '12px 20px',
-                              borderRadius: '12px',
+                              borderRadius: '9999px',
                               fontSize: '14px',
-                              fontWeight: '800',
+                              fontWeight: '750',
                               cursor: 'pointer',
                               minHeight: '44px',
                               display: 'inline-flex',
                               alignItems: 'center',
                               justifyContent: 'center',
                               gap: '8px',
-                              boxShadow: '0 4px 14px rgba(212, 175, 55, 0.25)',
+                              boxShadow: 'none',
                               transition: 'all 0.2s ease',
                             }}
                             onMouseEnter={(e) => {
-                              e.currentTarget.style.filter = 'brightness(1.06)';
+                              e.currentTarget.style.background = '#dcae4d';
                               e.currentTarget.style.transform = 'translateY(-1px)';
                             }}
                             onMouseLeave={(e) => {
-                              e.currentTarget.style.filter = 'none';
+                              e.currentTarget.style.background = '#e8bb5c';
                               e.currentTarget.style.transform = 'translateY(0)';
                             }}
                           >
@@ -2317,8 +2315,8 @@ export default function MyWorksView({
             )}
             <div
               style={{
-                background: '#c27827',
-                color: '#ffffff',
+                background: '#e8bb5c',
+                color: '#0d0a07',
                 padding: '9px 22px',
                 borderRadius: '9999px',
                 fontSize: '13.5px',
@@ -2486,7 +2484,7 @@ export default function MyWorksView({
                   fontWeight: '800',
                   letterSpacing: '1.6px',
                   textTransform: 'uppercase',
-                  color: '#c27827',
+                  color: '#8b5a1b',
                   marginBottom: '14px',
                 }}
               >
@@ -2521,9 +2519,9 @@ export default function MyWorksView({
                   type="button"
                   onClick={() => onOpenAuth && onOpenAuth()}
                   style={{
-                    background: '#c27827',
+                    background: '#e8bb5c',
                     border: 'none',
-                    color: '#ffffff',
+                    color: '#0d0a07',
                     padding: '12px 30px',
                     borderRadius: '9999px',
                     fontSize: '14px',
@@ -2537,11 +2535,11 @@ export default function MyWorksView({
                     transition: 'all 0.2s ease',
                   }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.background = '#ad671d';
+                    e.currentTarget.style.background = '#dcae4d';
                     e.currentTarget.style.transform = 'translateY(-1px)';
                   }}
                   onMouseLeave={(e) => {
-                    e.currentTarget.style.background = '#c27827';
+                    e.currentTarget.style.background = '#e8bb5c';
                     e.currentTarget.style.transform = 'translateY(0)';
                   }}
                 >
@@ -2574,7 +2572,7 @@ export default function MyWorksView({
                     transition: 'all 0.2s ease',
                   }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.borderColor = '#c27827';
+                    e.currentTarget.style.borderColor = '#e8bb5c';
                     e.currentTarget.style.background = '#fcfaf5';
                     e.currentTarget.style.transform = 'translateY(-1px)';
                   }}
@@ -2653,9 +2651,9 @@ export default function MyWorksView({
                     type="button"
                     onClick={handleCreateNew}
                     style={{
-                      background: '#c27827',
+                      background: '#e8bb5c',
                       border: 'none',
-                      color: '#ffffff',
+                      color: '#0d0a07',
                       padding: '12px 28px',
                       borderRadius: '9999px',
                       fontWeight: '750',
@@ -2666,11 +2664,11 @@ export default function MyWorksView({
                       transition: 'all 0.2s ease',
                     }}
                     onMouseEnter={(e) => {
-                      e.currentTarget.style.background = '#ad671d';
+                      e.currentTarget.style.background = '#dcae4d';
                       e.currentTarget.style.transform = 'translateY(-1px)';
                     }}
                     onMouseLeave={(e) => {
-                      e.currentTarget.style.background = '#c27827';
+                      e.currentTarget.style.background = '#e8bb5c';
                       e.currentTarget.style.transform = 'translateY(0)';
                     }}
                   >
@@ -2693,7 +2691,7 @@ export default function MyWorksView({
                       transition: 'all 0.2s ease',
                     }}
                     onMouseEnter={(e) => {
-                      e.currentTarget.style.borderColor = '#c27827';
+                      e.currentTarget.style.borderColor = '#e8bb5c';
                       e.currentTarget.style.background = '#fcfaf5';
                       e.currentTarget.style.transform = 'translateY(-1px)';
                     }}

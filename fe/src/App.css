@@ -1216,7 +1216,7 @@
 
 .fondasi-card-btn {
   background: #e8bb5c;
-  border: 1px solid rgba(212, 175, 55, 0.35);
+  border: none;
   color: #0d0a07;
   padding: 10px 22px;
   border-radius: 9999px;
@@ -1227,7 +1227,7 @@
   align-items: center;
   gap: 8px;
   box-shadow: none;
-  transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+  transition: background 0.2s ease, transform 0.2s ease;
   margin-top: auto;
   position: relative;
   z-index: 3;
@@ -1237,7 +1237,7 @@
 .fondasi-card-btn:hover {
   background: #dcae4d;
   transform: translateX(3px);
-  box-shadow: 0 4px 14px rgba(212, 175, 55, 0.28);
+  box-shadow: none;
 }
 
 .fondasi-card-btn-arrow {
@@ -2479,8 +2479,8 @@
   gap: 12px;
   padding: 6px 6px 6px 20px;
   border-radius: 9999px;
-  background: #c27827;
-  color: #ffffff;
+  background: #e8bb5c;
+  color: #0d0a07;
   font-weight: 750;
   font-size: 13.5px;
   border: none;
@@ -2490,8 +2490,8 @@
   text-decoration: none;
 }
 .wayang-btn-cta:hover {
-  background: #ad671d;
-  color: #ffffff;
+  background: #dcae4d;
+  color: #0d0a07;
   transform: translateY(-1px);
   box-shadow: none;
 }
@@ -2502,12 +2502,13 @@
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.18);
+  background: rgba(13, 10, 7, 0.12);
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
   transition: transform 0.2s ease;
+  color: #0d0a07;
 }
 .wayang-btn-cta:hover .wayang-btn-cta-icon {
   transform: translateX(2px);
@@ -2791,8 +2792,8 @@
   border-radius: 9999px;
   font-size: 13.5px;
   font-weight: 750;
-  color: #ffffff;
-  background: #c27827;
+  color: #0d0a07;
+  background: #e8bb5c;
   border: none;
   cursor: pointer;
   box-shadow: none;
@@ -2802,8 +2803,8 @@
 }
 
 .admin-control-add-btn:hover {
-  background: #ad671d;
-  color: #ffffff;
+  background: #dcae4d;
+  color: #0d0a07;
   transform: translateY(-1px);
   box-shadow: none;
 }
@@ -4023,9 +4024,9 @@ html, body {
 }
 
 .studio-guide-header-btn:hover {
-  border-color: #c27827;
+  border-color: #e8bb5c;
   color: #ffffff;
-  background: rgba(194, 120, 39, 0.15);
+  background: rgba(232, 187, 92, 0.15);
   transform: translateY(-1px);
 }
 
@@ -4047,9 +4048,9 @@ html, body {
 }
 
 .studio-vision-toggle-btn:hover {
-  border-color: #c27827;
+  border-color: #e8bb5c;
   color: #ffffff;
-  background: rgba(194, 120, 39, 0.15);
+  background: rgba(232, 187, 92, 0.15);
   transform: translateY(-1px);
 }
 
@@ -4090,17 +4091,17 @@ html, body {
 }
 
 .studio-preview-outline-btn:hover {
-  border-color: #c27827;
+  border-color: #e8bb5c;
   color: #ffffff;
-  background: rgba(194, 120, 39, 0.15);
+  background: rgba(232, 187, 92, 0.15);
   transform: translateY(-1px);
 }
 
 /* TOMBOL SIMPAN KARYA (SELARAS DENGAN NAVBAR & SISTEM DESAIN) */
 .studio-save-solid-gold-btn {
-  background: #c27827;
+  background: #e8bb5c;
   border: none;
-  color: #ffffff;
+  color: #0d0a07;
   padding: 8px 20px;
   border-radius: 9999px;
   font-size: 12.5px;
@@ -4115,8 +4116,8 @@ html, body {
 }
 
 .studio-save-solid-gold-btn:hover {
-  background: #ad671d;
-  color: #ffffff;
+  background: #dcae4d;
+  color: #0d0a07;
   transform: translateY(-1px);
   box-shadow: none;
 }
@@ -5639,8 +5640,8 @@ html, body {
 }
 
 .kelir-empty-add-btn {
-  background: #c27827;
-  color: #ffffff;
+  background: #e8bb5c;
+  color: #0d0a07;
   border: none;
   padding: 8px 20px;
   border-radius: 9999px;
@@ -5652,7 +5653,8 @@ html, body {
 }
 
 .kelir-empty-add-btn:hover {
-  background: #ad671d;
+  background: #dcae4d;
+  color: #0d0a07;
   transform: translateY(-1px);
 }
 
@@ -8525,24 +8527,25 @@ html, body {
 }
 
 .spotlight-card-next-btn {
-  background: linear-gradient(135deg, #d4af37 0%, #b8860b 100%);
-  border: 1px solid #fef08a;
-  color: #16100a;
-  padding: 6px 14px;
-  border-radius: 8px;
-  font-size: 11.5px;
-  font-weight: 850;
+  background: #e8bb5c;
+  border: none;
+  color: #0d0a07;
+  padding: 8px 18px;
+  border-radius: 9999px;
+  font-size: 12px;
+  font-weight: 750;
   cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 5px;
-  box-shadow: 0 4px 12px rgba(212, 175, 55, 0.28);
+  gap: 6px;
+  box-shadow: none;
   transition: all 0.18s ease;
 }
 
 .spotlight-card-next-btn:hover {
-  background: linear-gradient(135deg, #e8bb5c 0%, #c59b27 100%);
-  box-shadow: 0 6px 16px rgba(212, 175, 55, 0.4);
+  background: #dcae4d;
+  color: #0d0a07;
+  box-shadow: none;
   transform: translateY(-1px);
 }
 
@@ -9019,19 +9022,21 @@ html, body {
 }
 
 .wayang-lightbox-btn-primary {
-  padding: 8px 20px;
-  border-radius: 8px;
-  background: #c27827;
+  padding: 8px 22px;
+  border-radius: 9999px;
+  background: #e8bb5c;
   border: none;
-  color: #ffffff;
-  font-size: 12px;
-  font-weight: 700;
+  color: #0d0a07;
+  font-size: 12.5px;
+  font-weight: 750;
   cursor: pointer;
+  box-shadow: none;
   transition: all 0.2s ease;
 }
 
 .wayang-lightbox-btn-primary:hover {
-  background: #ad671d;
+  background: #dcae4d;
+  color: #0d0a07;
   transform: translateY(-1px);
 }
 
@@ -9157,15 +9162,15 @@ html, body {
 }
 
 .atlas-filter-chip.is-active {
-  background: #c27827;
-  color: #ffffff;
-  border-color: #c27827;
-  font-weight: 700;
+  background: #e8bb5c;
+  color: #0d0a07;
+  border-color: #e8bb5c;
+  font-weight: 750;
 }
 
 .atlas-filter-chip:hover:not(.is-active) {
-  border-color: #c27827;
-  color: #c27827;
+  border-color: #e8bb5c;
+  color: #8b5a1b;
   transform: translateY(-1px);
 }
 

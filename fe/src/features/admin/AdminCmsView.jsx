@@ -873,14 +873,14 @@ export default function AdminCmsView({ onPlayPerformance }) {
                 borderRadius: '9999px',
                 boxSizing: 'border-box',
                 boxShadow: 'none',
-                background: '#c27827',
-                color: '#ffffff',
+                background: '#e8bb5c',
+                color: '#0d0a07',
                 border: 'none',
               }}
             >
               <span>{isSyncing ? 'Menyinkronkan...' : 'Sinkronkan Data'}</span>
-              <span className="wayang-btn-cta-icon" style={{ background: 'rgba(255, 255, 255, 0.2)' }}>
-                <RefreshCw size={14} color="#ffffff" className={isSyncing ? 'admin-spin-anim' : ''} />
+              <span className="wayang-btn-cta-icon" style={{ background: 'rgba(13, 10, 7, 0.12)' }}>
+                <RefreshCw size={14} color="#0d0a07" className={isSyncing ? 'admin-spin-anim' : ''} />
               </span>
             </button>
           </div>
@@ -1415,8 +1415,8 @@ export default function AdminCmsView({ onPlayPerformance }) {
                     display: 'inline-flex',
                     alignItems: 'center',
                     gap: '6px',
-                    background: '#c27827',
-                    color: '#ffffff',
+                    background: '#e8bb5c',
+                    color: '#0d0a07',
                     border: 'none',
                     padding: '8px 18px',
                     borderRadius: '9999px',
@@ -1427,15 +1427,15 @@ export default function AdminCmsView({ onPlayPerformance }) {
                     transition: 'all 0.2s ease',
                   }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.background = '#ad671d';
+                    e.currentTarget.style.background = '#dcae4d';
                     e.currentTarget.style.transform = 'translateY(-1px)';
                   }}
                   onMouseLeave={(e) => {
-                    e.currentTarget.style.background = '#c27827';
+                    e.currentTarget.style.background = '#e8bb5c';
                     e.currentTarget.style.transform = 'translateY(0)';
                   }}
                 >
-                  <Save size={14} strokeWidth={2.5} style={{ color: '#ffffff' }} />
+                  <Save size={14} strokeWidth={2.5} style={{ color: '#0d0a07' }} />
                   <span>Simpan Pengaturan</span>
                 </button>
               </div>
@@ -2240,8 +2240,8 @@ export default function AdminCmsView({ onPlayPerformance }) {
                           display: 'inline-flex',
                           alignItems: 'center',
                           gap: '6px',
-                          background: '#c27827',
-                          color: '#ffffff',
+                          background: '#e8bb5c',
+                          color: '#0d0a07',
                           border: 'none',
                           padding: '9px 20px',
                           borderRadius: '9999px',
@@ -2252,15 +2252,15 @@ export default function AdminCmsView({ onPlayPerformance }) {
                           transition: 'all 0.2s ease',
                         }}
                         onMouseEnter={(e) => {
-                          e.currentTarget.style.background = '#ad671d';
+                          e.currentTarget.style.background = '#dcae4d';
                           e.currentTarget.style.transform = 'translateY(-1px)';
                         }}
                         onMouseLeave={(e) => {
-                          e.currentTarget.style.background = '#c27827';
+                          e.currentTarget.style.background = '#e8bb5c';
                           e.currentTarget.style.transform = 'translateY(0)';
                         }}
                       >
-                        <Save size={14} strokeWidth={2.5} style={{ color: '#ffffff' }} />
+                        <Save size={14} strokeWidth={2.5} style={{ color: '#0d0a07' }} />
                         <span>Simpan Pengaturan Footer</span>
                       </button>
                     </div>
@@ -3522,7 +3522,7 @@ export default function AdminCmsView({ onPlayPerformance }) {
                       transition: 'all 0.2s ease',
                     }}
                     onMouseEnter={(e) => {
-                      e.currentTarget.style.borderColor = '#c27827';
+                      e.currentTarget.style.borderColor = '#e8bb5c';
                       e.currentTarget.style.background = '#fcfaf5';
                     }}
                     onMouseLeave={(e) => {
@@ -3536,9 +3536,9 @@ export default function AdminCmsView({ onPlayPerformance }) {
                   <button
                     type="submit"
                     style={{
-                      background: '#c27827',
+                      background: '#e8bb5c',
                       border: 'none',
-                      color: '#ffffff',
+                      color: '#0d0a07',
                       padding: '10px 24px',
                       borderRadius: '9999px',
                       fontSize: '14px',
@@ -3552,15 +3552,15 @@ export default function AdminCmsView({ onPlayPerformance }) {
                       transition: 'all 0.2s ease',
                     }}
                     onMouseEnter={(e) => {
-                      e.currentTarget.style.background = '#ad671d';
+                      e.currentTarget.style.background = '#dcae4d';
                       e.currentTarget.style.transform = 'translateY(-1px)';
                     }}
                     onMouseLeave={(e) => {
-                      e.currentTarget.style.background = '#c27827';
+                      e.currentTarget.style.background = '#e8bb5c';
                       e.currentTarget.style.transform = 'translateY(0)';
                     }}
                   >
-                    <Save size={15} style={{ color: '#ffffff' }} />
+                    <Save size={15} style={{ color: '#0d0a07' }} />
                     <span>Simpan Data Master</span>
                   </button>
                 </div>

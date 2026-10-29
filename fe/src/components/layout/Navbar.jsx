@@ -187,7 +187,7 @@ export default function Navbar({ activeTab, onNavigate, _backendConnected, curre
                 transition: 'color 0.25s ease',
               }}
             >
-              Wayang<span style={{ color: isLightMode ? '#c27827' : '#e8bb5c' }}>verse.</span>
+              Wayang<span style={{ color: '#e8bb5c' }}>verse.</span>
             </span>
           </div>
 
@@ -323,9 +323,9 @@ export default function Navbar({ activeTab, onNavigate, _backendConnected, curre
                 <button
                   onClick={onOpenAuth}
                   style={{
-                    background: isLightMode ? '#c27827' : '#e8bb5c',
+                    background: '#e8bb5c',
                     border: 'none',
-                    color: isLightMode ? '#ffffff' : '#0d0a07',
+                    color: '#0d0a07',
                     padding: '8px clamp(12px, 1.4vw, 22px)',
                     borderRadius: '20px',
                     fontSize: 'clamp(12px, 0.9vw, 13.5px)',
@@ -337,11 +337,11 @@ export default function Navbar({ activeTab, onNavigate, _backendConnected, curre
                     transition: 'all 0.2s ease',
                   }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.background = isLightMode ? '#ad671d' : '#dcae4d';
+                    e.currentTarget.style.background = '#dcae4d';
                     e.currentTarget.style.transform = 'translateY(-1px)';
                   }}
                   onMouseLeave={(e) => {
-                    e.currentTarget.style.background = isLightMode ? '#c27827' : '#e8bb5c';
+                    e.currentTarget.style.background = '#e8bb5c';
                     e.currentTarget.style.transform = 'translateY(0)';
                   }}
                 >
@@ -609,8 +609,8 @@ export default function Navbar({ activeTab, onNavigate, _backendConnected, curre
                             fontWeight: '750',
                             padding: '3px 8px',
                             borderRadius: '9999px',
-                            background: isLightMode ? '#c27827' : '#e8bb5c',
-                            color: isLightMode ? '#ffffff' : '#0d0a07',
+                            background: '#e8bb5c',
+                            color: '#0d0a07',
                             letterSpacing: '0.4px',
                           }}
                         >
@@ -713,11 +713,11 @@ export default function Navbar({ activeTab, onNavigate, _backendConnected, curre
                     onClick={handleMobileAuthClick}
                     style={{
                       minHeight: '38px',
-                      background: isLightMode ? '#c27827' : '#e8bb5c',
-                      color: isLightMode ? '#ffffff' : '#0d0a07',
+                      background: '#e8bb5c',
+                      color: '#0d0a07',
                       border: 'none',
-                      borderRadius: '10px',
-                      padding: '8px 14px',
+                      borderRadius: '9999px',
+                      padding: '8px 16px',
                       fontSize: '12.5px',
                       fontWeight: '750',
                       cursor: 'pointer',
@@ -733,10 +733,10 @@ export default function Navbar({ activeTab, onNavigate, _backendConnected, curre
                   style={{
                     minHeight: '46px',
                     width: '100%',
-                    background: isLightMode ? '#c27827' : '#e8bb5c',
-                    color: isLightMode ? '#ffffff' : '#0d0a07',
+                    background: '#e8bb5c',
+                    color: '#0d0a07',
                     border: 'none',
-                    borderRadius: '14px',
+                    borderRadius: '9999px',
                     padding: '12px 18px',
                     fontSize: '14px',
                     fontWeight: '750',
@@ -745,7 +745,7 @@ export default function Navbar({ activeTab, onNavigate, _backendConnected, curre
                     alignItems: 'center',
                     justifyContent: 'center',
                     gap: '8px',
-                    boxShadow: '0 4px 14px rgba(0, 0, 0, 0.15)',
+                    boxShadow: 'none',
                     transition: 'all 0.2s ease',
                   }}
                 >

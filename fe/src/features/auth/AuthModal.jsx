@@ -717,12 +717,12 @@ export default function AuthModal({ isOpen, onClose, currentUser, onAuthSuccess,
                   disabled={loading}
                   style={{
                     width: '100%',
-                    background: 'linear-gradient(135deg, #d4af37 0%, #c59b27 100%)',
-                    border: '1px solid rgba(139, 69, 19, 0.25)',
-                    color: '#18120c',
+                    background: '#e8bb5c',
+                    border: 'none',
+                    color: '#0d0a07',
                     padding: '12px 20px',
-                    borderRadius: '10px',
-                    fontWeight: '700',
+                    borderRadius: '9999px',
+                    fontWeight: '750',
                     fontSize: '14px',
                     cursor: loading ? 'not-allowed' : 'pointer',
                     display: 'flex',
@@ -730,21 +730,19 @@ export default function AuthModal({ isOpen, onClose, currentUser, onAuthSuccess,
                     justifyContent: 'center',
                     gap: '10px',
                     minHeight: '46px',
-                    boxShadow: '0 3px 12px rgba(212, 175, 55, 0.28)',
+                    boxShadow: 'none',
                     fontFamily: "'Plus Jakarta Sans', var(--font-sans), sans-serif",
                     transition: 'all 0.18s ease',
                     opacity: loading ? 0.75 : 1,
                   }}
                   onMouseEnter={(e) => {
                     if (!loading) {
-                      e.currentTarget.style.background = 'linear-gradient(135deg, #deb845 0%, #d4af37 100%)';
-                      e.currentTarget.style.boxShadow = '0 5px 16px rgba(212, 175, 55, 0.35)';
+                      e.currentTarget.style.background = '#dcae4d';
                     }
                   }}
                   onMouseLeave={(e) => {
                     if (!loading) {
-                      e.currentTarget.style.background = 'linear-gradient(135deg, #d4af37 0%, #c59b27 100%)';
-                      e.currentTarget.style.boxShadow = '0 3px 12px rgba(212, 175, 55, 0.28)';
+                      e.currentTarget.style.background = '#e8bb5c';
                     }
                   }}
                 >

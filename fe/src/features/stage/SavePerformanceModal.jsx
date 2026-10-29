@@ -294,7 +294,7 @@ export default function SavePerformanceModal({
                 transition: 'all 0.2s ease',
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.borderColor = '#c27827';
+                e.currentTarget.style.borderColor = '#e8bb5c';
                 e.currentTarget.style.background = '#fcfaf5';
               }}
               onMouseLeave={(e) => {
@@ -308,9 +308,9 @@ export default function SavePerformanceModal({
               type="submit"
               disabled={saving}
               style={{
-                background: '#c27827',
+                background: '#e8bb5c',
                 border: 'none',
-                color: '#ffffff',
+                color: '#0d0a07',
                 padding: '10px 24px',
                 borderRadius: '9999px',
                 fontSize: '14px',
@@ -325,18 +325,18 @@ export default function SavePerformanceModal({
               }}
               onMouseEnter={(e) => {
                 if (!saving) {
-                  e.currentTarget.style.background = '#ad671d';
+                  e.currentTarget.style.background = '#dcae4d';
                   e.currentTarget.style.transform = 'translateY(-1px)';
                 }
               }}
               onMouseLeave={(e) => {
                 if (!saving) {
-                  e.currentTarget.style.background = '#c27827';
+                  e.currentTarget.style.background = '#e8bb5c';
                   e.currentTarget.style.transform = 'translateY(0)';
                 }
               }}
             >
-              <Save size={15} style={{ color: '#ffffff' }} />
+              <Save size={15} style={{ color: '#0d0a07' }} />
               <span>{saving ? 'Menyimpan...' : 'Simpan Lakon Sekarang'}</span>
             </button>
           </div>
