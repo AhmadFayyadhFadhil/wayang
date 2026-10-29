@@ -32,7 +32,6 @@ import {
   LayoutGrid,
   Columns,
   X,
-  User,
 } from 'lucide-react';
 
 // Aset Visual Heritage & Ornamen Budaya
@@ -2467,71 +2466,37 @@ export default function MyWorksView({
               <div style={{ fontSize: '15px', fontWeight: '700' }}>Memuat khazanah karya tersimpan...</div>
             </div>
           ) : !currentUser ? (
-            /* Empty State Khusus Pengguna Tamu (Belum Login) */
+            /* Empty State Khusus Pengguna Tamu (Belum Login) — Bersih, Anti-Slop, Elegan */
             <div
               style={{
-                background: 'linear-gradient(180deg, #ffffff 0%, #fbf9f4 100%)',
-                border: '1px solid rgba(212, 175, 55, 0.35)',
+                background: '#ffffff',
+                border: '1px solid rgba(212, 175, 55, 0.28)',
                 borderRadius: '24px',
-                padding: 'clamp(36px, 6vw, 64px) 24px',
+                padding: 'clamp(40px, 5vw, 60px) 24px',
                 textAlign: 'center',
-                maxWidth: '720px',
+                maxWidth: '680px',
                 margin: '0 auto',
-                boxShadow: '0 8px 32px rgba(40, 28, 16, 0.05)',
+                boxShadow: '0 4px 20px rgba(40, 28, 16, 0.04)',
                 position: 'relative',
-                overflow: 'hidden',
               }}
             >
               <div
                 style={{
-                  position: 'absolute',
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  height: '4px',
-                  background: 'linear-gradient(90deg, transparent, #d4af37, #8b4513, transparent)',
-                }}
-              />
-              <div
-                style={{
-                  width: '76px',
-                  height: '76px',
-                  borderRadius: '24px',
-                  background: 'rgba(212, 175, 55, 0.12)',
-                  border: '1px solid rgba(212, 175, 55, 0.35)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  margin: '0 auto 24px auto',
-                  boxShadow: '0 4px 16px rgba(212, 175, 55, 0.15)',
-                }}
-              >
-                <Lock size={34} style={{ color: '#8b4513' }} />
-              </div>
-
-              <div
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '6px',
-                  padding: '5px 14px',
-                  borderRadius: '20px',
-                  background: 'rgba(139, 69, 19, 0.08)',
-                  color: '#8b4513',
-                  fontSize: '12px',
-                  fontWeight: '700',
-                  letterSpacing: '0.8px',
+                  fontSize: '11.5px',
+                  fontWeight: '800',
+                  letterSpacing: '1.6px',
                   textTransform: 'uppercase',
+                  color: '#c27827',
                   marginBottom: '14px',
                 }}
               >
-                <span>SANGGAR LAKON PRIBADI</span>
+                SANGGAR LAKON PRIBADI
               </div>
 
               <h3
                 style={{
                   margin: '0 0 14px 0',
-                  fontSize: 'clamp(20px, 3vw, 26px)',
+                  fontSize: 'clamp(22px, 3.2vw, 28px)',
                   color: '#1a140e',
                   fontWeight: '850',
                   letterSpacing: '-0.4px',
@@ -2556,23 +2521,31 @@ export default function MyWorksView({
                   type="button"
                   onClick={() => onOpenAuth && onOpenAuth()}
                   style={{
-                    background: 'linear-gradient(135deg, #d4af37 0%, #b8861d 100%)',
+                    background: '#c27827',
                     border: 'none',
-                    color: '#0e0a14',
-                    padding: '13px 32px',
-                    borderRadius: '12px',
-                    fontSize: '15px',
-                    fontWeight: '800',
+                    color: '#ffffff',
+                    padding: '12px 30px',
+                    borderRadius: '9999px',
+                    fontSize: '14px',
+                    fontWeight: '750',
                     cursor: 'pointer',
                     display: 'inline-flex',
                     alignItems: 'center',
-                    gap: '9px',
-                    boxShadow: '0 4px 18px rgba(212, 175, 55, 0.35)',
+                    justifyContent: 'center',
+                    boxShadow: 'none',
                     minHeight: '44px',
+                    transition: 'all 0.2s ease',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = '#ad671d';
+                    e.currentTarget.style.transform = 'translateY(-1px)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = '#c27827';
+                    e.currentTarget.style.transform = 'translateY(0)';
                   }}
                 >
-                  <User size={16} />
-                  <span>Masuk / Daftar Akun Dalang</span>
+                  Masuk / Daftar Akun Dalang
                 </button>
 
                 <button
@@ -2586,64 +2559,59 @@ export default function MyWorksView({
                   }}
                   style={{
                     background: '#ffffff',
-                    border: '1px solid rgba(212, 175, 55, 0.45)',
+                    border: '1.5px solid rgba(212, 175, 55, 0.45)',
                     color: '#1a140e',
-                    padding: '13px 26px',
-                    borderRadius: '12px',
-                    fontSize: '15px',
+                    padding: '12px 28px',
+                    borderRadius: '9999px',
+                    fontSize: '14px',
                     fontWeight: '700',
                     cursor: 'pointer',
                     display: 'inline-flex',
                     alignItems: 'center',
-                    gap: '8px',
+                    justifyContent: 'center',
+                    boxShadow: 'none',
                     minHeight: '44px',
+                    transition: 'all 0.2s ease',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.borderColor = '#c27827';
+                    e.currentTarget.style.background = '#fcfaf5';
+                    e.currentTarget.style.transform = 'translateY(-1px)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.borderColor = 'rgba(212, 175, 55, 0.45)';
+                    e.currentTarget.style.background = '#ffffff';
+                    e.currentTarget.style.transform = 'translateY(0)';
                   }}
                 >
-                  <Play size={15} style={{ color: '#8b4513' }} />
-                  <span>Buka Studio Panggung</span>
+                  Buka Studio Panggung
                 </button>
               </div>
             </div>
           ) : filteredWorks.length === 0 ? (
-            /* Empty State Berseni Tinggi */
+            /* Empty State Berseni Tinggi & Bersih */
             <div
               style={{
                 background: '#ffffff',
                 border: '1px solid rgba(212, 175, 55, 0.28)',
                 borderRadius: '24px',
-                padding: '56px 24px',
+                padding: 'clamp(40px, 5vw, 60px) 24px',
                 textAlign: 'center',
                 maxWidth: '680px',
                 margin: '0 auto',
                 boxShadow: '0 4px 20px rgba(40, 28, 16, 0.04)',
               }}
             >
-              <div
-                style={{
-                  width: '68px',
-                  height: '68px',
-                  borderRadius: '20px',
-                  background: 'rgba(212, 175, 55, 0.1)',
-                  border: '1px solid rgba(212, 175, 55, 0.25)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  margin: '0 auto 20px auto',
-                }}
-              >
-                <Film size={30} style={{ color: '#b48a28' }} />
-              </div>
-
-              <h3 style={{ margin: '0 0 10px 0', fontSize: '22px', color: '#1a140e', fontWeight: '800' }}>
+              <h3 style={{ margin: '0 0 12px 0', fontSize: '22px', color: '#1a140e', fontWeight: '850' }}>
                 {searchQuery ? 'Tidak Ada Karya yang Cocok' : 'Belum Ada Pementasan Tersimpan'}
               </h3>
               <p
                 style={{
-                  margin: '0 0 26px 0',
-                  fontSize: '14px',
-                  color: '#6b7280',
-                  lineHeight: '1.6',
-                  maxWidth: '460px',
+                  margin: '0 0 28px 0',
+                  fontSize: '14.5px',
+                  color: '#6e5e4d',
+                  lineHeight: '1.65',
+                  maxWidth: '480px',
                   marginInline: 'auto',
                 }}
               >
@@ -2654,52 +2622,85 @@ export default function MyWorksView({
 
               {searchQuery ? (
                 <button
+                  type="button"
                   onClick={() => setSearchQuery('')}
                   style={{
                     background: '#1a140e',
                     border: 'none',
                     color: '#fcfaf2',
-                    padding: '11px 24px',
-                    borderRadius: '12px',
+                    padding: '11px 26px',
+                    borderRadius: '9999px',
                     fontWeight: '750',
                     fontSize: '13.5px',
                     cursor: 'pointer',
                     minHeight: '44px',
+                    transition: 'all 0.2s ease',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = '#2b2118';
+                    e.currentTarget.style.transform = 'translateY(-1px)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = '#1a140e';
+                    e.currentTarget.style.transform = 'translateY(0)';
                   }}
                 >
                   Bersihkan Pencarian
                 </button>
               ) : (
-                <div style={{ display: 'flex', justifyContent: 'center', gap: '12px', flexWrap: 'wrap' }}>
+                <div style={{ display: 'flex', justifyContent: 'center', gap: '14px', flexWrap: 'wrap' }}>
                   <button
+                    type="button"
                     onClick={handleCreateNew}
                     style={{
-                      background: 'linear-gradient(135deg, #e8bb5c 0%, #d4af37 100%)',
+                      background: '#c27827',
                       border: 'none',
-                      color: '#1a140e',
+                      color: '#ffffff',
                       padding: '12px 28px',
-                      borderRadius: '12px',
-                      fontWeight: '800',
+                      borderRadius: '9999px',
+                      fontWeight: '750',
                       fontSize: '14px',
                       cursor: 'pointer',
                       minHeight: '44px',
-                      boxShadow: '0 4px 14px rgba(212, 175, 55, 0.25)',
+                      boxShadow: 'none',
+                      transition: 'all 0.2s ease',
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.background = '#ad671d';
+                      e.currentTarget.style.transform = 'translateY(-1px)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.background = '#c27827';
+                      e.currentTarget.style.transform = 'translateY(0)';
                     }}
                   >
                     Rancang Lakon Pertama
                   </button>
                   <button
+                    type="button"
                     onClick={() => setShowTemplatesDrawer(true)}
                     style={{
                       background: '#ffffff',
-                      border: '1px solid rgba(212, 175, 55, 0.4)',
-                      color: '#8b5a1b',
-                      padding: '12px 24px',
-                      borderRadius: '12px',
-                      fontWeight: '750',
+                      border: '1.5px solid rgba(212, 175, 55, 0.45)',
+                      color: '#1a140e',
+                      padding: '12px 26px',
+                      borderRadius: '9999px',
+                      fontWeight: '700',
                       fontSize: '14px',
                       cursor: 'pointer',
                       minHeight: '44px',
+                      boxShadow: 'none',
+                      transition: 'all 0.2s ease',
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.borderColor = '#c27827';
+                      e.currentTarget.style.background = '#fcfaf5';
+                      e.currentTarget.style.transform = 'translateY(-1px)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.borderColor = 'rgba(212, 175, 55, 0.45)';
+                      e.currentTarget.style.background = '#ffffff';
+                      e.currentTarget.style.transform = 'translateY(0)';
                     }}
                   >
                     Gunakan Template Pakem

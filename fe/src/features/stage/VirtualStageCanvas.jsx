@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect, useMemo, forwardRef, useImperativeHandle } from 'react';
-import { X, MessageSquare, Lock } from 'lucide-react';
+import { X, MessageSquare } from 'lucide-react';
 import RealLeatherPuppet from '../../components/stage/RealLeatherPuppet';
 import { updatePuppetArmsDOM } from '../../services/vision/puppetIkSolver';
 import { getBackgroundById } from '../../data/master/stageConfigMaster';
@@ -209,24 +209,24 @@ const VirtualStageCanvas = forwardRef(function VirtualStageCanvas({
       if (e.key === 'ArrowLeft') {
         e.preventDefault();
         onUpdateCharacter(selectedInstanceId, { x: char.x - step });
-        try { soundEngine.playDodogan(); } catch {}
+        try { soundEngine.playDodogan(); } catch { }
       } else if (e.key === 'ArrowRight') {
         e.preventDefault();
         onUpdateCharacter(selectedInstanceId, { x: char.x + step });
-        try { soundEngine.playDodogan(); } catch {}
+        try { soundEngine.playDodogan(); } catch { }
       } else if (e.key === 'ArrowUp') {
         e.preventDefault();
         onUpdateCharacter(selectedInstanceId, { y: char.y - step });
-        try { soundEngine.playDodogan(); } catch {}
+        try { soundEngine.playDodogan(); } catch { }
       } else if (e.key === 'ArrowDown') {
         e.preventDefault();
         onUpdateCharacter(selectedInstanceId, { y: char.y + step });
-        try { soundEngine.playDodogan(); } catch {}
+        try { soundEngine.playDodogan(); } catch { }
       } else if (e.key.toLowerCase() === 'f') {
         e.preventDefault();
         const nextFacing = char.facing === 'left' ? 'right' : 'left';
         onUpdateCharacter(selectedInstanceId, { facing: nextFacing });
-        try { soundEngine.playDodogan(); } catch {}
+        try { soundEngine.playDodogan(); } catch { }
       }
     };
 
@@ -357,7 +357,7 @@ const VirtualStageCanvas = forwardRef(function VirtualStageCanvas({
                         onUpdateCharacter(char.instanceId, {
                           facing: char.facing === 'left' ? 'right' : 'left',
                         });
-                        try { soundEngine.playDodogan(); } catch {}
+                        try { soundEngine.playDodogan(); } catch { }
                       }}
                       title="Balik Arah Hadap (Shortcut: F)"
                       className="puppet-flip-pill"
@@ -474,7 +474,7 @@ const VirtualStageCanvas = forwardRef(function VirtualStageCanvas({
           {characters.length === 0 && (
             <div className="kelir-empty-state">
               <div className="kelir-empty-glyph">ꦥꦁꦒꦸꦁ</div>
-              <div className="kelir-empty-title">Kelir Suwung • Siap Digelar</div>
+              <div className="kelir-empty-title">Kelir Suwung Siap Digelar</div>
               <p className="kelir-empty-sub">
                 Panggung siap dibuka. Tancapkan tokoh pertama untuk mengawali lakon pedalangan babak ini.
               </p>
@@ -497,7 +497,7 @@ const VirtualStageCanvas = forwardRef(function VirtualStageCanvas({
             </div>
           )}
 
-          {/* Badge Mode Pratinjau Tamu */}
+          {/* Lencana Mode Pratinjau Tamu — Bersih, Anti-Slop */}
           {isGuest && (
             <div
               onClick={(e) => {
@@ -510,24 +510,22 @@ const VirtualStageCanvas = forwardRef(function VirtualStageCanvas({
                 left: '50%',
                 transform: 'translateX(-50%)',
                 zIndex: 40,
-                background: 'rgba(15, 10, 20, 0.88)',
-                backdropFilter: 'blur(8px)',
-                border: '1px solid rgba(212, 175, 55, 0.4)',
-                borderRadius: '24px',
-                padding: '7px 18px',
+                background: 'rgba(20, 16, 24, 0.88)',
+                backdropFilter: 'blur(12px)',
+                border: '1px solid rgba(212, 175, 55, 0.28)',
+                borderRadius: '9999px',
+                padding: '7px 20px',
                 display: 'flex',
                 alignItems: 'center',
-                gap: '8px',
-                color: '#f0c952',
+                color: '#fcfaf5',
                 fontSize: '12px',
-                fontWeight: '600',
+                fontWeight: '650',
                 cursor: 'pointer',
-                boxShadow: '0 4px 18px rgba(0,0,0,0.4)',
+                boxShadow: '0 4px 16px rgba(0,0,0,0.25)',
                 userSelect: 'none',
               }}
               title="Klik untuk masuk atau mendaftar akun dalang"
             >
-              <Lock size={13} style={{ color: '#d4af37' }} />
               <span>Mode Pratinjau • Masuk untuk mengkreasikan tokoh &amp; menyimpan lakon</span>
             </div>
           )}
