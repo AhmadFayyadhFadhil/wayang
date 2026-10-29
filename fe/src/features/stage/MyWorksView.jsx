@@ -618,7 +618,7 @@ export default function MyWorksView({ onOpenStudio, onPlayPerformance }) {
           position: 'relative',
           overflow: 'hidden',
           background: '#0d0a07',
-          padding: 'clamp(70px, 9vh, 120px) clamp(16px, 3vw, 24px) clamp(30px, 4vh, 70px) clamp(16px, 3vw, 24px)',
+          padding: 'clamp(115px, 14vh, 150px) clamp(16px, 3vw, 24px) clamp(40px, 5vh, 70px) clamp(16px, 3vw, 24px)',
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
@@ -691,31 +691,6 @@ export default function MyWorksView({ onOpenStudio, onPlayPerformance }) {
 
         {/* Konten Teks Hero Terpusat Sempurna (Panjang Selaras dengan Navbar 1180px) */}
         <div style={{ maxWidth: '1180px', width: '100%', position: 'relative', zIndex: 10, margin: '0 auto', textAlign: 'center' }}>
-          {/* Eyebrow Budaya Nusantara */}
-          <div
-            data-aos="fade-down"
-            data-aos-duration="600"
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '10px',
-              padding: '6px 16px',
-              borderRadius: '9999px',
-              background: 'rgba(212, 175, 55, 0.08)',
-              border: '1px solid rgba(212, 175, 55, 0.22)',
-              color: '#d4af37',
-              fontSize: '11px',
-              fontWeight: '700',
-              letterSpacing: '2.5px',
-              textTransform: 'uppercase',
-              marginBottom: 'clamp(12px, 2vh, 22px)',
-            }}
-          >
-            <span style={{ width: '5px', height: '5px', borderRadius: '50%', background: '#d4af37' }} />
-            <span>RUANG CIPTA PAGELARAN WAYANG</span>
-            <span style={{ width: '5px', height: '5px', borderRadius: '50%', background: '#d4af37' }} />
-          </div>
-
           {/* Headline Utama */}
           <h1
             data-aos="fade-up"

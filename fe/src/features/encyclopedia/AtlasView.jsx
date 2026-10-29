@@ -283,7 +283,7 @@ export default function AtlasView({ onPlayCharacterOnStage }) {
           alignItems: 'center',
           justifyContent: 'center',
           position: 'relative',
-          padding: 'clamp(75px, 10vh, 115px) clamp(16px, 3vw, 24px) clamp(35px, 5vh, 75px) clamp(16px, 3vw, 24px)',
+          padding: 'clamp(115px, 14vh, 150px) clamp(16px, 3vw, 24px) clamp(40px, 5vh, 75px) clamp(16px, 3vw, 24px)',
           overflow: 'hidden',
           background: '#0d0a07',
           boxSizing: 'border-box',
@@ -365,31 +365,6 @@ export default function AtlasView({ onPlayCharacterOnStage }) {
             alignItems: 'center',
           }}
         >
-          {/* Eyebrow Budaya Nusantara (Persis Hero Beranda) */}
-          <div
-            data-aos="fade-down"
-            data-aos-duration="600"
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '8px',
-              padding: '5px 14px',
-              borderRadius: '9999px',
-              background: 'rgba(212, 175, 55, 0.08)',
-              border: '1px solid rgba(212, 175, 55, 0.22)',
-              color: '#d4af37',
-              fontSize: '10.5px',
-              fontWeight: '700',
-              letterSpacing: '2.2px',
-              textTransform: 'uppercase',
-              marginBottom: '18px',
-            }}
-          >
-            <span style={{ width: '5px', height: '5px', borderRadius: '50%', background: '#d4af37' }} />
-            <span>Pustaka Wiracarita & Ensiklopedi Wayang</span>
-            <span style={{ width: '5px', height: '5px', borderRadius: '50%', background: '#d4af37' }} />
-          </div>
-
           {/* Judul Besar Klasik Sesuai Tipografi PRD & SRS (Plus Jakarta Sans) - Terpusat */}
           <h1
             data-aos="fade-up"

@@ -743,7 +743,7 @@ export default function AdminCmsView({ onPlayPerformance }) {
           position: 'relative',
           overflow: 'hidden',
           background: '#0d0a07',
-          padding: 'clamp(75px, 10vh, 120px) clamp(16px, 3vw, 24px) clamp(35px, 5vh, 80px) clamp(16px, 3vw, 24px)',
+          padding: 'clamp(115px, 14vh, 150px) clamp(16px, 3vw, 24px) clamp(40px, 5vh, 80px) clamp(16px, 3vw, 24px)',
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
@@ -816,31 +816,6 @@ export default function AdminCmsView({ onPlayPerformance }) {
 
         {/* Konten Teks Hero Terpusat Sempurna (Panjang Selaras dengan Navbar 1180px) */}
         <div style={{ maxWidth: '1180px', width: '100%', position: 'relative', zIndex: 10, margin: '0 auto', textAlign: 'center' }}>
-          {/* Eyebrow Budaya Nusantara */}
-          <div
-            data-aos="fade-down"
-            data-aos-duration="600"
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '10px',
-              padding: '6px 16px',
-              borderRadius: '9999px',
-              background: 'rgba(212, 175, 55, 0.08)',
-              border: '1px solid rgba(212, 175, 55, 0.22)',
-              color: '#d4af37',
-              fontSize: '11px',
-              fontWeight: '700',
-              letterSpacing: '2.5px',
-              textTransform: 'uppercase',
-              marginBottom: '18px',
-            }}
-          >
-            <span style={{ width: '5px', height: '5px', borderRadius: '50%', background: '#d4af37' }} />
-            <span>KONSOL KURASI & MASTER DATA WAYANG</span>
-            <span style={{ width: '5px', height: '5px', borderRadius: '50%', background: '#d4af37' }} />
-          </div>
-
           {/* Heading Hero Wayangverse - Selaras dengan Standar Tipografi Atlas & Karya Saya */}
           <h1
             data-aos="fade-up"
@@ -2300,18 +2275,30 @@ export default function AdminCmsView({ onPlayPerformance }) {
                             background: '#ffffff',
                             border: '1.5px solid rgba(212, 175, 55, 0.35)',
                             borderRadius: '20px',
-                            padding: '24px',
+                            padding: 'clamp(14px, 3.5vw, 24px)',
                             boxShadow: '0 4px 20px rgba(40, 28, 16, 0.05)',
                             display: 'grid',
                             gridTemplateColumns: 'repeat(auto-fit, minmax(290px, 1fr))',
-                            gap: '28px',
+                            gap: 'clamp(20px, 3.5vw, 28px)',
                             alignItems: 'start',
                             position: 'relative',
                             boxSizing: 'border-box',
+                            scrollMarginTop: '100px',
                           }}
                         >
-                          {/* SISI KIRI: PRATINJAU KARTU MINI (SAMA PERSIS SEPERTI DI MODAL FOOTER) */}
-                          <div style={{ maxWidth: '320px', width: '100%', margin: '0 auto' }}>
+                          {/* SISI KIRI: PRATINJAU KARTU MINI DALAM PANGGUNG BERSIH & TIDAK KEMEPETAN */}
+                          <div
+                            style={{
+                              maxWidth: '340px',
+                              width: '100%',
+                              margin: '0 auto',
+                              background: '#fbf9f4',
+                              border: '1px solid rgba(212, 175, 55, 0.22)',
+                              borderRadius: '20px',
+                              padding: 'clamp(12px, 3vw, 16px)',
+                              boxSizing: 'border-box',
+                            }}
+                          >
                             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px' }}>
                               <span style={{ fontSize: '11px', fontWeight: '800', color: '#8b4513', letterSpacing: '0.05em', textTransform: 'uppercase' }}>
                                 Pratinjau Tampilan #{index + 1}
@@ -2325,10 +2312,10 @@ export default function AdminCmsView({ onPlayPerformance }) {
                             <div
                               style={{
                                 background: '#ffffff',
-                                borderRadius: '22px',
+                                borderRadius: '20px',
                                 border: '1px solid rgba(0, 0, 0, 0.08)',
                                 boxShadow: '0 4px 18px rgba(40, 28, 16, 0.06)',
-                                padding: '16px 16px 18px 16px',
+                                padding: 'clamp(14px, 3.5vw, 18px)',
                                 display: 'flex',
                                 flexDirection: 'column',
                                 position: 'relative',

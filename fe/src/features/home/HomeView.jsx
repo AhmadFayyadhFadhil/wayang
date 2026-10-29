@@ -264,7 +264,7 @@ export default function HomeView({ onNavigate, connectionStatus: _connectionStat
           alignItems: 'center',
           justifyContent: 'center',
           position: 'relative',
-          padding: 'clamp(75px, 10vh, 115px) clamp(16px, 3vw, 24px) clamp(35px, 5vh, 75px) clamp(16px, 3vw, 24px)',
+          padding: 'clamp(115px, 14vh, 150px) clamp(16px, 3vw, 24px) clamp(40px, 5vh, 75px) clamp(16px, 3vw, 24px)',
           overflow: 'hidden',
           background: '#0d0a07',
           boxSizing: 'border-box',

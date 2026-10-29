@@ -379,7 +379,7 @@ export default function ConnectedArchiveView({
           position: 'relative',
           overflow: 'hidden',
           background: '#0d0a07',
-          padding: 'clamp(70px, 10vh, 120px) clamp(16px, 3vw, 24px) clamp(35px, 5vh, 80px) clamp(16px, 3vw, 24px)',
+          padding: 'clamp(115px, 14vh, 150px) clamp(16px, 3vw, 24px) clamp(40px, 5vh, 80px) clamp(16px, 3vw, 24px)',
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
@@ -464,31 +464,6 @@ export default function ConnectedArchiveView({
             alignItems: 'center',
           }}
         >
-          {/* Eyebrow Budaya Nusantara */}
-          <div
-            data-aos="fade-down"
-            data-aos-duration="600"
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '10px',
-              padding: '6px 16px',
-              borderRadius: '9999px',
-              background: 'rgba(212, 175, 55, 0.08)',
-              border: '1px solid rgba(212, 175, 55, 0.22)',
-              color: '#d4af37',
-              fontSize: '11px',
-              fontWeight: '700',
-              letterSpacing: '2.5px',
-              textTransform: 'uppercase',
-              marginBottom: 'clamp(10px, 1.6vh, 18px)',
-            }}
-          >
-            <span style={{ width: '5px', height: '5px', borderRadius: '50%', background: '#d4af37' }} />
-            <span>PANGGUNG TERBUKA PAGELARAN NUSANTARA</span>
-            <span style={{ width: '5px', height: '5px', borderRadius: '50%', background: '#d4af37' }} />
-          </div>
-
           {/* Headline Utama Selaras Tipografi Atlas & Beranda */}
           <h1
             data-aos="fade-up"
