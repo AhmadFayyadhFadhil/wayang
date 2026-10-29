@@ -528,7 +528,7 @@ const VirtualStageCanvas = forwardRef(function VirtualStageCanvas({
               title="Klik untuk masuk atau mendaftar akun dalang"
             >
               <Lock size={13} style={{ color: '#d4af37' }} />
-              <span>Mode Pratinjau • Masuk untuk mengutak-atik tokoh &amp; menyimpan lakon</span>
+              <span>Mode Pratinjau • Masuk untuk mengkreasikan tokoh &amp; menyimpan lakon</span>
             </div>
           )}
         </div>

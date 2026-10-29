@@ -65,8 +65,8 @@ const CHAR_AVATARS = {
 export default function StageStudio({ onNavigate, currentUser = null, onOpenAuth = null }) {
   const stageCanvasRef = useRef(null);
 
-  // Helper pengaman otentikasi: mencegah tamu mengutak-atik panggung atau menyimpan
-  const requireAuth = (_actionDesc = 'mengutak-atik panggung') => {
+  // Helper pengaman otentikasi: mencegah tamu mengkreasikan panggung atau menyimpan
+  const requireAuth = (_actionDesc = 'mengkreasikan panggung') => {
     if (!currentUser) {
       if (onOpenAuth) onOpenAuth();
       return false;
