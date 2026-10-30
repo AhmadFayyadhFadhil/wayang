@@ -3527,6 +3527,10 @@ html, body {
   color: #e8bb5c;
 }
 
+.wayang-footer-brand-header:hover .wayang-footer-logo-img {
+  transform: translateY(-2px) scale(1.03);
+}
+
 .wayang-footer-mission-text {
   font-size: 14.5px;
   line-height: 1.75;

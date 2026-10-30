@@ -12,6 +12,8 @@ import {
   LogIn,
   ChevronRight,
 } from 'lucide-react';
+import logoWayangverseDark from '../../assets/logo_wayangverse_dark.png';
+import logoWayangverseLight from '../../assets/logo_wayangverse_light.png';
 
 export default function Navbar({ activeTab, onNavigate, _backendConnected, currentUser, onOpenAuth }) {
   const [isLightMode, setIsLightMode] = useState(false);
@@ -162,7 +164,7 @@ export default function Navbar({ activeTab, onNavigate, _backendConnected, curre
             transition: 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
           }}
         >
-          {/* 1. Brand Logo (Kiri) - Tipografi Elegan Minimalis Alami */}
+          {/* 1. Brand Logo (Kiri) - Lambang Wayangverse Kontras Adaptif */}
           <div
             onClick={() => {
               onNavigate('home');
@@ -171,24 +173,55 @@ export default function Navbar({ activeTab, onNavigate, _backendConnected, curre
             style={{
               display: 'flex',
               alignItems: 'center',
-              gap: '8px',
               cursor: 'pointer',
               userSelect: 'none',
               flexShrink: 0,
+              padding: '2px 0',
             }}
+            title="Wayangverse — Beranda Panggung Digital"
           >
-            <span
+            {/* Wadah Logo Adaptif (Cross-Fade Halus Bebas Flicker & 0 CLS) */}
+            <div
               style={{
-                fontSize: isMobile ? '17px' : 'clamp(16px, 1.3vw, 18.5px)',
-                fontWeight: '850',
-                letterSpacing: '-0.4px',
-                color: isLightMode ? '#1a140e' : '#fcfaf2',
-                fontFamily: 'var(--font-sans)',
-                transition: 'color 0.25s ease',
+                position: 'relative',
+                height: isMobile ? '36px' : 'clamp(38px, 3.2vw, 44px)',
+                width: isMobile ? '54px' : 'clamp(57px, 4.8vw, 66px)',
+                flexShrink: 0,
               }}
             >
-              Wayang<span style={{ color: '#e8bb5c' }}>verse.</span>
-            </span>
+              {/* Logo Terang / Emas Prada (Aktif saat Navbar di Latar Gelap) */}
+              <img
+                src={logoWayangverseLight}
+                alt="Wayangverse"
+                style={{
+                  position: 'absolute',
+                  inset: 0,
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'contain',
+                  opacity: isLightMode ? 0 : 1,
+                  transition: 'opacity 0.28s cubic-bezier(0.16, 1, 0.3, 1), transform 0.2s ease',
+                  pointerEvents: 'none',
+                  filter: 'drop-shadow(0 2px 6px rgba(0, 0, 0, 0.55))',
+                }}
+              />
+              {/* Logo Gelap / Soga Hitam (Aktif saat Navbar di Latar Terang) */}
+              <img
+                src={logoWayangverseDark}
+                alt="Wayangverse"
+                style={{
+                  position: 'absolute',
+                  inset: 0,
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'contain',
+                  opacity: isLightMode ? 1 : 0,
+                  transition: 'opacity 0.28s cubic-bezier(0.16, 1, 0.3, 1), transform 0.2s ease',
+                  pointerEvents: 'none',
+                  filter: 'drop-shadow(0 1px 3px rgba(40, 28, 16, 0.15))',
+                }}
+              />
+            </div>
           </div>
 
           {/* 2. Menu Navigasi Desktop (Tengah) - Ditampilkan saat Layar Lebar (>= 900px) */}
@@ -504,6 +537,15 @@ export default function Navbar({ activeTab, onNavigate, _backendConnected, curre
               }}
             >
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <img
+                  src={isLightMode ? logoWayangverseDark : logoWayangverseLight}
+                  alt="Wayangverse Logo"
+                  style={{
+                    height: '24px',
+                    width: 'auto',
+                    objectFit: 'contain',
+                  }}
+                />
                 <span
                   style={{
                     fontSize: '11px',
