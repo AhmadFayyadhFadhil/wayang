@@ -2472,6 +2472,38 @@
   color: #8b4513;
 }
 
+/* 8. Modern Wayang Modal Select with Custom Chevron */
+.wayang-modal-select,
+select.wayang-modal-select {
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  -moz-appearance: none !important;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%238b4513' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") !important;
+  background-repeat: no-repeat !important;
+  background-position: calc(100% - 14px) center !important;
+  background-size: 15px 15px !important;
+  padding-right: 40px !important;
+  cursor: pointer;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.wayang-modal-select:hover,
+select.wayang-modal-select:hover {
+  border-color: #d4af37 !important;
+  background-color: #fdfbf7 !important;
+}
+
+.wayang-modal-select:focus,
+select.wayang-modal-select:focus {
+  border-color: #d4af37 !important;
+  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.16) !important;
+}
+
+.wayang-modal-select::-ms-expand,
+select.wayang-modal-select::-ms-expand {
+  display: none !important;
+}
+
 /* 7. Button-in-Button CTA */
 .wayang-btn-cta {
   display: inline-flex;

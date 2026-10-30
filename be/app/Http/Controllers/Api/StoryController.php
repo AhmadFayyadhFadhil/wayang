@@ -67,6 +67,35 @@ class StoryController extends Controller
     }
 
     /**
+     * Memproses gambar sampul lakon (mendukung URL eksternal atau string base64 yang disimpan ke file).
+     */
+    private function processCover(?string $imageData, string $slug): ?string
+    {
+        if (!$imageData) {
+            return null;
+        }
+
+        if (preg_match('/^data:image\/(\w+);base64,/', $imageData, $matches)) {
+            $extension = strtolower($matches[1]);
+            if ($extension === 'jpeg') {
+                $extension = 'jpg';
+            }
+            $imageContent = base64_decode(substr($imageData, strpos($imageData, ',') + 1));
+
+            $targetDir = public_path('images/stories');
+            if (!file_exists($targetDir)) {
+                mkdir($targetDir, 0755, true);
+            }
+
+            $fileName = $slug . '-' . time() . '.' . $extension;
+            file_put_contents($targetDir . '/' . $fileName, $imageContent);
+            return '/images/stories/' . $fileName;
+        }
+
+        return $imageData;
+    }
+
+    /**
      * Menyimpan lakon wiracarita baru (CMS Admin).
      */
     public function store(Request $request): JsonResponse
@@ -80,6 +109,8 @@ class StoryController extends Controller
             'philosophy' => 'required|string',
             'tradition' => 'nullable|string|max:255',
             'version_label' => 'nullable|string|max:255',
+            'cover_image' => 'nullable|string',
+            'cover_url' => 'nullable|string',
             'recommended_background' => 'nullable|string|max:255',
             'theme_song' => 'nullable|string|max:255',
             'status' => 'nullable|in:draft,published,archived',
@@ -91,7 +122,10 @@ class StoryController extends Controller
             $validated['slug'] = Str::slug($validated['title']);
         }
 
-        return DB::transaction(function () use ($validated) {
+        $coverRaw = $validated['cover_image'] ?? $validated['cover_url'] ?? null;
+        $coverProcessed = $this->processCover($coverRaw, $validated['slug']);
+
+        return DB::transaction(function () use ($validated, $coverProcessed) {
             $story = Story::create([
                 'title' => $validated['title'],
                 'slug' => $validated['slug'],
@@ -99,6 +133,7 @@ class StoryController extends Controller
                 'philosophy' => $validated['philosophy'],
                 'tradition' => $validated['tradition'] ?? 'Gaya Surakarta & Yogyakarta',
                 'version_label' => $validated['version_label'] ?? 'Pakem Gagrag Mataram',
+                'cover_image' => $coverProcessed,
                 'recommended_background' => $validated['recommended_background'] ?? 'kelir-naskah-prada-kencana',
                 'theme_song' => $validated['theme_song'] ?? 'Gamelan Srepeg Mataram',
                 'status' => $validated['status'] ?? 'published',
@@ -146,11 +181,20 @@ class StoryController extends Controller
             'philosophy' => 'sometimes|required|string',
             'tradition' => 'nullable|string|max:255',
             'version_label' => 'nullable|string|max:255',
+            'cover_image' => 'nullable|string',
+            'cover_url' => 'nullable|string',
             'recommended_background' => 'nullable|string|max:255',
             'theme_song' => 'nullable|string|max:255',
             'status' => 'sometimes|required|in:draft,published,archived',
             'character_ids' => 'nullable|array',
         ]);
+
+        if (array_key_exists('cover_image', $validated) || array_key_exists('cover_url', $validated)) {
+            $coverRaw = $validated['cover_image'] ?? $validated['cover_url'] ?? null;
+            $slug = $validated['slug'] ?? $story->slug;
+            $validated['cover_image'] = $this->processCover($coverRaw, $slug);
+            unset($validated['cover_url']);
+        }
 
         return DB::transaction(function () use ($story, $validated) {
             $story->update($validated);

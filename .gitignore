@@ -67,3 +67,6 @@ vendor/
 dist/
 build/
 .phpunit.cache/
+
+#agents
+agents
