@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { X, ExternalLink, Eye, Play } from 'lucide-react';
 import footerHeritageHd from '../../assets/footer_heritage_hd.jpg';
+import logoWayangverseLight from '../../assets/logo_wayangverse_light.png';
 import { getFooterTeam } from '../../data/master/footerMaster';
 
 // ============================================================
@@ -65,10 +66,21 @@ export default function Footer({ onNavigate }) {
                   if (onNavigate) onNavigate('home');
                 }
               }}
+              title="Wayangverse — Kembali ke Beranda"
             >
-              <h3 className="wayang-footer-brand-title">
-                Wayang<span style={{ color: '#e8bb5c' }}>verse.</span>
-              </h3>
+              <img
+                src={logoWayangverseLight}
+                alt="Wayangverse — Virtual Wayang Theater"
+                className="wayang-footer-logo-img"
+                style={{
+                  height: 'clamp(58px, 6.5vw, 78px)',
+                  width: 'auto',
+                  objectFit: 'contain',
+                  filter: 'drop-shadow(0 4px 18px rgba(0, 0, 0, 0.55))',
+                  transition: 'transform 0.25s cubic-bezier(0.16, 1, 0.3, 1)',
+                  marginBottom: '2px',
+                }}
+              />
             </div>
 
             {/* Misi Kultural Humanis */}
