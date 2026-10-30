@@ -1216,7 +1216,7 @@
 
 .fondasi-card-btn {
   background: #e8bb5c;
-  border: 1px solid rgba(212, 175, 55, 0.35);
+  border: none;
   color: #0d0a07;
   padding: 10px 22px;
   border-radius: 9999px;
@@ -1227,7 +1227,7 @@
   align-items: center;
   gap: 8px;
   box-shadow: none;
-  transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+  transition: background 0.2s ease, transform 0.2s ease;
   margin-top: auto;
   position: relative;
   z-index: 3;
@@ -1237,7 +1237,7 @@
 .fondasi-card-btn:hover {
   background: #dcae4d;
   transform: translateX(3px);
-  box-shadow: 0 4px 14px rgba(212, 175, 55, 0.28);
+  box-shadow: none;
 }
 
 .fondasi-card-btn-arrow {
@@ -2472,6 +2472,38 @@
   color: #8b4513;
 }
 
+/* 8. Modern Wayang Modal Select with Custom Chevron */
+.wayang-modal-select,
+select.wayang-modal-select {
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  -moz-appearance: none !important;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%238b4513' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") !important;
+  background-repeat: no-repeat !important;
+  background-position: calc(100% - 14px) center !important;
+  background-size: 15px 15px !important;
+  padding-right: 40px !important;
+  cursor: pointer;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.wayang-modal-select:hover,
+select.wayang-modal-select:hover {
+  border-color: #d4af37 !important;
+  background-color: #fdfbf7 !important;
+}
+
+.wayang-modal-select:focus,
+select.wayang-modal-select:focus {
+  border-color: #d4af37 !important;
+  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.16) !important;
+}
+
+.wayang-modal-select::-ms-expand,
+select.wayang-modal-select::-ms-expand {
+  display: none !important;
+}
+
 /* 7. Button-in-Button CTA */
 .wayang-btn-cta {
   display: inline-flex;
@@ -2479,20 +2511,21 @@
   gap: 12px;
   padding: 6px 6px 6px 20px;
   border-radius: 9999px;
-  background: linear-gradient(135deg, #e8bb5c 0%, #d4af37 100%);
-  color: #16100a;
-  font-weight: 800;
+  background: #e8bb5c;
+  color: #0d0a07;
+  font-weight: 750;
   font-size: 13.5px;
   border: none;
   cursor: pointer;
-  box-shadow: 0 4px 16px rgba(212, 175, 55, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.35);
+  box-shadow: none;
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   text-decoration: none;
 }
 .wayang-btn-cta:hover {
-  filter: brightness(1.06);
+  background: #dcae4d;
+  color: #0d0a07;
   transform: translateY(-1px);
-  box-shadow: 0 6px 20px rgba(212, 175, 55, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+  box-shadow: none;
 }
 .wayang-btn-cta:active {
   transform: translateY(0);
@@ -2501,12 +2534,13 @@
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background: rgba(22, 16, 10, 0.15);
+  background: rgba(13, 10, 7, 0.12);
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
   transition: transform 0.2s ease;
+  color: #0d0a07;
 }
 .wayang-btn-cta:hover .wayang-btn-cta-icon {
   transform: translateX(2px);
@@ -2787,22 +2821,24 @@
   gap: 8px;
   height: 44px;
   padding: 0 22px;
-  border-radius: 12px;
+  border-radius: 9999px;
   font-size: 13.5px;
   font-weight: 750;
-  color: #1a120b;
-  background: linear-gradient(135deg, #e8bb5c 0%, #d4af37 100%);
-  border: 1px solid rgba(245, 215, 127, 0.50);
+  color: #0d0a07;
+  background: #e8bb5c;
+  border: none;
   cursor: pointer;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+  box-shadow: none;
   transition: all 0.2s ease;
   box-sizing: border-box;
   white-space: nowrap;
 }
 
 .admin-control-add-btn:hover {
+  background: #dcae4d;
+  color: #0d0a07;
   transform: translateY(-1px);
-  box-shadow: 0 4px 14px rgba(212, 175, 55, 0.35);
+  box-shadow: none;
 }
 
 /* 4. Luxury Archive Table Chassis */
@@ -4002,13 +4038,37 @@ html, body {
   flex-shrink: 0;
 }
 
+/* Tombol Panduan Panggung Dalang */
+.studio-guide-header-btn {
+  background: rgba(35, 26, 19, 0.7);
+  border: 1px solid rgba(212, 175, 55, 0.35);
+  color: #fcfaf2;
+  padding: 7px 16px;
+  border-radius: 9999px;
+  font-size: 12.5px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  min-height: 38px;
+}
+
+.studio-guide-header-btn:hover {
+  border-color: #e8bb5c;
+  color: #ffffff;
+  background: rgba(232, 187, 92, 0.15);
+  transform: translateY(-1px);
+}
+
 /* Tombol Dalang Vision (Camera Hand Tracking) */
 .studio-vision-toggle-btn {
   background: rgba(35, 26, 19, 0.7);
   border: 1px solid rgba(212, 175, 55, 0.35);
-  color: #e8bb5c;
-  padding: 7px 14px;
-  border-radius: 10px;
+  color: #fcfaf2;
+  padding: 7px 16px;
+  border-radius: 9999px;
   font-size: 12.5px;
   font-weight: 700;
   cursor: pointer;
@@ -4020,15 +4080,16 @@ html, body {
 }
 
 .studio-vision-toggle-btn:hover {
-  border-color: #d4af37;
-  color: #fef08a;
-  background: #2a1f15;
+  border-color: #e8bb5c;
+  color: #ffffff;
+  background: rgba(232, 187, 92, 0.15);
+  transform: translateY(-1px);
 }
 
 .studio-vision-toggle-btn.is-active {
-  background: linear-gradient(135deg, rgba(34, 197, 94, 0.15) 0%, rgba(35, 26, 19, 0.95) 100%);
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.18) 0%, rgba(35, 26, 19, 0.95) 100%);
   border-color: #22c55e;
-  color: #fef08a;
+  color: #ffffff;
   box-shadow: 0 0 12px rgba(34, 197, 94, 0.22);
 }
 
@@ -4039,7 +4100,7 @@ html, body {
   background: rgba(34, 197, 94, 0.18);
   border: 1px solid rgba(34, 197, 94, 0.4);
   padding: 1px 6px;
-  border-radius: 5px;
+  border-radius: 9999px;
   letter-spacing: 0.04em;
   text-transform: uppercase;
 }
@@ -4048,9 +4109,9 @@ html, body {
 .studio-preview-outline-btn {
   background: rgba(35, 26, 19, 0.7);
   border: 1px solid rgba(212, 175, 55, 0.45);
-  color: #e8bb5c;
-  padding: 7px 16px;
-  border-radius: 10px;
+  color: #fcfaf2;
+  padding: 7px 18px;
+  border-radius: 9999px;
   font-size: 12.5px;
   font-weight: 700;
   cursor: pointer;
@@ -4062,35 +4123,35 @@ html, body {
 }
 
 .studio-preview-outline-btn:hover {
-  border-color: #d4af37;
-  color: #fef08a;
-  background: #2a1f15;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  border-color: #e8bb5c;
+  color: #ffffff;
+  background: rgba(232, 187, 92, 0.15);
+  transform: translateY(-1px);
 }
 
-/* TOMBOL EMAS SOLID HERITAGE (PRADA KENCANA) */
+/* TOMBOL SIMPAN KARYA (SELARAS DENGAN NAVBAR & SISTEM DESAIN) */
 .studio-save-solid-gold-btn {
-  background: linear-gradient(135deg, #d4af37 0%, #c59b27 50%, #b8860b 100%);
-  border: 1px solid rgba(255, 235, 180, 0.4);
-  color: #160f08;
-  padding: 8px 18px;
-  border-radius: 10px;
+  background: #e8bb5c;
+  border: none;
+  color: #0d0a07;
+  padding: 8px 20px;
+  border-radius: 9999px;
   font-size: 12.5px;
-  font-weight: 800;
+  font-weight: 750;
   cursor: pointer;
   display: flex;
   align-items: center;
   gap: 7px;
-  box-shadow: 0 3px 12px rgba(212, 175, 55, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+  box-shadow: none;
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   min-height: 38px;
 }
 
 .studio-save-solid-gold-btn:hover {
-  background: linear-gradient(135deg, #e8bb5c 0%, #d4af37 100%);
+  background: #dcae4d;
+  color: #0d0a07;
   transform: translateY(-1px);
-  box-shadow: 0 5px 16px rgba(212, 175, 55, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.5);
-  color: #0d0804;
+  box-shadow: none;
 }
 
 .studio-save-solid-gold-btn:active {
@@ -5611,20 +5672,21 @@ html, body {
 }
 
 .kelir-empty-add-btn {
-  background: linear-gradient(135deg, #d4af37 0%, #c59b27 100%);
+  background: #e8bb5c;
   color: #0d0a07;
   border: none;
-  padding: 8px 18px;
-  border-radius: 8px;
-  font-size: 12px;
-  font-weight: 800;
+  padding: 8px 20px;
+  border-radius: 9999px;
+  font-size: 12.5px;
+  font-weight: 750;
   cursor: pointer;
-  box-shadow: 0 4px 12px rgba(212, 175, 55, 0.25);
-  transition: all 0.15s ease;
+  box-shadow: none;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .kelir-empty-add-btn:hover {
-  filter: brightness(1.08);
+  background: #dcae4d;
+  color: #0d0a07;
   transform: translateY(-1px);
 }
 
@@ -8497,24 +8559,25 @@ html, body {
 }
 
 .spotlight-card-next-btn {
-  background: linear-gradient(135deg, #d4af37 0%, #b8860b 100%);
-  border: 1px solid #fef08a;
-  color: #16100a;
-  padding: 6px 14px;
-  border-radius: 8px;
-  font-size: 11.5px;
-  font-weight: 850;
+  background: #e8bb5c;
+  border: none;
+  color: #0d0a07;
+  padding: 8px 18px;
+  border-radius: 9999px;
+  font-size: 12px;
+  font-weight: 750;
   cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 5px;
-  box-shadow: 0 4px 12px rgba(212, 175, 55, 0.28);
+  gap: 6px;
+  box-shadow: none;
   transition: all 0.18s ease;
 }
 
 .spotlight-card-next-btn:hover {
-  background: linear-gradient(135deg, #e8bb5c 0%, #c59b27 100%);
-  box-shadow: 0 6px 16px rgba(212, 175, 55, 0.4);
+  background: #dcae4d;
+  color: #0d0a07;
+  box-shadow: none;
   transform: translateY(-1px);
 }
 
@@ -8991,19 +9054,21 @@ html, body {
 }
 
 .wayang-lightbox-btn-primary {
-  padding: 8px 20px;
-  border-radius: 8px;
-  background: #c27827;
+  padding: 8px 22px;
+  border-radius: 9999px;
+  background: #e8bb5c;
   border: none;
-  color: #ffffff;
-  font-size: 12px;
-  font-weight: 700;
+  color: #0d0a07;
+  font-size: 12.5px;
+  font-weight: 750;
   cursor: pointer;
+  box-shadow: none;
   transition: all 0.2s ease;
 }
 
 .wayang-lightbox-btn-primary:hover {
-  background: #ad671d;
+  background: #dcae4d;
+  color: #0d0a07;
   transform: translateY(-1px);
 }
 
@@ -9129,15 +9194,15 @@ html, body {
 }
 
 .atlas-filter-chip.is-active {
-  background: #c27827;
-  color: #ffffff;
-  border-color: #c27827;
-  font-weight: 700;
+  background: #e8bb5c;
+  color: #0d0a07;
+  border-color: #e8bb5c;
+  font-weight: 750;
 }
 
 .atlas-filter-chip:hover:not(.is-active) {
-  border-color: #c27827;
-  color: #c27827;
+  border-color: #e8bb5c;
+  color: #8b5a1b;
   transform: translateY(-1px);
 }
 

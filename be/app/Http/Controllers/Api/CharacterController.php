@@ -66,6 +66,36 @@ class CharacterController extends Controller
     }
 
     /**
+     * Memproses data gambar (mendukung URL eksternal atau string base64 yang disimpan ke file).
+     */
+    private function processImage(?string $imageData, string $slug): ?string
+    {
+        if (!$imageData) {
+            return null;
+        }
+
+        // Jika berupa data URL base64, simpan ke file lokal agar performa dan basis data tetap optimal
+        if (preg_match('/^data:image\/(\w+);base64,/', $imageData, $matches)) {
+            $extension = strtolower($matches[1]);
+            if ($extension === 'jpeg') {
+                $extension = 'jpg';
+            }
+            $imageContent = base64_decode(substr($imageData, strpos($imageData, ',') + 1));
+
+            $targetDir = public_path('images/characters');
+            if (!file_exists($targetDir)) {
+                mkdir($targetDir, 0755, true);
+            }
+
+            $fileName = $slug . '-' . time() . '.' . $extension;
+            file_put_contents($targetDir . '/' . $fileName, $imageContent);
+            return '/images/characters/' . $fileName;
+        }
+
+        return $imageData;
+    }
+
+    /**
      * Menyimpan tokoh karakter baru (CMS Admin).
      */
     public function store(Request $request): JsonResponse
@@ -82,6 +112,8 @@ class CharacterController extends Controller
             'description' => 'required|string',
             'philosophy' => 'required|string',
             'tradition' => 'nullable|string|max:255',
+            'image_path' => 'nullable|string',
+            'image_url' => 'nullable|string',
             'accent_color' => 'nullable|string|max:20',
             'silhouette_svg' => 'nullable|string|max:50',
             'default_scale' => 'nullable|numeric|between:0.5,2.0',
@@ -98,6 +130,10 @@ class CharacterController extends Controller
         if (empty($validated['silhouette_svg'])) {
             $validated['silhouette_svg'] = $validated['slug'];
         }
+
+        $imageRaw = $validated['image_path'] ?? $validated['image_url'] ?? null;
+        $validated['image_path'] = $this->processImage($imageRaw, $validated['slug']);
+        unset($validated['image_url']);
 
         $character = Character::create($validated);
 
@@ -127,12 +163,21 @@ class CharacterController extends Controller
             'description' => 'sometimes|required|string',
             'philosophy' => 'sometimes|required|string',
             'tradition' => 'nullable|string|max:255',
+            'image_path' => 'nullable|string',
+            'image_url' => 'nullable|string',
             'accent_color' => 'nullable|string|max:20',
             'silhouette_svg' => 'nullable|string|max:50',
             'default_scale' => 'nullable|numeric|between:0.5,2.0',
             'available_poses' => 'nullable|array',
             'status' => 'sometimes|required|in:draft,published,archived',
         ]);
+
+        if (array_key_exists('image_path', $validated) || array_key_exists('image_url', $validated)) {
+            $imageRaw = $validated['image_path'] ?? $validated['image_url'] ?? null;
+            $slug = $validated['slug'] ?? $character->slug;
+            $validated['image_path'] = $this->processImage($imageRaw, $slug);
+            unset($validated['image_url']);
+        }
 
         $character->update($validated);
 

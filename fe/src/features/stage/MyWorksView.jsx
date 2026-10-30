@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import persistenceService from '../../services/persistenceService';
 import { useStageStore } from './useStageStore';
 import { getStoryById } from '../../data/master/storiesMaster';
@@ -332,9 +332,14 @@ const TEMPLATE_STARTERS = [
   },
 ];
 
-export default function MyWorksView({ onOpenStudio, onPlayPerformance }) {
+export default function MyWorksView({
+  onOpenStudio,
+  onPlayPerformance,
+  currentUser = null,
+  onOpenAuth = null,
+}) {
   const [works, setWorks] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(() => Boolean(currentUser));
   const [searchQuery, setSearchQuery] = useState('');
   const [activeFilter, setActiveFilter] = useState('all'); // 'all' | 'public' | 'private' | 'pakem'
   const [sortBy, setSortBy] = useState('newest'); // 'newest' | 'oldest' | 'title' | 'scenes'
@@ -354,24 +359,40 @@ export default function MyWorksView({ onOpenStudio, onPlayPerformance }) {
 
   const { loadPerformanceFromData, resetStudio } = useStageStore();
 
-  const loadWorks = async () => {
+  const loadWorks = useCallback(async () => {
+    if (!currentUser) {
+      setWorks([]);
+      setLoading(false);
+      return;
+    }
     try {
-      const data = await persistenceService.getMyWorks();
+      const data = await persistenceService.getMyWorks(currentUser);
       setWorks(data || []);
     } finally {
       setLoading(false);
     }
-  };
+  }, [currentUser]);
 
   useEffect(() => {
-    async function initWorks() {
-      await loadWorks();
+    let isCancelled = false;
+    if (!currentUser) {
+      return () => {
+        soundEngine.stopBgm();
+      };
     }
-    initWorks();
+
+    persistenceService.getMyWorks(currentUser).then((data) => {
+      if (!isCancelled) {
+        setWorks(data || []);
+        setLoading(false);
+      }
+    });
+
     return () => {
+      isCancelled = true;
       soundEngine.stopBgm();
     };
-  }, []);
+  }, [currentUser]);
 
   // Filter template lakon berdasarkan kategori
   const filteredTemplates = useMemo(() => {
@@ -458,6 +479,10 @@ export default function MyWorksView({ onOpenStudio, onPlayPerformance }) {
 
   // Aksi Rancang Lakon Baru Kosong
   const handleCreateNew = () => {
+    if (!currentUser) {
+      if (onOpenAuth) onOpenAuth();
+      return;
+    }
     triggerWayangLoading({
       message: 'MENYIAPKAN PANGGUNG...',
       subtitle: 'Merancang lembar lakon baru dari awal',
@@ -469,6 +494,10 @@ export default function MyWorksView({ onOpenStudio, onPlayPerformance }) {
 
   // Aksi Mulai dari Template Inspirasi Pakem
   const handleUseTemplate = async (template) => {
+    if (!currentUser) {
+      if (onOpenAuth) onOpenAuth();
+      return;
+    }
     triggerWayangLoading({
       message: 'MENYIAPKAN TEMPLATE PAKEM...',
       subtitle: `Memuat adegan & tokoh: ${template.title}`,
@@ -488,7 +517,7 @@ export default function MyWorksView({ onOpenStudio, onPlayPerformance }) {
       version: 1,
     };
 
-    const saved = await persistenceService.savePerformance(newWorkData, scenePayload);
+    const saved = await persistenceService.savePerformance(newWorkData, scenePayload, currentUser);
     await loadWorks();
 
     if (saved && saved.data) {
@@ -506,6 +535,10 @@ export default function MyWorksView({ onOpenStudio, onPlayPerformance }) {
 
   // Aksi Duplikasi Karya
   const handleDuplicate = async (perf) => {
+    if (!currentUser) {
+      if (onOpenAuth) onOpenAuth();
+      return;
+    }
     const sceneData = typeof perf.scene_data === 'string' ? JSON.parse(perf.scene_data) : perf.scene_data;
     const duplicateMeta = {
       id: null,
@@ -514,7 +547,7 @@ export default function MyWorksView({ onOpenStudio, onPlayPerformance }) {
       storyId: perf.story_id || null,
       visibility: 'private',
     };
-    await persistenceService.savePerformance(duplicateMeta, sceneData);
+    await persistenceService.savePerformance(duplicateMeta, sceneData, currentUser);
     await loadWorks();
     triggerToast(`Karya "${perf.title}" berhasil diduplikasi sebagai draf privat.`);
   };
@@ -540,8 +573,8 @@ export default function MyWorksView({ onOpenStudio, onPlayPerformance }) {
 
   // Aksi Hapus Karya (Konfirmasi via Modal Custom)
   const handleConfirmDelete = async () => {
-    if (!deleteTarget) return;
-    await persistenceService.deletePerformance(deleteTarget.id);
+    if (!deleteTarget || !currentUser) return;
+    await persistenceService.deletePerformance(deleteTarget.id, currentUser);
     await loadWorks();
     triggerToast(`Karya "${deleteTarget.title}" telah dihapus.`, 'info');
     setDeleteTarget(null);
@@ -1071,8 +1104,8 @@ export default function MyWorksView({ onOpenStudio, onPlayPerformance }) {
               <button
                 onClick={() => setShowTemplatesDrawer(true)}
                 style={{
-                  background: '#c27827',
-                  color: '#ffffff',
+                  background: '#e8bb5c',
+                  color: '#0d0a07',
                   border: 'none',
                   borderRadius: '9999px',
                   padding: '9px 22px',
@@ -1086,10 +1119,10 @@ export default function MyWorksView({ onOpenStudio, onPlayPerformance }) {
                   transition: 'all 0.2s ease',
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.background = '#ad671d';
+                  e.currentTarget.style.background = '#dcae4d';
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.background = '#c27827';
+                  e.currentTarget.style.background = '#e8bb5c';
                 }}
               >
                 <span>Buka Inspirasi Pakem (4)</span>
@@ -1176,8 +1209,8 @@ export default function MyWorksView({ onOpenStudio, onPlayPerformance }) {
                     boxShadow: '0 2px 8px rgba(0, 0, 0, 0.04)',
                   }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.borderColor = '#c27827';
-                    e.currentTarget.style.color = '#c27827';
+                    e.currentTarget.style.borderColor = '#e8bb5c';
+                    e.currentTarget.style.color = '#8b5a1b';
                   }}
                   onMouseLeave={(e) => {
                     e.currentTarget.style.borderColor = 'rgba(212, 175, 55, 0.4)';
@@ -1220,17 +1253,15 @@ export default function MyWorksView({ onOpenStudio, onPlayPerformance }) {
                         type="button"
                         onClick={() => setTemplateFilter(chip.id)}
                         style={{
-                          background: isActive ? '#c27827' : '#ffffff',
-                          color: isActive ? '#ffffff' : '#2d1f14',
-                          border: isActive ? '1.5px solid #c27827' : '1.5px solid #dcd7ce',
+                          background: isActive ? '#e8bb5c' : '#ffffff',
+                          color: isActive ? '#0d0a07' : '#2d1f14',
+                          border: isActive ? '1.5px solid #e8bb5c' : '1.5px solid #dcd7ce',
                           borderRadius: '9999px',
                           padding: '7px 18px',
                           fontSize: '13px',
                           fontWeight: isActive ? '750' : '600',
                           cursor: 'pointer',
-                          boxShadow: isActive
-                            ? '0 2px 10px rgba(194, 120, 39, 0.35)'
-                            : '0 2px 6px rgba(0, 0, 0, 0.04)',
+                          boxShadow: 'none',
                           transition: 'all 0.18s ease',
                         }}
                       >
@@ -1271,7 +1302,7 @@ export default function MyWorksView({ onOpenStudio, onPlayPerformance }) {
                       transition: 'all 0.2s ease',
                     }}
                   >
-                    <LayoutGrid size={14} style={{ color: templateViewMode === 'grid' ? '#c27827' : 'inherit' }} />
+                    <LayoutGrid size={14} style={{ color: templateViewMode === 'grid' ? '#8b5a1b' : 'inherit' }} />
                     <span>Kartu Pustaka</span>
                   </button>
 
@@ -1294,7 +1325,7 @@ export default function MyWorksView({ onOpenStudio, onPlayPerformance }) {
                       transition: 'all 0.2s ease',
                     }}
                   >
-                    <Columns size={14} style={{ color: templateViewMode === 'inspector' ? '#c27827' : 'inherit' }} />
+                    <Columns size={14} style={{ color: templateViewMode === 'inspector' ? '#8b5a1b' : 'inherit' }} />
                     <span>Bedah Babak Panggung</span>
                   </button>
                 </div>
@@ -1591,15 +1622,15 @@ export default function MyWorksView({ onOpenStudio, onPlayPerformance }) {
                                 width: '28px',
                                 height: '28px',
                                 borderRadius: '50%',
-                                background: isPlaying ? '#c27827' : 'rgba(212, 175, 55, 0.15)',
+                                background: isPlaying ? '#e8bb5c' : 'rgba(212, 175, 55, 0.15)',
                                 display: 'flex',
                                 alignItems: 'center',
                                 justifyContent: 'center',
-                                color: isPlaying ? '#ffffff' : '#8b5a1b',
+                                color: isPlaying ? '#0d0a07' : '#8b5a1b',
                                 flexShrink: 0,
                               }}
                             >
-                              {isPlaying ? <Square size={13} fill="#ffffff" /> : <Play size={13} fill="#8b5a1b" />}
+                              {isPlaying ? <Square size={13} fill="#0d0a07" /> : <Play size={13} fill="#8b5a1b" />}
                             </div>
                             <div>
                               <div style={{ fontSize: '12px', fontWeight: '750', color: '#1a140e' }}>
@@ -1613,7 +1644,7 @@ export default function MyWorksView({ onOpenStudio, onPlayPerformance }) {
                             style={{
                               fontSize: '11.5px',
                               fontWeight: '750',
-                              color: isPlaying ? '#c27827' : '#8b5a1b',
+                              color: isPlaying ? '#8b5a1b' : '#8b5a1b',
                               display: 'inline-flex',
                               alignItems: 'center',
                               gap: '4px',
@@ -1755,7 +1786,7 @@ export default function MyWorksView({ onOpenStudio, onPlayPerformance }) {
                               width: '8px',
                               height: '8px',
                               borderRadius: '50%',
-                              background: isSelected ? '#e8bb5c' : '#c27827',
+                              background: isSelected ? '#e8bb5c' : '#d4af37',
                             }}
                           />
                           <span>{t.title.split(':')[0]}</span>
@@ -1970,9 +2001,9 @@ export default function MyWorksView({ onOpenStudio, onPlayPerformance }) {
                                   onClick={() => setInspectorSceneIdx(sIdx)}
                                   style={{
                                     flex: 1,
-                                    background: isCurr ? '#c27827' : '#ffffff',
-                                    color: isCurr ? '#ffffff' : '#2b2118',
-                                    border: isCurr ? '1.5px solid #c27827' : '1.5px solid rgba(212, 175, 55, 0.3)',
+                                    background: isCurr ? '#e8bb5c' : '#ffffff',
+                                    color: isCurr ? '#0d0a07' : '#2b2118',
+                                    border: isCurr ? '1.5px solid #e8bb5c' : '1.5px solid rgba(212, 175, 55, 0.3)',
                                     borderRadius: '12px',
                                     padding: '7px 12px',
                                     fontSize: '12px',
@@ -2088,15 +2119,15 @@ export default function MyWorksView({ onOpenStudio, onPlayPerformance }) {
                                     width: '32px',
                                     height: '32px',
                                     borderRadius: '50%',
-                                    background: isAudioPlaying ? '#c27827' : 'rgba(212, 175, 55, 0.15)',
+                                    background: isAudioPlaying ? '#e8bb5c' : 'rgba(212, 175, 55, 0.15)',
                                     display: 'flex',
                                     alignItems: 'center',
                                     justifyContent: 'center',
-                                    color: isAudioPlaying ? '#ffffff' : '#8b5a1b',
+                                    color: isAudioPlaying ? '#0d0a07' : '#8b5a1b',
                                   }}
                                 >
                                   {isAudioPlaying ? (
-                                    <Square size={14} fill="#ffffff" />
+                                    <Square size={14} fill="#0d0a07" />
                                   ) : (
                                     <Play size={14} fill="#8b5a1b" />
                                   )}
@@ -2113,9 +2144,9 @@ export default function MyWorksView({ onOpenStudio, onPlayPerformance }) {
                                 type="button"
                                 onClick={() => handleToggleAudio(currentTpl)}
                                 style={{
-                                  background: isAudioPlaying ? '#c27827' : '#ffffff',
-                                  color: isAudioPlaying ? '#ffffff' : '#8b5a1b',
-                                  border: isAudioPlaying ? 'none' : '1px solid rgba(212, 175, 55, 0.4)',
+                                  background: isAudioPlaying ? '#e8bb5c' : '#ffffff',
+                                  color: isAudioPlaying ? '#0d0a07' : '#8b5a1b',
+                                  border: isAudioPlaying ? '1px solid #e8bb5c' : '1px solid rgba(212, 175, 55, 0.4)',
                                   borderRadius: '9999px',
                                   padding: '6px 14px',
                                   fontSize: '11.5px',
@@ -2134,28 +2165,28 @@ export default function MyWorksView({ onOpenStudio, onPlayPerformance }) {
                             onClick={() => handleUseTemplate(currentTpl)}
                             style={{
                               width: '100%',
-                              background: 'linear-gradient(135deg, #e8bb5c 0%, #d4af37 100%)',
+                              background: '#e8bb5c',
                               border: 'none',
-                              color: '#1a140e',
+                              color: '#0d0a07',
                               padding: '12px 20px',
-                              borderRadius: '12px',
+                              borderRadius: '9999px',
                               fontSize: '14px',
-                              fontWeight: '800',
+                              fontWeight: '750',
                               cursor: 'pointer',
                               minHeight: '44px',
                               display: 'inline-flex',
                               alignItems: 'center',
                               justifyContent: 'center',
                               gap: '8px',
-                              boxShadow: '0 4px 14px rgba(212, 175, 55, 0.25)',
+                              boxShadow: 'none',
                               transition: 'all 0.2s ease',
                             }}
                             onMouseEnter={(e) => {
-                              e.currentTarget.style.filter = 'brightness(1.06)';
+                              e.currentTarget.style.background = '#dcae4d';
                               e.currentTarget.style.transform = 'translateY(-1px)';
                             }}
                             onMouseLeave={(e) => {
-                              e.currentTarget.style.filter = 'none';
+                              e.currentTarget.style.background = '#e8bb5c';
                               e.currentTarget.style.transform = 'translateY(0)';
                             }}
                           >
@@ -2284,8 +2315,8 @@ export default function MyWorksView({ onOpenStudio, onPlayPerformance }) {
             )}
             <div
               style={{
-                background: '#c27827',
-                color: '#ffffff',
+                background: '#e8bb5c',
+                color: '#0d0a07',
                 padding: '9px 22px',
                 borderRadius: '9999px',
                 fontSize: '13.5px',
@@ -2432,46 +2463,153 @@ export default function MyWorksView({ onOpenStudio, onPlayPerformance }) {
               />
               <div style={{ fontSize: '15px', fontWeight: '700' }}>Memuat khazanah karya tersimpan...</div>
             </div>
-          ) : filteredWorks.length === 0 ? (
-            /* Empty State Berseni Tinggi */
+          ) : !currentUser ? (
+            /* Empty State Khusus Pengguna Tamu (Belum Login) — Bersih, Anti-Slop, Elegan */
             <div
               style={{
                 background: '#ffffff',
                 border: '1px solid rgba(212, 175, 55, 0.28)',
                 borderRadius: '24px',
-                padding: '56px 24px',
+                padding: 'clamp(40px, 5vw, 60px) 24px',
+                textAlign: 'center',
+                maxWidth: '680px',
+                margin: '0 auto',
+                boxShadow: '0 4px 20px rgba(40, 28, 16, 0.04)',
+                position: 'relative',
+              }}
+            >
+              <div
+                style={{
+                  fontSize: '11.5px',
+                  fontWeight: '800',
+                  letterSpacing: '1.6px',
+                  textTransform: 'uppercase',
+                  color: '#8b5a1b',
+                  marginBottom: '14px',
+                }}
+              >
+                SANGGAR LAKON PRIBADI
+              </div>
+
+              <h3
+                style={{
+                  margin: '0 0 14px 0',
+                  fontSize: 'clamp(22px, 3.2vw, 28px)',
+                  color: '#1a140e',
+                  fontWeight: '850',
+                  letterSpacing: '-0.4px',
+                }}
+              >
+                Masuk Akun Dalang untuk Mengakses Sanggar Anda
+              </h3>
+              <p
+                style={{
+                  margin: '0 auto 32px auto',
+                  fontSize: '15px',
+                  color: '#5c4b3a',
+                  lineHeight: '1.7',
+                  maxWidth: '520px',
+                }}
+              >
+                Anda sedang dalam <strong>Mode Penjelajah Tamu</strong>. Halaman ini adalah sanggar privat tempat Anda menyusun, menyimpan draf babak, dan mengelola pementasan lakon wayang Anda sendiri.
+              </p>
+
+              <div style={{ display: 'flex', justifyContent: 'center', gap: '14px', flexWrap: 'wrap' }}>
+                <button
+                  type="button"
+                  onClick={() => onOpenAuth && onOpenAuth()}
+                  style={{
+                    background: '#e8bb5c',
+                    border: 'none',
+                    color: '#0d0a07',
+                    padding: '12px 30px',
+                    borderRadius: '9999px',
+                    fontSize: '14px',
+                    fontWeight: '750',
+                    cursor: 'pointer',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    boxShadow: 'none',
+                    minHeight: '44px',
+                    transition: 'all 0.2s ease',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = '#dcae4d';
+                    e.currentTarget.style.transform = 'translateY(-1px)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = '#e8bb5c';
+                    e.currentTarget.style.transform = 'translateY(0)';
+                  }}
+                >
+                  Masuk / Daftar Akun Dalang
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (!currentUser && onOpenAuth) {
+                      onOpenAuth();
+                      return;
+                    }
+                    if (onOpenStudio) onOpenStudio();
+                  }}
+                  style={{
+                    background: '#ffffff',
+                    border: '1.5px solid rgba(212, 175, 55, 0.45)',
+                    color: '#1a140e',
+                    padding: '12px 28px',
+                    borderRadius: '9999px',
+                    fontSize: '14px',
+                    fontWeight: '700',
+                    cursor: 'pointer',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    boxShadow: 'none',
+                    minHeight: '44px',
+                    transition: 'all 0.2s ease',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.borderColor = '#e8bb5c';
+                    e.currentTarget.style.background = '#fcfaf5';
+                    e.currentTarget.style.transform = 'translateY(-1px)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.borderColor = 'rgba(212, 175, 55, 0.45)';
+                    e.currentTarget.style.background = '#ffffff';
+                    e.currentTarget.style.transform = 'translateY(0)';
+                  }}
+                >
+                  Buka Studio Panggung
+                </button>
+              </div>
+            </div>
+          ) : filteredWorks.length === 0 ? (
+            /* Empty State Berseni Tinggi & Bersih */
+            <div
+              style={{
+                background: '#ffffff',
+                border: '1px solid rgba(212, 175, 55, 0.28)',
+                borderRadius: '24px',
+                padding: 'clamp(40px, 5vw, 60px) 24px',
                 textAlign: 'center',
                 maxWidth: '680px',
                 margin: '0 auto',
                 boxShadow: '0 4px 20px rgba(40, 28, 16, 0.04)',
               }}
             >
-              <div
-                style={{
-                  width: '68px',
-                  height: '68px',
-                  borderRadius: '20px',
-                  background: 'rgba(212, 175, 55, 0.1)',
-                  border: '1px solid rgba(212, 175, 55, 0.25)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  margin: '0 auto 20px auto',
-                }}
-              >
-                <Film size={30} style={{ color: '#b48a28' }} />
-              </div>
-
-              <h3 style={{ margin: '0 0 10px 0', fontSize: '22px', color: '#1a140e', fontWeight: '800' }}>
+              <h3 style={{ margin: '0 0 12px 0', fontSize: '22px', color: '#1a140e', fontWeight: '850' }}>
                 {searchQuery ? 'Tidak Ada Karya yang Cocok' : 'Belum Ada Pementasan Tersimpan'}
               </h3>
               <p
                 style={{
-                  margin: '0 0 26px 0',
-                  fontSize: '14px',
-                  color: '#6b7280',
-                  lineHeight: '1.6',
-                  maxWidth: '460px',
+                  margin: '0 0 28px 0',
+                  fontSize: '14.5px',
+                  color: '#6e5e4d',
+                  lineHeight: '1.65',
+                  maxWidth: '480px',
                   marginInline: 'auto',
                 }}
               >
@@ -2482,52 +2620,85 @@ export default function MyWorksView({ onOpenStudio, onPlayPerformance }) {
 
               {searchQuery ? (
                 <button
+                  type="button"
                   onClick={() => setSearchQuery('')}
                   style={{
                     background: '#1a140e',
                     border: 'none',
                     color: '#fcfaf2',
-                    padding: '11px 24px',
-                    borderRadius: '12px',
+                    padding: '11px 26px',
+                    borderRadius: '9999px',
                     fontWeight: '750',
                     fontSize: '13.5px',
                     cursor: 'pointer',
                     minHeight: '44px',
+                    transition: 'all 0.2s ease',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = '#2b2118';
+                    e.currentTarget.style.transform = 'translateY(-1px)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = '#1a140e';
+                    e.currentTarget.style.transform = 'translateY(0)';
                   }}
                 >
                   Bersihkan Pencarian
                 </button>
               ) : (
-                <div style={{ display: 'flex', justifyContent: 'center', gap: '12px', flexWrap: 'wrap' }}>
+                <div style={{ display: 'flex', justifyContent: 'center', gap: '14px', flexWrap: 'wrap' }}>
                   <button
+                    type="button"
                     onClick={handleCreateNew}
                     style={{
-                      background: 'linear-gradient(135deg, #e8bb5c 0%, #d4af37 100%)',
+                      background: '#e8bb5c',
                       border: 'none',
-                      color: '#1a140e',
+                      color: '#0d0a07',
                       padding: '12px 28px',
-                      borderRadius: '12px',
-                      fontWeight: '800',
+                      borderRadius: '9999px',
+                      fontWeight: '750',
                       fontSize: '14px',
                       cursor: 'pointer',
                       minHeight: '44px',
-                      boxShadow: '0 4px 14px rgba(212, 175, 55, 0.25)',
+                      boxShadow: 'none',
+                      transition: 'all 0.2s ease',
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.background = '#dcae4d';
+                      e.currentTarget.style.transform = 'translateY(-1px)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.background = '#e8bb5c';
+                      e.currentTarget.style.transform = 'translateY(0)';
                     }}
                   >
                     Rancang Lakon Pertama
                   </button>
                   <button
+                    type="button"
                     onClick={() => setShowTemplatesDrawer(true)}
                     style={{
                       background: '#ffffff',
-                      border: '1px solid rgba(212, 175, 55, 0.4)',
-                      color: '#8b5a1b',
-                      padding: '12px 24px',
-                      borderRadius: '12px',
-                      fontWeight: '750',
+                      border: '1.5px solid rgba(212, 175, 55, 0.45)',
+                      color: '#1a140e',
+                      padding: '12px 26px',
+                      borderRadius: '9999px',
+                      fontWeight: '700',
                       fontSize: '14px',
                       cursor: 'pointer',
                       minHeight: '44px',
+                      boxShadow: 'none',
+                      transition: 'all 0.2s ease',
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.borderColor = '#e8bb5c';
+                      e.currentTarget.style.background = '#fcfaf5';
+                      e.currentTarget.style.transform = 'translateY(-1px)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.borderColor = 'rgba(212, 175, 55, 0.45)';
+                      e.currentTarget.style.background = '#ffffff';
+                      e.currentTarget.style.transform = 'translateY(0)';
                     }}
                   >
                     Gunakan Template Pakem

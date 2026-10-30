@@ -223,9 +223,8 @@ export default function DalangVisionTutorialModal({ isOpen, onClose }) {
             type="button"
             onClick={onClose}
             className="wayang-btn-cta"
-            style={{ borderRadius: '10px' }}
           >
-            <CheckCircle size={15} color="#16100a" />
+            <CheckCircle size={15} color="#0d0a07" />
             <span>Saya Mengerti, Mulai Mendalang</span>
           </button>
         </div>

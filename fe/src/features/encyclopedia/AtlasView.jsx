@@ -102,10 +102,25 @@ export default function AtlasView({ onPlayCharacterOnStage }) {
   const [characters, setCharacters] = useState(() => {
     try {
       const overrides = JSON.parse(localStorage.getItem('wayangverse_character_status') || '{}');
-      return CHARACTERS_MASTER.map((c) => ({
-        ...c,
-        status: overrides[c.id] !== undefined ? overrides[c.id] : (c.status || 'published'),
-      }));
+      const dataOverrides = JSON.parse(localStorage.getItem('wayangverse_character_overrides') || '{}');
+      const customChars = JSON.parse(localStorage.getItem('wayangverse_custom_characters') || '[]');
+
+      const base = CHARACTERS_MASTER.map((c) => {
+        const dO = dataOverrides[c.id] || dataOverrides[c.slug] || {};
+        return {
+          ...c,
+          ...dO,
+          status: overrides[c.id] !== undefined ? overrides[c.id] : (dO.status || c.status || 'published'),
+        };
+      });
+
+      customChars.forEach((custom) => {
+        if (!base.some((m) => m.id === custom.id || m.slug === custom.slug)) {
+          base.push(custom);
+        }
+      });
+
+      return base;
     } catch {
       return CHARACTERS_MASTER;
     }
@@ -114,10 +129,25 @@ export default function AtlasView({ onPlayCharacterOnStage }) {
   const [stories, setStories] = useState(() => {
     try {
       const overrides = JSON.parse(localStorage.getItem('wayangverse_story_status') || '{}');
-      return STORIES_MASTER.map((s) => ({
-        ...s,
-        status: overrides[s.id] !== undefined ? overrides[s.id] : (s.status || 'published'),
-      }));
+      const dataOverrides = JSON.parse(localStorage.getItem('wayangverse_story_overrides') || '{}');
+      const customStories = JSON.parse(localStorage.getItem('wayangverse_custom_stories') || '[]');
+
+      const base = STORIES_MASTER.map((s) => {
+        const dO = dataOverrides[s.id] || dataOverrides[s.slug] || {};
+        return {
+          ...s,
+          ...dO,
+          status: overrides[s.id] !== undefined ? overrides[s.id] : (dO.status || s.status || 'published'),
+        };
+      });
+
+      customStories.forEach((custom) => {
+        if (!base.some((m) => m.id === custom.id || m.slug === custom.slug)) {
+          base.push(custom);
+        }
+      });
+
+      return base;
     } catch {
       return STORIES_MASTER;
     }
@@ -129,6 +159,10 @@ export default function AtlasView({ onPlayCharacterOnStage }) {
       try {
         const charOverrides = JSON.parse(localStorage.getItem('wayangverse_character_status') || '{}');
         const storyOverrides = JSON.parse(localStorage.getItem('wayangverse_story_status') || '{}');
+        const charDataOverrides = JSON.parse(localStorage.getItem('wayangverse_character_overrides') || '{}');
+        const storyDataOverrides = JSON.parse(localStorage.getItem('wayangverse_story_overrides') || '{}');
+        const customChars = JSON.parse(localStorage.getItem('wayangverse_custom_characters') || '[]');
+        const customStories = JSON.parse(localStorage.getItem('wayangverse_custom_stories') || '[]');
 
         let apiChars = null;
         let apiStories = null;
@@ -145,25 +179,42 @@ export default function AtlasView({ onPlayCharacterOnStage }) {
 
         const baseChars = (apiChars && apiChars.length > 0 ? apiChars : CHARACTERS_MASTER).map((c) => {
           const master = CHARACTERS_MASTER.find((m) => m.id === c.id || m.slug === c.slug) || {};
+          const dO = charDataOverrides[c.id] || charDataOverrides[c.slug] || {};
           return {
             ...master,
             ...c,
-            availablePoses: c.availablePoses || c.available_poses || master.availablePoses || ['default', 'sembah', 'perang'],
-            accentColor: c.accentColor || c.accent_color || master.accentColor || '#d4af37',
-            image_path: c.image_path || c.image_url || master.image_path || master.photo || null,
-            silhouetteSvg: c.silhouetteSvg || master.silhouetteSvg || c.slug,
-            status: charOverrides[c.id] !== undefined ? charOverrides[c.id] : (c.status || 'published'),
+            ...dO,
+            availablePoses: dO.availablePoses || dO.available_poses || c.availablePoses || c.available_poses || master.availablePoses || ['default', 'sembah', 'perang'],
+            accentColor: dO.accentColor || dO.accent_color || c.accentColor || c.accent_color || master.accentColor || '#d4af37',
+            image_path: dO.image_path || dO.image_url || c.image_path || c.image_url || master.image_path || master.photo || null,
+            silhouetteSvg: dO.silhouetteSvg || dO.silhouette_svg || c.silhouetteSvg || master.silhouetteSvg || c.slug,
+            status: charOverrides[c.id] !== undefined ? charOverrides[c.id] : (dO.status || c.status || 'published'),
           };
+        });
+
+        customChars.forEach((custom) => {
+          if (!baseChars.some((m) => m.id === custom.id || m.slug === custom.slug)) {
+            baseChars.push(custom);
+          }
         });
 
         const baseStories = (apiStories && apiStories.length > 0 ? apiStories : STORIES_MASTER).map((s) => {
           const master = STORIES_MASTER.find((m) => m.id === s.id || m.slug === s.slug) || {};
+          const dO = storyDataOverrides[s.id] || storyDataOverrides[s.slug] || {};
           return {
             ...master,
             ...s,
+            ...dO,
+            cover_image: dO.cover_image || dO.cover_url || s.cover_image || s.cover_url || master.cover_image || null,
             sources: s.sources || master.sources || [],
-            status: storyOverrides[s.id] !== undefined ? storyOverrides[s.id] : (s.status || 'published'),
+            status: storyOverrides[s.id] !== undefined ? storyOverrides[s.id] : (dO.status || s.status || 'published'),
           };
+        });
+
+        customStories.forEach((custom) => {
+          if (!baseStories.some((m) => m.id === custom.id || m.slug === custom.slug)) {
+            baseStories.push(custom);
+          }
         });
 
         setCharacters(baseChars);
@@ -175,10 +226,14 @@ export default function AtlasView({ onPlayCharacterOnStage }) {
 
     syncAtlasData();
     window.addEventListener('wayangverse_status_changed', syncAtlasData);
+    window.addEventListener('wayangverse_character_updated', syncAtlasData);
+    window.addEventListener('wayangverse_story_updated', syncAtlasData);
     window.addEventListener('storage', syncAtlasData);
 
     return () => {
       window.removeEventListener('wayangverse_status_changed', syncAtlasData);
+      window.removeEventListener('wayangverse_character_updated', syncAtlasData);
+      window.removeEventListener('wayangverse_story_updated', syncAtlasData);
       window.removeEventListener('storage', syncAtlasData);
     };
   }, []);
@@ -580,13 +635,13 @@ export default function AtlasView({ onPlayCharacterOnStage }) {
             <button
               type="submit"
               style={{
-                background: '#c27827',
-                color: '#ffffff',
+                background: '#e8bb5c',
+                color: '#0d0a07',
                 border: 'none',
                 borderRadius: '9999px',
                 padding: '12px 34px',
                 fontSize: '15px',
-                fontWeight: '700',
+                fontWeight: '750',
                 cursor: 'pointer',
                 letterSpacing: '0.02em',
                 flexShrink: 0,
@@ -594,10 +649,10 @@ export default function AtlasView({ onPlayCharacterOnStage }) {
                 transition: 'all 0.2s ease',
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.background = '#ad671d';
+                e.currentTarget.style.background = '#dcae4d';
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.background = '#c27827';
+                e.currentTarget.style.background = '#e8bb5c';
               }}
             >
               Search
@@ -661,14 +716,23 @@ export default function AtlasView({ onPlayCharacterOnStage }) {
                   setActiveFilter('all');
                 }}
                 style={{
-                  background: '#c27827',
-                  color: '#ffffff',
+                  background: '#e8bb5c',
+                  color: '#0d0a07',
                   border: 'none',
                   borderRadius: '9999px',
                   padding: '10px 26px',
                   fontSize: '13.5px',
-                  fontWeight: '700',
+                  fontWeight: '750',
                   cursor: 'pointer',
+                  minHeight: '44px',
+                  boxShadow: 'none',
+                  transition: 'all 0.2s ease',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = '#dcae4d';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = '#e8bb5c';
                 }}
               >
                 Tampilkan Semua Koleksi

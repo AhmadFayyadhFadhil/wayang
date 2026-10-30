@@ -108,6 +108,81 @@ const getStoryImage = (s) => {
   return dalangPerformanceHeritage;
 };
 
+// Helper Persistensi Dual-Layer: Menggabungkan Master Data, Sinkronisasi API, dan Overrides Lokal
+const getMergedCharacters = (apiChars = null) => {
+  const charStatusOverrides = JSON.parse(localStorage.getItem('wayangverse_character_status') || '{}');
+  const charDataOverrides = JSON.parse(localStorage.getItem('wayangverse_character_overrides') || '{}');
+  const customChars = JSON.parse(localStorage.getItem('wayangverse_custom_characters') || '[]');
+
+  const baseList = (apiChars && apiChars.length > 0) ? apiChars : CHARACTERS_MASTER;
+  const merged = baseList.map((c) => {
+    const override = charDataOverrides[c.id] || charDataOverrides[c.slug] || {};
+    return {
+      ...c,
+      ...override,
+      status: charStatusOverrides[c.id] !== undefined
+        ? charStatusOverrides[c.id]
+        : (override.status !== undefined ? override.status : (c.status || 'published')),
+    };
+  });
+
+  customChars.forEach((custom) => {
+    if (!merged.some((m) => m.id === custom.id || m.slug === custom.slug)) {
+      merged.push(custom);
+    }
+  });
+
+  return merged;
+};
+
+const getMergedStories = (apiStories = null) => {
+  const storyStatusOverrides = JSON.parse(localStorage.getItem('wayangverse_story_status') || '{}');
+  const storyDataOverrides = JSON.parse(localStorage.getItem('wayangverse_story_overrides') || '{}');
+  const customStories = JSON.parse(localStorage.getItem('wayangverse_custom_stories') || '[]');
+
+  const baseList = (apiStories && apiStories.length > 0) ? apiStories : STORIES_MASTER;
+  const merged = baseList.map((s) => {
+    const override = storyDataOverrides[s.id] || storyDataOverrides[s.slug] || {};
+    return {
+      ...s,
+      ...override,
+      status: storyStatusOverrides[s.id] !== undefined
+        ? storyStatusOverrides[s.id]
+        : (override.status !== undefined ? override.status : (s.status || 'published')),
+    };
+  });
+
+  customStories.forEach((custom) => {
+    if (!merged.some((m) => m.id === custom.id || m.slug === custom.slug)) {
+      merged.push(custom);
+    }
+  });
+
+  return merged;
+};
+
+const getMergedAudioAssets = (apiAudio = null) => {
+  const audioDataOverrides = JSON.parse(localStorage.getItem('wayangverse_audio_overrides') || '{}');
+  const customAudio = JSON.parse(localStorage.getItem('wayangverse_custom_audio') || '[]');
+
+  const baseList = (apiAudio && apiAudio.length > 0) ? apiAudio : AUDIO_MASTER;
+  const merged = baseList.map((a) => {
+    const override = audioDataOverrides[a.id] || {};
+    return {
+      ...a,
+      ...override,
+    };
+  });
+
+  customAudio.forEach((custom) => {
+    if (!merged.some((m) => m.id === custom.id)) {
+      merged.push(custom);
+    }
+  });
+
+  return merged;
+};
+
 export default function AdminCmsView({ onPlayPerformance }) {
   const [activeTab, setActiveTab] = useState('karakter'); // 'karakter' | 'cerita' | 'audio' | 'panggung' | 'karya' | 'users'
   const [isSyncing, setIsSyncing] = useState(false);
@@ -201,8 +276,6 @@ export default function AdminCmsView({ onPlayPerformance }) {
 
       // 2. Muat data menggunakan endpoint terpadu /admin/dashboard-data
       let loadedViaApi = false;
-      const charOverrides = JSON.parse(localStorage.getItem('wayangverse_character_status') || '{}');
-      const storyOverrides = JSON.parse(localStorage.getItem('wayangverse_story_status') || '{}');
 
       try {
         const res = await apiClient.get('/admin/dashboard-data');
@@ -210,22 +283,14 @@ export default function AdminCmsView({ onPlayPerformance }) {
           const d = res.data.data;
           if (d.counts) setStats({ counts: d.counts });
           if (Array.isArray(d.characters) && d.characters.length > 0) {
-            setCharacters(
-              d.characters.map((c) => ({
-                ...c,
-                status: charOverrides[c.id] !== undefined ? charOverrides[c.id] : (c.status || 'published'),
-              }))
-            );
+            setCharacters(getMergedCharacters(d.characters));
           }
           if (Array.isArray(d.stories) && d.stories.length > 0) {
-            setStories(
-              d.stories.map((s) => ({
-                ...s,
-                status: storyOverrides[s.id] !== undefined ? storyOverrides[s.id] : (s.status || 'published'),
-              }))
-            );
+            setStories(getMergedStories(d.stories));
           }
-          if (Array.isArray(d.audio_assets) && d.audio_assets.length > 0) setAudioAssets(d.audio_assets);
+          if (Array.isArray(d.audio_assets) && d.audio_assets.length > 0) {
+            setAudioAssets(getMergedAudioAssets(d.audio_assets));
+          }
           if (Array.isArray(d.performances)) setPerformances(d.performances);
           if (Array.isArray(d.users)) setUsersList(d.users);
           loadedViaApi = true;
@@ -237,19 +302,12 @@ export default function AdminCmsView({ onPlayPerformance }) {
       // 3. Fallback cerdas: Ambil dari master data lokal jika server kosong/offline
       if (!loadedViaApi) {
         const localWorks = await persistenceService.getMyWorks().catch(() => []);
-        setCharacters(
-          CHARACTERS_MASTER.map((c) => ({
-            ...c,
-            status: charOverrides[c.id] !== undefined ? charOverrides[c.id] : (c.status || 'published'),
-          }))
-        );
-        setStories(
-          STORIES_MASTER.map((s) => ({
-            ...s,
-            status: storyOverrides[s.id] !== undefined ? storyOverrides[s.id] : (s.status || 'published'),
-          }))
-        );
-        setAudioAssets(AUDIO_MASTER);
+        const baseChars = getMergedCharacters(null);
+        const baseStories = getMergedStories(null);
+        const baseAudio = getMergedAudioAssets(null);
+        setCharacters(baseChars);
+        setStories(baseStories);
+        setAudioAssets(baseAudio);
         setPerformances(
           localWorks.length > 0
             ? localWorks
@@ -271,9 +329,9 @@ export default function AdminCmsView({ onPlayPerformance }) {
         ]);
         setStats({
           counts: {
-            characters: CHARACTERS_MASTER.length,
-            stories: STORIES_MASTER.length,
-            audio_assets: AUDIO_MASTER.length,
+            characters: baseChars.length,
+            stories: baseStories.length,
+            audio_assets: baseAudio.length,
             performances: localWorks.length || 1,
             users: 3,
           },
@@ -341,17 +399,62 @@ export default function AdminCmsView({ onPlayPerformance }) {
     if (!window.confirm(`Hapus "${title}" dari basis data master?`)) return;
     try {
       if (type === 'character') {
-        await apiClient.delete(`/admin/characters/${id}`);
         setCharacters((prev) => prev.filter((i) => i.id !== id));
+        try {
+          const overrides = JSON.parse(localStorage.getItem('wayangverse_character_overrides') || '{}');
+          delete overrides[id];
+          localStorage.setItem('wayangverse_character_overrides', JSON.stringify(overrides));
+          const customs = JSON.parse(localStorage.getItem('wayangverse_custom_characters') || '[]');
+          localStorage.setItem('wayangverse_custom_characters', JSON.stringify(customs.filter((c) => c.id !== id)));
+          window.dispatchEvent(new CustomEvent('wayangverse_status_changed'));
+        } catch {
+          // ignore
+        }
+        try {
+          await apiClient.delete(`/admin/characters/${id}`);
+        } catch (e) {
+          console.warn('API delete character error (fallback local):', e);
+        }
       } else if (type === 'story') {
-        await apiClient.delete(`/admin/stories/${id}`);
         setStories((prev) => prev.filter((i) => i.id !== id));
+        try {
+          const overrides = JSON.parse(localStorage.getItem('wayangverse_story_overrides') || '{}');
+          delete overrides[id];
+          localStorage.setItem('wayangverse_story_overrides', JSON.stringify(overrides));
+          const customs = JSON.parse(localStorage.getItem('wayangverse_custom_stories') || '[]');
+          localStorage.setItem('wayangverse_custom_stories', JSON.stringify(customs.filter((s) => s.id !== id)));
+          window.dispatchEvent(new CustomEvent('wayangverse_status_changed'));
+        } catch {
+          // ignore
+        }
+        try {
+          await apiClient.delete(`/admin/stories/${id}`);
+        } catch (e) {
+          console.warn('API delete story error (fallback local):', e);
+        }
       } else if (type === 'audio') {
-        await apiClient.delete(`/admin/audio-assets/${id}`);
         setAudioAssets((prev) => prev.filter((i) => i.id !== id));
+        try {
+          const overrides = JSON.parse(localStorage.getItem('wayangverse_audio_overrides') || '{}');
+          delete overrides[id];
+          localStorage.setItem('wayangverse_audio_overrides', JSON.stringify(overrides));
+          const customs = JSON.parse(localStorage.getItem('wayangverse_custom_audio') || '[]');
+          localStorage.setItem('wayangverse_custom_audio', JSON.stringify(customs.filter((a) => a.id !== id)));
+        } catch {
+          // ignore
+        }
+        try {
+          await apiClient.delete(`/admin/audio-assets/${id}`);
+        } catch (e) {
+          console.warn('API delete audio error (fallback local):', e);
+        }
       } else if (type === 'performance') {
-        await apiClient.delete(`/admin/performances/${id}`);
         setPerformances((prev) => prev.filter((i) => i.id !== id));
+        try {
+          await apiClient.delete(`/admin/performances/${id}`);
+        } catch (e) {
+          console.warn('API delete performance error:', e);
+        }
       } else if (type === 'stage') {
         deleteCustomBackground(id);
         setStageBackgrounds(getAllBackgrounds());
@@ -359,7 +462,6 @@ export default function AdminCmsView({ onPlayPerformance }) {
         return;
       }
       showNotice(`Data "${title}" berhasil dihapus.`);
-      loadData(false);
     } catch (err) {
       showNotice(err.response?.data?.message || 'Gagal menghapus data', true);
     }
@@ -442,7 +544,13 @@ export default function AdminCmsView({ onPlayPerformance }) {
     setModalType(type);
     setEditingItem(item);
     if (item) {
-      setForm({ ...item });
+      setForm({
+        ...item,
+        image_url: item.image_url || item.image_path || '',
+        image_path: item.image_path || item.image_url || '',
+        cover_image: item.cover_image || item.cover_url || '',
+        cover_url: item.cover_url || item.cover_image || '',
+      });
     } else {
       if (type === 'character') {
         setForm({
@@ -451,6 +559,7 @@ export default function AdminCmsView({ onPlayPerformance }) {
           type: 'ksatria',
           weapons: '',
           image_url: '',
+          image_path: '',
           description: '',
           philosophy: '',
           status: 'published',
@@ -463,6 +572,7 @@ export default function AdminCmsView({ onPlayPerformance }) {
           tradition: 'Gaya Surakarta & Yogyakarta',
           theme_song: 'Gamelan Srepeg Mataram',
           cover_image: '',
+          cover_url: '',
           status: 'published',
         });
       } else if (type === 'audio') {
@@ -492,24 +602,159 @@ export default function AdminCmsView({ onPlayPerformance }) {
     e.preventDefault();
     try {
       if (modalType === 'character') {
+        const charImg = form.image_path || form.image_url || null;
+        const updatedChar = {
+          ...editingItem,
+          ...form,
+          id: editingItem ? editingItem.id : (form.id || `char-${Date.now()}`),
+          slug: form.slug || (form.name ? form.name.toLowerCase().replace(/[^a-z0-9]+/g, '-') : `char-${Date.now()}`),
+          image_path: charImg,
+          image_url: charImg,
+          updated_at: new Date().toISOString(),
+        };
+
+        // 1. Optimistic Update State
         if (editingItem) {
-          await apiClient.patch(`/admin/characters/${editingItem.id}`, form);
+          setCharacters((prev) => prev.map((c) => (c.id === editingItem.id ? updatedChar : c)));
         } else {
-          await apiClient.post('/admin/characters', form);
+          setCharacters((prev) => [updatedChar, ...prev]);
         }
-      } else if (modalType === 'story') {
+
+        // 2. Dual-Layer Persistence ke localStorage
+        try {
+          if (editingItem) {
+            const overrides = JSON.parse(localStorage.getItem('wayangverse_character_overrides') || '{}');
+            overrides[editingItem.id] = updatedChar;
+            localStorage.setItem('wayangverse_character_overrides', JSON.stringify(overrides));
+          } else {
+            const customChars = JSON.parse(localStorage.getItem('wayangverse_custom_characters') || '[]');
+            customChars.unshift(updatedChar);
+            localStorage.setItem('wayangverse_custom_characters', JSON.stringify(customChars));
+          }
+          window.dispatchEvent(new CustomEvent('wayangverse_status_changed'));
+          window.dispatchEvent(new CustomEvent('wayangverse_character_updated', { detail: updatedChar }));
+        } catch (err) {
+          console.warn('Gagal simpan ke localStorage:', err);
+        }
+
+        // 3. Sinkronisasi API Backend
+        try {
+          if (editingItem) {
+            await apiClient.patch(`/admin/characters/${editingItem.id}`, updatedChar);
+          } else {
+            await apiClient.post('/admin/characters', updatedChar);
+          }
+          showNotice(`Data tokoh "${updatedChar.name}" berhasil disimpan.`);
+        } catch (err) {
+          console.warn('Backend API offline / error, data tersimpan di penyimpanan lokal:', err);
+          showNotice(`Data tokoh "${updatedChar.name}" berhasil disimpan (mode penyimpanan lokal).`);
+        }
+
+        setModalType(null);
+        return;
+      }
+
+      if (modalType === 'story') {
+        const coverImg = form.cover_image || form.cover_url || null;
+        const updatedStory = {
+          ...editingItem,
+          ...form,
+          id: editingItem ? editingItem.id : (form.id || `story-${Date.now()}`),
+          slug: form.slug || (form.title ? form.title.toLowerCase().replace(/[^a-z0-9]+/g, '-') : `story-${Date.now()}`),
+          cover_image: coverImg,
+          cover_url: coverImg,
+          updated_at: new Date().toISOString(),
+        };
+
+        // 1. Optimistic Update State
         if (editingItem) {
-          await apiClient.patch(`/admin/stories/${editingItem.id}`, form);
+          setStories((prev) => prev.map((s) => (s.id === editingItem.id ? updatedStory : s)));
         } else {
-          await apiClient.post('/admin/stories', form);
+          setStories((prev) => [updatedStory, ...prev]);
         }
-      } else if (modalType === 'audio') {
+
+        // 2. Dual-Layer Persistence ke localStorage
+        try {
+          if (editingItem) {
+            const overrides = JSON.parse(localStorage.getItem('wayangverse_story_overrides') || '{}');
+            overrides[editingItem.id] = updatedStory;
+            localStorage.setItem('wayangverse_story_overrides', JSON.stringify(overrides));
+          } else {
+            const customStories = JSON.parse(localStorage.getItem('wayangverse_custom_stories') || '[]');
+            customStories.unshift(updatedStory);
+            localStorage.setItem('wayangverse_custom_stories', JSON.stringify(customStories));
+          }
+          window.dispatchEvent(new CustomEvent('wayangverse_status_changed'));
+          window.dispatchEvent(new CustomEvent('wayangverse_story_updated', { detail: updatedStory }));
+        } catch (err) {
+          console.warn('Gagal simpan ke localStorage:', err);
+        }
+
+        // 3. Sinkronisasi API Backend
+        try {
+          if (editingItem) {
+            await apiClient.patch(`/admin/stories/${editingItem.id}`, updatedStory);
+          } else {
+            await apiClient.post('/admin/stories', updatedStory);
+          }
+          showNotice(`Lakon "${updatedStory.title}" berhasil disimpan.`);
+        } catch (err) {
+          console.warn('Backend API offline / error, data tersimpan di penyimpanan lokal:', err);
+          showNotice(`Lakon "${updatedStory.title}" berhasil disimpan (mode penyimpanan lokal).`);
+        }
+
+        setModalType(null);
+        return;
+      }
+
+      if (modalType === 'audio') {
+        const updatedAudio = {
+          ...editingItem,
+          ...form,
+          id: editingItem ? editingItem.id : (form.id || `audio-${Date.now()}`),
+          updated_at: new Date().toISOString(),
+        };
+
+        // 1. Optimistic Update State
         if (editingItem) {
-          await apiClient.patch(`/admin/audio-assets/${editingItem.id}`, form);
+          setAudioAssets((prev) => prev.map((a) => (a.id === editingItem.id ? updatedAudio : a)));
         } else {
-          await apiClient.post('/admin/audio-assets', form);
+          setAudioAssets((prev) => [updatedAudio, ...prev]);
         }
-      } else if (modalType === 'stage') {
+
+        // 2. Dual-Layer Persistence ke localStorage
+        try {
+          if (editingItem) {
+            const overrides = JSON.parse(localStorage.getItem('wayangverse_audio_overrides') || '{}');
+            overrides[editingItem.id] = updatedAudio;
+            localStorage.setItem('wayangverse_audio_overrides', JSON.stringify(overrides));
+          } else {
+            const customAudio = JSON.parse(localStorage.getItem('wayangverse_custom_audio') || '[]');
+            customAudio.unshift(updatedAudio);
+            localStorage.setItem('wayangverse_custom_audio', JSON.stringify(customAudio));
+          }
+        } catch (err) {
+          console.warn('Gagal simpan ke localStorage:', err);
+        }
+
+        // 3. Sinkronisasi API Backend
+        try {
+          if (editingItem) {
+            await apiClient.patch(`/admin/audio-assets/${editingItem.id}`, updatedAudio);
+          } else {
+            await apiClient.post('/admin/audio-assets', updatedAudio);
+          }
+          showNotice(`Aset audio "${updatedAudio.title}" berhasil disimpan.`);
+        } catch (err) {
+          console.warn('Backend API offline / error, data tersimpan lokal:', err);
+          showNotice(`Aset audio "${updatedAudio.title}" berhasil disimpan (mode penyimpanan lokal).`);
+        }
+
+        setModalType(null);
+        return;
+      }
+
+      if (modalType === 'stage') {
         if (!form.name || !form.name.trim()) {
           showNotice('Nama kelir panggung wajib diisi', true);
           return;
@@ -533,6 +778,7 @@ export default function AdminCmsView({ onPlayPerformance }) {
         setModalType(null);
         return;
       }
+
       showNotice('Data kurasi berhasil disimpan.');
       setModalType(null);
       loadData(false);
@@ -872,12 +1118,15 @@ export default function AdminCmsView({ onPlayPerformance }) {
                 cursor: isSyncing ? 'wait' : 'pointer',
                 borderRadius: '9999px',
                 boxSizing: 'border-box',
-                boxShadow: '0 4px 18px rgba(212, 175, 55, 0.32)',
+                boxShadow: 'none',
+                background: '#e8bb5c',
+                color: '#0d0a07',
+                border: 'none',
               }}
             >
               <span>{isSyncing ? 'Menyinkronkan...' : 'Sinkronkan Data'}</span>
-              <span className="wayang-btn-cta-icon">
-                <RefreshCw size={14} color="#16100a" className={isSyncing ? 'admin-spin-anim' : ''} />
+              <span className="wayang-btn-cta-icon" style={{ background: 'rgba(13, 10, 7, 0.12)' }}>
+                <RefreshCw size={14} color="#0d0a07" className={isSyncing ? 'admin-spin-anim' : ''} />
               </span>
             </button>
           </div>
@@ -1412,19 +1661,27 @@ export default function AdminCmsView({ onPlayPerformance }) {
                     display: 'inline-flex',
                     alignItems: 'center',
                     gap: '6px',
-                    background: 'linear-gradient(135deg, #d4af37 0%, #b89127 100%)',
-                    color: '#1a140e',
+                    background: '#e8bb5c',
+                    color: '#0d0a07',
                     border: 'none',
-                    padding: '8px 16px',
+                    padding: '8px 18px',
                     borderRadius: '9999px',
                     fontSize: '12.5px',
-                    fontWeight: '800',
+                    fontWeight: '750',
                     cursor: 'pointer',
-                    boxShadow: '0 3px 12px rgba(212, 175, 55, 0.35)',
+                    boxShadow: 'none',
                     transition: 'all 0.2s ease',
                   }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = '#dcae4d';
+                    e.currentTarget.style.transform = 'translateY(-1px)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = '#e8bb5c';
+                    e.currentTarget.style.transform = 'translateY(0)';
+                  }}
                 >
-                  <Save size={14} strokeWidth={2.5} />
+                  <Save size={14} strokeWidth={2.5} style={{ color: '#0d0a07' }} />
                   <span>Simpan Pengaturan</span>
                 </button>
               </div>
@@ -2229,20 +2486,28 @@ export default function AdminCmsView({ onPlayPerformance }) {
                           display: 'inline-flex',
                           alignItems: 'center',
                           gap: '6px',
-                          background: 'linear-gradient(135deg, #d4af37 0%, #b89127 100%)',
-                          color: '#1a140e',
+                          background: '#e8bb5c',
+                          color: '#0d0a07',
                           border: 'none',
                           padding: '9px 20px',
                           borderRadius: '9999px',
                           fontSize: '12.5px',
-                          fontWeight: '800',
+                          fontWeight: '750',
                           cursor: 'pointer',
-                          boxShadow: '0 3px 12px rgba(212, 175, 55, 0.35)',
+                          boxShadow: 'none',
                           transition: 'all 0.2s ease',
                         }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.background = '#dcae4d';
+                          e.currentTarget.style.transform = 'translateY(-1px)';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.background = '#e8bb5c';
+                          e.currentTarget.style.transform = 'translateY(0)';
+                        }}
                       >
-                        <Save size={15} strokeWidth={2.5} />
-                        <span>Simpan Pengaturan</span>
+                        <Save size={14} strokeWidth={2.5} style={{ color: '#0d0a07' }} />
+                        <span>Simpan Pengaturan Footer</span>
                       </button>
                     </div>
                   </div>
@@ -2871,7 +3136,7 @@ export default function AdminCmsView({ onPlayPerformance }) {
                 style={{
                   display: 'flex',
                   justifyContent: 'space-between',
-                  alignItems: 'flex-start',
+                  alignItems: 'center',
                   gap: '16px',
                   marginBottom: '24px',
                   borderBottom: '1px solid rgba(212, 175, 55, 0.18)',
@@ -2879,28 +3144,6 @@ export default function AdminCmsView({ onPlayPerformance }) {
                 }}
               >
                 <div>
-                  <div className="wayang-modal-eyebrow" style={{ marginBottom: '8px' }}>
-                    <span
-                      style={{
-                        display: 'inline-block',
-                        width: '6px',
-                        height: '6px',
-                        borderRadius: '50%',
-                        background: '#d4af37',
-                      }}
-                    />
-                    <span>KURASI MASTER DATA</span>
-                    <span style={{ opacity: 0.5 }}>•</span>
-                    <span>
-                      {modalType === 'character'
-                        ? 'TOKOH WAYANG'
-                        : modalType === 'story'
-                        ? 'LAKON CERITA'
-                        : modalType === 'audio'
-                        ? 'TATA SUARA'
-                        : 'KELIR PANGGUNG'}
-                    </span>
-                  </div>
                   <h3
                     style={{
                       margin: 0,
@@ -2953,19 +3196,25 @@ export default function AdminCmsView({ onPlayPerformance }) {
                     </div>
 
                     <div>
-                      <label style={modalLabelStyle}>URL Foto / Gambar Tokoh (Opsional)</label>
-                      <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-                        <input
-                          type="text"
-                          value={form.image_url || form.image_path || ''}
-                          onChange={(e) => setForm({ ...form, image_url: e.target.value, image_path: e.target.value })}
-                          placeholder="https://... atau biarkan kosong untuk kartu pakem"
-                          style={{ ...modalInputStyle, flex: 1 }}
-                        />
-                        {(form.image_url || form.image_path || getCharacterImage(form)) && (
+                      <label style={modalLabelStyle}>Foto / Gambar Kartu Tokoh</label>
+                      <div
+                        style={{
+                          background: '#ffffff',
+                          border: '1.5px dashed rgba(212, 175, 55, 0.45)',
+                          borderRadius: '12px',
+                          padding: '12px 16px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'space-between',
+                          gap: '14px',
+                          flexWrap: 'wrap',
+                        }}
+                      >
+                        {/* Sisi Kiri: Pratinjau Foto & Informasi */}
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                           <div
                             className="admin-photo-thumb"
-                            style={{ width: '40px', height: '40px', flexShrink: 0 }}
+                            style={{ width: '48px', height: '48px', flexShrink: 0, borderRadius: '10px' }}
                             onClick={() => {
                               const p = form.image_url || form.image_path || getCharacterImage(form);
                               if (p) {
@@ -2985,10 +3234,91 @@ export default function AdminCmsView({ onPlayPerformance }) {
                               className="admin-photo-img"
                             />
                             <div className="admin-photo-overlay">
-                              <ZoomIn size={12} />
+                              <ZoomIn size={14} />
                             </div>
                           </div>
-                        )}
+
+                          <div>
+                            <div style={{ fontSize: '13px', fontWeight: '750', color: '#1a140e' }}>
+                              {(form.image_url || form.image_path) ? 'Foto Kustom Terpilih' : 'Kartu Visual Pakem'}
+                            </div>
+                            <div style={{ fontSize: '11.5px', color: '#8c7662', marginTop: '2px' }}>
+                              {(form.image_url || form.image_path) ? 'Berkas foto siap disimpan' : 'Menggunakan ilustrasi kartu pakem budaya'}
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Sisi Kanan: Tombol Unggah Gambar & Reset */}
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                          <label
+                            style={{
+                              display: 'inline-flex',
+                              alignItems: 'center',
+                              gap: '6px',
+                              background: '#1a140e',
+                              color: '#fdfbf7',
+                              padding: '8px 16px',
+                              borderRadius: '8px',
+                              fontSize: '12.5px',
+                              fontWeight: '750',
+                              cursor: 'pointer',
+                              transition: 'all 0.2s ease',
+                              border: '1px solid rgba(212, 175, 55, 0.4)',
+                            }}
+                          >
+                            <Upload size={13} color="#e8bb5c" />
+                            <span>Unggah Gambar</span>
+                            <input
+                              type="file"
+                              accept="image/png,image/jpeg,image/webp,image/jpg"
+                              style={{ display: 'none' }}
+                              onChange={(e) => {
+                                const file = e.target.files?.[0];
+                                if (file) {
+                                  if (!file.type.startsWith('image/')) {
+                                    showNotice('Berkas harus berupa gambar (JPG, PNG, atau WebP).', true);
+                                    return;
+                                  }
+                                  if (file.size > 3 * 1024 * 1024) {
+                                    showNotice('Ukuran gambar maksimal 3MB.', true);
+                                    return;
+                                  }
+                                  const reader = new FileReader();
+                                  reader.onload = (event) => {
+                                    const base64 = event.target?.result;
+                                    setForm((prev) => ({
+                                      ...prev,
+                                      image_url: base64,
+                                      image_path: base64,
+                                    }));
+                                    showNotice('Foto tokoh berhasil dimuat! Klik "Perbarui Data" untuk menyimpan.');
+                                  };
+                                  reader.readAsDataURL(file);
+                                }
+                              }}
+                            />
+                          </label>
+
+                          {(form.image_url || form.image_path) && (
+                            <button
+                              type="button"
+                              onClick={() => setForm({ ...form, image_url: '', image_path: '' })}
+                              style={{
+                                background: '#fcfaf5',
+                                border: '1px solid rgba(185, 28, 28, 0.3)',
+                                color: '#b91c1c',
+                                padding: '8px 12px',
+                                borderRadius: '8px',
+                                fontSize: '12px',
+                                fontWeight: '700',
+                                cursor: 'pointer',
+                                transition: 'all 0.2s ease',
+                              }}
+                            >
+                              Reset ke Pakem
+                            </button>
+                          )}
+                        </div>
                       </div>
                     </div>
 
@@ -2998,7 +3328,8 @@ export default function AdminCmsView({ onPlayPerformance }) {
                         <select
                           value={form.type || 'ksatria'}
                           onChange={(e) => setForm({ ...form, type: e.target.value })}
-                          style={modalInputStyle}
+                          style={modalSelectStyle}
+                          className="wayang-modal-select"
                         >
                           <option value="ksatria">Ksatria</option>
                           <option value="punakawan">Punakawan</option>
@@ -3014,7 +3345,8 @@ export default function AdminCmsView({ onPlayPerformance }) {
                         <select
                           value={form.status || 'published'}
                           onChange={(e) => setForm({ ...form, status: e.target.value })}
-                          style={modalInputStyle}
+                          style={modalSelectStyle}
+                          className="wayang-modal-select"
                         >
                           <option value="published">Published</option>
                           <option value="draft">Draft</option>
@@ -3075,19 +3407,25 @@ export default function AdminCmsView({ onPlayPerformance }) {
                     </div>
 
                     <div>
-                      <label style={modalLabelStyle}>URL Sampul Lakon (Opsional)</label>
-                      <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-                        <input
-                          type="text"
-                          value={form.cover_image || form.cover_url || ''}
-                          onChange={(e) => setForm({ ...form, cover_image: e.target.value, cover_url: e.target.value })}
-                          placeholder="https://... atau biarkan kosong untuk sampul pakem"
-                          style={{ ...modalInputStyle, flex: 1 }}
-                        />
-                        {(form.cover_image || form.cover_url || getStoryImage(form)) && (
+                      <label style={modalLabelStyle}>Sampul Lakon Cerita</label>
+                      <div
+                        style={{
+                          background: '#ffffff',
+                          border: '1.5px dashed rgba(212, 175, 55, 0.45)',
+                          borderRadius: '12px',
+                          padding: '12px 16px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'space-between',
+                          gap: '14px',
+                          flexWrap: 'wrap',
+                        }}
+                      >
+                        {/* Sisi Kiri: Pratinjau Sampul & Informasi */}
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                           <div
                             className="admin-photo-thumb story-cover"
-                            style={{ width: '56px', height: '38px', flexShrink: 0 }}
+                            style={{ width: '56px', height: '40px', flexShrink: 0, borderRadius: '8px' }}
                             onClick={() => {
                               const p = form.cover_image || form.cover_url || getStoryImage(form);
                               if (p) {
@@ -3110,7 +3448,88 @@ export default function AdminCmsView({ onPlayPerformance }) {
                               <ZoomIn size={12} />
                             </div>
                           </div>
-                        )}
+
+                          <div>
+                            <div style={{ fontSize: '13px', fontWeight: '750', color: '#1a140e' }}>
+                              {(form.cover_image || form.cover_url) ? 'Sampul Kustom Terpilih' : 'Sampul Pakem Wiracarita'}
+                            </div>
+                            <div style={{ fontSize: '11.5px', color: '#8c7662', marginTop: '2px' }}>
+                              {(form.cover_image || form.cover_url) ? 'Berkas sampul siap disimpan' : 'Menggunakan sampul pakem naskah tradisi'}
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Sisi Kanan: Tombol Unggah Sampul & Reset */}
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                          <label
+                            style={{
+                              display: 'inline-flex',
+                              alignItems: 'center',
+                              gap: '6px',
+                              background: '#1a140e',
+                              color: '#fdfbf7',
+                              padding: '8px 16px',
+                              borderRadius: '8px',
+                              fontSize: '12.5px',
+                              fontWeight: '750',
+                              cursor: 'pointer',
+                              transition: 'all 0.2s ease',
+                              border: '1px solid rgba(212, 175, 55, 0.4)',
+                            }}
+                          >
+                            <Upload size={13} color="#e8bb5c" />
+                            <span>Unggah Gambar</span>
+                            <input
+                              type="file"
+                              accept="image/png,image/jpeg,image/webp,image/jpg"
+                              style={{ display: 'none' }}
+                              onChange={(e) => {
+                                const file = e.target.files?.[0];
+                                if (file) {
+                                  if (!file.type.startsWith('image/')) {
+                                    showNotice('Berkas harus berupa gambar (JPG, PNG, atau WebP).', true);
+                                    return;
+                                  }
+                                  if (file.size > 3 * 1024 * 1024) {
+                                    showNotice('Ukuran berkas maksimal 3MB.', true);
+                                    return;
+                                  }
+                                  const reader = new FileReader();
+                                  reader.onload = (event) => {
+                                    const base64 = event.target?.result;
+                                    setForm((prev) => ({
+                                      ...prev,
+                                      cover_image: base64,
+                                      cover_url: base64,
+                                    }));
+                                    showNotice('Sampul lakon berhasil dimuat! Klik "Perbarui Data" untuk menyimpan.');
+                                  };
+                                  reader.readAsDataURL(file);
+                                }
+                              }}
+                            />
+                          </label>
+
+                          {(form.cover_image || form.cover_url) && (
+                            <button
+                              type="button"
+                              onClick={() => setForm({ ...form, cover_image: '', cover_url: '' })}
+                              style={{
+                                background: '#fcfaf5',
+                                border: '1px solid rgba(185, 28, 28, 0.3)',
+                                color: '#b91c1c',
+                                padding: '8px 12px',
+                                borderRadius: '8px',
+                                fontSize: '12px',
+                                fontWeight: '700',
+                                cursor: 'pointer',
+                                transition: 'all 0.2s ease',
+                              }}
+                            >
+                              Reset ke Pakem
+                            </button>
+                          )}
+                        </div>
                       </div>
                     </div>
 
@@ -3131,7 +3550,8 @@ export default function AdminCmsView({ onPlayPerformance }) {
                         <select
                           value={form.status || 'published'}
                           onChange={(e) => setForm({ ...form, status: e.target.value })}
-                          style={modalInputStyle}
+                          style={modalSelectStyle}
+                          className="wayang-modal-select"
                         >
                           <option value="published">Published</option>
                           <option value="draft">Draft</option>
@@ -3197,7 +3617,8 @@ export default function AdminCmsView({ onPlayPerformance }) {
                         <select
                           value={form.category || 'bgm'}
                           onChange={(e) => setForm({ ...form, category: e.target.value })}
-                          style={modalInputStyle}
+                          style={modalSelectStyle}
+                          className="wayang-modal-select"
                         >
                           <option value="bgm">BGM (Gamelan Melodi)</option>
                           <option value="sfx">SFX (Dodogan / Kepyak / Gong)</option>
@@ -3327,7 +3748,8 @@ export default function AdminCmsView({ onPlayPerformance }) {
                         <select
                           value={form.category || 'image'}
                           onChange={(e) => setForm({ ...form, category: e.target.value })}
-                          style={modalInputStyle}
+                          style={modalSelectStyle}
+                          className="wayang-modal-select"
                         >
                           <option value="image">Gambar Latar HD (URL / Berkas)</option>
                           <option value="gradient">Gradasi Soga Tradisional (CSS)</option>
@@ -3490,20 +3912,59 @@ export default function AdminCmsView({ onPlayPerformance }) {
                   <button
                     type="button"
                     onClick={() => setModalType(null)}
-                    className="wayang-btn-ghost"
+                    style={{
+                      background: '#ffffff',
+                      border: '1.5px solid rgba(212, 175, 55, 0.45)',
+                      color: '#1a140e',
+                      padding: '10px 22px',
+                      borderRadius: '9999px',
+                      fontSize: '13.5px',
+                      fontWeight: '700',
+                      cursor: 'pointer',
+                      minHeight: '42px',
+                      transition: 'all 0.2s ease',
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.borderColor = '#e8bb5c';
+                      e.currentTarget.style.background = '#fcfaf5';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.borderColor = 'rgba(212, 175, 55, 0.45)';
+                      e.currentTarget.style.background = '#ffffff';
+                    }}
                   >
                     Batal
                   </button>
 
                   <button
                     type="submit"
-                    className="wayang-btn-cta"
-                    style={{ justifyContent: 'space-between' }}
+                    style={{
+                      background: '#e8bb5c',
+                      border: 'none',
+                      color: '#0d0a07',
+                      padding: '10px 24px',
+                      borderRadius: '9999px',
+                      fontSize: '14px',
+                      fontWeight: '750',
+                      cursor: 'pointer',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '8px',
+                      boxShadow: 'none',
+                      minHeight: '42px',
+                      transition: 'all 0.2s ease',
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.background = '#dcae4d';
+                      e.currentTarget.style.transform = 'translateY(-1px)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.background = '#e8bb5c';
+                      e.currentTarget.style.transform = 'translateY(0)';
+                    }}
                   >
+                    <Save size={15} style={{ color: '#0d0a07' }} />
                     <span>Simpan Data Master</span>
-                    <span className="wayang-btn-cta-icon">
-                      <Save size={15} color="#16100a" />
-                    </span>
                   </button>
                 </div>
               </form>
@@ -3613,4 +4074,18 @@ const modalInputStyle = {
   outline: 'none',
   fontFamily: 'inherit',
   boxShadow: 'inset 0 1px 2px rgba(40, 28, 16, 0.04)',
+};
+
+const modalSelectStyle = {
+  ...modalInputStyle,
+  appearance: 'none',
+  WebkitAppearance: 'none',
+  MozAppearance: 'none',
+  backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%238b4513' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E")`,
+  backgroundRepeat: 'no-repeat',
+  backgroundPosition: 'calc(100% - 14px) center',
+  backgroundSize: '15px 15px',
+  paddingRight: '40px',
+  paddingLeft: '14px',
+  cursor: 'pointer',
 };

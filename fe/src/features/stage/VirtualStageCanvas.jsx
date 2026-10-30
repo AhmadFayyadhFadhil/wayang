@@ -13,9 +13,12 @@ const VirtualStageCanvas = forwardRef(function VirtualStageCanvas({
   selectedInstanceId,
   onSelectCharacter,
   onUpdateCharacter,
+  _onRemoveCharacter,
   onOpenAddCharacter,
   isInteractive = true,
   isVisionActive = false,
+  isGuest = false,
+  onGuestInteract = null,
 }, ref) {
   const containerRef = useRef(null);
   const charDomRefs = useRef({});
@@ -82,6 +85,10 @@ const VirtualStageCanvas = forwardRef(function VirtualStageCanvas({
 
   // Kontrol Skala Global Cepat Wayang (Memperbesar / Memperkecil)
   const handleGlobalScaleChange = (delta) => {
+    if (isGuest) {
+      if (onGuestInteract) onGuestInteract();
+      return;
+    }
     if (characters.length === 0) return;
     const current = (selectedChar || characters[0])?.scale || 1.0;
     const newScale = Math.max(0.5, Math.min(2.2, Number((current + delta).toFixed(1))));
@@ -96,6 +103,11 @@ const VirtualStageCanvas = forwardRef(function VirtualStageCanvas({
 
   // Dragging Handlers: Direct DOM 120 FPS Hardware Accelerated Dragging
   const handlePointerDown = (e, char) => {
+    if (isGuest) {
+      e.stopPropagation();
+      if (onGuestInteract) onGuestInteract();
+      return;
+    }
     if (!isInteractive) return;
     e.stopPropagation();
     onSelectCharacter(char.instanceId);
@@ -197,24 +209,24 @@ const VirtualStageCanvas = forwardRef(function VirtualStageCanvas({
       if (e.key === 'ArrowLeft') {
         e.preventDefault();
         onUpdateCharacter(selectedInstanceId, { x: char.x - step });
-        try { soundEngine.playDodogan(); } catch {}
+        try { soundEngine.playDodogan(); } catch { }
       } else if (e.key === 'ArrowRight') {
         e.preventDefault();
         onUpdateCharacter(selectedInstanceId, { x: char.x + step });
-        try { soundEngine.playDodogan(); } catch {}
+        try { soundEngine.playDodogan(); } catch { }
       } else if (e.key === 'ArrowUp') {
         e.preventDefault();
         onUpdateCharacter(selectedInstanceId, { y: char.y - step });
-        try { soundEngine.playDodogan(); } catch {}
+        try { soundEngine.playDodogan(); } catch { }
       } else if (e.key === 'ArrowDown') {
         e.preventDefault();
         onUpdateCharacter(selectedInstanceId, { y: char.y + step });
-        try { soundEngine.playDodogan(); } catch {}
+        try { soundEngine.playDodogan(); } catch { }
       } else if (e.key.toLowerCase() === 'f') {
         e.preventDefault();
         const nextFacing = char.facing === 'left' ? 'right' : 'left';
         onUpdateCharacter(selectedInstanceId, { facing: nextFacing });
-        try { soundEngine.playDodogan(); } catch {}
+        try { soundEngine.playDodogan(); } catch { }
       }
     };
 
@@ -345,7 +357,7 @@ const VirtualStageCanvas = forwardRef(function VirtualStageCanvas({
                         onUpdateCharacter(char.instanceId, {
                           facing: char.facing === 'left' ? 'right' : 'left',
                         });
-                        try { soundEngine.playDodogan(); } catch {}
+                        try { soundEngine.playDodogan(); } catch { }
                       }}
                       title="Balik Arah Hadap (Shortcut: F)"
                       className="puppet-flip-pill"
@@ -462,7 +474,7 @@ const VirtualStageCanvas = forwardRef(function VirtualStageCanvas({
           {characters.length === 0 && (
             <div className="kelir-empty-state">
               <div className="kelir-empty-glyph">ꦥꦁꦒꦸꦁ</div>
-              <div className="kelir-empty-title">Kelir Suwung • Siap Digelar</div>
+              <div className="kelir-empty-title">Kelir Suwung Siap Digelar</div>
               <p className="kelir-empty-sub">
                 Panggung siap dibuka. Tancapkan tokoh pertama untuk mengawali lakon pedalangan babak ini.
               </p>
@@ -471,6 +483,10 @@ const VirtualStageCanvas = forwardRef(function VirtualStageCanvas({
                   type="button"
                   onClick={(e) => {
                     e.stopPropagation();
+                    if (isGuest) {
+                      if (onGuestInteract) onGuestInteract();
+                      return;
+                    }
                     onOpenAddCharacter();
                   }}
                   className="kelir-empty-add-btn"
@@ -478,6 +494,39 @@ const VirtualStageCanvas = forwardRef(function VirtualStageCanvas({
                   ＋ Tancap Tokoh Pertama
                 </button>
               )}
+            </div>
+          )}
+
+          {/* Lencana Mode Pratinjau Tamu — Bersih, Anti-Slop */}
+          {isGuest && (
+            <div
+              onClick={(e) => {
+                e.stopPropagation();
+                if (onGuestInteract) onGuestInteract();
+              }}
+              style={{
+                position: 'absolute',
+                top: '16px',
+                left: '50%',
+                transform: 'translateX(-50%)',
+                zIndex: 40,
+                background: 'rgba(20, 16, 24, 0.88)',
+                backdropFilter: 'blur(12px)',
+                border: '1px solid rgba(212, 175, 55, 0.28)',
+                borderRadius: '9999px',
+                padding: '7px 20px',
+                display: 'flex',
+                alignItems: 'center',
+                color: '#fcfaf5',
+                fontSize: '12px',
+                fontWeight: '650',
+                cursor: 'pointer',
+                boxShadow: '0 4px 16px rgba(0,0,0,0.25)',
+                userSelect: 'none',
+              }}
+              title="Klik untuk masuk atau mendaftar akun dalang"
+            >
+              <span>Mode Pratinjau • Masuk untuk mengkreasikan tokoh &amp; menyimpan lakon</span>
             </div>
           )}
         </div>

@@ -11,7 +11,6 @@ import StagePreviewModal from './features/stage/StagePreviewModal';
 import AuthModal from './features/auth/AuthModal';
 import WayangLoadingScreen from './components/ui/WayangLoadingScreen';
 import { useStageStore } from './features/stage/useStageStore';
-import persistenceService from './services/persistenceService';
 import { checkApiStatus } from './services/api';
 import { initAOS } from './services/aos';
 import './App.css';
@@ -37,7 +36,7 @@ function App() {
     error: null,
   });
 
-  const { addCharacterToActiveScene, exportSceneData } = useStageStore();
+  const { addCharacterToActiveScene } = useStageStore();
 
   const testConnection = async () => {
     setConnection((prev) => ({ ...prev, loading: true, error: null }));
@@ -64,21 +63,6 @@ function App() {
       await testConnection();
     }
     initApp();
-
-    // Inisialisasi karya demo awal jika local storage masih kosong
-    const initialDemoWork = {
-      id: 'demo-1',
-      title: 'Bharatayuddha: Gugurnya Ghatotkaca',
-      description: 'Pertempuran malam hari di padang Kurusetra antara Sang Senopati Udara dengan Adipati Karna.',
-      story_id: 1,
-      visibility: 'public',
-      updated_at: new Date().toISOString(),
-      created_at: new Date().toISOString(),
-      author: 'Dalang Muda Preservasi Budaya',
-      scene_data: exportSceneData(),
-      schema_version: 1,
-    };
-    persistenceService.seedInitialDemoWorks(initialDemoWork);
   }, []);
 
   // Loading Screen State (Initial App Load & Cross-Module Trigger)
@@ -204,7 +188,11 @@ function App() {
         )}
 
         {activeTab === 'stage' && (
-          <StageStudio onNavigate={handleNavigate} />
+          <StageStudio
+            onNavigate={handleNavigate}
+            currentUser={currentUser}
+            onOpenAuth={() => setShowAuthModal(true)}
+          />
         )}
 
         {activeTab === 'archive' && (
@@ -224,6 +212,8 @@ function App() {
           <MyWorksView
             onOpenStudio={() => handleNavigate('stage')}
             onPlayPerformance={handlePlayPerformanceFromGallery}
+            currentUser={currentUser}
+            onOpenAuth={() => setShowAuthModal(true)}
           />
         )}
 
