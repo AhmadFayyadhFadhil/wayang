@@ -1,4 +1,5 @@
 import React, { useMemo } from 'react';
+import { getCharacterCutout } from '../../data/master/characterAssets';
 
 // Import aset tekstur wayang kulit asli beresolusi tinggi
 import bodyPng from '../../assets/puppets/body.png';
@@ -305,7 +306,7 @@ const RealLeatherPuppet = React.memo(function RealLeatherPuppet({
 
           {/* BADAN UTAMA KULIT ASLI (LAYER 2 - TENGAH) */}
           <img
-            src={bodyPng}
+            src={getCharacterCutout(slug) || bodyPng}
             alt={slug}
             style={{
               position: 'absolute',

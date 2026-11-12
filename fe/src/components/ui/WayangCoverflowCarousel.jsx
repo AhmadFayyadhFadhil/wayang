@@ -1,6 +1,7 @@
 import React, { useState, useCallback, useRef } from 'react';
 import { ChevronLeft, ChevronRight, Play, Eye, Compass } from 'lucide-react';
-import WayangFigureSvg from '../stage/WayangFigureSvg';
+import AuthenticPuppetViewer from '../stage/AuthenticPuppetViewer';
+import { getCharacterCutout } from '../../data/master/characterAssets';
 
 /**
  * WayangCoverflowCarousel
@@ -133,7 +134,7 @@ export default function WayangCoverflowCarousel({
             char.image_url ||
             char.photo ||
             (charAssets && (charAssets[char.slug] || charAssets[char.silhouetteSvg] || charAssets[char.id])) ||
-            charAssets?.gatotkaca ||
+            getCharacterCutout(char.slug) ||
             null;
 
           return (
@@ -170,6 +171,7 @@ export default function WayangCoverflowCarousel({
                     loading="lazy"
                     onError={(e) => {
                       const fallback =
+                        getCharacterCutout(char.slug) ||
                         (charAssets && (charAssets[char.slug] || charAssets[char.silhouetteSvg])) ||
                         charAssets?.gatotkaca;
                       if (fallback && e.currentTarget.src !== fallback) {
@@ -179,13 +181,15 @@ export default function WayangCoverflowCarousel({
                   />
                 ) : (
                   <div className="wayang-coverflow-svg-holder">
-                    <WayangFigureSvg
+                    <AuthenticPuppetViewer
                       slug={char.slug}
-                      scale={0.75}
-                      width={130}
-                      height={190}
+                      name={char.name}
+                      scale={0.78}
+                      width={140}
+                      height={200}
                       accentColor={char.accentColor || '#d4af37'}
                       animated={isCenter}
+                      showBlencongGlow={false}
                     />
                   </div>
                 )}
