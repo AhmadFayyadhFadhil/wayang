@@ -1,5 +1,6 @@
 import React, { useState, useRef, useMemo } from 'react';
 import { CHARACTERS_MASTER } from '../../data/master/charactersMaster';
+import { getCharacterCutout } from '../../data/master/characterAssets';
 import soundEngine from '../../services/soundscape';
 import { UserPlus, Upload, Search, X } from 'lucide-react';
 
@@ -218,7 +219,7 @@ export default function StageCharacterModal({
               </div>
             ) : (
               filteredCharacters.map((char) => {
-                const avatarImg = CHAR_AVATARS[char.slug];
+                const avatarImg = CHAR_AVATARS[char.slug] || getCharacterCutout(char.slug);
 
                 return (
                   <button

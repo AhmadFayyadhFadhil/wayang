@@ -3,7 +3,8 @@ import { apiClient } from '../../services/api';
 import { STORIES_MASTER } from '../../data/master/storiesMaster';
 import { CHARACTERS_MASTER } from '../../data/master/charactersMaster';
 import { AUDIO_MASTER } from '../../data/master/audioMaster';
-import WayangFigureSvg from '../../components/stage/WayangFigureSvg';
+import AuthenticPuppetViewer from '../../components/stage/AuthenticPuppetViewer';
+import { POSE_DYNAMICS } from '../../data/master/characterAssets';
 import soundEngine from '../../services/soundscape';
 import {
   Search,
@@ -1305,14 +1306,16 @@ export default function AtlasView({ onPlayCharacterOnStage }) {
                     justifyContent: 'center',
                   }}
                 >
-                  <div style={{ marginBottom: '14px' }}>
-                    <WayangFigureSvg
+                  <div style={{ marginBottom: '14px', width: '100%', display: 'flex', justifyContent: 'center' }}>
+                    <AuthenticPuppetViewer
                       slug={selectedCharModal.slug}
+                      name={selectedCharModal.name}
                       pose={previewPose}
-                      scale={0.88}
-                      width={160}
-                      height={220}
+                      scale={0.92}
+                      width={200}
+                      height={270}
                       accentColor={selectedCharModal.accentColor || selectedCharModal.accent_color || '#d4af37'}
+                      interactive={true}
                     />
                   </div>
                   <div style={{ fontSize: '11.5px', color: '#bfae9c', marginBottom: '12px' }}>
@@ -1325,7 +1328,14 @@ export default function AtlasView({ onPlayCharacterOnStage }) {
                       <button
                         key={p}
                         type="button"
-                        onClick={() => setPreviewPose(p)}
+                        onClick={() => {
+                          setPreviewPose(p);
+                          try {
+                            if (p === 'perang') soundEngine.playKepyak();
+                            else if (p === 'terbang') soundEngine.playGong();
+                            else soundEngine.playDodogan();
+                          } catch { }
+                        }}
                         style={{
                           background: previewPose === p ? 'linear-gradient(135deg, #e8bb5c 0%, #d4af37 100%)' : 'rgba(255, 255, 255, 0.05)',
                           border: `1px solid ${previewPose === p ? '#d4af37' : 'rgba(212, 175, 55, 0.22)'}`,
@@ -1344,6 +1354,35 @@ export default function AtlasView({ onPlayCharacterOnStage }) {
                       </button>
                     ))}
                   </div>
+
+                  {/* Solah Dalang Explanation Pill */}
+                  {(() => {
+                    const info = POSE_DYNAMICS[previewPose] || POSE_DYNAMICS.default;
+                    return (
+                      <div
+                        style={{
+                          marginTop: '12px',
+                          padding: '8px 12px',
+                          borderRadius: '10px',
+                          background: 'rgba(212, 175, 55, 0.08)',
+                          border: '1px solid rgba(212, 175, 55, 0.22)',
+                          fontSize: '11px',
+                          color: '#e8bb5c',
+                          textAlign: 'center',
+                          width: '100%',
+                          boxSizing: 'border-box',
+                          transition: 'all 0.3s ease',
+                        }}
+                      >
+                        <div style={{ fontWeight: '800', letterSpacing: '0.04em' }}>
+                          ✦ {info.badge || info.label}
+                        </div>
+                        <div style={{ color: '#d5c7b3', fontSize: '10.5px', marginTop: '2px', lineHeight: '1.4' }}>
+                          {info.description}
+                        </div>
+                      </div>
+                    );
+                  })()}
                 </div>
 
                 {/* Kolom Kanan: Watak, Senjata, dan Nilai Luhur (Unboxed Flow) */}
